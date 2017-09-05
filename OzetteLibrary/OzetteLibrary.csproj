@@ -41,6 +41,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shared\BackupIndex.cs" />
+    <Compile Include="Shared\BackupTarget.cs" />
+    <Compile Include="Shared\ExternalNetworkBackupTarget.cs" />
+    <Compile Include="Shared\File.cs" />
+    <Compile Include="Shared\FileBackupStatus.cs" />
+    <Compile Include="Shared\InternalNetworkBackupTarget.cs" />
+    <Compile Include="Shared\TargetFileState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Client\" />
+    <Folder Include="Target\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
