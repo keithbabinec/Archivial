@@ -50,7 +50,19 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Crypto\Hasher.tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestFiles\SmallFile.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OzetteLibrary\OzetteLibrary.csproj">
+      <Project>{8a82834f-df32-4911-8b3f-f4435b04b6a3}</Project>
+      <Name>OzetteLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

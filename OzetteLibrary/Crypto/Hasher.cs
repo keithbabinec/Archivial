@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.IO;
+using System.Text;
 
 namespace OzetteLibrary.Crypto
 {
@@ -46,13 +47,29 @@ namespace OzetteLibrary.Crypto
         /// <returns>A byte array containing the hash</returns>
         private byte[] GenerateFileHash(HashAlgorithmName hashAlgorithm, string filePath)
         {
-            using (FileStream fs = System.IO.File.OpenRead(filePath))
+            using (FileStream fs = File.OpenRead(filePath))
             {
                 using (var hasher = HashAlgorithm.Create(hashAlgorithm.Name))
                 {
                     return hasher.ComputeHash(fs);
                 }
             }
+        }
+
+        /// <summary>
+        /// Converts an array of bytes into a string seperated with dashes (-)
+        /// </summary>
+        /// <param name="hash"></param>
+        /// <returns></returns>
+        public string HashBytesToString(byte[] hash)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var b in hash)
+            {
+                sb.Append(b + "-");
+            }
+            sb.Remove(sb.Length - 1, 1);
+            return sb.ToString();
         }
     }
 }
