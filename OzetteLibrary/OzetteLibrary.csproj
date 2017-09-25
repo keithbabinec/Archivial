@@ -47,11 +47,13 @@
     <Compile Include="Database\ClientDB.cs" />
     <Compile Include="Database\TargetDB.cs" />
     <Compile Include="Models\ClientFile.cs" />
+    <Compile Include="Models\TargetCopyState.cs" />
+    <Compile Include="Models\Target.cs" />
     <Compile Include="Models\TargetFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Crypto\Hasher.cs" />
     <Compile Include="Models\BackupFile.cs" />
-    <Compile Include="Models\FileBackupStatus.cs" />
+    <Compile Include="Models\FileStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Client\" />

@@ -3,7 +3,7 @@
     /// <summary>
     /// Describes the possible file backup states.
     /// </summary>
-    public enum FileBackupStatus
+    public enum FileStatus
     {
         /// <summary>
         /// The file has not been backed up.

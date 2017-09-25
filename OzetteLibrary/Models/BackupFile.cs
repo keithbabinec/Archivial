@@ -22,6 +22,11 @@ namespace OzetteLibrary.Models
         public string Filename { get; set; }
 
         /// <summary>
+        /// The full file path for this file in the source.
+        /// </summary>
+        public string FullSourcePath { get; set; }
+
+        /// <summary>
         /// The files size measured in bytes.
         /// </summary>
         public ulong FileSizeBytes { get; set; }
