@@ -3,7 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="DatabaseFileName" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Ozette.db</Value>
+      <Value Profile="(Default)">OzetteClient.db</Value>
+    </Setting>
+    <Setting Name="EventlogName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">OzetteClient</Value>
+    </Setting>
+    <Setting Name="LogFilesDirectory" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Logs</Value>
     </Setting>
   </Settings>
 </SettingsFile>

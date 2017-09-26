@@ -40,5 +40,14 @@ namespace OzetteTargetAgent.Properties {
                 return ((string)(this["EventlogName"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Logs")]
+        public string LogFilesDirectory {
+            get {
+                return ((string)(this["LogFilesDirectory"]));
+            }
+        }
     }
 }

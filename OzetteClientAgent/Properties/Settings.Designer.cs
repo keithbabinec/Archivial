@@ -25,10 +25,28 @@ namespace OzetteClientAgent.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Ozette.db")]
+        [global::System.Configuration.DefaultSettingValueAttribute("OzetteClient.db")]
         public string DatabaseFileName {
             get {
                 return ((string)(this["DatabaseFileName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("OzetteClient")]
+        public string EventlogName {
+            get {
+                return ((string)(this["EventlogName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Logs")]
+        public string LogFilesDirectory {
+            get {
+                return ((string)(this["LogFilesDirectory"]));
             }
         }
     }
