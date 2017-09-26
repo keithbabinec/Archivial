@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logging\StartupResults.cs" />
     <Compile Include="Database\BaseDB.cs" />
     <Compile Include="Database\ClientDB.cs" />
     <Compile Include="Database\TargetDB.cs" />
@@ -56,6 +57,8 @@
     <Compile Include="Crypto\Hasher.cs" />
     <Compile Include="Models\BackupFile.cs" />
     <Compile Include="Models\FileStatus.cs" />
+    <Compile Include="ServiceCore\Initialization.cs" />
+    <Compile Include="ServiceCore\ServiceOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Client\" />
