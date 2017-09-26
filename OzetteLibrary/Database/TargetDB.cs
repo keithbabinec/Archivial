@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LiteDB;
-
-namespace OzetteLibrary.Database
+﻿namespace OzetteLibrary.Database
 {
-    class TargetDB
+    /// <summary>
+    /// The target agent database implementation.
+    /// </summary>
+    public class TargetDB : BaseDB
     {
+        /// <summary>
+        /// Constructor that takes a database file path.
+        /// </summary>
+        /// <param name="databaseFilePath"></param>
+        public TargetDB(string databaseFilePath) : base(databaseFilePath)
+        {
+        }
     }
 }

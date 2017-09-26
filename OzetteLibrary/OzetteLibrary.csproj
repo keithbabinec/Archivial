@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\BaseDB.cs" />
     <Compile Include="Database\ClientDB.cs" />
     <Compile Include="Database\TargetDB.cs" />
     <Compile Include="Models\ClientFile.cs" />
