@@ -43,7 +43,11 @@ namespace OzetteClientAgent
         /// <param name="e"></param>
         private void InitHelper_Completed(object sender, System.EventArgs e)
         {
-            if (initHelper.ResultCode != OzetteLibrary.Logging.StartupResults.Success)
+            if (initHelper.ResultCode == OzetteLibrary.Logging.StartupResults.Success)
+            {
+                // launch core
+            }
+            else
             {
                 // safe exit without crash.
                 // set the exit code so service control manager knows there is a problem.
