@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace OzetteLibrary.Logging
 {
@@ -10,11 +12,24 @@ namespace OzetteLibrary.Logging
         /// <summary>
         /// Ensures the custom windows event log is present.
         /// </summary>
-        /// <param name="logName"></param>
+        /// <remarks>
+        /// Will throw exception if running under non-elevated user context.
+        /// The reason is that creating event log sources requires administrator privileges. 
+        /// </remarks>
         /// <param name="logSource"></param>
-        public void SetupCustomWindowsEventLogIfNotPresent(string logName, string logSource)
+        /// <param name="logName"></param>
+        public void SetupCustomWindowsEventLogIfNotPresent(string logSource, string logName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(logSource))
+                throw new ArgumentException(nameof(logSource));
+
+            if (string.IsNullOrEmpty(logName))
+                throw new ArgumentException(nameof(logName));
+
+            if (!EventLog.SourceExists(logSource))
+            {
+                EventLog.CreateEventSource(logSource, logName);
+            }
         }
 
         /// <summary>
@@ -23,7 +38,13 @@ namespace OzetteLibrary.Logging
         /// <param name="path"></param>
         public void SetupLogsFolderIfNotPresent(string path)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentException(nameof(path));
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);   
+            }
         }
     }
 }
