@@ -21,10 +21,14 @@ namespace OzetteLibrary.Logging
         public void SetupCustomWindowsEventLogIfNotPresent(string logSource, string logName)
         {
             if (string.IsNullOrEmpty(logSource))
+            {
                 throw new ArgumentException(nameof(logSource));
+            }
 
             if (string.IsNullOrEmpty(logName))
+            {
                 throw new ArgumentException(nameof(logName));
+            }
 
             if (!EventLog.SourceExists(logSource))
             {
@@ -39,7 +43,9 @@ namespace OzetteLibrary.Logging
         public void SetupLogsFolderIfNotPresent(string path)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 throw new ArgumentException(nameof(path));
+            }
 
             if (!Directory.Exists(path))
             {

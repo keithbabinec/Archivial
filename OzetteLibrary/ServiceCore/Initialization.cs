@@ -53,13 +53,19 @@ namespace OzetteLibrary.ServiceCore
             // perform service launch tasks
 
             if (!SafeParseOptions(properties))
+            {
                 return;
+            }
 
             if (!SafeSetupLogsFolder(Options))
+            {
                 return;
+            }
 
             if (!SafeSetupCustomEventLog(Options))
+            {
                 return;
+            }
 
             ResultCode = StartupResults.Success;
             OnCompleted(EventArgs.Empty);
