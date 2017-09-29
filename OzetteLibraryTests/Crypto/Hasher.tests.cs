@@ -76,5 +76,67 @@ namespace OzetteLibraryTests.Crypto
                     i, h.HashBytesToString(actualHash), h.HashBytesToString(expectedHash)));
             }
         }
+
+        [TestMethod()]
+        public void Generate20ByteMediumFileHash()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            byte[] actualHash = h.Generate20ByteFileHash(".\\TestFiles\\MediumFile.mp3");
+            byte[] expectedHash = { 59, 46, 56, 72, 141, 74, 31, 120, 17, 24, 52,
+                                    218, 140, 133, 179, 49, 83, 159, 149, 50 };
+
+            Assert.AreEqual(expectedHash.Length, actualHash.Length);
+
+            for (int i = 0; i < expectedHash.Length; i++)
+            {
+                Assert.AreEqual(expectedHash[i], actualHash[i],
+                    string.Format("Byte index {0} is incorrect. Encountered: {1}. Expected {2}",
+                    i, h.HashBytesToString(actualHash), h.HashBytesToString(expectedHash)));
+            }
+        }
+
+        [TestMethod()]
+        public void Generate32ByteMediumFileHash()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            byte[] actualHash = h.Generate32ByteFileHash(".\\TestFiles\\MediumFile.mp3");
+            byte[] expectedHash = { 59, 223, 174, 134, 63, 70, 226, 183, 168, 86, 148,
+                                    117, 40, 147, 139, 169, 231, 2, 41, 38, 8, 109, 55,
+                                    221, 0, 10, 29, 173, 245, 93, 11, 59 };
+
+            Assert.AreEqual(expectedHash.Length, actualHash.Length);
+
+            for (int i = 0; i < expectedHash.Length; i++)
+            {
+                Assert.AreEqual(expectedHash[i], actualHash[i],
+                    string.Format("Byte index {0} is incorrect. Encountered: {1}. Expected {2}",
+                    i, h.HashBytesToString(actualHash), h.HashBytesToString(expectedHash)));
+            }
+        }
+
+        [TestMethod()]
+        public void Generate64ByteMediumFileHash()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            byte[] actualHash = h.Generate64ByteFileHash(".\\TestFiles\\MediumFile.mp3");
+            byte[] expectedHash = { 234, 71, 228, 136, 179, 247, 148, 228, 21, 49, 132, 155,
+                                    219, 239, 173, 165, 249, 35, 144, 199, 224, 127, 103,
+                                    207, 211, 205, 191, 43, 207, 232, 154, 191, 238, 13, 128,
+                                    221, 58, 116, 68, 175, 197, 121, 110, 243, 35, 53, 228,
+                                    214, 206, 251, 250, 253, 35, 149, 27, 127, 233, 201, 36,
+                                    219, 107, 45, 136, 215 };
+
+            Assert.AreEqual(expectedHash.Length, actualHash.Length);
+
+            for (int i = 0; i < expectedHash.Length; i++)
+            {
+                Assert.AreEqual(expectedHash[i], actualHash[i],
+                    string.Format("Byte index {0} is incorrect. Encountered: {1}. Expected {2}",
+                    i, h.HashBytesToString(actualHash), h.HashBytesToString(expectedHash)));
+            }
+        }
     }
 }
