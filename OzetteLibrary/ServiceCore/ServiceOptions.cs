@@ -19,6 +19,11 @@ namespace OzetteLibrary.ServiceCore
         public string EventlogName { get; set; }
 
         /// <summary>
+        /// The database file name.
+        /// </summary>
+        public string DatabaseFileName { get; set; }
+
+        /// <summary>
         /// Base constructor.
         /// </summary>
         public ServiceOptions()
@@ -31,7 +36,14 @@ namespace OzetteLibrary.ServiceCore
         /// <param name="settings"></param>
         public ServiceOptions(SettingsPropertyCollection settings)
         {
-            throw new NotImplementedException();
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
+            LogFilesDirectory = settings["LogFilesDirectory"]?.ToString();
+            EventlogName = settings["EventlogName"]?.ToString();
+            DatabaseFileName = settings["DatabaseFileName"]?.ToString();
         }
     }
 }
