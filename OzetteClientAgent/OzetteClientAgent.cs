@@ -53,7 +53,7 @@ namespace OzetteClientAgent
                 // set the exit code so service control manager knows there is a problem.
 
                 ExitCode = (int)initHelper.ResultCode;
-                OnStop();
+                Stop();
             }
         }
 
