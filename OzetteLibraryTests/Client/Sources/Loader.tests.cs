@@ -2,10 +2,10 @@
 using OzetteLibrary.Models;
 using System;
 
-namespace OzetteLibraryTests.SourceLocations
+namespace OzetteLibraryTests.Client.Sources
 {
     [TestClass()]
-    public class SourceLocationsTests
+    public class LoaderTests
     {
         [TestMethod()]
         [ExpectedException(typeof(ArgumentException))]
