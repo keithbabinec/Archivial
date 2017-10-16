@@ -9,18 +9,18 @@ namespace OzetteLibraryTests.SourceLocations
     {
         [TestMethod()]
         [ExpectedException(typeof(ArgumentException))]
-        public void ProvidingNoSourcesFileThrowsException()
+        public void SourcesLoaderThrowsExceptionWhenNoFileIsProvided()
         {
-            OzetteLibrary.Client.Sources.Loader s = new OzetteLibrary.Client.Sources.Loader();
-            s.LoadSources(null);
+            OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
+            load.LoadSources(null);
         }
 
         [TestMethod()]
-        public void EmptySourcesFileSafelyReturnsEmptySources()
+        public void SourcesLoaderSafelyReturnsEmptySourcesCollectionFromEmptySourceFile()
         {
-            OzetteLibrary.Client.Sources.Loader s = new OzetteLibrary.Client.Sources.Loader();
+            OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
 
-            var sources = s.LoadSources(".\\TestFiles\\SourceLocation\\EmptySourcesFile.json");
+            var sources = load.LoadSources(".\\TestFiles\\SourceLocation\\EmptySourcesFile.json");
 
             Assert.IsNotNull(sources);
             Assert.AreEqual(0, sources.Count);
@@ -28,11 +28,11 @@ namespace OzetteLibraryTests.SourceLocations
         }
 
         [TestMethod()]
-        public void CanLoadSourcesExample1()
+        public void SourcesLoaderCanLoadExample1()
         {
-            OzetteLibrary.Client.Sources.Loader s = new OzetteLibrary.Client.Sources.Loader();
+            OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
 
-            var sources = s.LoadSources(".\\TestFiles\\SourceLocation\\SourcesExample1.json");
+            var sources = load.LoadSources(".\\TestFiles\\SourceLocation\\SourcesExample1.json");
 
             Assert.IsNotNull(sources);
             Assert.IsTrue(sources.Count == 2);

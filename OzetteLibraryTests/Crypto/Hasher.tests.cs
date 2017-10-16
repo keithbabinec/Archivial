@@ -6,7 +6,7 @@ namespace OzetteLibraryTests.Crypto
     public class HasherTests
     {
         [TestMethod()]
-        public void HashBytesToString()
+        public void HasherCanCorrectlyConvertHashBytesToString()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
 
@@ -16,7 +16,7 @@ namespace OzetteLibraryTests.Crypto
         }
 
         [TestMethod()]
-        public void Generate20ByteSmallFileHash()
+        public void HasherCanCorrectlyGenerate20ByteSmallFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
 
@@ -35,7 +35,7 @@ namespace OzetteLibraryTests.Crypto
         }
 
         [TestMethod()]
-        public void Generate32ByteSmallFileHash()
+        public void HasherCanCorrectlyGenerate32ByteSmallFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
 
@@ -55,7 +55,7 @@ namespace OzetteLibraryTests.Crypto
         }
 
         [TestMethod()]
-        public void Generate64ByteSmallFileHash()
+        public void HasherCanCorrectlyGenerate64ByteSmallFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
 
@@ -78,7 +78,7 @@ namespace OzetteLibraryTests.Crypto
         }
 
         [TestMethod()]
-        public void Generate20ByteMediumFileHash()
+        public void HasherCanCorrectlyGenerate20ByteMediumFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
 
@@ -97,7 +97,7 @@ namespace OzetteLibraryTests.Crypto
         }
 
         [TestMethod()]
-        public void Generate32ByteMediumFileHash()
+        public void HasherCanCorrectlyGenerate32ByteMediumFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
 
@@ -117,7 +117,7 @@ namespace OzetteLibraryTests.Crypto
         }
 
         [TestMethod()]
-        public void Generate64ByteMediumFileHash()
+        public void HasherCanCorrectlyGenerate64ByteMediumFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
 
