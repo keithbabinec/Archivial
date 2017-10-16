@@ -1,14 +1,20 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-
-namespace OzetteLibrary.Logging
+﻿namespace OzetteLibrary.Logging
 {
     /// <summary>
     /// Contains functionality for configuring custom windows event logs.
     /// </summary>
-    public class EventLogSetup : IEventLogSetup
+    public class MockEventLogSetup : IEventLogSetup
     {
+        /// <summary>
+        /// Flag to set when the mock runs.
+        /// </summary>
+        public bool SetupCustomWindowsEventLogIfNotPresentHasBeenCalled = false;
+
+        /// <summary>
+        /// Flag to set when the mock runs.
+        /// </summary>
+        public bool SetupLogsFolderIfNotPresentHasBeenCalled = false;
+
         /// <summary>
         /// Ensures the custom windows event log is present.
         /// </summary>
@@ -20,20 +26,7 @@ namespace OzetteLibrary.Logging
         /// <param name="logName"></param>
         public void SetupCustomWindowsEventLogIfNotPresent(string logSource, string logName)
         {
-            if (string.IsNullOrEmpty(logSource))
-            {
-                throw new ArgumentException(nameof(logSource));
-            }
-
-            if (string.IsNullOrEmpty(logName))
-            {
-                throw new ArgumentException(nameof(logName));
-            }
-
-            if (!EventLog.SourceExists(logSource))
-            {
-                EventLog.CreateEventSource(logSource, logName);
-            }
+            SetupCustomWindowsEventLogIfNotPresentHasBeenCalled = true;
         }
 
         /// <summary>
@@ -42,15 +35,7 @@ namespace OzetteLibrary.Logging
         /// <param name="path"></param>
         public void SetupLogsFolderIfNotPresent(string path)
         {
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentException(nameof(path));
-            }
-
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);   
-            }
+            SetupLogsFolderIfNotPresentHasBeenCalled = true;
         }
     }
 }

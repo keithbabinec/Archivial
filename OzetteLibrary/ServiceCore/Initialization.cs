@@ -26,6 +26,11 @@ namespace OzetteLibrary.ServiceCore
         public event EventHandler Completed;
 
         /// <summary>
+        /// Stores an instance of the logging setup class.
+        /// </summary>
+        private IEventLogSetup Logger { get; set; }
+
+        /// <summary>
         /// Internal function to invoke the Completed event.
         /// </summary>
         /// <param name="e"></param>
@@ -35,11 +40,30 @@ namespace OzetteLibrary.ServiceCore
         }
 
         /// <summary>
+        /// Main constructor
+        /// </summary>
+        /// <param name="logger"></param>
+        public Initialization(IEventLogSetup logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            Logger = logger;
+        }
+
+        /// <summary>
         /// Starts the service initialization (asynchronously).
         /// </summary>
         /// <param name="properties"></param>
         public void BeginStart(SettingsPropertyCollection properties)
         {
+            if (properties == null)
+            {
+                throw new ArgumentNullException(nameof(properties));
+            }
+
             Thread initThread = new Thread(() => Start(properties));
             initThread.Start();
         }
@@ -57,12 +81,12 @@ namespace OzetteLibrary.ServiceCore
                 return;
             }
 
-            if (!SafeSetupLogsFolder(Options))
+            if (!SafeSetupLogsFolder(Options, Logger))
             {
                 return;
             }
 
-            if (!SafeSetupCustomEventLog(Options))
+            if (!SafeSetupCustomEventLog(Options, Logger))
             {
                 return;
             }
@@ -95,13 +119,13 @@ namespace OzetteLibrary.ServiceCore
         /// Safely setup the logs folder.
         /// </summary>
         /// <param name="options"></param>
+        /// <param name="logger"></param>
         /// <returns></returns>
-        private bool SafeSetupLogsFolder(ServiceOptions options)
+        private bool SafeSetupLogsFolder(ServiceOptions options, IEventLogSetup logger)
         {
             try
             {
-                EventLogSetup logSetup = new EventLogSetup();
-                logSetup.SetupLogsFolderIfNotPresent(Options.LogFilesDirectory);
+                logger.SetupLogsFolderIfNotPresent(Options.LogFilesDirectory);
                 return true;
             }
             catch
@@ -116,13 +140,13 @@ namespace OzetteLibrary.ServiceCore
         /// Safely setup the custom event log.
         /// </summary>
         /// <param name="options"></param>
+        /// <param name="logger"></param>
         /// <returns></returns>
-        private bool SafeSetupCustomEventLog(ServiceOptions options)
+        private bool SafeSetupCustomEventLog(ServiceOptions options, IEventLogSetup logger)
         {
             try
             {
-                EventLogSetup logSetup = new EventLogSetup();
-                logSetup.SetupCustomWindowsEventLogIfNotPresent(Options.EventlogName, Options.EventlogName);
+                logger.SetupCustomWindowsEventLogIfNotPresent(Options.EventlogName, Options.EventlogName);
                 return true;
             }
             catch

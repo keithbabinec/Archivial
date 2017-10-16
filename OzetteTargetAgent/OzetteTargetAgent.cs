@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.ServiceCore;
+﻿using OzetteLibrary.Logging;
+using OzetteLibrary.ServiceCore;
 using System.ServiceProcess;
 
 namespace OzetteTargetAgent
@@ -26,7 +27,7 @@ namespace OzetteTargetAgent
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            initHelper = new Initialization();
+            initHelper = new Initialization(new EventLogSetup());
             initHelper.Completed += InitHelper_Completed;
             initHelper.BeginStart(Properties.Settings.Default.Properties);
         }

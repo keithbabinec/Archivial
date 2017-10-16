@@ -41,9 +41,9 @@ namespace OzetteLibrary.ServiceCore
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            LogFilesDirectory = settings["LogFilesDirectory"]?.ToString();
-            EventlogName = settings["EventlogName"]?.ToString();
-            DatabaseFileName = settings["DatabaseFileName"]?.ToString();
+            LogFilesDirectory = (settings["LogFilesDirectory"] as SettingsProperty)?.DefaultValue.ToString();
+            EventlogName = (settings["EventlogName"] as SettingsProperty)?.DefaultValue.ToString();
+            DatabaseFileName = (settings["DatabaseFileName"] as SettingsProperty)?.DefaultValue.ToString();
         }
     }
 }

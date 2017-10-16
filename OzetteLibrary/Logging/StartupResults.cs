@@ -6,6 +6,11 @@
     public enum StartupResults
     {
         /// <summary>
+        /// Has not yet completed or has not been set.
+        /// </summary>
+        NotSet = -1,
+
+        /// <summary>
         /// Completed successfully.
         /// </summary>
         Success = 0,

@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.ServiceCore;
+﻿using OzetteLibrary.Logging;
+using OzetteLibrary.ServiceCore;
 using System.ServiceProcess;
 
 namespace OzetteClientAgent
@@ -26,7 +27,7 @@ namespace OzetteClientAgent
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            initHelper = new Initialization();
+            initHelper = new Initialization(new EventLogSetup());
             initHelper.Completed += InitHelper_Completed;
             initHelper.BeginStart(Properties.Settings.Default.Properties);
         }
@@ -43,7 +44,7 @@ namespace OzetteClientAgent
         /// <param name="e"></param>
         private void InitHelper_Completed(object sender, System.EventArgs e)
         {
-            if (initHelper.ResultCode == OzetteLibrary.Logging.StartupResults.Success)
+            if (initHelper.ResultCode == StartupResults.Success)
             {
                 // launch core
             }
