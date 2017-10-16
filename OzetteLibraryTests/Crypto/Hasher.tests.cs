@@ -3,7 +3,7 @@
 namespace OzetteLibraryTests.Crypto
 {
     [TestClass()]
-    public class Hasher
+    public class HasherTests
     {
         [TestMethod()]
         public void HashBytesToString()

@@ -1,0 +1,14 @@
+﻿[
+  {
+    "FolderPath": "C:\\documents",
+    "FileMatchFilter": "*",
+    "Priority": "High",
+    "RevisionCount": 3
+  },
+  {
+    "FolderPath": "C:\\music",
+    "FileMatchFilter": "*.mp3",
+    "Priority": "Medium",
+    "RevisionCount": 1
+  }
+]
