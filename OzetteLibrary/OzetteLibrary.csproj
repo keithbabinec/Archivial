@@ -50,6 +50,8 @@
     <Compile Include="Database\TargetDB.cs" />
     <Compile Include="Logging\EventLogSetup.cs" />
     <Compile Include="Models\ClientFile.cs" />
+    <Compile Include="Models\FileBackupPriority.cs" />
+    <Compile Include="Models\SourceLocation.cs" />
     <Compile Include="Models\SourceLocations.cs" />
     <Compile Include="Models\TargetCopyState.cs" />
     <Compile Include="Models\Target.cs" />
