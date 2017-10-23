@@ -64,6 +64,9 @@
     <Compile Include="Models\FileBackupPriority.cs" />
     <Compile Include="Models\ScanResults.cs" />
     <Compile Include="Models\SourceLocation.cs" />
+    <Compile Include="Models\Exceptions\SourceLocationInvalidFileMatchFilterException.cs" />
+    <Compile Include="Models\Exceptions\SourceLocationInvalidFolderPathException.cs" />
+    <Compile Include="Models\Exceptions\SourceLocationInvalidRevisionCountException.cs" />
     <Compile Include="Models\SourceLocations.cs" />
     <Compile Include="Models\TargetCopyState.cs" />
     <Compile Include="Models\Target.cs" />

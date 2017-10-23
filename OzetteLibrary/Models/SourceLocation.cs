@@ -1,4 +1,6 @@
-﻿namespace OzetteLibrary.Models
+﻿using OzetteLibrary.Models.Exceptions;
+
+namespace OzetteLibrary.Models
 {
     /// <summary>
     /// Describes a single requested source backup location.
@@ -27,5 +29,56 @@
         /// The number of revisions to store.
         /// </summary>
         public int RevisionCount { get; set; }
+
+        /// <summary>
+        /// Validates that a source configuration is usable.
+        /// </summary>
+        public void Validate()
+        {
+            ValidateFolderPath();
+            ValidateFileMatchFilter();
+            ValidateRevisionCount();
+        }
+
+        /// <summary>
+        /// Validates that the folder path is usable.
+        /// </summary>
+        private void ValidateFolderPath()
+        {
+            if (string.IsNullOrWhiteSpace(FolderPath))
+            {
+                throw new SourceLocationInvalidFolderPathException();
+            }
+            if (!System.IO.Directory.Exists(FolderPath))
+            {
+                throw new SourceLocationInvalidFolderPathException();
+            }
+        }
+
+        /// <summary>
+        /// Validates that a file match filter is usable.
+        /// </summary>
+        private void ValidateFileMatchFilter()
+        {
+            if (FileMatchFilter != null && FileMatchFilter.Length > 0)
+            {
+                if (!FileMatchFilter.Contains("*") && !FileMatchFilter.Contains("?"))
+                {
+                    // filter was provided, but has no wildcard.
+                    throw new SourceLocationInvalidFileMatchFilterException();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Validates that a file revision count setting is usable.
+        /// </summary>
+        private void ValidateRevisionCount()
+        {
+            if (RevisionCount <= 0)
+            {
+                throw new SourceLocationInvalidRevisionCountException();
+            }
+        }
     }
 }
