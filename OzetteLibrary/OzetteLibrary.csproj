@@ -49,6 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\Sources\Loader.cs" />
+    <Compile Include="Client\Sources\Scanner.cs" />
+    <Compile Include="Database\IDatabase.cs" />
+    <Compile Include="Database\MockBaseDB.cs" />
+    <Compile Include="Database\MockClientDB.cs" />
+    <Compile Include="Database\MockTargetDB.cs" />
     <Compile Include="Logging\MockEventLogSetup.cs" />
     <Compile Include="Logging\StartupResults.cs" />
     <Compile Include="Database\BaseDB.cs" />
@@ -57,6 +62,7 @@
     <Compile Include="Logging\EventLogSetup.cs" />
     <Compile Include="Models\ClientFile.cs" />
     <Compile Include="Models\FileBackupPriority.cs" />
+    <Compile Include="Models\ScanResults.cs" />
     <Compile Include="Models\SourceLocation.cs" />
     <Compile Include="Models\SourceLocations.cs" />
     <Compile Include="Models\TargetCopyState.cs" />

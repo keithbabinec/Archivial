@@ -5,7 +5,7 @@ namespace OzetteLibrary.Database
     /// <summary>
     /// Base functionality for client and target databases.
     /// </summary>
-    public class BaseDB
+    public class BaseDB : IDatabase
     {
         /// <summary>
         /// A reference to the database (interface).
