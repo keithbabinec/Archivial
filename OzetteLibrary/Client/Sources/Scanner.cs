@@ -27,6 +27,7 @@ namespace OzetteLibrary.Client.Sources
 
             Source = source;
             Database = database;
+            ScanStatusLock = new object();
         }
 
         /// <summary>
@@ -69,6 +70,20 @@ namespace OzetteLibrary.Client.Sources
         public event EventHandler<ScanResults> ScanCompleted;
 
         /// <summary>
+        /// Internal function to invoke the ScanCompleted event.
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnScanCompleted(ScanResults e)
+        {
+            ScanCompleted?.Invoke(this, e);
+            lock (ScanStatusLock)
+            {
+                ScanInProgress = false;
+                ScanStopRequested = false;
+            }
+        }
+
+        /// <summary>
         /// A reference to the database.
         /// </summary>
         private IDatabase Database { get; set; }
@@ -98,7 +113,8 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         private void Scan()
         {
-
+            Thread.Sleep(1000);
+            OnScanCompleted(new ScanResults());
         }
     }
 }
