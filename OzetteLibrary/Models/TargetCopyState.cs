@@ -5,6 +5,11 @@
     /// </summary>
     public class TargetCopyState
     {
+        public TargetCopyState(Target target)
+        {
+            TargetID = target.ID;
+        }
+
         /// <summary>
         /// Target this file is associated with.
         /// </summary>

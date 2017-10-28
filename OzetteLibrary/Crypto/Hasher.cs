@@ -1,6 +1,8 @@
 ﻿using System.Security.Cryptography;
 using System.IO;
 using System.Text;
+using OzetteLibrary.Models;
+using System;
 
 namespace OzetteLibrary.Crypto
 {
@@ -9,6 +11,32 @@ namespace OzetteLibrary.Crypto
     /// </summary>
     public class Hasher
     {
+        /// <summary>
+        /// Generates the default file hash for the specified priority.
+        /// </summary>
+        /// <param name="filePath">The full path to the file on disk.</param>
+        /// <param name="priority">FileBackupPriority</param>
+        /// <returns></returns>
+        public byte[] GenerateDefaultHash(string filePath, FileBackupPriority priority)
+        {
+            if (priority == FileBackupPriority.Low)
+            {
+                return Generate20ByteFileHash(filePath);
+            }
+            else if (priority == FileBackupPriority.Medium)
+            {
+                return Generate32ByteFileHash(filePath);
+            }
+            else if (priority == FileBackupPriority.High)
+            {
+                return Generate64ByteFileHash(filePath);
+            }
+            else
+            {
+                throw new NotImplementedException("Unexpected file backup priority type: " + priority);
+            }
+        }
+
         /// <summary>
         /// Generates a 20-byte long file hash.
         /// </summary>
@@ -70,6 +98,51 @@ namespace OzetteLibrary.Crypto
             }
             sb.Remove(sb.Length - 1, 1);
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Runs a comparison to see if two hashes are the same.
+        /// </summary>
+        /// <param name="hash1"></param>
+        /// <param name="hash2"></param>
+        /// <returns></returns>
+        public bool TwoHashesAreTheSame(byte[] hash1, byte[] hash2)
+        {
+            if (hash1.Length != hash2.Length)
+                return false;
+
+            for (int i = 0; i < hash1.Length; i++)
+            {
+                if (hash1[i] != hash2[i])
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Gets the default hash algorithm used for a specified priority type.
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        public HashAlgorithmName GetDefaultHashAlgorithm(FileBackupPriority priority)
+        {
+            if (priority == FileBackupPriority.Low)
+            {
+                return HashAlgorithmName.SHA1;
+            }
+            else if (priority == FileBackupPriority.Medium)
+            {
+                return HashAlgorithmName.SHA256;
+            }
+            else if (priority == FileBackupPriority.High)
+            {
+                return HashAlgorithmName.SHA512;
+            }
+            else
+            {
+                throw new NotImplementedException("Unexpected file backup priority type: " + priority);
+            }
         }
     }
 }

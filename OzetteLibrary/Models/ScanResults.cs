@@ -31,5 +31,10 @@ namespace OzetteLibrary.Models
         /// The total number of all file bytes found.
         /// </summary>
         public ulong TotalBytesFound { get; set; }
+
+        /// <summary>
+        /// The total number of scanned directories.
+        /// </summary>
+        public int ScannedDirectoriesCount { get; set; }
     }
 }

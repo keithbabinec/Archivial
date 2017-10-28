@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
 
 namespace OzetteLibrary.Models
 {
@@ -12,6 +13,18 @@ namespace OzetteLibrary.Models
     public class ClientFile : BackupFile
     {
         /// <summary>
+        /// Constructor that accepts a FileInfo object
+        /// </summary>
+        /// <param name="fileInfo"></param>
+        public ClientFile(FileInfo fileInfo)
+        {
+            FileID = Guid.NewGuid();
+            Filename = fileInfo.Name;
+            FullSourcePath = fileInfo.FullName;
+            FileSizeBytes = Convert.ToUInt64(fileInfo.Length);
+        }
+
+        /// <summary>
         /// The last time this file was scanned in the backup source.
         /// </summary>
         public DateTime? LastChecked { get; set; }
@@ -23,6 +36,25 @@ namespace OzetteLibrary.Models
         /// The dictionary key is the target ID.
         /// The dictionary value is the copy state.
         /// </remarks>
-        public ConcurrentDictionary<int, TargetCopyState> CopyState { get; set; }
+        public Dictionary<int, TargetCopyState> CopyState { get; set; }
+
+        /// <summary>
+        /// Resets existing copy progress state.
+        /// </summary>
+        /// <param name="targets"></param>
+        public void ResetCopyState(Targets targets)
+        {
+            if (targets == null || targets.Count == 0)
+            {
+                throw new ArgumentException(nameof(targets) + " argument cannot be null or empty.");
+            }
+
+            CopyState = new Dictionary<int, TargetCopyState>();
+
+            foreach (var target in targets)
+            {
+                CopyState.Add(target.ID, new TargetCopyState(target));
+            }
+        }
     }
 }

@@ -40,7 +40,13 @@ namespace OzetteLibraryTests.Client.Sources
         {
             OzetteLibrary.Client.Sources.Scanner scanner =
                 new OzetteLibrary.Client.Sources.Scanner(
-                    new OzetteLibrary.Models.SourceLocation(),
+                    new OzetteLibrary.Models.SourceLocation()
+                    {
+                        FolderPath = Environment.CurrentDirectory,
+                        FileMatchFilter = "*.*",
+                        Priority = OzetteLibrary.Models.FileBackupPriority.Low,
+                        RevisionCount = 1
+                    },
                     new OzetteLibrary.Database.Mock.MockClientDatabase());
 
             scanner.BeginScan();
@@ -52,7 +58,13 @@ namespace OzetteLibraryTests.Client.Sources
         {
             OzetteLibrary.Client.Sources.Scanner scanner =
                 new OzetteLibrary.Client.Sources.Scanner(
-                    new OzetteLibrary.Models.SourceLocation(),
+                    new OzetteLibrary.Models.SourceLocation()
+                    {
+                        FolderPath = Environment.CurrentDirectory,
+                        FileMatchFilter = "*.*",
+                        Priority = OzetteLibrary.Models.FileBackupPriority.Low,
+                        RevisionCount = 1
+                    },
                     new OzetteLibrary.Database.Mock.MockClientDatabase());
 
             var signalScanCompleteEvent = new AutoResetEvent(false);

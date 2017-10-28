@@ -1,6 +1,10 @@
-﻿using OzetteLibrary.Database;
+﻿using OzetteLibrary.Crypto;
+using OzetteLibrary.Database;
 using OzetteLibrary.Models;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
 using System.Threading;
 
 namespace OzetteLibrary.Client.Sources
@@ -14,7 +18,7 @@ namespace OzetteLibrary.Client.Sources
         /// Default constructor that takes a <c>SourceLocation</c> and <c>IDatabase</c> as input.
         /// </summary>
         /// <param name="source"></param>
-        public Scanner(SourceLocation source, IDatabase database)
+        public Scanner(SourceLocation source, IClientDatabase database)
         {
             if (source == null)
             {
@@ -28,6 +32,8 @@ namespace OzetteLibrary.Client.Sources
             Source = source;
             Database = database;
             ScanStatusLock = new object();
+            Hasher = new Hasher();
+            Results = new ScanResults();
         }
 
         /// <summary>
@@ -86,12 +92,17 @@ namespace OzetteLibrary.Client.Sources
         /// <summary>
         /// A reference to the database.
         /// </summary>
-        private IDatabase Database { get; set; }
+        private IClientDatabase Database { get; set; }
 
         /// <summary>
         /// A reference to the Source details.
         /// </summary>
         private SourceLocation Source { get; set; }
+
+        /// <summary>
+        /// A reference to the file hashing helper.
+        /// </summary>
+        private Hasher Hasher { get; set; }
 
         /// <summary>
         /// Flag to indicate if the scan is already in progress.
@@ -109,12 +120,76 @@ namespace OzetteLibrary.Client.Sources
         private object ScanStatusLock { get; set; }
 
         /// <summary>
+        /// The file scan results.
+        /// </summary>
+        private ScanResults Results { get; set; }
+
+        /// <summary>
         /// Performs a scan of the source location.
         /// </summary>
         private void Scan()
         {
-            Thread.Sleep(1000);
-            OnScanCompleted(new ScanResults());
+            var directoriesToScan = new Queue<DirectoryInfo>();
+            directoriesToScan.Enqueue(new DirectoryInfo(Source.FolderPath));
+            
+            while (directoriesToScan.Count > 0)
+            {
+                var currentDirectory = directoriesToScan.Dequeue();
+                var subDirs = currentDirectory.EnumerateDirectories();
+
+                Results.ScannedDirectoriesCount++;
+
+                foreach (var subDir in subDirs)
+                {
+                    directoriesToScan.Enqueue(subDir);
+                }
+
+                var foundFiles = currentDirectory.EnumerateFiles(Source.FileMatchFilter);
+
+                foreach (var foundFile in foundFiles)
+                {
+                    AddOrUpdateScannedFile(
+                        foundFile,
+                        Hasher.GenerateDefaultHash(foundFile.FullName, Source.Priority),
+                        Hasher.GetDefaultHashAlgorithm(Source.Priority)
+                    );
+                }
+            }
+
+            OnScanCompleted(Results);
+        }
+
+        /// <summary>
+        /// Adds or updates a scanned file into the database.
+        /// </summary>
+        /// <param name="fileInfo">FileInfo details</param>
+        /// <param name="fileHash">The computed hash</param>
+        /// <param name="algorithm">Hash algorithm used to compute the hash</param>
+        private void AddOrUpdateScannedFile(FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
+        {
+            ClientFile clientFile = Database.GetClientFile(fileInfo.FullName);
+            clientFile.LastChecked = DateTime.Now;
+
+            if (clientFile == null)
+            {
+                // brand new file
+                clientFile = new ClientFile(fileInfo);
+                clientFile.FileHash = fileHash;
+                clientFile.HashAlgorithmType = algorithm;
+                clientFile.ResetCopyState(Database.GetTargets());
+
+                Database.AddClientFile(clientFile);
+            }
+            else
+            {
+                if (Hasher.TwoHashesAreTheSame(fileHash, clientFile.FileHash) == false)
+                {
+                    // existing file updated
+                    clientFile.ResetCopyState(Database.GetTargets());
+                }
+
+                Database.UpdateClientFile(clientFile);
+            }
         }
     }
 }
