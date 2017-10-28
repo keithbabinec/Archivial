@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Security.Cryptography;
 
 namespace OzetteLibraryTests.Crypto
 {
@@ -275,6 +276,45 @@ namespace OzetteLibraryTests.Crypto
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
 
             byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", 0);
+        }
+
+        [TestMethod()]
+        public void HasherGetDefaultHashAlgorithmReturnsCorrectAlgorithm1()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Low);
+
+            Assert.AreEqual(HashAlgorithmName.SHA1, actual);
+        }
+
+        [TestMethod()]
+        public void HasherGetDefaultHashAlgorithmReturnsCorrectAlgorithm2()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium);
+
+            Assert.AreEqual(HashAlgorithmName.SHA256, actual);
+        }
+
+        [TestMethod()]
+        public void HasherGetDefaultHashAlgorithmReturnsCorrectAlgorithm3()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.High);
+
+            Assert.AreEqual(HashAlgorithmName.SHA512, actual);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void HasherGetDefaultHashAlgorithmThrowsOnInvalidBackupPriority()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(0);
         }
     }
 }
