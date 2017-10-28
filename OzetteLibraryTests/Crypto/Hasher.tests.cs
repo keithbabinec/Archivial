@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace OzetteLibraryTests.Crypto
 {
@@ -235,6 +236,45 @@ namespace OzetteLibraryTests.Crypto
                                     219, 107, 45, 136, 215 };
 
             Assert.IsTrue(h.TwoHashesAreTheSame(actualHash, expectedHash));
+        }
+
+        [TestMethod()]
+        public void HasherGenerateDefaultHashReturnsCorrectLength1()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Models.FileBackupPriority.Low);
+
+            Assert.AreEqual(20, actualHash.Length);
+        }
+
+        [TestMethod()]
+        public void HasherGenerateDefaultHashReturnsCorrectLength2()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Models.FileBackupPriority.Medium);
+
+            Assert.AreEqual(32, actualHash.Length);
+        }
+
+        [TestMethod()]
+        public void HasherGenerateDefaultHashReturnsCorrectLength3()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Models.FileBackupPriority.High);
+
+            Assert.AreEqual(64, actualHash.Length);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void HasherGenerateDefaultHashThrowsOnInvalidBackupPriority()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher();
+
+            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", 0);
         }
     }
 }
