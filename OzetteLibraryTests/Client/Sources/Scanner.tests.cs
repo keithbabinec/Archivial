@@ -12,7 +12,7 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerConstructorThrowsExceptionWhenNoSourceLocationIsProvided()
         {
             OzetteLibrary.Client.Sources.Scanner scanner = 
-                new OzetteLibrary.Client.Sources.Scanner(null, new OzetteLibrary.Database.MockClientDB());
+                new OzetteLibrary.Client.Sources.Scanner(null, new OzetteLibrary.Database.Mock.MockClientDatabase());
         }
 
         [TestMethod()]
@@ -29,7 +29,7 @@ namespace OzetteLibraryTests.Client.Sources
             OzetteLibrary.Client.Sources.Scanner scanner =
                 new OzetteLibrary.Client.Sources.Scanner(
                     new OzetteLibrary.Models.SourceLocation(), 
-                    new OzetteLibrary.Database.MockClientDB());
+                    new OzetteLibrary.Database.Mock.MockClientDatabase());
 
             Assert.IsTrue(true);
         }
@@ -41,7 +41,7 @@ namespace OzetteLibraryTests.Client.Sources
             OzetteLibrary.Client.Sources.Scanner scanner =
                 new OzetteLibrary.Client.Sources.Scanner(
                     new OzetteLibrary.Models.SourceLocation(),
-                    new OzetteLibrary.Database.MockClientDB());
+                    new OzetteLibrary.Database.Mock.MockClientDatabase());
 
             scanner.BeginScan();
             scanner.BeginScan();
@@ -53,7 +53,7 @@ namespace OzetteLibraryTests.Client.Sources
             OzetteLibrary.Client.Sources.Scanner scanner =
                 new OzetteLibrary.Client.Sources.Scanner(
                     new OzetteLibrary.Models.SourceLocation(),
-                    new OzetteLibrary.Database.MockClientDB());
+                    new OzetteLibrary.Database.Mock.MockClientDatabase());
 
             var signalScanCompleteEvent = new AutoResetEvent(false);
 
