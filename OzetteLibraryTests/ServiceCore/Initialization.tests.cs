@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OzetteLibrary.Logging;
+using OzetteLibrary.Logging.Mock;
 using System;
 using System.Configuration;
 using System.Threading;
@@ -20,14 +20,14 @@ namespace OzetteLibraryTests.ServiceCore
         [ExpectedException(typeof(ArgumentNullException))]
         public void ServiceCoreInitializationBeginStartThrowsWhenNullPropertiesAreSent()
         {
-            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(new MockEventLogSetup());
+            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(new MockLogger());
             i.BeginStart(null);
         }
 
         [TestMethod()]
         public void ServiceCoreInitializationCompletedEventFires()
         {
-            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(new MockEventLogSetup());
+            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(new MockLogger());
 
             var signalCompleteEvent = new AutoResetEvent(false);
 
@@ -42,7 +42,7 @@ namespace OzetteLibraryTests.ServiceCore
         [TestMethod()]
         public void ServiceCoreInitializationCorrectlyParsesOptionsIntoObject()
         {
-            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(new MockEventLogSetup());
+            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(new MockLogger());
 
             var signalCompleteEvent = new AutoResetEvent(false);
 
@@ -66,7 +66,7 @@ namespace OzetteLibraryTests.ServiceCore
         [TestMethod()]
         public void ServiceCoreInitializationCorrectlyParsesPartialOptionsIntoObject()
         {
-            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(new MockEventLogSetup());
+            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(new MockLogger());
 
             var signalCompleteEvent = new AutoResetEvent(false);
 
@@ -89,7 +89,7 @@ namespace OzetteLibraryTests.ServiceCore
         [TestMethod()]
         public void ServiceCoreInitializationHandlesEmptySettingsPropertyCollection()
         {
-            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(new MockEventLogSetup());
+            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(new MockLogger());
 
             var signalCompleteEvent = new AutoResetEvent(false);
 
@@ -110,7 +110,7 @@ namespace OzetteLibraryTests.ServiceCore
         [TestMethod()]
         public void ServiceCoreInitializationCallsEventLogCreationMock()
         {
-            var mock = new MockEventLogSetup();
+            var mock = new MockLogger();
             OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(mock);
 
             var signalCompleteEvent = new AutoResetEvent(false);
@@ -129,7 +129,7 @@ namespace OzetteLibraryTests.ServiceCore
         [TestMethod()]
         public void ServiceCoreInitializationCallsLogFolderOnDiskCreationMock()
         {
-            var mock = new MockEventLogSetup();
+            var mock = new MockLogger();
             OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(mock);
 
             var signalCompleteEvent = new AutoResetEvent(false);
