@@ -31,6 +31,19 @@ namespace OzetteLibrary.Models
         public int RevisionCount { get; set; }
 
         /// <summary>
+        /// Formats the Source Location string properties.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("Path='{0}', Filter='{1}', Priority='{2}', RevisionCount='{3}'",
+                FolderPath,
+                FileMatchFilter == null ? "(none)" : FileMatchFilter,
+                Priority,
+                RevisionCount);
+        }
+
+        /// <summary>
         /// Validates that a source configuration is usable.
         /// </summary>
         public void Validate()

@@ -60,6 +60,8 @@ namespace OzetteLibrary.Client.Sources
                 ScanStopRequested = false;
             }
 
+            Logger.WriteMessage(string.Format("Starting scan for source: {0}", Source.ToString()));
+
             Thread scanThread = new Thread(() => Scan());
             scanThread.Start();
         }
@@ -148,9 +150,10 @@ namespace OzetteLibrary.Client.Sources
             while (directoriesToScan.Count > 0)
             {
                 var currentDirectory = directoriesToScan.Dequeue();
-                var subDirs = currentDirectory.EnumerateDirectories();
 
-                Results.ScannedDirectoriesCount++;
+                Logger.WriteMessage(string.Format("Scanning directory: {0}", currentDirectory.FullName));
+
+                var subDirs = currentDirectory.EnumerateDirectories();
 
                 foreach (var subDir in subDirs)
                 {
@@ -161,6 +164,8 @@ namespace OzetteLibrary.Client.Sources
 
                 foreach (var foundFile in foundFiles)
                 {
+                    Logger.WriteMessage(string.Format("Scanning file: {0}", foundFile.FullName));
+
                     AddOrUpdateScannedFile(
                         foundFile,
                         Hasher.GenerateDefaultHash(foundFile.FullName, Source.Priority),
@@ -169,7 +174,21 @@ namespace OzetteLibrary.Client.Sources
                 }
             }
 
+            WriteScanResultsToLog();
             OnScanCompleted(Results);
+        }
+
+        /// <summary>
+        /// Writes the results of the scan to the log.
+        /// </summary>
+        private void WriteScanResultsToLog()
+        {
+            Logger.WriteMessage(string.Format("Completed scan of source: {0}", Source.ToString()));
+            Logger.WriteMessage(string.Format("Scan results: ScannedDirectoriesCount={0}", Results.ScannedDirectoriesCount));
+            Logger.WriteMessage(string.Format("Scan results: TotalFilesFound={0}", Results.TotalFilesFound));
+            Logger.WriteMessage(string.Format("Scan results: TotalBytesFound={0}", Results.TotalBytesFound));
+            Logger.WriteMessage(string.Format("Scan results: NewOrUpdatedFilesFound={0}", Results.NewOrUpdatedFilesFound));
+            Logger.WriteMessage(string.Format("Scan results: NewOrUpdatedBytesFound={0}", Results.NewOrUpdatedBytesFound));
         }
 
         /// <summary>
@@ -185,6 +204,8 @@ namespace OzetteLibrary.Client.Sources
 
             if (clientFile == null)
             {
+                Logger.WriteMessage(string.Format("Scanned file ({0}) is new.", fileInfo.Name));
+
                 // brand new file
                 clientFile = new ClientFile(fileInfo);
                 clientFile.FileHash = fileHash;
@@ -198,7 +219,12 @@ namespace OzetteLibrary.Client.Sources
                 if (Hasher.TwoHashesAreTheSame(fileHash, clientFile.FileHash) == false)
                 {
                     // existing file updated
+                    Logger.WriteMessage(string.Format("Scanned file ({0}) is updated.", fileInfo.Name));
                     clientFile.ResetCopyState(Database.GetTargets());
+                }
+                else
+                {
+                    Logger.WriteMessage(string.Format("Scanned file ({0}) is unchanged since previous check.", fileInfo.Name));
                 }
 
                 Database.UpdateClientFile(clientFile);

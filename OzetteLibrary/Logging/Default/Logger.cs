@@ -52,5 +52,14 @@ namespace OzetteLibrary.Logging.Default
                 Directory.CreateDirectory(path);
             }
         }
+
+        /// <summary>
+        /// Writes an informational message to the log file on disk.
+        /// </summary>
+        /// <param name="message"></param>
+        public void WriteMessage(string message)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

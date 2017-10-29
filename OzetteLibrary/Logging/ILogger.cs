@@ -17,5 +17,11 @@
         /// </summary>
         /// <param name="path"></param>
         void SetupLogsFolderIfNotPresent(string path);
+
+        /// <summary>
+        /// Writes an informational message to the log file on disk.
+        /// </summary>
+        /// <param name="message"></param>
+        void WriteMessage(string message);
     }
 }

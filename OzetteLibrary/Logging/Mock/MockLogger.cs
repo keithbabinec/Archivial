@@ -1,4 +1,6 @@
-﻿namespace OzetteLibrary.Logging.Mock
+﻿using System;
+
+namespace OzetteLibrary.Logging.Mock
 {
     /// <summary>
     /// Contains mock functionality for logging and log setup.
@@ -32,6 +34,15 @@
         public void SetupLogsFolderIfNotPresent(string path)
         {
             SetupLogsFolderIfNotPresentHasBeenCalled = true;
+        }
+
+        /// <summary>
+        /// Writes an informational message to the log file on disk.
+        /// </summary>
+        /// <param name="message"></param>
+        public void WriteMessage(string message)
+        {
+            throw new NotImplementedException();
         }
     }
 }
