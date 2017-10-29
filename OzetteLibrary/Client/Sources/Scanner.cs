@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.Crypto;
 using OzetteLibrary.Database;
+using OzetteLibrary.Logging;
 using OzetteLibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,12 @@ namespace OzetteLibrary.Client.Sources
     public class Scanner
     {
         /// <summary>
-        /// Default constructor that takes a <c>SourceLocation</c> and <c>IDatabase</c> as input.
+        /// Default constructor that takes a <c>SourceLocation</c>, <c>IDatabase</c>, and <c>ILogger</c> as input.
         /// </summary>
         /// <param name="source"></param>
-        public Scanner(SourceLocation source, IClientDatabase database)
+        /// <param name="database"></param>
+        /// <param name="logger"></param>
+        public Scanner(SourceLocation source, IClientDatabase database, ILogger logger)
         {
             if (source == null)
             {
@@ -28,9 +31,14 @@ namespace OzetteLibrary.Client.Sources
             {
                 throw new ArgumentNullException(nameof(database));
             }
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
 
             Source = source;
             Database = database;
+            Logger = logger;
             ScanStatusLock = new object();
             Hasher = new Hasher();
             Results = new ScanResults();
@@ -93,6 +101,11 @@ namespace OzetteLibrary.Client.Sources
         /// A reference to the database.
         /// </summary>
         private IClientDatabase Database { get; set; }
+
+        /// <summary>
+        /// A reference to the logger.
+        /// </summary>
+        private ILogger Logger { get; set; }
 
         /// <summary>
         /// A reference to the Source details.
