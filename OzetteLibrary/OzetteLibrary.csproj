@@ -57,6 +57,9 @@
     <Compile Include="Database\LiteDB\LiteDBTargetDatabase.cs" />
     <Compile Include="Database\Mock\MockClientDatabase.cs" />
     <Compile Include="Database\Mock\MockTargetDatabase.cs" />
+    <Compile Include="Logging\Default\Logger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\Mock\MockLogger.cs" />
     <Compile Include="Models\StartupResults.cs" />
     <Compile Include="Models\ClientFile.cs" />
     <Compile Include="Models\FileBackupPriority.cs" />
@@ -78,7 +81,6 @@
     <Compile Include="ServiceCore\ServiceOptions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Logging\" />
     <Folder Include="Target\" />
   </ItemGroup>
   <ItemGroup>

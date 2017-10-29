@@ -2,6 +2,7 @@
 using System.Configuration;
 using OzetteLibrary.Logging;
 using System.Threading;
+using OzetteLibrary.Models;
 
 namespace OzetteLibrary.ServiceCore
 {
@@ -28,7 +29,7 @@ namespace OzetteLibrary.ServiceCore
         /// <summary>
         /// Stores an instance of the logging setup class.
         /// </summary>
-        private IEventLogSetup Logger { get; set; }
+        private ILogger Logger { get; set; }
 
         /// <summary>
         /// Internal function to invoke the Completed event.
@@ -43,7 +44,7 @@ namespace OzetteLibrary.ServiceCore
         /// Main constructor
         /// </summary>
         /// <param name="logger"></param>
-        public Initialization(IEventLogSetup logger)
+        public Initialization(ILogger logger)
         {
             if (logger == null)
             {
@@ -121,7 +122,7 @@ namespace OzetteLibrary.ServiceCore
         /// <param name="options"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        private bool SafeSetupLogsFolder(ServiceOptions options, IEventLogSetup logger)
+        private bool SafeSetupLogsFolder(ServiceOptions options, ILogger logger)
         {
             try
             {
@@ -142,7 +143,7 @@ namespace OzetteLibrary.ServiceCore
         /// <param name="options"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        private bool SafeSetupCustomEventLog(ServiceOptions options, IEventLogSetup logger)
+        private bool SafeSetupCustomEventLog(ServiceOptions options, ILogger logger)
         {
             try
             {
