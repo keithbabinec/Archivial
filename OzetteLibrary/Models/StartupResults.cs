@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Logging
+﻿namespace OzetteLibrary.Models
 {
     /// <summary>
     /// Describes possible startup/initialization results.

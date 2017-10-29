@@ -57,9 +57,7 @@
     <Compile Include="Database\LiteDB\LiteDBTargetDatabase.cs" />
     <Compile Include="Database\Mock\MockClientDatabase.cs" />
     <Compile Include="Database\Mock\MockTargetDatabase.cs" />
-    <Compile Include="Logging\MockEventLogSetup.cs" />
-    <Compile Include="Logging\StartupResults.cs" />
-    <Compile Include="Logging\EventLogSetup.cs" />
+    <Compile Include="Models\StartupResults.cs" />
     <Compile Include="Models\ClientFile.cs" />
     <Compile Include="Models\FileBackupPriority.cs" />
     <Compile Include="Models\ScanResults.cs" />
@@ -76,11 +74,11 @@
     <Compile Include="Crypto\Hasher.cs" />
     <Compile Include="Models\BackupFile.cs" />
     <Compile Include="Models\FileStatus.cs" />
-    <Compile Include="Logging\IEventLogSetup.cs" />
     <Compile Include="ServiceCore\Initialization.cs" />
     <Compile Include="ServiceCore\ServiceOptions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Logging\" />
     <Folder Include="Target\" />
   </ItemGroup>
   <ItemGroup>
