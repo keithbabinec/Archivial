@@ -19,6 +19,36 @@ namespace OzetteLibrary.Logging.Mock
         public bool SetupLogsFolderIfNotPresentHasBeenCalled = false;
 
         /// <summary>
+        /// Flag to set when the mock runs.
+        /// </summary>
+        public bool WriteTraceMessageHasBeenCalled = false;
+
+        /// <summary>
+        /// Flag to set when the mock runs.
+        /// </summary>
+        public bool WriteTraceWarningHasBeenCalled = false;
+
+        /// <summary>
+        /// Flag to set when the mock runs.
+        /// </summary>
+        public bool WriteTraceErrorHasBeenCalled = false;
+
+        /// <summary>
+        /// Flag to set when the mock runs.
+        /// </summary>
+        public bool WriteTraceErrorWithExceptionHasBeenCalled = false;
+
+        /// <summary>
+        /// Flag to set when the mock runs.
+        /// </summary>
+        public bool WriteSystemEventHasBeenCalled = false;
+
+        /// <summary>
+        /// The last exception that has been logged.
+        /// </summary>
+        public Exception ExceptionWritten = null;
+
+        /// <summary>
         /// Ensures the custom windows event log is present.
         /// </summary>
         /// <param name="logSource"></param>
@@ -47,7 +77,7 @@ namespace OzetteLibrary.Logging.Mock
         /// <param name="message"></param>
         public void WriteTraceMessage(string message)
         {
-            throw new NotImplementedException();
+            WriteTraceMessageHasBeenCalled = true;
         }
 
         /// <summary>
@@ -60,7 +90,7 @@ namespace OzetteLibrary.Logging.Mock
         /// <param name="message"></param>
         public void WriteTraceWarning(string message)
         {
-            throw new NotImplementedException();
+            WriteTraceWarningHasBeenCalled = true;
         }
 
         /// <summary>
@@ -73,7 +103,7 @@ namespace OzetteLibrary.Logging.Mock
         /// <param name="message"></param>
         public void WriteTraceError(string message)
         {
-            throw new NotImplementedException();
+            WriteTraceErrorHasBeenCalled = true;
         }
 
         /// <summary>
@@ -87,7 +117,8 @@ namespace OzetteLibrary.Logging.Mock
         /// <param name="exception"></param>
         public void WriteTraceError(string message, Exception exception)
         {
-            throw new NotImplementedException();
+            WriteTraceErrorWithExceptionHasBeenCalled = true;
+            ExceptionWritten = exception;
         }
 
         /// <summary>
@@ -103,7 +134,7 @@ namespace OzetteLibrary.Logging.Mock
         /// <param name="eventID"></param>
         public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID)
         {
-            throw new NotImplementedException();
+            WriteSystemEventHasBeenCalled = true;
         }
     }
 }

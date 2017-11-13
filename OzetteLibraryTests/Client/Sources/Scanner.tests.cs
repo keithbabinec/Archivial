@@ -90,5 +90,33 @@ namespace OzetteLibraryTests.Client.Sources
 
             Assert.IsTrue(scanCompletedSignaled);
         }
+
+        [TestMethod()]
+        public void TraceMessagesAreWrittenToTheTraceLogDuringScanning()
+        {
+            var logger = new MockLogger();
+
+            OzetteLibrary.Client.Sources.Scanner scanner =
+                new OzetteLibrary.Client.Sources.Scanner(
+                    new SourceLocation()
+                    {
+                        FolderPath = Environment.CurrentDirectory,
+                        FileMatchFilter = "*.*",
+                        Priority = FileBackupPriority.Low,
+                        RevisionCount = 1
+                    },
+                    new MockClientDatabase(),
+                    logger);
+
+            var signalScanCompleteEvent = new AutoResetEvent(false);
+
+            scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
+            scanner.BeginScan();
+
+            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(10));
+
+            Assert.IsTrue(scanCompletedSignaled);
+            Assert.IsTrue(logger.WriteTraceMessageHasBeenCalled);
+        }
     }
 }
