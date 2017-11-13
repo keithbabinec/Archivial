@@ -19,7 +19,7 @@ namespace OzetteLibrary.Logging
         /// Ensures the detailed logging files folder is present on disk.
         /// </summary>
         /// <param name="path"></param>
-        void SetupLogsFolderIfNotPresent(string path);
+        void SetupTraceLogsFolderIfNotPresent(string path);
 
         /// <summary>
         /// Writes an informational message to the trace log file on disk.
@@ -74,5 +74,18 @@ namespace OzetteLibrary.Logging
         /// <param name="severity"></param>
         /// <param name="eventID"></param>
         void WriteSystemEvent(string message, EventLogEntryType severity, int eventID);
+
+        /// <summary>
+        /// Writes a system-level error message with exception.
+        /// </summary>
+        /// <remarks>
+        /// This logging method is used for the most important high-level events the user should be aware of.
+        /// These events are logged into the Windows Event log instead of the trace debug log files, and would be
+        /// used for logging exceptions, backup completed/sync status, configuration issues, etc.
+        /// </remarks>
+        /// <param name="message"></param>
+        /// <param name="exception"></param>
+        /// <param name="eventID"></param>
+        void WriteSystemEvent(string message, Exception exception, int eventID);
     }
 }

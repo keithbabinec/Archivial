@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace OzetteLibrary.Logging.Default
 {
@@ -34,13 +35,16 @@ namespace OzetteLibrary.Logging.Default
             {
                 EventLog.CreateEventSource(logSource, logName);
             }
+
+            LogSource = logSource;
+            LogName = logName;
         }
 
         /// <summary>
-        /// Ensures the detailed logging files folder is present on disk.
+        /// Ensures the detailed trace logging files folder is present on disk.
         /// </summary>
         /// <param name="path"></param>
-        public void SetupLogsFolderIfNotPresent(string path)
+        public void SetupTraceLogsFolderIfNotPresent(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -51,6 +55,8 @@ namespace OzetteLibrary.Logging.Default
             {
                 Directory.CreateDirectory(path);
             }
+
+            TraceLogFolderPath = path.TrimEnd('\\');
         }
 
         /// <summary>
@@ -63,7 +69,15 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="message"></param>
         public void WriteTraceMessage(string message)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
+            }
+
+            var logFilePath = GetCurrentTraceLogFilePath();
+            var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Information);
+
+            File.AppendAllText(logFilePath, loggableMessage);
         }
 
         /// <summary>
@@ -76,7 +90,15 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="message"></param>
         public void WriteTraceWarning(string message)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
+            }
+
+            var logFilePath = GetCurrentTraceLogFilePath();
+            var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Warning);
+
+            File.AppendAllText(logFilePath, loggableMessage);
         }
 
         /// <summary>
@@ -89,7 +111,15 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="message"></param>
         public void WriteTraceError(string message)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
+            }
+
+            var logFilePath = GetCurrentTraceLogFilePath();
+            var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Error);
+
+            File.AppendAllText(logFilePath, loggableMessage);
         }
 
         /// <summary>
@@ -103,7 +133,19 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="exception"></param>
         public void WriteTraceError(string message, Exception exception)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
+            }
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
+            var logFilePath = GetCurrentTraceLogFilePath();
+            var loggableMessage = GenerateExceptionLoggingMessage(message, exception);
+
+            File.AppendAllText(logFilePath, loggableMessage);
         }
 
         /// <summary>
@@ -119,7 +161,113 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="eventID"></param>
         public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
+            }
+
+            var loggableMessage = PrependMessageWithDateAndSeverity(message, severity);
+            EventLog.WriteEntry(LogSource, loggableMessage, severity, eventID);
+        }
+
+        /// <summary>
+        /// Writes a system-level error message with exception.
+        /// </summary>
+        /// <remarks>
+        /// This logging method is used for the most important high-level events the user should be aware of.
+        /// These events are logged into the Windows Event log instead of the trace debug log files, and would be
+        /// used for logging exceptions, backup completed/sync status, configuration issues, etc.
+        /// </remarks>
+        /// <param name="message"></param>
+        /// <param name="exception"></param>
+        /// <param name="eventID"></param>
+        public void WriteSystemEvent(string message, Exception exception, int eventID)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
+            }
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
+            var loggableMessage = GenerateExceptionLoggingMessage(message, exception);
+            EventLog.WriteEntry(LogSource, loggableMessage, EventLogEntryType.Error, eventID);
+        }
+        
+        /// <summary>
+        /// The trace log folder path.
+        /// </summary>
+        private string TraceLogFolderPath { get; set; }
+
+        /// <summary>
+        /// Eventlog source.
+        /// </summary>
+        private string LogSource { get; set; }
+
+        /// <summary>
+        /// Eventlog name.
+        /// </summary>
+        private string LogName { get; set; }
+
+        /// <summary>
+        /// Returns the full file name/path of the current tracelog file.
+        /// </summary>
+        /// <returns></returns>
+        private string GetCurrentTraceLogFilePath()
+        {
+            return string.Format("{0}\\{1}_{2}.log",
+                TraceLogFolderPath,
+                "TraceLog",
+                DateTime.Now.ToString("yyyy_MM_dd"));
+        }
+
+        /// <summary>
+        /// Prepends an event message with a date and severity level.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="severity"></param>
+        /// <returns></returns>
+        private string PrependMessageWithDateAndSeverity(string message, EventLogEntryType severity)
+        {
+            return string.Format("{0} [{1}]: {2}",
+                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                severity.ToString(),
+                message
+            );
+        }
+
+        /// <summary>
+        /// Generates an event log message with exception details.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="exception"></param>
+        /// <returns></returns>
+        private string GenerateExceptionLoggingMessage(string message, Exception exception)
+        {
+            StringBuilder r = new StringBuilder();
+
+            r.AppendLine(string.Format("{0} [{1}]: {2}",
+                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                EventLogEntryType.Error.ToString(),
+                message
+            ));
+
+            r.AppendLine(string.Format("Exception Message: {0}", exception.Message));
+            r.AppendLine(string.Format("Exception Type: {0}", exception.GetType().FullName));
+            r.AppendLine(string.Format("Exception Stack: {0}", exception.StackTrace));
+
+            while (exception.InnerException != null)
+            {
+                exception = exception.InnerException;
+
+                r.AppendLine(string.Format("Inner Exception Message: {0}", exception.Message));
+                r.AppendLine(string.Format("Inner Exception Type: {0}", exception.GetType().FullName));
+                r.AppendLine(string.Format("Inner Exception Stack: {0}", exception.StackTrace));
+            }
+
+            return r.ToString();
         }
     }
 }

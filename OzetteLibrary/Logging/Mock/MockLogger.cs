@@ -44,6 +44,11 @@ namespace OzetteLibrary.Logging.Mock
         public bool WriteSystemEventHasBeenCalled = false;
 
         /// <summary>
+        /// Flag to set when the mock runs.
+        /// </summary>
+        public bool WriteSystemEventWithExceptionHasBeenCalled = false;
+
+        /// <summary>
         /// The last exception that has been logged.
         /// </summary>
         public Exception ExceptionWritten = null;
@@ -62,7 +67,7 @@ namespace OzetteLibrary.Logging.Mock
         /// Ensures the detailed logging files folder is present on disk.
         /// </summary>
         /// <param name="path"></param>
-        public void SetupLogsFolderIfNotPresent(string path)
+        public void SetupTraceLogsFolderIfNotPresent(string path)
         {
             SetupLogsFolderIfNotPresentHasBeenCalled = true;
         }
@@ -135,6 +140,22 @@ namespace OzetteLibrary.Logging.Mock
         public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID)
         {
             WriteSystemEventHasBeenCalled = true;
+        }
+
+        /// <summary>
+        /// Writes a system-level error message with exception.
+        /// </summary>
+        /// <remarks>
+        /// This logging method is used for the most important high-level events the user should be aware of.
+        /// These events are logged into the Windows Event log instead of the trace debug log files, and would be
+        /// used for logging exceptions, backup completed/sync status, configuration issues, etc.
+        /// </remarks>
+        /// <param name="message"></param>
+        /// <param name="exception"></param>
+        /// <param name="eventID"></param>
+        public void WriteSystemEvent(string message, Exception exception, int eventID)
+        {
+            WriteSystemEventWithExceptionHasBeenCalled = true;
         }
     }
 }

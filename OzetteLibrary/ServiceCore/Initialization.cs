@@ -126,7 +126,7 @@ namespace OzetteLibrary.ServiceCore
         {
             try
             {
-                logger.SetupLogsFolderIfNotPresent(Options.LogFilesDirectory);
+                logger.SetupTraceLogsFolderIfNotPresent(Options.LogFilesDirectory);
                 return true;
             }
             catch
