@@ -13,14 +13,24 @@ namespace OzetteLibrary.Models
         public Exception Error { get; set; }
 
         /// <summary>
-        /// The total number of new/updated files found.
+        /// The total number of new files found.
         /// </summary>
-        public int NewOrUpdatedFilesFound { get; set; }
+        public int NewFilesFound { get; set; }
 
         /// <summary>
-        /// The total number of new/updated file bytes found.
+        /// The total number of new file bytes found.
         /// </summary>
-        public ulong NewOrUpdatedBytesFound { get; set; }
+        public ulong NewBytesFound { get; set; }
+
+        /// <summary>
+        /// The total number of updated files found.
+        /// </summary>
+        public int UpdatedFilesFound { get; set; }
+
+        /// <summary>
+        /// The total number of updated file bytes found.
+        /// </summary>
+        public ulong UpdatedBytesFound { get; set; }
 
         /// <summary>
         /// The total number of all files found.
