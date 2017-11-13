@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace OzetteLibrary.Logging.Mock
 {
@@ -37,10 +38,70 @@ namespace OzetteLibrary.Logging.Mock
         }
 
         /// <summary>
-        /// Writes an informational message to the log file on disk.
+        /// Writes an informational message to the trace log file on disk.
         /// </summary>
+        /// <remarks>
+        /// This logging method is the preferred method for trace-level debug messaging.
+        /// An example would be things like individual file transfer messages, state changes, etc.
+        /// </remarks>
         /// <param name="message"></param>
-        public void WriteMessage(string message)
+        public void WriteTraceMessage(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Writes a warning message to the trace log file on disk.
+        /// </summary>
+        /// <remarks>
+        /// This logging method is the preferred method for trace-level debug messaging.
+        /// An example would be things like individual file transfer messages, state changes, etc.
+        /// </remarks>
+        /// <param name="message"></param>
+        public void WriteTraceWarning(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Writes an error message to the trace log file on disk.
+        /// </summary>
+        /// <remarks>
+        /// This logging method is the preferred method for trace-level debug messaging.
+        /// An example would be things like individual file transfer messages, state changes, etc.
+        /// </remarks>
+        /// <param name="message"></param>
+        public void WriteTraceError(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Writes an error message (and exception) to the trace log file on disk.
+        /// </summary>
+        /// <remarks>
+        /// This logging method is the preferred method for trace-level debug messaging.
+        /// An example would be things like individual file transfer messages, state changes, etc.
+        /// </remarks>
+        /// <param name="message"></param>
+        /// <param name="exception"></param>
+        public void WriteTraceError(string message, Exception exception)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Writes a system-level event message.
+        /// </summary>
+        /// <remarks>
+        /// This logging method is used for the most important high-level events the user should be aware of.
+        /// These events are logged into the Windows Event log instead of the trace debug log files, and would be
+        /// used for logging exceptions, backup completed/sync status, configuration issues, etc.
+        /// </remarks>
+        /// <param name="message"></param>
+        /// <param name="severity"></param>
+        /// <param name="eventID"></param>
+        public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID)
         {
             throw new NotImplementedException();
         }

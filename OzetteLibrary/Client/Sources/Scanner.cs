@@ -60,7 +60,7 @@ namespace OzetteLibrary.Client.Sources
                 ScanStopRequested = false;
             }
 
-            Logger.WriteMessage(string.Format("Starting scan for source: {0}", Source.ToString()));
+            Logger.WriteTraceMessage(string.Format("Starting scan for source: {0}", Source.ToString()));
 
             Thread scanThread = new Thread(() => Scan());
             scanThread.Start();
@@ -151,7 +151,7 @@ namespace OzetteLibrary.Client.Sources
             {
                 var currentDirectory = directoriesToScan.Dequeue();
 
-                Logger.WriteMessage(string.Format("Scanning directory: {0}", currentDirectory.FullName));
+                Logger.WriteTraceMessage(string.Format("Scanning directory: {0}", currentDirectory.FullName));
 
                 var subDirs = currentDirectory.EnumerateDirectories();
 
@@ -164,7 +164,7 @@ namespace OzetteLibrary.Client.Sources
 
                 foreach (var foundFile in foundFiles)
                 {
-                    Logger.WriteMessage(string.Format("Scanning file: {0}", foundFile.FullName));
+                    Logger.WriteTraceMessage(string.Format("Scanning file: {0}", foundFile.FullName));
 
                     AddOrUpdateScannedFile(
                         foundFile,
@@ -183,12 +183,12 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         private void WriteScanResultsToLog()
         {
-            Logger.WriteMessage(string.Format("Completed scan of source: {0}", Source.ToString()));
-            Logger.WriteMessage(string.Format("Scan results: ScannedDirectoriesCount={0}", Results.ScannedDirectoriesCount));
-            Logger.WriteMessage(string.Format("Scan results: TotalFilesFound={0}", Results.TotalFilesFound));
-            Logger.WriteMessage(string.Format("Scan results: TotalBytesFound={0}", Results.TotalBytesFound));
-            Logger.WriteMessage(string.Format("Scan results: NewOrUpdatedFilesFound={0}", Results.NewOrUpdatedFilesFound));
-            Logger.WriteMessage(string.Format("Scan results: NewOrUpdatedBytesFound={0}", Results.NewOrUpdatedBytesFound));
+            Logger.WriteTraceMessage(string.Format("Completed scan of source: {0}", Source.ToString()));
+            Logger.WriteTraceMessage(string.Format("Scan results: ScannedDirectoriesCount={0}", Results.ScannedDirectoriesCount));
+            Logger.WriteTraceMessage(string.Format("Scan results: TotalFilesFound={0}", Results.TotalFilesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: TotalBytesFound={0}", Results.TotalBytesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: NewOrUpdatedFilesFound={0}", Results.NewOrUpdatedFilesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: NewOrUpdatedBytesFound={0}", Results.NewOrUpdatedBytesFound));
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace OzetteLibrary.Client.Sources
 
             if (clientFile == null)
             {
-                Logger.WriteMessage(string.Format("Scanned file ({0}) is new.", fileInfo.Name));
+                Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is new.", fileInfo.Name));
 
                 // brand new file
                 clientFile = new ClientFile(fileInfo);
@@ -219,12 +219,12 @@ namespace OzetteLibrary.Client.Sources
                 if (Hasher.TwoHashesAreTheSame(fileHash, clientFile.FileHash) == false)
                 {
                     // existing file updated
-                    Logger.WriteMessage(string.Format("Scanned file ({0}) is updated.", fileInfo.Name));
+                    Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is updated.", fileInfo.Name));
                     clientFile.ResetCopyState(Database.GetTargets());
                 }
                 else
                 {
-                    Logger.WriteMessage(string.Format("Scanned file ({0}) is unchanged since previous check.", fileInfo.Name));
+                    Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is unchanged since previous check.", fileInfo.Name));
                 }
 
                 Database.UpdateClientFile(clientFile);
