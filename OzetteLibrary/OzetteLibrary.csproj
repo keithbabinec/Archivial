@@ -60,6 +60,8 @@
     <Compile Include="Logging\Default\Logger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Mock\MockLogger.cs" />
+    <Compile Include="Models\ClientFileLookup.cs" />
+    <Compile Include="Models\ClientFileLookupResult.cs" />
     <Compile Include="Models\StartupResults.cs" />
     <Compile Include="Models\ClientFile.cs" />
     <Compile Include="Models\FileBackupPriority.cs" />
