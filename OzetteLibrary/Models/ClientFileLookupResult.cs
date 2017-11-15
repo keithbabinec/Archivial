@@ -38,21 +38,14 @@
         Updated = 2,
 
         /// <summary>
-        /// File has been renamed.
+        /// File contents match another filename or different location.
         /// </summary>
         /// <remarks>
         /// Lookup combination:
         /// > { Filename mismatch, Location matched, Hash matched }
-        /// </remarks>
-        Renamed = 3,
-
-        /// <summary>
-        /// File has moved/copied to a new location.
-        /// </summary>
-        /// <remarks>
-        /// Lookup combination:
+        /// OR
         /// > { Filename matched, Location mismatch, Hash matched }
         /// </remarks>
-        Moved = 4
+        Duplicate = 3,
     }
 }
