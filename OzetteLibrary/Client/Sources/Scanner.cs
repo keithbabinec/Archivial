@@ -134,16 +134,11 @@ namespace OzetteLibrary.Client.Sources
         private object ScanStatusLock { get; set; }
 
         /// <summary>
-        /// The file scan results.
-        /// </summary>
-        private ScanResults Results { get; set; }
-
-        /// <summary>
         /// Performs a scan of the source location.
         /// </summary>
         private void Scan()
         {
-            Results = new ScanResults();
+            var results = new ScanResults();
 
             var directoriesToScan = new Queue<DirectoryInfo>();
             directoriesToScan.Enqueue(new DirectoryInfo(Source.FolderPath));
@@ -168,94 +163,146 @@ namespace OzetteLibrary.Client.Sources
                     Logger.WriteTraceMessage(string.Format("Scanning file: {0}", foundFile.FullName));
 
                     ProcessScannedFile(
+                        results,
                         foundFile,
                         Hasher.GenerateDefaultHash(foundFile.FullName, Source.Priority),
                         Hasher.GetDefaultHashAlgorithm(Source.Priority)
                     );
                 }
 
-                Results.ScannedDirectoriesCount++;
+                results.ScannedDirectoriesCount++;
             }
 
-            WriteScanResultsToLog();
-            OnScanCompleted(Results);
+            WriteScanResultsToLog(results);
+            OnScanCompleted(results);
         }
 
         /// <summary>
         /// Writes the results of the scan to the log.
         /// </summary>
-        private void WriteScanResultsToLog()
+        /// <param name="results">Result counters object.</param>
+        private void WriteScanResultsToLog(ScanResults results)
         {
             Logger.WriteTraceMessage(string.Format("Completed scan of source: {0}", Source.ToString()));
-            Logger.WriteTraceMessage(string.Format("Scan results: ScannedDirectoriesCount={0}", Results.ScannedDirectoriesCount));
-            Logger.WriteTraceMessage(string.Format("Scan results: NewFilesFound={0}", Results.NewFilesFound));
-            Logger.WriteTraceMessage(string.Format("Scan results: NewBytesFound={0}", Results.NewBytesFound));
-            Logger.WriteTraceMessage(string.Format("Scan results: UpdatedFilesFound={0}", Results.UpdatedFilesFound));
-            Logger.WriteTraceMessage(string.Format("Scan results: UpdatedBytesFound={0}", Results.UpdatedBytesFound));
-            Logger.WriteTraceMessage(string.Format("Scan results: TotalFilesFound={0}", Results.TotalFilesFound));
-            Logger.WriteTraceMessage(string.Format("Scan results: TotalBytesFound={0}", Results.TotalBytesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: ScannedDirectoriesCount={0}", results.ScannedDirectoriesCount));
+            Logger.WriteTraceMessage(string.Format("Scan results: NewFilesFound={0}", results.NewFilesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: NewBytesFound={0}", results.NewBytesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: UpdatedFilesFound={0}", results.UpdatedFilesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: UpdatedBytesFound={0}", results.UpdatedBytesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: TotalFilesFound={0}", results.TotalFilesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: TotalBytesFound={0}", results.TotalBytesFound));
         }
 
         /// <summary>
         /// Processes a scanned file into the database.
         /// </summary>
+        /// <param name="results">Result counters object.</param>
         /// <param name="fileInfo">FileInfo details</param>
         /// <param name="fileHash">The computed hash</param>
         /// <param name="algorithm">Hash algorithm used to compute the hash</param>
-        private void ProcessScannedFile(FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
+        private void ProcessScannedFile(ScanResults results, FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
         {
             var fileIndexLookup = Database.GetClientFile(fileInfo.Name, fileInfo.DirectoryName, fileHash);
 
             if (fileIndexLookup.Result == ClientFileLookupResult.New)
             {
-                Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is new.", fileInfo.Name));
-
-                // brand new file
-                var clientFile = new ClientFile(fileInfo);
-                clientFile.FileHash = fileHash;
-                clientFile.HashAlgorithmType = algorithm;
-                clientFile.ResetCopyState(Database.GetTargets());
-                clientFile.LastChecked = DateTime.Now;
-
-                Database.AddClientFile(clientFile);
-                Results.NewFilesFound++;
-                Results.NewBytesFound += (ulong)fileInfo.Length;
+                ProcessNewFile(fileInfo, fileHash, algorithm);
+                results.NewFilesFound++;
+                results.NewBytesFound += (ulong)fileInfo.Length;
             }
             else if (fileIndexLookup.Result == ClientFileLookupResult.Updated)
             {
-                Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is updated.", fileInfo.Name));
-
-                // updated file
-                fileIndexLookup.File.FileHash = fileHash;
-                fileIndexLookup.File.HashAlgorithmType = algorithm;
-                fileIndexLookup.File.ResetCopyState(Database.GetTargets());
-                fileIndexLookup.File.LastChecked = DateTime.Now;
-
-                Database.UpdateClientFile(fileIndexLookup.File);
-                Results.UpdatedFilesFound++;
-                Results.UpdatedBytesFound += (ulong)fileInfo.Length;
+                ProcessUpdatedFile(fileIndexLookup, fileInfo, fileHash, algorithm);
+                results.UpdatedFilesFound++;
+                results.UpdatedBytesFound += (ulong)fileInfo.Length;
             }
             else if (fileIndexLookup.Result == ClientFileLookupResult.Duplicate)
             {
-                Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is duplicate, moved, or renamed.", fileInfo.Name));
-
-                // TODO: think on what to do here in this situation.
-                // possible idea: have a single file record, but multiple file paths or file names?
-                // throw until a solution is worked out.
-                throw new NotImplementedException();
+                ProcessDuplicateFile(fileIndexLookup, fileInfo, fileHash, algorithm);
             }
             else if (fileIndexLookup.Result == ClientFileLookupResult.Existing)
             {
-                Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is unchanged.", fileInfo.Name));
-
-                // existing file
-                // should update the last checked flag
-                fileIndexLookup.File.LastChecked = DateTime.Now;
-                Database.UpdateClientFile(fileIndexLookup.File);
+                ProcessExistingFile(fileIndexLookup, fileInfo);
             }
-            
-            Results.TotalFilesFound++;
-            Results.TotalBytesFound += (ulong)fileInfo.Length;
+            else
+            {
+                throw new InvalidOperationException("Unexpected ClientFileLookupResult type: " + fileIndexLookup.Result);
+            }
+
+            results.TotalFilesFound++;
+            results.TotalBytesFound += (ulong)fileInfo.Length;
+        }
+
+        /// <summary>
+        /// Processes a new scanned file into the database.
+        /// </summary>
+        /// <param name="fileInfo">FileInfo details</param>
+        /// <param name="fileHash">The computed hash</param>
+        /// <param name="algorithm">Hash algorithm used to compute the hash</param>
+        private void ProcessNewFile(FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
+        {
+            Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is new.", fileInfo.Name));
+
+            // brand new file
+            var clientFile = new ClientFile(fileInfo);
+            clientFile.FileHash = fileHash;
+            clientFile.HashAlgorithmType = algorithm;
+            clientFile.ResetCopyState(Database.GetTargets());
+            clientFile.LastChecked = DateTime.Now;
+
+            Database.AddClientFile(clientFile);
+        }
+
+        /// <summary>
+        /// Processes an updated scanned file into the database.
+        /// </summary>
+        /// <param name="fileLookup">File index lookup result</param>
+        /// <param name="fileInfo">FileInfo details</param>
+        /// <param name="fileHash">The computed hash</param>
+        /// <param name="algorithm">Hash algorithm used to compute the hash</param>
+        private void ProcessUpdatedFile(ClientFileLookup fileLookup, FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
+        {
+            Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is updated.", fileInfo.Name));
+
+            // updated file
+            fileLookup.File.FileHash = fileHash;
+            fileLookup.File.HashAlgorithmType = algorithm;
+            fileLookup.File.ResetCopyState(Database.GetTargets());
+            fileLookup.File.LastChecked = DateTime.Now;
+
+            Database.UpdateClientFile(fileLookup.File);
+        }
+
+        /// <summary>
+        /// Processes a duplicate scanned file into the database.
+        /// </summary>
+        /// <param name="fileLookup">File index lookup result</param>
+        /// <param name="fileInfo">FileInfo details</param>
+        /// <param name="fileHash">The computed hash</param>
+        /// <param name="algorithm">Hash algorithm used to compute the hash</param>
+        private void ProcessDuplicateFile(ClientFileLookup fileLookup, FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
+        {
+            Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is duplicate, moved, or renamed.", fileInfo.Name));
+
+            // TODO: think on what to do here in this situation.
+            // possible idea: have a single file record, but multiple file paths or file names?
+            // throw until a solution is worked out.
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Processes an existing scanned file into the database.
+        /// </summary>
+        /// <param name="fileLookup">File index lookup result</param>
+        /// <param name="fileInfo">FileInfo details</param>
+        private void ProcessExistingFile(ClientFileLookup fileLookup, FileInfo fileInfo)
+        {
+            Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is unchanged.", fileInfo.Name));
+
+            // existing file
+            // should update the last checked flag
+            fileLookup.File.LastChecked = DateTime.Now;
+            Database.UpdateClientFile(fileLookup.File);
         }
     }
 }
