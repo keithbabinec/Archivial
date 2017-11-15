@@ -162,12 +162,10 @@ namespace OzetteLibrary.Client.Sources
                 {
                     Logger.WriteTraceMessage(string.Format("Scanning file: {0}", foundFile.FullName));
 
-                    ProcessScannedFile(
-                        results,
-                        foundFile,
-                        Hasher.GenerateDefaultHash(foundFile.FullName, Source.Priority),
-                        Hasher.GetDefaultHashAlgorithm(Source.Priority)
-                    );
+                    var hash = Hasher.GenerateDefaultHash(foundFile.FullName, Source.Priority);
+                    var hashType = Hasher.GetDefaultHashAlgorithm(Source.Priority);
+
+                    ProcessScannedFile(results, foundFile, hash, hashType);
                 }
 
                 results.ScannedDirectoriesCount++;
