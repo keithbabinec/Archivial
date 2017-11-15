@@ -8,11 +8,18 @@ namespace OzetteLibrary.Database
     public interface IClientDatabase : IDatabase
     {
         /// <summary>
-        /// Gets a client file from the database by full name/path. Returns null if file is not found.
+        /// Checks the index for a file matching the provided name, path, and hash.
         /// </summary>
-        /// <param name="FullName">The full filepath.</param>
-        /// <returns><c>ClientFile</c></returns>
-        ClientFile GetClientFile(string FullName);
+        /// <remarks>
+        /// The lookup result object is returned that contains:
+        /// 1. A reference to the indexed file, if present.
+        /// 2. An enumeration that describes the file state (new, updated, moved, renamed, etc).
+        /// </remarks>
+        /// <param name="FileName">Name of the file (ex: document.doc)</param>
+        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
+        /// <param name="FileHash">File hash expressed as a byte array.</param>
+        /// <returns><c>ClientFileLookup</c></returns>
+        ClientFileLookup GetClientFile(string FileName, string DirectoryPath, byte[] FileHash);
 
         /// <summary>
         /// Gets the targets defined in the database.

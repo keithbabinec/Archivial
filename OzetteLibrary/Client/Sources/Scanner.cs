@@ -204,46 +204,46 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="algorithm">Hash algorithm used to compute the hash</param>
         private void AddOrUpdateScannedFile(FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
         {
-            ClientFile clientFile = Database.GetClientFile(fileInfo.FullName);
-            clientFile.LastChecked = DateTime.Now;
+            var clientFileIndexLookup = Database.GetClientFile(fileInfo.Name, fileInfo.DirectoryName, fileHash);
 
-            if (clientFile == null)
-            {
-                Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is new.", fileInfo.Name));
+            // clientFileIndexLookup.LastChecked = DateTime.Now;
+            //if (clientFile == null)
+            //{
+            //    Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is new.", fileInfo.Name));
 
-                // brand new file
-                clientFile = new ClientFile(fileInfo);
-                clientFile.FileHash = fileHash;
-                clientFile.HashAlgorithmType = algorithm;
-                clientFile.ResetCopyState(Database.GetTargets());
+            //    // brand new file
+            //    clientFile = new ClientFile(fileInfo);
+            //    clientFile.FileHash = fileHash;
+            //    clientFile.HashAlgorithmType = algorithm;
+            //    clientFile.ResetCopyState(Database.GetTargets());
 
-                Database.AddClientFile(clientFile);
-                Results.NewFilesFound++;
-                Results.NewBytesFound += (ulong)fileInfo.Length;
-            }
-            else
-            {
-                if (Hasher.TwoHashesAreTheSame(fileHash, clientFile.FileHash) == false)
-                {
-                    // existing file updated
-                    Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is updated.", fileInfo.Name));
-                    clientFile.FileHash = fileHash;
-                    clientFile.HashAlgorithmType = algorithm;
-                    clientFile.ResetCopyState(Database.GetTargets());
+            //    Database.AddClientFile(clientFile);
+            //    Results.NewFilesFound++;
+            //    Results.NewBytesFound += (ulong)fileInfo.Length;
+            //}
+            //else
+            //{
+            //    if (Hasher.TwoHashesAreTheSame(fileHash, clientFile.FileHash) == false)
+            //    {
+            //        // existing file updated
+            //        Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is updated.", fileInfo.Name));
+            //        clientFile.FileHash = fileHash;
+            //        clientFile.HashAlgorithmType = algorithm;
+            //        clientFile.ResetCopyState(Database.GetTargets());
 
-                    Results.UpdatedFilesFound++;
-                    Results.UpdatedBytesFound += (ulong)fileInfo.Length;
-                }
-                else
-                {
-                    Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is unchanged since previous check.", fileInfo.Name));
-                }
+            //        Results.UpdatedFilesFound++;
+            //        Results.UpdatedBytesFound += (ulong)fileInfo.Length;
+            //    }
+            //    else
+            //    {
+            //        Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is unchanged since previous check.", fileInfo.Name));
+            //    }
 
-                Database.UpdateClientFile(clientFile);
-            }
+            //    Database.UpdateClientFile(clientFile);
+            //}
 
-            Results.TotalFilesFound++;
-            Results.TotalBytesFound += (ulong)fileInfo.Length;
+            //Results.TotalFilesFound++;
+            //Results.TotalBytesFound += (ulong)fileInfo.Length;
         }
     }
 }
