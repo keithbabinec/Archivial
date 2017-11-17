@@ -34,7 +34,7 @@ namespace OzetteLibrary.Client.Sources
             Database = database;
             Logger = logger;
             ScanStatusLock = new object();
-            Hasher = new Hasher();
+            Hasher = new Hasher(logger);
         }
 
         /// <summary>
@@ -195,9 +195,17 @@ namespace OzetteLibrary.Client.Sources
         {
             Logger.WriteTraceMessage(string.Format("Scanning file: {0}", fileInfo.FullName));
 
-            var hash = Hasher.GenerateDefaultHash(fileInfo.FullName, source.Priority);
             var hashType = Hasher.GetDefaultHashAlgorithm(source.Priority);
+            var hash = Hasher.GenerateDefaultHash(fileInfo.FullName, source.Priority);
 
+            if (hash.Length == 0)
+            {
+                // failed to generate a hash.
+                // cant properly lookup the file in the database without it.
+                // error has already been logged by the hasher
+                return;
+            }
+            
             var fileIndexLookup = Database.GetClientFile(fileInfo.Name, fileInfo.DirectoryName, hash);
 
             if (fileIndexLookup.Result == ClientFileLookupResult.New)

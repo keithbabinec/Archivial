@@ -1,8 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.IO;
 using System.Text;
 using OzetteLibrary.Models;
-using System;
+using OzetteLibrary.Logging;
 
 namespace OzetteLibrary.Crypto
 {
@@ -11,6 +12,18 @@ namespace OzetteLibrary.Crypto
     /// </summary>
     public class Hasher
     {
+        public Hasher(ILogger logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            Logger = logger;
+        }
+
+        private ILogger Logger { get; set; }
+
         /// <summary>
         /// Generates the default file hash for the specified priority.
         /// </summary>
@@ -75,12 +88,28 @@ namespace OzetteLibrary.Crypto
         /// <returns>A byte array containing the hash</returns>
         private byte[] GenerateFileHash(HashAlgorithmName hashAlgorithm, string filePath)
         {
-            using (FileStream fs = File.OpenRead(filePath))
+            if (string.IsNullOrWhiteSpace(filePath))
             {
-                using (var hasher = HashAlgorithm.Create(hashAlgorithm.Name))
+                throw new ArgumentException(nameof(filePath));
+            }
+
+            try
+            {
+                using (FileStream fs = File.OpenRead(filePath))
                 {
-                    return hasher.ComputeHash(fs);
+                    using (var hasher = HashAlgorithm.Create(hashAlgorithm.Name))
+                    {
+                        return hasher.ComputeHash(fs);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // log the error
+                Logger.WriteTraceError("Failed to generate a hash for file: " + filePath, ex);
+
+                // return empty byte array
+                return new byte[] { };
             }
         }
 
