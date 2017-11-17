@@ -160,12 +160,7 @@ namespace OzetteLibrary.Client.Sources
 
                 foreach (var foundFile in foundFiles)
                 {
-                    Logger.WriteTraceMessage(string.Format("Scanning file: {0}", foundFile.FullName));
-
-                    var hash = Hasher.GenerateDefaultHash(foundFile.FullName, Source.Priority);
-                    var hashType = Hasher.GetDefaultHashAlgorithm(Source.Priority);
-
-                    ProcessScannedFile(results, foundFile, hash, hashType);
+                    ScanFile(results, foundFile);
                 }
 
                 results.ScannedDirectoriesCount++;
@@ -198,25 +193,30 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="fileInfo">FileInfo details</param>
         /// <param name="fileHash">The computed hash</param>
         /// <param name="algorithm">Hash algorithm used to compute the hash</param>
-        private void ProcessScannedFile(ScanResults results, FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
+        private void ScanFile(ScanResults results, FileInfo fileInfo)
         {
-            var fileIndexLookup = Database.GetClientFile(fileInfo.Name, fileInfo.DirectoryName, fileHash);
+            Logger.WriteTraceMessage(string.Format("Scanning file: {0}", fileInfo.FullName));
+
+            var hash = Hasher.GenerateDefaultHash(fileInfo.FullName, Source.Priority);
+            var hashType = Hasher.GetDefaultHashAlgorithm(Source.Priority);
+
+            var fileIndexLookup = Database.GetClientFile(fileInfo.Name, fileInfo.DirectoryName, hash);
 
             if (fileIndexLookup.Result == ClientFileLookupResult.New)
             {
-                ProcessNewFile(fileInfo, fileHash, algorithm);
+                ProcessNewFile(fileInfo, hash, hashType);
                 results.NewFilesFound++;
                 results.NewBytesFound += (ulong)fileInfo.Length;
             }
             else if (fileIndexLookup.Result == ClientFileLookupResult.Updated)
             {
-                ProcessUpdatedFile(fileIndexLookup, fileInfo, fileHash, algorithm);
+                ProcessUpdatedFile(fileIndexLookup, fileInfo, hash, hashType);
                 results.UpdatedFilesFound++;
                 results.UpdatedBytesFound += (ulong)fileInfo.Length;
             }
             else if (fileIndexLookup.Result == ClientFileLookupResult.Duplicate)
             {
-                ProcessDuplicateFile(fileIndexLookup, fileInfo, fileHash, algorithm);
+                ProcessDuplicateFile(fileIndexLookup, fileInfo, hash, hashType);
             }
             else if (fileIndexLookup.Result == ClientFileLookupResult.Existing)
             {
