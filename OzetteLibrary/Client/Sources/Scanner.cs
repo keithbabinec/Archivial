@@ -211,7 +211,21 @@ namespace OzetteLibrary.Client.Sources
             }
             catch (Exception ex)
             {
-                Logger.WriteTraceError("Failed to list files under path: " + directory.FullName, ex);
+                if (string.IsNullOrEmpty(matchFilter))
+                {
+                    Logger.WriteTraceError(
+                        string.Format("Failed to list files under path: {0}. No match filter was used.", directory.FullName), 
+                        ex);
+                }
+                else
+                {
+                    Logger.WriteTraceError(
+                        string.Format("Failed to list files under path: {0}. Match filter was used: {1}", 
+                            directory.FullName,
+                            matchFilter),
+                        ex);
+                }
+                
                 return null;
             }
         }
