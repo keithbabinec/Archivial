@@ -138,6 +138,9 @@ namespace OzetteLibrary.Client.Sources
 
             var directoriesToScan = new Queue<DirectoryInfo>();
             directoriesToScan.Enqueue(new DirectoryInfo(source.FolderPath));
+
+            // note: constructing DirectoryInfo objects with non-existent paths will not throw exceptions.
+            // however calling EnumerateFiles() or EnumerateDirectories() will throw exceptions, so these are wrapped.
             
             while (directoriesToScan.Count > 0)
             {
@@ -145,18 +148,22 @@ namespace OzetteLibrary.Client.Sources
 
                 Logger.WriteTraceMessage(string.Format("Scanning directory: {0}", currentDirectory.FullName));
 
-                var subDirs = currentDirectory.EnumerateDirectories();
-
-                foreach (var subDir in subDirs)
+                var subDirs = SafeEnumerateDirectories(currentDirectory);
+                if (subDirs != null)
                 {
-                    directoriesToScan.Enqueue(subDir);
+                    foreach (var subDir in subDirs)
+                    {
+                        directoriesToScan.Enqueue(subDir);
+                    }
                 }
 
-                var foundFiles = currentDirectory.EnumerateFiles(source.FileMatchFilter);
-
-                foreach (var foundFile in foundFiles)
+                var foundFiles = SafeEnumerateFiles(currentDirectory, source.FileMatchFilter);
+                if (foundFiles != null)
                 {
-                    ScanFile(results, foundFile, source);
+                    foreach (var foundFile in foundFiles)
+                    {
+                        ScanFile(results, foundFile, source);
+                    }
                 }
 
                 results.ScannedDirectoriesCount++;
@@ -164,6 +171,49 @@ namespace OzetteLibrary.Client.Sources
 
             WriteScanResultsToLog(results, source);
             OnScanCompleted(results);
+        }
+
+        /// <summary>
+        /// Attempts to safely enumerate the directories under the specified directory.
+        /// </summary>
+        /// <remarks>
+        /// Exceptions are automatically handled and logged to the trace log.
+        /// </remarks>
+        /// <param name="directory">DirectoryInfo</param>
+        /// <returns>IEnumerable<DirectoryInfo></returns>
+        private IEnumerable<DirectoryInfo> SafeEnumerateDirectories(DirectoryInfo directory)
+        {
+            try
+            {
+                return directory.EnumerateDirectories();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteTraceError("Failed to list directories under path: " + directory.FullName, ex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to safely enumerate the files under the specified directory.
+        /// </summary>
+        /// <remarks>
+        /// Exceptions are automatically handled and logged to the trace log.
+        /// </remarks>
+        /// <param name="directory">DirectoryInfo</param>
+        /// <param name="matchFilter">Match filter (may be null/empty)</param>
+        /// <returns>IEnumerable<DirectoryInfo></returns>
+        private IEnumerable<FileInfo> SafeEnumerateFiles(DirectoryInfo directory, string matchFilter)
+        {
+            try
+            {
+                return directory.EnumerateFiles(matchFilter);
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteTraceError("Failed to list files under path: " + directory.FullName, ex);
+                return null;
+            }
         }
 
         /// <summary>
