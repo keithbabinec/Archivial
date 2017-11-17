@@ -18,15 +18,10 @@ namespace OzetteLibrary.Client.Sources
         /// <summary>
         /// Default constructor that takes a <c>SourceLocation</c>, <c>IDatabase</c>, and <c>ILogger</c> as input.
         /// </summary>
-        /// <param name="source"></param>
         /// <param name="database"></param>
         /// <param name="logger"></param>
-        public Scanner(SourceLocation source, IClientDatabase database, ILogger logger)
+        public Scanner(IClientDatabase database, ILogger logger)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
             if (database == null)
             {
                 throw new ArgumentNullException(nameof(database));
@@ -36,7 +31,6 @@ namespace OzetteLibrary.Client.Sources
                 throw new ArgumentNullException(nameof(logger));
             }
 
-            Source = source;
             Database = database;
             Logger = logger;
             ScanStatusLock = new object();
@@ -46,8 +40,14 @@ namespace OzetteLibrary.Client.Sources
         /// <summary>
         /// Starts asynchronously scanning a source.
         /// </summary>
-        public void BeginScan()
+        /// <param name="source">The source definition</param>
+        public void BeginScan(SourceLocation source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             lock (ScanStatusLock)
             {
                 if (ScanInProgress)
@@ -59,9 +59,9 @@ namespace OzetteLibrary.Client.Sources
                 ScanStopRequested = false;
             }
 
-            Logger.WriteTraceMessage(string.Format("Starting scan for source: {0}", Source.ToString()));
+            Logger.WriteTraceMessage(string.Format("Starting scan for source: {0}", source.ToString()));
             
-            Thread scanThread = new Thread(() => Scan());
+            Thread scanThread = new Thread(() => Scan(source));
             scanThread.Start();
         }
 
@@ -109,11 +109,6 @@ namespace OzetteLibrary.Client.Sources
         private ILogger Logger { get; set; }
 
         /// <summary>
-        /// A reference to the Source details.
-        /// </summary>
-        private SourceLocation Source { get; set; }
-
-        /// <summary>
         /// A reference to the file hashing helper.
         /// </summary>
         private Hasher Hasher { get; set; }
@@ -136,12 +131,13 @@ namespace OzetteLibrary.Client.Sources
         /// <summary>
         /// Performs a scan of the source location.
         /// </summary>
-        private void Scan()
+        /// <param name="source">The source definition</param>
+        private void Scan(SourceLocation source)
         {
             var results = new ScanResults();
 
             var directoriesToScan = new Queue<DirectoryInfo>();
-            directoriesToScan.Enqueue(new DirectoryInfo(Source.FolderPath));
+            directoriesToScan.Enqueue(new DirectoryInfo(source.FolderPath));
             
             while (directoriesToScan.Count > 0)
             {
@@ -156,17 +152,17 @@ namespace OzetteLibrary.Client.Sources
                     directoriesToScan.Enqueue(subDir);
                 }
 
-                var foundFiles = currentDirectory.EnumerateFiles(Source.FileMatchFilter);
+                var foundFiles = currentDirectory.EnumerateFiles(source.FileMatchFilter);
 
                 foreach (var foundFile in foundFiles)
                 {
-                    ScanFile(results, foundFile);
+                    ScanFile(results, foundFile, source);
                 }
 
                 results.ScannedDirectoriesCount++;
             }
 
-            WriteScanResultsToLog(results);
+            WriteScanResultsToLog(results, source);
             OnScanCompleted(results);
         }
 
@@ -174,9 +170,10 @@ namespace OzetteLibrary.Client.Sources
         /// Writes the results of the scan to the log.
         /// </summary>
         /// <param name="results">Result counters object.</param>
-        private void WriteScanResultsToLog(ScanResults results)
+        /// <param name="source">The source definition</param>
+        private void WriteScanResultsToLog(ScanResults results, SourceLocation source)
         {
-            Logger.WriteTraceMessage(string.Format("Completed scan of source: {0}", Source.ToString()));
+            Logger.WriteTraceMessage(string.Format("Completed scan of source: {0}", source.ToString()));
             Logger.WriteTraceMessage(string.Format("Scan results: ScannedDirectoriesCount={0}", results.ScannedDirectoriesCount));
             Logger.WriteTraceMessage(string.Format("Scan results: NewFilesFound={0}", results.NewFilesFound));
             Logger.WriteTraceMessage(string.Format("Scan results: NewBytesFound={0}", results.NewBytesFound));
@@ -193,12 +190,13 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="fileInfo">FileInfo details</param>
         /// <param name="fileHash">The computed hash</param>
         /// <param name="algorithm">Hash algorithm used to compute the hash</param>
-        private void ScanFile(ScanResults results, FileInfo fileInfo)
+        /// <param name="source">The source definition</param>
+        private void ScanFile(ScanResults results, FileInfo fileInfo, SourceLocation source)
         {
             Logger.WriteTraceMessage(string.Format("Scanning file: {0}", fileInfo.FullName));
 
-            var hash = Hasher.GenerateDefaultHash(fileInfo.FullName, Source.Priority);
-            var hashType = Hasher.GetDefaultHashAlgorithm(Source.Priority);
+            var hash = Hasher.GenerateDefaultHash(fileInfo.FullName, source.Priority);
+            var hashType = Hasher.GetDefaultHashAlgorithm(source.Priority);
 
             var fileIndexLookup = Database.GetClientFile(fileInfo.Name, fileInfo.DirectoryName, hash);
 

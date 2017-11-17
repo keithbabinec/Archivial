@@ -12,18 +12,10 @@ namespace OzetteLibraryTests.Client.Sources
     {
         [TestMethod()]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ScannerConstructorThrowsExceptionWhenNoSourceLocationIsProvided()
-        {
-            OzetteLibrary.Client.Sources.Scanner scanner = 
-                new OzetteLibrary.Client.Sources.Scanner(null, new MockClientDatabase(), new MockLogger());
-        }
-
-        [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ScannerConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
             OzetteLibrary.Client.Sources.Scanner scanner = 
-                new OzetteLibrary.Client.Sources.Scanner(new SourceLocation(), null, new MockLogger());
+                new OzetteLibrary.Client.Sources.Scanner(null, new MockLogger());
         }
 
         [TestMethod()]
@@ -31,17 +23,14 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
             OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(new SourceLocation(), new MockClientDatabase(), null);
+                new OzetteLibrary.Client.Sources.Scanner(new MockClientDatabase(), null);
         }
 
         [TestMethod()]
         public void ScannerConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(
-                    new SourceLocation(), 
-                    new MockClientDatabase(),
-                    new MockLogger());
+                new OzetteLibrary.Client.Sources.Scanner(new MockClientDatabase(), new MockLogger());
 
             Assert.IsTrue(true);
         }
@@ -52,18 +41,19 @@ namespace OzetteLibraryTests.Client.Sources
         {
             OzetteLibrary.Client.Sources.Scanner scanner =
                 new OzetteLibrary.Client.Sources.Scanner(
-                    new SourceLocation()
-                    {
-                        FolderPath = Environment.CurrentDirectory,
-                        FileMatchFilter = "*.*",
-                        Priority = FileBackupPriority.Low,
-                        RevisionCount = 1
-                    },
                     new MockClientDatabase(),
                     new MockLogger());
 
-            scanner.BeginScan();
-            scanner.BeginScan();
+            var source = new SourceLocation()
+            {
+                FolderPath = Environment.CurrentDirectory,
+                FileMatchFilter = "*.*",
+                Priority = FileBackupPriority.Low,
+                RevisionCount = 1
+            };
+
+            scanner.BeginScan(source);
+            scanner.BeginScan(source);
         }
 
         [TestMethod()]
@@ -71,20 +61,21 @@ namespace OzetteLibraryTests.Client.Sources
         {
             OzetteLibrary.Client.Sources.Scanner scanner =
                 new OzetteLibrary.Client.Sources.Scanner(
-                    new SourceLocation()
-                    {
-                        FolderPath = Environment.CurrentDirectory,
-                        FileMatchFilter = "*.*",
-                        Priority = FileBackupPriority.Low,
-                        RevisionCount = 1
-                    },
                     new MockClientDatabase(),
                     new MockLogger());
+
+            var source = new SourceLocation()
+            {
+                FolderPath = Environment.CurrentDirectory,
+                FileMatchFilter = "*.*",
+                Priority = FileBackupPriority.Low,
+                RevisionCount = 1
+            };
 
             var signalScanCompleteEvent = new AutoResetEvent(false);
 
             scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
-            scanner.BeginScan();
+            scanner.BeginScan(source);
 
             var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(10));
 
@@ -98,20 +89,21 @@ namespace OzetteLibraryTests.Client.Sources
 
             OzetteLibrary.Client.Sources.Scanner scanner =
                 new OzetteLibrary.Client.Sources.Scanner(
-                    new SourceLocation()
-                    {
-                        FolderPath = Environment.CurrentDirectory,
-                        FileMatchFilter = "*.*",
-                        Priority = FileBackupPriority.Low,
-                        RevisionCount = 1
-                    },
                     new MockClientDatabase(),
                     logger);
+
+            var source = new SourceLocation()
+            {
+                FolderPath = Environment.CurrentDirectory,
+                FileMatchFilter = "*.*",
+                Priority = FileBackupPriority.Low,
+                RevisionCount = 1
+            };
 
             var signalScanCompleteEvent = new AutoResetEvent(false);
 
             scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
-            scanner.BeginScan();
+            scanner.BeginScan(source);
 
             var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(10));
 
