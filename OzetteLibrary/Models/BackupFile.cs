@@ -19,11 +19,25 @@ namespace OzetteLibrary.Models
         /// <summary>
         /// The name of the file including extension.
         /// </summary>
+        /// <example>
+        /// 'test.exe'
+        /// </example>
         public string Filename { get; set; }
 
         /// <summary>
-        /// The full file path for this file in the source.
+        /// The directory path that hosts this file.
         /// </summary>
+        /// <example>
+        /// 'C:\bin\programs'
+        /// </example>
+        public string Directory { get; set; }
+
+        /// <summary>
+        /// The full file path (directory + filename) for this file in the source.
+        /// </summary>
+        /// <example>
+        /// 'C:\bin\programs\test.exe'
+        /// </example>
         public string FullSourcePath { get; set; }
 
         /// <summary>

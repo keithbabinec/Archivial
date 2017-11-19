@@ -1,5 +1,5 @@
 ﻿using OzetteLibrary.Models;
-using System;
+using System.Collections.Generic;
 
 namespace OzetteLibrary.Database.Mock
 {
@@ -8,6 +8,34 @@ namespace OzetteLibrary.Database.Mock
     /// </summary>
     public class MockClientDatabase : IClientDatabase
     {
+        /// <summary>
+        /// A mock database table for client files.
+        /// </summary>
+        private Dictionary<string, ClientFile> ClientFiles;
+
+        /// <summary>
+        /// A mock database table for targets.
+        /// </summary>
+        private Targets Targets;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public MockClientDatabase()
+        {
+            ClientFiles = new Dictionary<string, ClientFile>();
+            Targets = new Targets();
+
+            var target = new Target();
+            target.ID = 1;
+            target.Name = "remotehost";
+            target.Port = 20513;
+            target.RootDirectory = "D:\\data\backuptarget";
+            target.Url = "remotehost.backups.com";
+
+            Targets.Add(target);
+        }
+
         /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.
         /// </summary>
@@ -22,7 +50,7 @@ namespace OzetteLibrary.Database.Mock
         /// <returns><c>ClientFileLookup</c></returns>
         public ClientFileLookup GetClientFile(string FileName, string DirectoryPath, byte[] FileHash)
         {
-            throw new NotImplementedException();
+            return new ClientFileLookup() { File = null, Result = ClientFileLookupResult.New };
         }
 
         /// <summary>
@@ -31,7 +59,7 @@ namespace OzetteLibrary.Database.Mock
         /// <returns><c>Targets</c></returns>
         public Targets GetTargets()
         {
-            throw new NotImplementedException();
+            return this.Targets;
         }
 
         /// <summary>
@@ -40,7 +68,7 @@ namespace OzetteLibrary.Database.Mock
         /// <param name="File"><c>ClientFile</c></param>
         public void AddClientFile(ClientFile File)
         {
-            throw new NotImplementedException();
+            ClientFiles.Add(File.FullSourcePath, File);
         }
 
         /// <summary>
@@ -49,7 +77,7 @@ namespace OzetteLibrary.Database.Mock
         /// <param name="File"><c>ClientFile</c></param>
         public void UpdateClientFile(ClientFile File)
         {
-            throw new NotImplementedException();
+            ClientFiles[File.FullSourcePath] = File;
         }
     }
 }

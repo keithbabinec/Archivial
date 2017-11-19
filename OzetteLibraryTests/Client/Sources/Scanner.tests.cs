@@ -77,7 +77,7 @@ namespace OzetteLibraryTests.Client.Sources
             scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
             scanner.BeginScan(source);
 
-            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(10));
+            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
 
             Assert.IsTrue(scanCompletedSignaled);
         }
@@ -105,7 +105,7 @@ namespace OzetteLibraryTests.Client.Sources
             scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
             scanner.BeginScan(source);
 
-            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(10));
+            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
 
             Assert.IsTrue(scanCompletedSignaled);
             Assert.IsTrue(logger.WriteTraceMessageHasBeenCalled);

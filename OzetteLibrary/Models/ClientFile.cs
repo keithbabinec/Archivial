@@ -20,6 +20,7 @@ namespace OzetteLibrary.Models
         {
             FileID = Guid.NewGuid();
             Filename = fileInfo.Name;
+            Directory = fileInfo.DirectoryName;
             FullSourcePath = fileInfo.FullName;
             FileSizeBytes = Convert.ToUInt64(fileInfo.Length);
         }
