@@ -28,6 +28,18 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void LiteDBClientDatabaseConstructorThrowsWhenNoDatabaseFileNameIsProvided()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            string dbname = null;
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(dbname, logger);
+        }
+
+        [TestMethod()]
         public void LiteDBClientDatabaseCanBeInstantiatedWithMemoryStream()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
