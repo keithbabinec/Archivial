@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.Models;
+﻿using OzetteLibrary.Logging;
+using OzetteLibrary.Models;
 using System;
 
 namespace OzetteLibrary.Database.LiteDB
@@ -8,6 +9,25 @@ namespace OzetteLibrary.Database.LiteDB
     /// </summary>
     public class LiteDBClientDatabase : IClientDatabase
     {
+        /// <summary>
+        /// A constructor that requires the logger.
+        /// </summary>
+        /// <param name="logger"><c>ILogger</c></param>
+        public LiteDBClientDatabase(ILogger logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            Logger = logger;
+        }
+
+        /// <summary>
+        /// A reference to the logger.
+        /// </summary>
+        private ILogger Logger;
+
         /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.
         /// </summary>
