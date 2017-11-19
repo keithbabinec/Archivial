@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.IO;
 
 namespace OzetteLibraryTests.Database.LiteDB
 {
@@ -10,14 +11,43 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(ArgumentNullException))]
         public void LiteDBClientDatabaseConstructorThrowsWhenNoLoggerIsProvided()
         {
-            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db = new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(null);
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db = 
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(new MemoryStream(), null);
         }
 
         [TestMethod()]
-        public void LiteDBClientDatabaseCanBeInstantiated()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void LiteDBClientDatabaseConstructorThrowsWhenNoDatabaseStreamIsProvided()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db = new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(logger);
+
+            MemoryStream ms = null;
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanBeInstantiatedWithMemoryStream()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+            var mem = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db = 
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(mem, logger);
+
+            Assert.IsNotNull(db);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanBeInstantiatedWithFileName()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+            var dbname = "database.db";
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(dbname, logger);
+
             Assert.IsNotNull(db);
         }
     }
