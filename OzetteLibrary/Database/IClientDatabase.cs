@@ -8,15 +8,6 @@ namespace OzetteLibrary.Database
     public interface IClientDatabase : IDatabase
     {
         /// <summary>
-        /// Runs database preparation steps.
-        /// </summary>
-        /// <remarks>
-        /// This step prepares any tables, indexes, identity mappings, etc. for use.
-        /// This action is idempotent (safe to run over and over), but should be run once at each application startup.
-        /// </remarks>
-        void PrepareDatabase();
-
-        /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.
         /// </summary>
         /// <remarks>
