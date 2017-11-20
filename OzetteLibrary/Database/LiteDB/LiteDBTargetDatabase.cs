@@ -54,19 +54,6 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
-        /// Creates class-object identity mappings.
-        /// </summary>
-        /// <remarks>
-        /// This allows us to make mapping changes to specific properties without having to stick external references
-        /// inside of the plain class objects (keeps the library models clean). Since this normally done by attribute 
-        /// tags inside the model classes.
-        /// </remarks>
-        private void ConfigureDatabaseIdentityMappings()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Runs database preparation steps.
         /// </summary>
         /// <remarks>
@@ -79,6 +66,19 @@ namespace OzetteLibrary.Database.LiteDB
             ConfigureDatabaseCollections();
 
             DatabaseHasBeenPrepared = true;
+        }
+
+        /// <summary>
+        /// Creates class-object identity mappings.
+        /// </summary>
+        /// <remarks>
+        /// This allows us to make mapping changes to specific properties without having to stick external references
+        /// inside of the plain class objects (keeps the library models clean). Since this normally done by attribute 
+        /// tags inside the model classes.
+        /// </remarks>
+        private void ConfigureDatabaseIdentityMappings()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
