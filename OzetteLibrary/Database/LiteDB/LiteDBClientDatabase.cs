@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.Logging;
+﻿using LiteDB;
+using OzetteLibrary.Logging;
 using OzetteLibrary.Models;
 using System;
 using System.IO;
@@ -62,27 +63,10 @@ namespace OzetteLibrary.Database.LiteDB
         /// </remarks>
         public void PrepareDatabase()
         {
-            ConfigureDatabaseTables();
-            ConfigureDatabaseIndexes();
             ConfigureDatabaseIdentityMappings();
+            ConfigureDatabaseCollections();
 
             DatabaseHasBeenPrepared = true;
-        }
-
-        /// <summary>
-        /// Ensures database tables are present (create if missing).
-        /// </summary>
-        private void ConfigureDatabaseTables()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Ensures database indexes are enabled (create if missing).
-        /// </summary>
-        private void ConfigureDatabaseIndexes()
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -95,7 +79,59 @@ namespace OzetteLibrary.Database.LiteDB
         /// </remarks>
         private void ConfigureDatabaseIdentityMappings()
         {
-            throw new NotImplementedException();
+            var map = BsonMapper.Global;
+
+            map.Entity<ClientFile>().Id(x => x.FileID);
+            map.Entity<Target>().Id(x => x.ID);
+        }
+
+        /// <summary>
+        /// Configures database collections (tables) for use.
+        /// </summary>
+        /// <remarks>
+        /// This involves creating tables if they are missing, and ensuring indexes are present.
+        /// </remarks>
+        private void ConfigureDatabaseCollections()
+        {
+            using (var db = GetLiteDBInstance())
+            {
+                // the action of 'getting' the collection will create it if missing.
+                // EnsureIndex() will also only create the indexes if they are missing.
+
+                var clientCol = db.GetCollection<ClientFile>(ClientsTableName);
+                clientCol.EnsureIndex(x => x.FileID);
+                clientCol.EnsureIndex(x => x.Filename);
+                clientCol.EnsureIndex(x => x.Directory);
+                clientCol.EnsureIndex(x => x.FileHash);
+
+                var targetCol = db.GetCollection<Target>(TargetsTableName);
+                targetCol.EnsureIndex(x => x.ID);
+                targetCol.EnsureIndex(x => x.Name);
+            }
+        }
+        
+        /// <summary>
+        /// Returns a LiteDB instance.
+        /// </summary>
+        /// <remarks>
+        /// This class supports both in-memory streamed database, and file-on-disk database.
+        /// Return an instance using whichever one was supplied to the constructor.
+        /// </remarks>
+        /// <returns></returns>
+        private LiteDatabase GetLiteDBInstance()
+        {
+            if (DatabaseConnectionString == null && DatabaseMemoryStream != null)
+            {
+                return new LiteDatabase(DatabaseMemoryStream);
+            }
+            else if (DatabaseConnectionString != null && DatabaseMemoryStream == null)
+            {
+                return new LiteDatabase(DatabaseConnectionString);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unable to return a LiteDB instance. No memory stream or connection string was provided.");
+            }
         }
 
         /// <summary>
@@ -123,6 +159,16 @@ namespace OzetteLibrary.Database.LiteDB
         /// A flag to indicate if the database has been prepared.
         /// </summary>
         private bool DatabaseHasBeenPrepared;
+
+        /// <summary>
+        /// A string constant for the clients table name.
+        /// </summary>
+        private const string ClientsTableName = "ClientFiles";
+
+        /// <summary>
+        /// A string constant for the targets table name.
+        /// </summary>
+        private const string TargetsTableName = "Targets";
 
         /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.

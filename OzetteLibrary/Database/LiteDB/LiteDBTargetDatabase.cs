@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.Logging;
+﻿using LiteDB;
+using OzetteLibrary.Logging;
 using System;
 using System.IO;
 
@@ -53,38 +54,6 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
-        /// Runs database preparation steps.
-        /// </summary>
-        /// <remarks>
-        /// This step prepares any tables, indexes, identity mappings, etc. for use.
-        /// This action is idempotent (safe to run over and over), but should be run once at each application startup.
-        /// </remarks>
-        public void PrepareDatabase()
-        {
-            ConfigureDatabaseTables();
-            ConfigureDatabaseIndexes();
-            ConfigureDatabaseIdentityMappings();
-
-            DatabaseHasBeenPrepared = true;
-        }
-
-        /// <summary>
-        /// Ensures database tables are present (create if missing).
-        /// </summary>
-        private void ConfigureDatabaseTables()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Ensures database indexes are enabled (create if missing).
-        /// </summary>
-        private void ConfigureDatabaseIndexes()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Creates class-object identity mappings.
         /// </summary>
         /// <remarks>
@@ -95,6 +64,62 @@ namespace OzetteLibrary.Database.LiteDB
         private void ConfigureDatabaseIdentityMappings()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Runs database preparation steps.
+        /// </summary>
+        /// <remarks>
+        /// This step prepares any tables, indexes, identity mappings, etc. for use.
+        /// This action is idempotent (safe to run over and over), but should be run once at each application startup.
+        /// </remarks>
+        public void PrepareDatabase()
+        {
+            ConfigureDatabaseIdentityMappings();
+            ConfigureDatabaseCollections();
+
+            DatabaseHasBeenPrepared = true;
+        }
+
+        /// <summary>
+        /// Configures database collections (tables) for use.
+        /// </summary>
+        /// <remarks>
+        /// This involves creating tables if they are missing, and ensuring indexes are present.
+        /// </remarks>
+        private void ConfigureDatabaseCollections()
+        {
+            using (var db = GetLiteDBInstance())
+            {
+                // the action of 'getting' the collection will create it if missing.
+                // EnsureIndex() will also only create the indexes if they are missing.
+
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns a LiteDB instance.
+        /// </summary>
+        /// <remarks>
+        /// This class supports both in-memory streamed database, and file-on-disk database.
+        /// Return an instance using whichever one was supplied to the constructor.
+        /// </remarks>
+        /// <returns></returns>
+        private LiteDatabase GetLiteDBInstance()
+        {
+            if (DatabaseConnectionString == null && DatabaseMemoryStream != null)
+            {
+                return new LiteDatabase(DatabaseMemoryStream);
+            }
+            else if (DatabaseConnectionString != null && DatabaseMemoryStream == null)
+            {
+                return new LiteDatabase(DatabaseConnectionString);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unable to return a LiteDB instance. No memory stream or connection string was provided.");
+            }
         }
 
         /// <summary>
