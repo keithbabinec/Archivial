@@ -33,22 +33,22 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
-        /// Instantiates a client DB from database filename.
+        /// Instantiates a client DB from database connection string.
         /// </summary>
-        /// <param name="databaseFile"></param>
+        /// <param name="connectionString"></param>
         /// <param name="logger"></param>
-        public LiteDBTargetDatabase(string databaseFile, ILogger logger)
+        public LiteDBTargetDatabase(string connectionString, ILogger logger)
         {
-            if (string.IsNullOrWhiteSpace(databaseFile))
+            if (string.IsNullOrWhiteSpace(connectionString))
             {
-                throw new ArgumentException(nameof(databaseFile));
+                throw new ArgumentException(nameof(connectionString));
             }
             if (logger == null)
             {
                 throw new ArgumentNullException(nameof(logger));
             }
 
-            DatabaseFileName = databaseFile;
+            DatabaseConnectionString = connectionString;
             Logger = logger;
         }
 
@@ -63,7 +63,7 @@ namespace OzetteLibrary.Database.LiteDB
         /// <remarks>
         /// A memory stream or database file is used, but not both.
         /// </remarks>
-        private string DatabaseFileName;
+        private string DatabaseConnectionString;
 
         /// <summary>
         /// The database memory stream.

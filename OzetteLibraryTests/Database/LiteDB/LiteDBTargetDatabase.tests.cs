@@ -29,14 +29,14 @@ namespace OzetteLibraryTests.Database.LiteDB
 
         [TestMethod()]
         [ExpectedException(typeof(ArgumentException))]
-        public void LiteDBTargetDatabaseConstructorThrowsWhenNoDatabaseFileNameIsProvided()
+        public void LiteDBTargetDatabaseConstructorThrowsWhenNoDatabaseConnectionStringIsProvided()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
-            string dbname = null;
+            string dbConString = null;
 
             OzetteLibrary.Database.LiteDB.LiteDBTargetDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBTargetDatabase(dbname, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBTargetDatabase(dbConString, logger);
         }
 
         [TestMethod()]
@@ -52,13 +52,13 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
-        public void LiteDBTargetDatabaseCanBeInstantiatedWithFileName()
+        public void LiteDBTargetDatabaseCanBeInstantiatedWithConnectionString()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-            var dbname = "database.db";
+            var dbConString = "fake-connection-string";
 
             OzetteLibrary.Database.LiteDB.LiteDBTargetDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBTargetDatabase(dbname, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBTargetDatabase(dbConString, logger);
 
             Assert.IsNotNull(db);
         }
