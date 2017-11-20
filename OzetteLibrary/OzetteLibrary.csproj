@@ -55,8 +55,6 @@
     <Compile Include="Database\ITargetDatabase.cs" />
     <Compile Include="Database\LiteDB\LiteDBClientDatabase.cs" />
     <Compile Include="Database\LiteDB\LiteDBTargetDatabase.cs" />
-    <Compile Include="Database\Mock\MockClientDatabase.cs" />
-    <Compile Include="Database\Mock\MockTargetDatabase.cs" />
     <Compile Include="Logging\Default\Logger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Mock\MockLogger.cs" />

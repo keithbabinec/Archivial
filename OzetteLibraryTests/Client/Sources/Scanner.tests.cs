@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OzetteLibrary.Database.Mock;
+using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Mock;
 using OzetteLibrary.Models;
 using System;
+using System.IO;
 using System.Threading;
 
 namespace OzetteLibraryTests.Client.Sources
@@ -22,27 +23,33 @@ namespace OzetteLibraryTests.Client.Sources
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScannerConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
+
             OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(new MockClientDatabase(), null);
+                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, null);
         }
 
         [TestMethod()]
         public void ScannerConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
-            OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(new MockClientDatabase(), new MockLogger());
+            var logger = new MockLogger();
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
 
-            Assert.IsTrue(true);
+            OzetteLibrary.Client.Sources.Scanner scanner =
+                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+
+            Assert.IsNotNull(scanner);
         }
 
         [TestMethod()]
         [ExpectedException(typeof(InvalidOperationException))]
         public void ScannerThrowsWhenBeginScanIsCalledAfterScanHasAlreadyStarted()
         {
+            var logger = new MockLogger();
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+
             OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(
-                    new MockClientDatabase(),
-                    new MockLogger());
+                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
 
             var source = new SourceLocation()
             {
@@ -59,10 +66,11 @@ namespace OzetteLibraryTests.Client.Sources
         [TestMethod()]
         public void ScannerTriggersScanCompletedEventAfterScanHasCompleted()
         {
+            var logger = new MockLogger();
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+
             OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(
-                    new MockClientDatabase(),
-                    new MockLogger());
+                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
 
             var source = new SourceLocation()
             {
@@ -86,11 +94,10 @@ namespace OzetteLibraryTests.Client.Sources
         public void TraceMessagesAreWrittenToTheTraceLogDuringScanning()
         {
             var logger = new MockLogger();
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
 
             OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(
-                    new MockClientDatabase(),
-                    logger);
+                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
 
             var source = new SourceLocation()
             {
