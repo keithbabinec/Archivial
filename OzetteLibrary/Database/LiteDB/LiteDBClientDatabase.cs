@@ -54,6 +54,51 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
+        /// Runs database preparation steps.
+        /// </summary>
+        /// <remarks>
+        /// This step prepares any tables, indexes, identity mappings, etc. for use.
+        /// This action is idempotent (safe to run over and over), but should be run once at each application startup.
+        /// </remarks>
+        public void PrepareDatabase()
+        {
+            ConfigureDatabaseTables();
+            ConfigureDatabaseIndexes();
+            ConfigureDatabaseIdentityMappings();
+
+            DatabaseHasBeenPrepared = true;
+        }
+
+        /// <summary>
+        /// Ensures database tables are present (create if missing).
+        /// </summary>
+        private void ConfigureDatabaseTables()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Ensures database indexes are enabled (create if missing).
+        /// </summary>
+        private void ConfigureDatabaseIndexes()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates class-object identity mappings.
+        /// </summary>
+        /// <remarks>
+        /// This allows us to make mapping changes to specific properties without having to stick external references
+        /// inside of the plain class objects (keeps the library models clean). Since this normally done by attribute 
+        /// tags inside the model classes.
+        /// </remarks>
+        private void ConfigureDatabaseIdentityMappings()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// A reference to the logger.
         /// </summary>
         private ILogger Logger;
@@ -73,6 +118,11 @@ namespace OzetteLibrary.Database.LiteDB
         /// A memory stream or database file is used, but not both.
         /// </remarks>
         private MemoryStream DatabaseMemoryStream;
+
+        /// <summary>
+        /// A flag to indicate if the database has been prepared.
+        /// </summary>
+        private bool DatabaseHasBeenPrepared;
 
         /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.
