@@ -58,7 +58,7 @@ namespace OzetteLibrary.Database.LiteDB
         private ILogger Logger;
 
         /// <summary>
-        /// The database file name.
+        /// The database connection string.
         /// </summary>
         /// <remarks>
         /// A memory stream or database file is used, but not both.
