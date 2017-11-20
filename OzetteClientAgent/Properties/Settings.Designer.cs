@@ -25,10 +25,10 @@ namespace OzetteClientAgent.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("OzetteClient.db")]
-        public string DatabaseFileName {
+        [global::System.Configuration.DefaultSettingValueAttribute("Filename=OzetteClient.db;Journal=true;Mode=Exclusive")]
+        public string DatabaseConnectionString {
             get {
-                return ((string)(this["DatabaseFileName"]));
+                return ((string)(this["DatabaseConnectionString"]));
             }
         }
         

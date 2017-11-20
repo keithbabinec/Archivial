@@ -2,8 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="OzetteClientAgent.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="DatabaseFileName" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">OzetteClient.db</Value>
+    <Setting Name="DatabaseConnectionString" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Filename=OzetteClient.db;Journal=true;Mode=Exclusive</Value>
     </Setting>
     <Setting Name="EventlogName" Type="System.String" Scope="Application">
       <Value Profile="(Default)">OzetteClient</Value>
