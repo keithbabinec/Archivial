@@ -219,6 +219,28 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
+        /// Adds a single target to the database.
+        /// </summary>
+        /// <param name="Target"></param>
+        public void AddTarget(Target Target)
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+            if (Target == null)
+            {
+                throw new ArgumentNullException(nameof(Target));
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var targetCol = db.GetCollection<Target>(TargetsTableName);
+                targetCol.Insert(Target);
+            }
+        }
+
+        /// <summary>
         /// Adds a new client file to the database.
         /// </summary>
         /// <param name="File"><c>ClientFile</c></param>

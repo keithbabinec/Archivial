@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using LiteDB;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 
@@ -148,6 +149,35 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseAddTargetThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.AddTarget(null);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void LiteDBClientDatabaseAddTargetThrowsIfNullTargetIsPassed()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+            db.AddTarget(null);
+        }
+
+        [TestMethod()]
         public void LiteDBClientDatabaseGetTargetsReturnsEmptyCollectionInsteadOfNull()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
@@ -163,6 +193,138 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanAddTargetSuccessfully()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            // add a target using API AddTarget()
+            // then manually check the stream
+            
+            var ms = new MemoryStream();
+            
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var t = new OzetteLibrary.Models.Target() { ID = 1, Name = "test" };
+            db.AddTarget(t);
+
+            var liteDB = new LiteDatabase(ms);
+            var targetCol = liteDB.GetCollection<OzetteLibrary.Models.Target>("Targets");
+            var result = new OzetteLibrary.Models.Targets(targetCol.FindAll());
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+
+            Assert.AreEqual(1, result[0].ID);
+            Assert.AreEqual("test", result[0].Name);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanGetTargetSuccessfully()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            // manually add a target to the database stream.
+            // then check API GetTargets()
+
+            var t = new OzetteLibrary.Models.Target() { ID = 1, Name = "test" };
+            var ms = new MemoryStream();
+            var liteDB = new LiteDatabase(ms);
+            var targetCol = liteDB.GetCollection<OzetteLibrary.Models.Target>("Targets");
+            targetCol.Insert(t);
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var result = db.GetTargets();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+
+            Assert.AreEqual(1, result[0].ID);
+            Assert.AreEqual("test", result[0].Name);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanAddAndGetSingleTargetSuccessfully()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            OzetteLibrary.Models.Target t = new OzetteLibrary.Models.Target();
+            t.ID = 1;
+            t.Name = "test";
+            t.Port = 80;
+            t.Url = "http://address.url.company.com";
+            t.RootDirectory = "C:\\backuptarget\\test";
+
+            db.AddTarget(t);
+            var result = db.GetTargets();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+
+            Assert.AreEqual(1, result[0].ID);
+            Assert.AreEqual("test", result[0].Name);
+            Assert.AreEqual(80, result[0].Port);
+            Assert.AreEqual("http://address.url.company.com", result[0].Url);
+            Assert.AreEqual("C:\\backuptarget\\test", result[0].RootDirectory);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanAddAndGetMultipleTargetsSuccessfully()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            OzetteLibrary.Models.Target t = new OzetteLibrary.Models.Target();
+            t.ID = 1;
+            t.Name = "test";
+
+            OzetteLibrary.Models.Target t2 = new OzetteLibrary.Models.Target();
+            t2.ID = 2;
+            t2.Name = "test2";
+
+            OzetteLibrary.Models.Target t3 = new OzetteLibrary.Models.Target();
+            t3.ID = 3;
+            t3.Name = "test3";
+
+            db.AddTarget(t);
+            db.AddTarget(t2);
+            db.AddTarget(t3);
+
+            var result = db.GetTargets();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.Count);
+
+            Assert.AreEqual(1, result[0].ID);
+            Assert.AreEqual("test", result[0].Name);
+
+            Assert.AreEqual(2, result[1].ID);
+            Assert.AreEqual("test2", result[1].Name);
+
+            Assert.AreEqual(3, result[2].ID);
+            Assert.AreEqual("test3", result[2].Name);
         }
     }
 }

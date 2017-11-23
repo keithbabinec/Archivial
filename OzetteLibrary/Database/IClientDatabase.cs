@@ -28,6 +28,12 @@ namespace OzetteLibrary.Database
         Targets GetTargets();
 
         /// <summary>
+        /// Adds a single target to the database.
+        /// </summary>
+        /// <param name="Target"></param>
+        void AddTarget(Target Target);
+
+        /// <summary>
         /// Adds a new client file to the database.
         /// </summary>
         /// <param name="File"><c>ClientFile</c></param>
