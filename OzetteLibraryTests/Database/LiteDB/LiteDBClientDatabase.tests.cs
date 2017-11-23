@@ -62,5 +62,89 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             Assert.IsNotNull(db);
         }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanRunPrepareDatabaseWithoutExceptions()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanRunPrepareDatabaseMultipleTimesWithoutExceptions()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+            db.PrepareDatabase();
+            db.PrepareDatabase();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseGetClientFileThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.GetClientFile(null, null, null);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseGetTargetsThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.GetTargets();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseAddClientFileThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.AddClientFile(null);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseUpdateClientFileThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.UpdateClientFile(null);
+        }
     }
 }

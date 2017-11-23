@@ -184,6 +184,11 @@ namespace OzetteLibrary.Database.LiteDB
         /// <returns><c>ClientFileLookup</c></returns>
         public ClientFileLookup GetClientFile(string FileName, string DirectoryPath, byte[] FileHash)
         {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
             throw new NotImplementedException();
         }
 
@@ -193,6 +198,11 @@ namespace OzetteLibrary.Database.LiteDB
         /// <returns><c>Targets</c></returns>
         public Targets GetTargets()
         {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
             throw new NotImplementedException();
         }
 
@@ -202,6 +212,11 @@ namespace OzetteLibrary.Database.LiteDB
         /// <param name="File"><c>ClientFile</c></param>
         public void AddClientFile(ClientFile File)
         {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
             throw new NotImplementedException();
         }
 
@@ -211,6 +226,11 @@ namespace OzetteLibrary.Database.LiteDB
         /// <param name="File"><c>ClientFile</c></param>
         public void UpdateClientFile(ClientFile File)
         {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
             throw new NotImplementedException();
         }
     }
