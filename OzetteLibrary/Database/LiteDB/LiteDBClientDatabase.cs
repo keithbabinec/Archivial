@@ -203,7 +203,19 @@ namespace OzetteLibrary.Database.LiteDB
                 throw new InvalidOperationException("Database has not been prepared.");
             }
 
-            throw new NotImplementedException();
+            using (var db = GetLiteDBInstance())
+            {
+                var targetCol = db.GetCollection<Target>(TargetsTableName);
+
+                if (targetCol.Count() > 0)
+                {
+                    return new Targets(targetCol.FindAll());
+                }
+                else
+                {
+                    return new Targets();
+                }
+            }
         }
 
         /// <summary>

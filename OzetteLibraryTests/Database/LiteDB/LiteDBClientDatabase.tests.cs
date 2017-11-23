@@ -146,5 +146,23 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.UpdateClientFile(null);
         }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetTargetsReturnsEmptyCollectionInsteadOfNull()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var result = db.GetTargets();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count);
+        }
     }
 }

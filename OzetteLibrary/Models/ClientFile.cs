@@ -45,9 +45,9 @@ namespace OzetteLibrary.Models
         /// <param name="targets"></param>
         public void ResetCopyState(Targets targets)
         {
-            if (targets == null || targets.Count == 0)
+            if (targets == null)
             {
-                throw new ArgumentException(nameof(targets) + " argument cannot be null or empty.");
+                throw new ArgumentNullException(nameof(targets));
             }
 
             CopyState = new Dictionary<int, TargetCopyState>();
