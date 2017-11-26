@@ -1,7 +1,9 @@
 ﻿using LiteDB;
+using OzetteLibrary.Crypto;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OzetteLibrary.Database.LiteDB
@@ -179,7 +181,95 @@ namespace OzetteLibrary.Database.LiteDB
                 throw new InvalidOperationException("Database has not been prepared.");
             }
 
-            throw new NotImplementedException();
+            var existingFile = FindFullMatchOnNameDirectoryAndHash(FileName, DirectoryPath, FileHash);
+            if (existingFile != null)
+            {
+                return new ClientFileLookup() { File = existingFile, Result = ClientFileLookupResult.Existing };
+            }
+
+            var updatedFile = FindFilesWithExactNameAndPathButWrongHash(FileName, DirectoryPath, FileHash);
+            if (updatedFile != null)
+            {
+                return new ClientFileLookup() { File = updatedFile, Result = ClientFileLookupResult.Updated };
+            }
+
+            var partialMatches = FindFilesWithSameHashButDifferentNameOrPath(FileName, DirectoryPath, FileHash);
+            if (partialMatches != null)
+            {
+                return new ClientFileLookup() { PartialMatches = partialMatches, Result = ClientFileLookupResult.Duplicate };
+            }
+
+            return new ClientFileLookup() { Result = ClientFileLookupResult.New };
+        }
+
+        private ClientFile FindFullMatchOnNameDirectoryAndHash(string FileName, string DirectoryPath, byte[] FileHash)
+        {
+            using (var db = GetLiteDBInstance())
+            {
+                ClientFileLookup result = new ClientFileLookup();
+
+                var clientFilesCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
+                var matchesOnHash = clientFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHash == FileHash);
+
+                foreach (var file in matchesOnHash)
+                {
+                    // exact file hash, name, location.
+                    // only possible to have one.
+                    return file;
+                }
+
+                return null;
+            }
+        }
+
+        private List<ClientFile> FindFilesWithSameHashButDifferentNameOrPath(string FileName, string DirectoryPath, byte[] FileHash)
+        {
+            using (var db = GetLiteDBInstance())
+            {
+                ClientFileLookup result = new ClientFileLookup();
+
+                var clientFilesCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
+                var matchesOnHash = clientFilesCol.Find(x => x.FileHash == FileHash);
+
+                List<ClientFile> partialMatches = null;
+
+                foreach (var file in matchesOnHash)
+                {
+                    if (file.Filename == FileName || file.Directory == DirectoryPath)
+                    {
+                        // matches on hash and either file name or directory.
+
+                        if (partialMatches == null)
+                        {
+                            partialMatches = new List<ClientFile>();
+                        }
+
+                        partialMatches.Add(file);
+                    }
+                }
+
+                return partialMatches;
+            }
+        }
+
+        private ClientFile FindFilesWithExactNameAndPathButWrongHash(string FileName, string DirectoryPath, byte[] FileHash)
+        {
+            using (var db = GetLiteDBInstance())
+            {
+                ClientFileLookup result = new ClientFileLookup();
+
+                var clientFilesCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
+                var matchesOnHash = clientFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHash != FileHash);
+
+                foreach (var file in matchesOnHash)
+                {
+                    // exact name, location.
+                    // only possible to have one.
+                    return file;
+                }
+
+                return null;
+            }
         }
 
         /// <summary>
