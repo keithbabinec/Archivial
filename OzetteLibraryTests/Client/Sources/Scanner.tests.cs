@@ -69,6 +69,8 @@ namespace OzetteLibraryTests.Client.Sources
             var logger = new MockLogger();
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
 
+            inMemoryDB.PrepareDatabase();
+
             OzetteLibrary.Client.Sources.Scanner scanner =
                 new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
 
@@ -95,6 +97,8 @@ namespace OzetteLibraryTests.Client.Sources
         {
             var logger = new MockLogger();
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+
+            inMemoryDB.PrepareDatabase();
 
             OzetteLibrary.Client.Sources.Scanner scanner =
                 new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
