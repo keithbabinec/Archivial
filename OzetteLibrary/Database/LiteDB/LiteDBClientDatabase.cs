@@ -98,13 +98,13 @@ namespace OzetteLibrary.Database.LiteDB
                 // the action of 'getting' the collection will create it if missing.
                 // EnsureIndex() will also only create the indexes if they are missing.
 
-                var clientCol = db.GetCollection<ClientFile>(ClientsTableName);
+                var clientCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
                 clientCol.EnsureIndex(x => x.FileID);
                 clientCol.EnsureIndex(x => x.Filename);
                 clientCol.EnsureIndex(x => x.Directory);
                 clientCol.EnsureIndex(x => x.FileHash);
 
-                var targetCol = db.GetCollection<Target>(TargetsTableName);
+                var targetCol = db.GetCollection<Target>(Constants.Database.TargetsTableName);
                 targetCol.EnsureIndex(x => x.ID);
                 targetCol.EnsureIndex(x => x.Name);
             }
@@ -161,16 +161,6 @@ namespace OzetteLibrary.Database.LiteDB
         private bool DatabaseHasBeenPrepared;
 
         /// <summary>
-        /// A string constant for the clients table name.
-        /// </summary>
-        private const string ClientsTableName = "ClientFiles";
-
-        /// <summary>
-        /// A string constant for the targets table name.
-        /// </summary>
-        private const string TargetsTableName = "Targets";
-
-        /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.
         /// </summary>
         /// <remarks>
@@ -205,7 +195,7 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var targetCol = db.GetCollection<Target>(TargetsTableName);
+                var targetCol = db.GetCollection<Target>(Constants.Database.TargetsTableName);
 
                 if (targetCol.Count() > 0)
                 {
@@ -235,7 +225,7 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var targetCol = db.GetCollection<Target>(TargetsTableName);
+                var targetCol = db.GetCollection<Target>(Constants.Database.TargetsTableName);
                 targetCol.Insert(Target);
             }
         }
@@ -257,7 +247,7 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var targetCol = db.GetCollection<ClientFile>(ClientsTableName);
+                var targetCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
                 targetCol.Insert(File);
             }
         }
@@ -279,7 +269,7 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var targetCol = db.GetCollection<ClientFile>(ClientsTableName);
+                var targetCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
                 targetCol.Update(File);
             }
         }

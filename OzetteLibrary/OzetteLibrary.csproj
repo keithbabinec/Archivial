@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Client\Sources\Loader.cs" />
     <Compile Include="Client\Sources\Scanner.cs" />
+    <Compile Include="Constants\Database.cs" />
     <Compile Include="Database\IClientDatabase.cs" />
     <Compile Include="Database\IDatabase.cs" />
     <Compile Include="Database\ITargetDatabase.cs" />

@@ -215,7 +215,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.AddTarget(t);
 
             var liteDB = new LiteDatabase(ms);
-            var targetCol = liteDB.GetCollection<OzetteLibrary.Models.Target>("Targets");
+            var targetCol = liteDB.GetCollection<OzetteLibrary.Models.Target>(OzetteLibrary.Constants.Database.TargetsTableName);
             var result = new OzetteLibrary.Models.Targets(targetCol.FindAll());
 
             Assert.IsNotNull(result);
@@ -236,7 +236,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var t = new OzetteLibrary.Models.Target() { ID = 1, Name = "test" };
             var ms = new MemoryStream();
             var liteDB = new LiteDatabase(ms);
-            var targetCol = liteDB.GetCollection<OzetteLibrary.Models.Target>("Targets");
+            var targetCol = liteDB.GetCollection<OzetteLibrary.Models.Target>(OzetteLibrary.Constants.Database.TargetsTableName);
             targetCol.Insert(t);
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
@@ -350,7 +350,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.AddClientFile(t);
 
             var liteDB = new LiteDatabase(ms);
-            var clientFileCol = liteDB.GetCollection<OzetteLibrary.Models.ClientFile>("ClientFiles");
+            var clientFileCol = liteDB.GetCollection<OzetteLibrary.Models.ClientFile>(OzetteLibrary.Constants.Database.ClientsTableName);
             var result = clientFileCol.FindAll();
 
             int fileCount = 0;
@@ -390,7 +390,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.UpdateClientFile(t);
 
             var liteDB = new LiteDatabase(ms);
-            var clientFileCol = liteDB.GetCollection<OzetteLibrary.Models.ClientFile>("ClientFiles");
+            var clientFileCol = liteDB.GetCollection<OzetteLibrary.Models.ClientFile>(OzetteLibrary.Constants.Database.ClientsTableName);
             var result = clientFileCol.FindAll();
 
             int fileCount = 0;
