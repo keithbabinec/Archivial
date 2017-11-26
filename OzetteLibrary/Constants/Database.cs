@@ -1,5 +1,8 @@
 ﻿namespace OzetteLibrary.Constants
 {
+    /// <summary>
+    /// A constants class for Database operations.
+    /// </summary>
     public static class Database
     {
         /// <summary>
