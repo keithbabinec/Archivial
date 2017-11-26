@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace OzetteLibraryTests.Database.LiteDB
 {
@@ -325,6 +326,84 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             Assert.AreEqual(3, result[2].ID);
             Assert.AreEqual("test3", result[2].Name);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanAddClientFileSuccessfully()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            // add a target using API AddClientFile()
+            // then manually check the stream
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            // need a sample file (the calling assembly itself).
+            FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            var t = new OzetteLibrary.Models.ClientFile(info);
+
+            db.AddClientFile(t);
+
+            var liteDB = new LiteDatabase(ms);
+            var clientFileCol = liteDB.GetCollection<OzetteLibrary.Models.ClientFile>("ClientFiles");
+            var result = clientFileCol.FindAll();
+
+            int fileCount = 0;
+            foreach (var file in result)
+            {
+                Assert.AreNotEqual(Guid.Empty, file.FileID);
+                Assert.AreEqual(info.FullName, file.FullSourcePath);
+                fileCount++;
+            }
+
+            Assert.AreEqual(1, fileCount);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanUpdateClientFileSuccessfully()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            // add a target using API AddClientFile()
+            // then manually check the stream
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            // need a sample file (the calling assembly itself).
+            FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            var t = new OzetteLibrary.Models.ClientFile(info);
+
+            db.AddClientFile(t);
+
+            t.LastChecked = DateTime.Now;
+
+            db.UpdateClientFile(t);
+
+            var liteDB = new LiteDatabase(ms);
+            var clientFileCol = liteDB.GetCollection<OzetteLibrary.Models.ClientFile>("ClientFiles");
+            var result = clientFileCol.FindAll();
+
+            int fileCount = 0;
+            foreach (var file in result)
+            {
+                Assert.AreNotEqual(Guid.Empty, file.FileID);
+                Assert.AreEqual(info.FullName, file.FullSourcePath);
+                Assert.AreEqual(t.LastChecked.ToString(), file.LastChecked.ToString());
+
+                fileCount++;
+            }
+
+            Assert.AreEqual(1, fileCount);
         }
     }
 }

@@ -250,8 +250,16 @@ namespace OzetteLibrary.Database.LiteDB
             {
                 throw new InvalidOperationException("Database has not been prepared.");
             }
+            if (File == null)
+            {
+                throw new ArgumentNullException(nameof(File));
+            }
 
-            throw new NotImplementedException();
+            using (var db = GetLiteDBInstance())
+            {
+                var targetCol = db.GetCollection<ClientFile>(ClientsTableName);
+                targetCol.Insert(File);
+            }
         }
 
         /// <summary>
@@ -264,8 +272,16 @@ namespace OzetteLibrary.Database.LiteDB
             {
                 throw new InvalidOperationException("Database has not been prepared.");
             }
+            if (File == null)
+            {
+                throw new ArgumentNullException(nameof(File));
+            }
 
-            throw new NotImplementedException();
+            using (var db = GetLiteDBInstance())
+            {
+                var targetCol = db.GetCollection<ClientFile>(ClientsTableName);
+                targetCol.Update(File);
+            }
         }
     }
 }

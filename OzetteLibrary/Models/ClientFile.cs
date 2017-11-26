@@ -13,6 +13,16 @@ namespace OzetteLibrary.Models
     public class ClientFile : BackupFile
     {
         /// <summary>
+        /// Default/empty constructor.
+        /// </summary>
+        /// <remarks>
+        /// This is required for database operations.
+        /// </remarks>
+        public ClientFile()
+        {
+        }
+
+        /// <summary>
         /// Constructor that accepts a FileInfo object
         /// </summary>
         /// <param name="fileInfo"></param>
