@@ -93,6 +93,132 @@ namespace OzetteLibraryTests.Client.Sources
         }
 
         [TestMethod()]
+        public void ScannerCanScanSuccessfullyAfterCompletingAnEarlierScan()
+        {
+            var logger = new MockLogger();
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+
+            inMemoryDB.PrepareDatabase();
+
+            OzetteLibrary.Client.Sources.Scanner scanner =
+                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+
+            var source = new SourceLocation()
+            {
+                FolderPath = Environment.CurrentDirectory,
+                FileMatchFilter = "*.*",
+                Priority = FileBackupPriority.Low,
+                RevisionCount = 1
+            };
+
+            var signalScanCompleteEvent = new AutoResetEvent(false);
+
+            scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
+            scanner.BeginScan(source);
+
+            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
+            Assert.IsTrue(scanCompletedSignaled);
+
+            // reset the signal
+            // initiate a second scan of the same source.
+
+            signalScanCompleteEvent.Reset();
+
+            scanner.BeginScan(source);
+
+            var scan2CompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
+            Assert.IsTrue(scan2CompletedSignaled);
+        }
+
+        [TestMethod()]
+        public void ScannerCanAddClientFilesToDatabaseWithCorrectMetadata()
+        {
+            var logger = new MockLogger();
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+
+            inMemoryDB.PrepareDatabase();
+
+            OzetteLibrary.Client.Sources.Scanner scanner =
+                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+
+            var source = new SourceLocation()
+            {
+                FolderPath = Environment.CurrentDirectory,
+                FileMatchFilter = "*.*",
+                Priority = FileBackupPriority.Low,
+                RevisionCount = 1
+            };
+
+            var signalScanCompleteEvent = new AutoResetEvent(false);
+
+            scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
+            scanner.BeginScan(source);
+
+            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
+            Assert.IsTrue(scanCompletedSignaled);
+
+            // now check the database. 
+            // do we have client objects correctly populated?
+
+            var clients = inMemoryDB.GetAllClientFiles();
+
+            Assert.IsTrue(clients != null);
+            Assert.IsTrue(clients.Count > 0);
+
+            foreach (var client in clients)
+            {
+                Assert.IsFalse(string.IsNullOrEmpty(client.Directory));
+                Assert.IsFalse(string.IsNullOrEmpty(client.Filename));
+                Assert.IsFalse(string.IsNullOrEmpty(client.FullSourcePath));
+                Assert.IsNotNull(client.LastChecked);
+                Assert.IsNotNull(client.CopyState);
+                Assert.IsFalse(client.FileID == Guid.Empty);
+            }
+        }
+
+        [TestMethod()]
+        public void ScannerReturnsPopulatedScanResults()
+        {
+            var logger = new MockLogger();
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+
+            inMemoryDB.PrepareDatabase();
+
+            OzetteLibrary.Client.Sources.Scanner scanner =
+                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+
+            var source = new SourceLocation()
+            {
+                FolderPath = Environment.CurrentDirectory,
+                FileMatchFilter = "*.*",
+                Priority = FileBackupPriority.Low,
+                RevisionCount = 1
+            };
+
+            var signalScanCompleteEvent = new AutoResetEvent(false);
+
+            ScanResults results = null; 
+
+            scanner.ScanCompleted += (s, e) => {
+                signalScanCompleteEvent.Set();
+                results = e;
+            };
+
+            scanner.BeginScan(source);
+
+            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
+
+            Assert.IsTrue(scanCompletedSignaled);
+            Assert.IsNotNull(results);
+
+            Assert.IsTrue(results.NewBytesFound > 0);
+            Assert.IsTrue(results.NewFilesFound > 0);
+            Assert.IsTrue(results.TotalBytesFound > 0);
+            Assert.IsTrue(results.TotalFilesFound > 0);
+            Assert.IsTrue(results.ScannedDirectoriesCount > 0);
+        }
+
+        [TestMethod()]
         public void TraceMessagesAreWrittenToTheTraceLogDuringScanning()
         {
             var logger = new MockLogger();
