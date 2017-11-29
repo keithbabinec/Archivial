@@ -109,7 +109,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
         [TestMethod()]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void LiteDBClientDatabaseGetTargetsThrowsIfPrepareDatabaseHasNotBeenCalled()
+        public void LiteDBClientDatabaseGetAllTargetsThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
@@ -119,6 +119,20 @@ namespace OzetteLibraryTests.Database.LiteDB
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
 
             db.GetAllTargets();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseGetAllClientFilesThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.GetAllClientFiles();
         }
 
         [TestMethod()]
@@ -179,7 +193,7 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
-        public void LiteDBClientDatabaseGetTargetsReturnsEmptyCollectionInsteadOfNull()
+        public void LiteDBClientDatabaseGetAllTargetsReturnsEmptyCollectionInsteadOfNull()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
@@ -191,6 +205,24 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             var result = db.GetAllTargets();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetAllClientFilesReturnsEmptyCollectionInsteadOfNull()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var result = db.GetAllClientFiles();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
@@ -326,6 +358,40 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             Assert.AreEqual(3, result[2].ID);
             Assert.AreEqual("test3", result[2].Name);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseReturnFilesFromGetAllClientFiles()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            // add a target using API AddClientFile()
+            // then manually check the stream
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            // need a sample file (the calling assembly itself).
+            FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            var t = new OzetteLibrary.Models.ClientFile(info);
+
+            db.AddClientFile(t);
+
+            var result = db.GetAllClientFiles();
+
+            int fileCount = 0;
+            foreach (var file in result)
+            {
+                Assert.AreNotEqual(Guid.Empty, file.FileID);
+                Assert.AreEqual(info.FullName, file.FullSourcePath);
+                fileCount++;
+            }
+
+            Assert.AreEqual(1, fileCount);
         }
 
         [TestMethod()]
