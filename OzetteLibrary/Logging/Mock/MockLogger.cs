@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace OzetteLibrary.Logging.Mock
 {
@@ -54,6 +55,11 @@ namespace OzetteLibrary.Logging.Mock
         public Exception ExceptionWritten = null;
 
         /// <summary>
+        /// An in-memory trace log.
+        /// </summary>
+        public StringBuilder TraceLog = new StringBuilder();
+
+        /// <summary>
         /// Ensures the custom windows event log is present.
         /// </summary>
         /// <param name="logSource"></param>
@@ -83,6 +89,8 @@ namespace OzetteLibrary.Logging.Mock
         public void WriteTraceMessage(string message)
         {
             WriteTraceMessageHasBeenCalled = true;
+            var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Information);
+            TraceLog.AppendLine(loggableMessage);
         }
 
         /// <summary>
@@ -96,6 +104,8 @@ namespace OzetteLibrary.Logging.Mock
         public void WriteTraceWarning(string message)
         {
             WriteTraceWarningHasBeenCalled = true;
+            var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Warning);
+            TraceLog.AppendLine(loggableMessage);
         }
 
         /// <summary>
@@ -109,6 +119,8 @@ namespace OzetteLibrary.Logging.Mock
         public void WriteTraceError(string message)
         {
             WriteTraceErrorHasBeenCalled = true;
+            var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Error);
+            TraceLog.AppendLine(loggableMessage);
         }
 
         /// <summary>
@@ -124,6 +136,9 @@ namespace OzetteLibrary.Logging.Mock
         {
             WriteTraceErrorWithExceptionHasBeenCalled = true;
             ExceptionWritten = exception;
+            var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Error);
+            TraceLog.AppendLine(loggableMessage);
+            TraceLog.AppendLine(exception.ToString());
         }
 
         /// <summary>
@@ -156,6 +171,21 @@ namespace OzetteLibrary.Logging.Mock
         public void WriteSystemEvent(string message, Exception exception, int eventID)
         {
             WriteSystemEventWithExceptionHasBeenCalled = true;
+        }
+
+        /// <summary>
+        /// Prepends an event message with a date and severity level.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="severity"></param>
+        /// <returns></returns>
+        private string PrependMessageWithDateAndSeverity(string message, EventLogEntryType severity)
+        {
+            return string.Format("{0} [{1}]: {2}",
+                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                severity.ToString(),
+                message
+            );
         }
     }
 }
