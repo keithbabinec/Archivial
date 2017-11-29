@@ -118,7 +118,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
 
-            db.GetTargets();
+            db.GetAllTargets();
         }
 
         [TestMethod()]
@@ -190,7 +190,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var result = db.GetTargets();
+            var result = db.GetAllTargets();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
@@ -244,7 +244,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var result = db.GetTargets();
+            var result = db.GetAllTargets();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
@@ -273,7 +273,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             t.RootDirectory = "C:\\backuptarget\\test";
 
             db.AddTarget(t);
-            var result = db.GetTargets();
+            var result = db.GetAllTargets();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
@@ -313,7 +313,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.AddTarget(t2);
             db.AddTarget(t3);
 
-            var result = db.GetTargets();
+            var result = db.GetAllTargets();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Count);

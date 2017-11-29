@@ -275,10 +275,10 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
-        /// Gets the targets defined in the database.
+        /// Returns all of the targets defined in the database.
         /// </summary>
         /// <returns><c>Targets</c></returns>
-        public Targets GetTargets()
+        public Targets GetAllTargets()
         {
             if (DatabaseHasBeenPrepared == false)
             {

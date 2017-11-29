@@ -28,10 +28,10 @@ namespace OzetteLibrary.Database
         ClientFiles GetAllClientFiles();
 
         /// <summary>
-        /// Gets the targets defined in the database.
+        /// Returns all of the targets defined in the database.
         /// </summary>
         /// <returns><c>Targets</c></returns>
-        Targets GetTargets();
+        Targets GetAllTargets();
 
         /// <summary>
         /// Adds a single target to the database.
