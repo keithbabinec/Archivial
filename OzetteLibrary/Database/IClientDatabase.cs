@@ -22,6 +22,12 @@ namespace OzetteLibrary.Database
         ClientFileLookup GetClientFile(string FileName, string DirectoryPath, byte[] FileHash);
 
         /// <summary>
+        /// Returns all of the client files in the database.
+        /// </summary>
+        /// <returns><c>ClientFiles</c></returns>
+        ClientFiles GetAllClientFiles();
+
+        /// <summary>
         /// Gets the targets defined in the database.
         /// </summary>
         /// <returns><c>Targets</c></returns>

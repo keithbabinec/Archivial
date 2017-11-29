@@ -249,6 +249,32 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
+        /// Returns all of the client files in the database.
+        /// </summary>
+        /// <returns><c>ClientFiles</c></returns>
+        public ClientFiles GetAllClientFiles()
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var clientCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
+
+                if (clientCol.Count() > 0)
+                {
+                    return new ClientFiles(clientCol.FindAll());
+                }
+                else
+                {
+                    return new ClientFiles();
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the targets defined in the database.
         /// </summary>
         /// <returns><c>Targets</c></returns>
