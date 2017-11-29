@@ -497,39 +497,5 @@ namespace OzetteLibraryTests.Database.LiteDB
             Assert.IsNotNull(result.File);
             Assert.AreEqual(OzetteLibrary.Models.ClientFileLookupResult.Updated, result.Result);
         }
-
-        [TestMethod()]
-        public void LiteDBClientDatabaseGetClientFileReturnsDuplicateFileExample()
-        {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-            OzetteLibrary.Crypto.Hasher hasher = new OzetteLibrary.Crypto.Hasher(logger);
-
-            var ms = new MemoryStream();
-
-            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
-
-            db.PrepareDatabase();
-
-            // need a sample file (the calling assembly itself).
-            FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info);
-
-            t.FileHash = hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium);
-            t.HashAlgorithmType = hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium);
-            t.LastChecked = DateTime.Now;
-
-            db.AddClientFile(t);
-
-            // update the file location
-            t.Filename = "Test.dll";
-            t.LastChecked = DateTime.Now;
-
-            var result = db.GetClientFile(t.Filename, info.DirectoryName, t.FileHash);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.PartialMatches);
-            Assert.AreEqual(OzetteLibrary.Models.ClientFileLookupResult.Duplicate, result.Result);
-        }
     }
 }

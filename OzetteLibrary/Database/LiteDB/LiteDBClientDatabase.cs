@@ -1,9 +1,7 @@
 ﻿using LiteDB;
-using OzetteLibrary.Crypto;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace OzetteLibrary.Database.LiteDB
@@ -193,15 +191,16 @@ namespace OzetteLibrary.Database.LiteDB
                 return new ClientFileLookup() { File = updatedFile, Result = ClientFileLookupResult.Updated };
             }
 
-            var partialMatches = FindFilesWithSameHashButDifferentNameOrPath(FileName, DirectoryPath, FileHash);
-            if (partialMatches != null)
-            {
-                return new ClientFileLookup() { PartialMatches = partialMatches, Result = ClientFileLookupResult.Duplicate };
-            }
-
             return new ClientFileLookup() { Result = ClientFileLookupResult.New };
         }
 
+        /// <summary>
+        /// Checks the index for a full file exact match.
+        /// </summary>
+        /// <param name="FileName">Name of the file (ex: document.doc)</param>
+        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
+        /// <param name="FileHash">File hash expressed as a byte array.</param>
+        /// <returns><c>ClientFileLookup</c></returns>
         private ClientFile FindFullMatchOnNameDirectoryAndHash(string FileName, string DirectoryPath, byte[] FileHash)
         {
             using (var db = GetLiteDBInstance())
@@ -222,36 +221,13 @@ namespace OzetteLibrary.Database.LiteDB
             }
         }
 
-        private List<ClientFile> FindFilesWithSameHashButDifferentNameOrPath(string FileName, string DirectoryPath, byte[] FileHash)
-        {
-            using (var db = GetLiteDBInstance())
-            {
-                ClientFileLookup result = new ClientFileLookup();
-
-                var clientFilesCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
-                var matchesOnHash = clientFilesCol.Find(x => x.FileHash == FileHash);
-
-                List<ClientFile> partialMatches = null;
-
-                foreach (var file in matchesOnHash)
-                {
-                    if (file.Filename == FileName || file.Directory == DirectoryPath)
-                    {
-                        // matches on hash and either file name or directory.
-
-                        if (partialMatches == null)
-                        {
-                            partialMatches = new List<ClientFile>();
-                        }
-
-                        partialMatches.Add(file);
-                    }
-                }
-
-                return partialMatches;
-            }
-        }
-
+        /// <summary>
+        /// Checks the index for a file name/path match, but hash mismatch.
+        /// </summary>
+        /// <param name="FileName">Name of the file (ex: document.doc)</param>
+        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
+        /// <param name="FileHash">File hash expressed as a byte array.</param>
+        /// <returns><c>ClientFileLookup</c></returns>
         private ClientFile FindFilesWithExactNameAndPathButWrongHash(string FileName, string DirectoryPath, byte[] FileHash)
         {
             using (var db = GetLiteDBInstance())

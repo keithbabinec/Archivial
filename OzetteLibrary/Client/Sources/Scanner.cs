@@ -284,10 +284,6 @@ namespace OzetteLibrary.Client.Sources
                 results.UpdatedFilesFound++;
                 results.UpdatedBytesFound += (ulong)fileInfo.Length;
             }
-            else if (fileIndexLookup.Result == ClientFileLookupResult.Duplicate)
-            {
-                ProcessDuplicateFile(fileIndexLookup, fileInfo, hash, hashType);
-            }
             else if (fileIndexLookup.Result == ClientFileLookupResult.Existing)
             {
                 ProcessExistingFile(fileIndexLookup, fileInfo);
@@ -339,23 +335,6 @@ namespace OzetteLibrary.Client.Sources
             fileLookup.File.LastChecked = DateTime.Now;
 
             Database.UpdateClientFile(fileLookup.File);
-        }
-
-        /// <summary>
-        /// Processes a duplicate scanned file into the database.
-        /// </summary>
-        /// <param name="fileLookup">File index lookup result</param>
-        /// <param name="fileInfo">FileInfo details</param>
-        /// <param name="fileHash">The computed hash</param>
-        /// <param name="algorithm">Hash algorithm used to compute the hash</param>
-        private void ProcessDuplicateFile(ClientFileLookup fileLookup, FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
-        {
-            Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is duplicate, moved, or renamed.", fileInfo.Name));
-
-            // TODO: think on what to do here in this situation.
-            // possible idea: have a single file record, but multiple file paths or file names?
-            // throw until a solution is worked out.
-            throw new NotImplementedException();
         }
 
         /// <summary>

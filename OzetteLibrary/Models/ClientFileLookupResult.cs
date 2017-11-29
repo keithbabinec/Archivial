@@ -35,17 +35,6 @@
         /// Lookup combination:
         /// > { Filename matched, Location matched, Hash mismatch }
         /// </remarks>
-        Updated = 2,
-
-        /// <summary>
-        /// File contents match another filename or different location.
-        /// </summary>
-        /// <remarks>
-        /// Lookup combination:
-        /// > { Filename mismatch, Location matched, Hash matched }
-        /// OR
-        /// > { Filename matched, Location mismatch, Hash matched }
-        /// </remarks>
-        Duplicate = 3,
+        Updated = 2
     }
 }
