@@ -4,6 +4,7 @@ using OzetteLibrary.Logging;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Models;
 using OzetteLibrary.ServiceCore;
+using System;
 using System.ServiceProcess;
 
 namespace OzetteClientAgent
@@ -122,8 +123,20 @@ namespace OzetteClientAgent
 
             var log = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
             var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
+
             Scan = new ScanEngine(db, log);
+            Scan.Stopped += Scan_Stopped;
             Scan.Start();
+        }
+
+        /// <summary>
+        /// Callback event for when scanning engine has stopped.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Scan_Stopped(object sender, OzetteLibrary.Events.EngineStoppedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -136,8 +149,20 @@ namespace OzetteClientAgent
 
             var log = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
             var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
+
             Backup = new BackupEngine(db, log);
+            Backup.Stopped += Backup_Stopped;
             Backup.Start();
+        }
+
+        /// <summary>
+        /// Callback event for when the backup engine has stopped.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Backup_Stopped(object sender, OzetteLibrary.Events.EngineStoppedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

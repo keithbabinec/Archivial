@@ -1,4 +1,5 @@
 ﻿using OzetteLibrary.Database;
+using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using System;
 
@@ -38,6 +39,20 @@ namespace OzetteLibrary.Client
         public void Stop()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// This event is triggered when the engine has been stopped.
+        /// </summary>
+        public event EventHandler<EngineStoppedEventArgs> Stopped;
+
+        /// <summary>
+        /// Internal function to invoke the Stopped event.
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnStopped(EngineStoppedEventArgs e)
+        {
+            Stopped?.Invoke(this, e);
         }
 
         /// <summary>
