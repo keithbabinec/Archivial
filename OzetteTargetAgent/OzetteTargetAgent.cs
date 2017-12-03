@@ -1,5 +1,4 @@
-﻿using OzetteLibrary.Constants;
-using OzetteLibrary.Logging.Default;
+﻿using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Models;
 using OzetteLibrary.ServiceCore;
 using System.ServiceProcess;
@@ -29,7 +28,7 @@ namespace OzetteTargetAgent
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            initHelper = new Initialization(new Logger(Logging.CoreServiceComponentName));
+            initHelper = new Initialization(new Logger(OzetteLibrary.Constants.Logging.CoreServiceComponentName));
             initHelper.Completed += InitHelper_Completed;
             initHelper.BeginStart(Properties.Settings.Default.Properties);
         }

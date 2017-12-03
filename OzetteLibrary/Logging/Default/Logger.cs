@@ -238,8 +238,9 @@ namespace OzetteLibrary.Logging.Default
         {
             return string.Format("{0}\\{1}_{2}_{3}.log",
                 TraceLogFolderPath,
-                "TraceLog",
-                DateTime.Now.ToString("yyyy_MM_dd"));
+                Constants.Logging.AppName,
+                SourceComponent,
+                DateTime.Now.ToString(Constants.Logging.SortableDateFormat));
         }
 
         /// <summary>
@@ -251,7 +252,7 @@ namespace OzetteLibrary.Logging.Default
         private string PrependMessageWithDateAndSeverity(string message, EventLogEntryType severity)
         {
             return string.Format("{0} [{1}]: {2}",
-                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                DateTime.Now.ToString(Constants.Logging.SortableDateTimeFormat),
                 severity.ToString(),
                 message
             );
@@ -268,7 +269,7 @@ namespace OzetteLibrary.Logging.Default
             StringBuilder r = new StringBuilder();
 
             r.AppendLine(string.Format("{0} [{1}]: {2}",
-                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                DateTime.Now.ToString(Constants.Logging.SortableDateTimeFormat),
                 EventLogEntryType.Error.ToString(),
                 message
             ));
