@@ -48,8 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\BackupEngine.cs" />
+    <Compile Include="Client\ScanEngine.cs" />
     <Compile Include="Client\Sources\Loader.cs" />
-    <Compile Include="Client\Sources\Scanner.cs" />
+    <Compile Include="Client\Sources\SourceScanner.cs" />
     <Compile Include="Constants\Database.cs" />
     <Compile Include="Constants\Logging.cs" />
     <Compile Include="Database\IClientDatabase.cs" />

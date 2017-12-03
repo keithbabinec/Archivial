@@ -15,8 +15,8 @@ namespace OzetteLibraryTests.Client.Sources
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScannerConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
-            OzetteLibrary.Client.Sources.Scanner scanner = 
-                new OzetteLibrary.Client.Sources.Scanner(null, new MockLogger());
+            OzetteLibrary.Client.Sources.SourceScanner scanner = 
+                new OzetteLibrary.Client.Sources.SourceScanner(null, new MockLogger());
         }
 
         [TestMethod()]
@@ -25,8 +25,8 @@ namespace OzetteLibraryTests.Client.Sources
         {
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
 
-            OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, null);
+            OzetteLibrary.Client.Sources.SourceScanner scanner =
+                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, null);
         }
 
         [TestMethod()]
@@ -35,8 +35,8 @@ namespace OzetteLibraryTests.Client.Sources
             var logger = new MockLogger();
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
 
-            OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+            OzetteLibrary.Client.Sources.SourceScanner scanner =
+                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
             Assert.IsNotNull(scanner);
         }
@@ -48,8 +48,8 @@ namespace OzetteLibraryTests.Client.Sources
             var logger = new MockLogger();
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
 
-            OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+            OzetteLibrary.Client.Sources.SourceScanner scanner =
+                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
             var source = new SourceLocation()
             {
@@ -71,8 +71,8 @@ namespace OzetteLibraryTests.Client.Sources
 
             inMemoryDB.PrepareDatabase();
 
-            OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+            OzetteLibrary.Client.Sources.SourceScanner scanner =
+                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
             var source = new SourceLocation()
             {
@@ -100,8 +100,8 @@ namespace OzetteLibraryTests.Client.Sources
 
             inMemoryDB.PrepareDatabase();
 
-            OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+            OzetteLibrary.Client.Sources.SourceScanner scanner =
+                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
             var source = new SourceLocation()
             {
@@ -138,8 +138,8 @@ namespace OzetteLibraryTests.Client.Sources
 
             inMemoryDB.PrepareDatabase();
 
-            OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+            OzetteLibrary.Client.Sources.SourceScanner scanner =
+                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
             var source = new SourceLocation()
             {
@@ -184,8 +184,8 @@ namespace OzetteLibraryTests.Client.Sources
 
             inMemoryDB.PrepareDatabase();
 
-            OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+            OzetteLibrary.Client.Sources.SourceScanner scanner =
+                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
             var source = new SourceLocation()
             {
@@ -226,8 +226,8 @@ namespace OzetteLibraryTests.Client.Sources
 
             inMemoryDB.PrepareDatabase();
 
-            OzetteLibrary.Client.Sources.Scanner scanner =
-                new OzetteLibrary.Client.Sources.Scanner(inMemoryDB, logger);
+            OzetteLibrary.Client.Sources.SourceScanner scanner =
+                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
             var source = new SourceLocation()
             {

@@ -18,7 +18,7 @@
         /// <summary>
         /// A string constant for the scanner component name.
         /// </summary>
-        public const string ScanningComponentName = "FileScanner";
+        public const string ScanningComponentName = "ScanEngine";
 
         /// <summary>
         /// A string constant for the core service component name.

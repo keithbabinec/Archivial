@@ -51,7 +51,7 @@ namespace OzetteLibraryTests.ServiceCore
             var props = new SettingsPropertyCollection();
             props.Add(new SettingsProperty("LogFilesDirectory") { DefaultValue = "abc" });
             props.Add(new SettingsProperty("EventlogName") { DefaultValue = "def" });
-            props.Add(new SettingsProperty("DatabaseFileName") { DefaultValue = "xyz" });
+            props.Add(new SettingsProperty("DatabaseConnectionString") { DefaultValue = "xyz" });
             
             i.BeginStart(props);
 
@@ -60,7 +60,7 @@ namespace OzetteLibraryTests.ServiceCore
             Assert.IsNotNull(i.Options);
             Assert.AreEqual("abc", i.Options.LogFilesDirectory);
             Assert.AreEqual("def", i.Options.EventlogName);
-            Assert.AreEqual("xyz", i.Options.DatabaseFileName);
+            Assert.AreEqual("xyz", i.Options.DatabaseConnectionString);
         }
 
         [TestMethod()]
@@ -74,7 +74,7 @@ namespace OzetteLibraryTests.ServiceCore
 
             var props = new SettingsPropertyCollection();
             props.Add(new SettingsProperty("EventlogName") { DefaultValue = "def" });
-            props.Add(new SettingsProperty("DatabaseFileName") { DefaultValue = "xyz" });
+            props.Add(new SettingsProperty("DatabaseConnectionString") { DefaultValue = "xyz" });
 
             i.BeginStart(props);
 
@@ -83,7 +83,7 @@ namespace OzetteLibraryTests.ServiceCore
             Assert.IsNotNull(i.Options);
             Assert.IsNull(i.Options.LogFilesDirectory);
             Assert.AreEqual("def", i.Options.EventlogName);
-            Assert.AreEqual("xyz", i.Options.DatabaseFileName);
+            Assert.AreEqual("xyz", i.Options.DatabaseConnectionString);
         }
 
         [TestMethod()]
@@ -104,7 +104,7 @@ namespace OzetteLibraryTests.ServiceCore
             Assert.IsNotNull(i.Options);
             Assert.IsNull(i.Options.LogFilesDirectory);
             Assert.IsNull(i.Options.EventlogName);
-            Assert.IsNull(i.Options.DatabaseFileName);
+            Assert.IsNull(i.Options.DatabaseConnectionString);
         }
 
         [TestMethod()]

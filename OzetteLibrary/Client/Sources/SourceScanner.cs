@@ -13,14 +13,14 @@ namespace OzetteLibrary.Client.Sources
     /// <summary>
     /// Contains functionality for scanning a source location.
     /// </summary>
-    public class Scanner
+    public class SourceScanner
     {
         /// <summary>
         /// Default constructor that takes a <c>SourceLocation</c>, <c>IDatabase</c>, and <c>ILogger</c> as input.
         /// </summary>
         /// <param name="database"></param>
         /// <param name="logger"></param>
-        public Scanner(IClientDatabase database, ILogger logger)
+        public SourceScanner(IClientDatabase database, ILogger logger)
         {
             if (database == null)
             {

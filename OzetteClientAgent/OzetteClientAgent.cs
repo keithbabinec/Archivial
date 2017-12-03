@@ -1,4 +1,7 @@
-﻿using OzetteLibrary.Logging.Default;
+﻿using OzetteLibrary.Client;
+using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Logging;
+using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Models;
 using OzetteLibrary.ServiceCore;
 using System.ServiceProcess;
@@ -28,15 +31,31 @@ namespace OzetteClientAgent
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            initHelper = new Initialization(new Logger(OzetteLibrary.Constants.Logging.CoreServiceComponentName));
-            initHelper.Completed += InitHelper_Completed;
-            initHelper.BeginStart(Properties.Settings.Default.Properties);
+            CoreLog = new Logger(OzetteLibrary.Constants.Logging.CoreServiceComponentName);
+            Initialize = new Initialization(CoreLog);
+            Initialize.Completed += InitHelper_Completed;
+            Initialize.BeginStart(Properties.Settings.Default.Properties);
         }
+
+        /// <summary>
+        /// A reference to the core service log.
+        /// </summary>
+        private ILogger CoreLog { get; set; }
 
         /// <summary>
         /// A reference to the initialization helper.
         /// </summary>
-        private Initialization initHelper { get; set; }
+        private Initialization Initialize { get; set; }
+
+        /// <summary>
+        /// A reference to the scanning engine instance.
+        /// </summary>
+        private ScanEngine Scan { get; set; }
+
+        /// <summary>
+        /// A reference to the backup engine instance.
+        /// </summary>
+        private BackupEngine Backup { get; set; }
         
         /// <summary>
         /// Callback event for when the initialization thread has completed.
@@ -45,16 +64,23 @@ namespace OzetteClientAgent
         /// <param name="e"></param>
         private void InitHelper_Completed(object sender, System.EventArgs e)
         {
-            if (initHelper.ResultCode == StartupResults.Success)
+            if (Initialize.ResultCode == StartupResults.Success)
             {
-                // launch core
+                // in the client agent the core loop consists of two pieces.
+                // first is the scan engine, and the second is the backup engine.
+                // each one lives under it's own long-running thread and class.
+                // prepare the database and then start both engines.
+
+                PrepareDatabase();
+                StartScanEngine();
+                StartBackupEngine();
             }
             else
             {
                 // safe exit without crash.
                 // set the exit code so service control manager knows there is a problem.
 
-                ExitCode = (int)initHelper.ResultCode;
+                ExitCode = (int)Initialize.ResultCode;
                 Stop();
             }
         }
@@ -64,6 +90,54 @@ namespace OzetteClientAgent
         /// </summary>
         protected override void OnStop()
         {
+            if (Scan != null)
+            {
+                Scan.Stop();
+            }
+            if (Backup != null)
+            {
+                Backup.Stop();
+            }
+        }
+
+        /// <summary>
+        /// Prepares the database.
+        /// </summary>
+        /// <remarks>
+        /// This operation will pre-create collections, indexes, and object mappings.
+        /// </remarks>
+        private void PrepareDatabase()
+        {
+            var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, CoreLog);
+            db.PrepareDatabase();
+        }
+
+        /// <summary>
+        /// Starts the scanning engine.
+        /// </summary>
+        private void StartScanEngine()
+        {
+            // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
+            // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
+
+            var log = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
+            var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
+            Scan = new ScanEngine(db, log);
+            Scan.Start();
+        }
+
+        /// <summary>
+        /// Starts the backup engine.
+        /// </summary>
+        private void StartBackupEngine()
+        {
+            // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
+            // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
+
+            var log = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
+            var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
+            Backup = new BackupEngine(db, log);
+            Backup.Start();
         }
     }
 }
