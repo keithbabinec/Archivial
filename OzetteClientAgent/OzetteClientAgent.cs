@@ -93,11 +93,11 @@ namespace OzetteClientAgent
         {
             if (Scan != null)
             {
-                Scan.Stop();
+                Scan.BeginStop();
             }
             if (Backup != null)
             {
-                Backup.Stop();
+                Backup.BeginStop();
             }
         }
 
@@ -126,7 +126,7 @@ namespace OzetteClientAgent
 
             Scan = new ScanEngine(db, log);
             Scan.Stopped += Scan_Stopped;
-            Scan.Start();
+            Scan.BeginStart();
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace OzetteClientAgent
 
             Backup = new BackupEngine(db, log);
             Backup.Stopped += Backup_Stopped;
-            Backup.Start();
+            Backup.BeginStart();
         }
 
         /// <summary>

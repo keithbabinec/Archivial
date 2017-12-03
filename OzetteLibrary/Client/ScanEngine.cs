@@ -26,17 +26,17 @@ namespace OzetteLibrary.Client
         }
 
         /// <summary>
-        /// Starts the scanning engine.
+        /// Begins to start the scanning engine, returns immediately to the caller.
         /// </summary>
-        public void Start()
+        public void BeginStart()
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// Stops the scanning engine.
+        /// Begins to stop the scanning engine, returns immediately to the caller.
         /// </summary>
-        public void Stop()
+        public void BeginStop()
         {
             throw new NotImplementedException();
         }
