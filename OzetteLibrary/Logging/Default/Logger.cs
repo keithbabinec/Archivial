@@ -11,6 +11,20 @@ namespace OzetteLibrary.Logging.Default
     public class Logger : ILogger
     {
         /// <summary>
+        /// Initializes the logger for a specific component source.
+        /// </summary>
+        /// <param name="component">A source component name, such as 'Backup', 'Scanner', etc.</param>
+        public Logger(string component)
+        {
+            if (string.IsNullOrEmpty(component))
+            {
+                throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(component));
+            }
+
+            SourceComponent = component;
+        }
+
+        /// <summary>
         /// Ensures the custom windows event log is present.
         /// </summary>
         /// <remarks>
@@ -58,7 +72,7 @@ namespace OzetteLibrary.Logging.Default
 
             TraceLogFolderPath = path.TrimEnd('\\');
         }
-
+        
         /// <summary>
         /// Writes an informational message to the trace log file on disk.
         /// </summary>
@@ -212,12 +226,17 @@ namespace OzetteLibrary.Logging.Default
         private string LogName { get; set; }
 
         /// <summary>
+        /// Source component using this logger instance.
+        /// </summary>
+        private string SourceComponent { get; set; }
+
+        /// <summary>
         /// Returns the full file name/path of the current tracelog file.
         /// </summary>
         /// <returns></returns>
         private string GetCurrentTraceLogFilePath()
         {
-            return string.Format("{0}\\{1}_{2}.log",
+            return string.Format("{0}\\{1}_{2}_{3}.log",
                 TraceLogFolderPath,
                 "TraceLog",
                 DateTime.Now.ToString("yyyy_MM_dd"));
