@@ -23,6 +23,7 @@ namespace OzetteLibrary.Client
 
             Database = database;
             Logger = logger;
+            StatusLock = new object();
         }
 
         /// <summary>
@@ -30,6 +31,7 @@ namespace OzetteLibrary.Client
         /// </summary>
         public void BeginStart()
         {
+            OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
         }
 
         /// <summary>
@@ -37,7 +39,13 @@ namespace OzetteLibrary.Client
         /// </summary>
         public void BeginStop()
         {
-            OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
+            lock (StatusLock)
+            {
+                if (StopRequested == false)
+                {
+                    StopRequested = true;
+                }
+            }
         }
 
         /// <summary>
@@ -53,6 +61,16 @@ namespace OzetteLibrary.Client
         {
             Stopped?.Invoke(this, e);
         }
+
+        /// <summary>
+        /// A flag to indicate if a stop has been requested.
+        /// </summary>
+        private bool StopRequested { get; set; }
+
+        /// <summary>
+        /// Thread locking mechanism.
+        /// </summary>
+        private object StatusLock { get; set; }
 
         /// <summary>
         /// A reference to the database.
