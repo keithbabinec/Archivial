@@ -8,63 +8,63 @@ using System.Threading;
 namespace OzetteLibraryTests.Client
 {
     [TestClass]
-    public class ScanEngineTests
+    public class BackupEngineTests
     {
         [TestMethod()]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ScanEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
+        public void BackupEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
-            OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(null, new MockLogger());
+            OzetteLibrary.Client.BackupEngine engine =
+                new OzetteLibrary.Client.BackupEngine(null, new MockLogger());
         }
 
         [TestMethod()]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ScanEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
+        public void BackupEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
-            
-            OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(inMemoryDB, null);
+
+            OzetteLibrary.Client.BackupEngine engine =
+                new OzetteLibrary.Client.BackupEngine(inMemoryDB, null);
         }
 
         [TestMethod()]
-        public void ScanEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
+        public void BackupEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
 
-            OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger);
+            OzetteLibrary.Client.BackupEngine engine =
+                new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger);
 
             Assert.IsNotNull(engine);
         }
 
         [TestMethod()]
-        public void ScanEngineCanStartAndStop()
+        public void BackupEngineCanStartAndStop()
         {
             var logger = new MockLogger();
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
 
             inMemoryDB.PrepareDatabase();
 
-            OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger);
+            OzetteLibrary.Client.BackupEngine engine =
+                new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger);
 
             engine.BeginStart();
             engine.BeginStop();
         }
 
         [TestMethod()]
-        public void ScanEngineTriggersStoppedEventWhenEngineHasStopped()
+        public void BackupEngineTriggersStoppedEventWhenEngineHasStopped()
         {
             var logger = new MockLogger();
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
 
             inMemoryDB.PrepareDatabase();
 
-            OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger);
+            OzetteLibrary.Client.BackupEngine engine =
+                new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger);
 
             var signalStoppedEvent = new AutoResetEvent(false);
 
