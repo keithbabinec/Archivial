@@ -54,6 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Client\ScanEngine.tests.cs" />
     <Compile Include="Client\Sources\Scanner.tests.cs" />
     <Compile Include="Crypto\Hasher.tests.cs" />
     <Compile Include="Database\LiteDB\LiteDBClientDatabase.tests.cs" />

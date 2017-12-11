@@ -30,7 +30,6 @@ namespace OzetteLibrary.Client
         /// </summary>
         public void BeginStart()
         {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -38,7 +37,7 @@ namespace OzetteLibrary.Client
         /// </summary>
         public void BeginStop()
         {
-            throw new NotImplementedException();
+            Stopped?.Invoke(this, new EngineStoppedEventArgs());
         }
 
         /// <summary>
