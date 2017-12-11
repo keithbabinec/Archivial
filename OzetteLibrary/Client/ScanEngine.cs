@@ -37,7 +37,7 @@ namespace OzetteLibrary.Client
         /// </summary>
         public void BeginStop()
         {
-            Stopped?.Invoke(this, new EngineStoppedEventArgs());
+            OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
         }
 
         /// <summary>

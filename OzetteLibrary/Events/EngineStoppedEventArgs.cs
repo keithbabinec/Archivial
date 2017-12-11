@@ -16,5 +16,34 @@ namespace OzetteLibrary.Events
         /// The stop reason.
         /// </summary>
         public EngineStoppedReason Reason { get; set; }
+
+        /// <summary>
+        /// Default/empty constructor.
+        /// </summary>
+        public EngineStoppedEventArgs()
+        {
+        }
+
+        /// <summary>
+        /// Constructor that accepts an <c>EngineStoppedReason</c>.
+        /// </summary>
+        /// <param name="reason">Reason for stopping.</param>
+        public EngineStoppedEventArgs(EngineStoppedReason reason)
+        {
+            Reason = reason;
+        }
+
+        /// <summary>
+        /// Constructor that accepts an <c>Exception</c>.
+        /// </summary>
+        /// <remarks>
+        /// The stop reason is automatically set to 'Failed'.
+        /// </remarks>
+        /// <param name="reason">Reason for stopping.</param>
+        public EngineStoppedEventArgs(Exception ex)
+        {
+            Reason = EngineStoppedReason.Failed;
+            Exception = ex;
+        }
     }
 }
