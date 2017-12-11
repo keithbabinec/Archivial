@@ -1,35 +1,26 @@
 ﻿using OzetteLibrary.Database;
+using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
-using System;
 
 namespace OzetteLibrary.Client
 {
     /// <summary>
     /// Contains core scan engine functionality.
     /// </summary>
-    public class ScanEngine
+    public class ScanEngine : BaseEngine
     {
-        public ScanEngine(IClientDatabase database, ILogger logger)
-        {
-            if (database == null)
-            {
-                throw new ArgumentNullException(nameof(database));
-            }
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            Database = database;
-            Logger = logger;
-            StatusLock = new object();
-        }
+        /// <summary>
+        /// Constructor that accepts a database and logger.
+        /// </summary>
+        /// <param name="database"><c>IDatabase</c></param>
+        /// <param name="logger"><c>ILogger</c></param>
+        public ScanEngine(IDatabase database, ILogger logger) : base(database, logger) { }
 
         /// <summary>
         /// Begins to start the scanning engine, returns immediately to the caller.
         /// </summary>
-        public void BeginStart()
+        public override void BeginStart()
         {
             OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
         }
@@ -37,7 +28,7 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Begins to stop the scanning engine, returns immediately to the caller.
         /// </summary>
-        public void BeginStop()
+        public override void BeginStop()
         {
             lock (StatusLock)
             {
@@ -47,39 +38,5 @@ namespace OzetteLibrary.Client
                 }
             }
         }
-
-        /// <summary>
-        /// This event is triggered when the engine has been stopped.
-        /// </summary>
-        public event EventHandler<EngineStoppedEventArgs> Stopped;
-
-        /// <summary>
-        /// Internal function to invoke the Stopped event.
-        /// </summary>
-        /// <param name="e"></param>
-        protected virtual void OnStopped(EngineStoppedEventArgs e)
-        {
-            Stopped?.Invoke(this, e);
-        }
-
-        /// <summary>
-        /// A flag to indicate if a stop has been requested.
-        /// </summary>
-        private bool StopRequested { get; set; }
-
-        /// <summary>
-        /// Thread locking mechanism.
-        /// </summary>
-        private object StatusLock { get; set; }
-
-        /// <summary>
-        /// A reference to the database.
-        /// </summary>
-        private IClientDatabase Database { get; set; }
-
-        /// <summary>
-        /// A reference to the logger.
-        /// </summary>
-        private ILogger Logger { get; set; }
     }
 }

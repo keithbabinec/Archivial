@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\BackupEngine.cs" />
+    <Compile Include="Engine\BaseEngine.cs" />
     <Compile Include="Events\EngineStoppedEventArgs.cs" />
     <Compile Include="Client\ScanEngine.cs" />
     <Compile Include="Client\Sources\Loader.cs" />
