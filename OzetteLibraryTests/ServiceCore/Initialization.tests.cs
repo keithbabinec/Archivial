@@ -106,43 +106,5 @@ namespace OzetteLibraryTests.ServiceCore
             Assert.IsNull(i.Options.EventlogName);
             Assert.IsNull(i.Options.DatabaseConnectionString);
         }
-
-        [TestMethod()]
-        public void ServiceCoreInitializationCallsEventLogCreationMock()
-        {
-            var mock = new MockLogger();
-            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(mock);
-
-            var signalCompleteEvent = new AutoResetEvent(false);
-
-            i.Completed += (s, e) => { signalCompleteEvent.Set(); };
-
-            var props = new SettingsPropertyCollection();
-
-            i.BeginStart(props);
-
-            var completeSignaled = signalCompleteEvent.WaitOne(TimeSpan.FromSeconds(10));
-
-            Assert.IsTrue(mock.SetupCustomWindowsEventLogIfNotPresentHasBeenCalled);
-        }
-
-        [TestMethod()]
-        public void ServiceCoreInitializationCallsLogFolderOnDiskCreationMock()
-        {
-            var mock = new MockLogger();
-            OzetteLibrary.ServiceCore.Initialization i = new OzetteLibrary.ServiceCore.Initialization(mock);
-
-            var signalCompleteEvent = new AutoResetEvent(false);
-
-            i.Completed += (s, e) => { signalCompleteEvent.Set(); };
-
-            var props = new SettingsPropertyCollection();
-
-            i.BeginStart(props);
-
-            var completeSignaled = signalCompleteEvent.WaitOne(TimeSpan.FromSeconds(10));
-
-            Assert.IsTrue(mock.SetupLogsFolderIfNotPresentHasBeenCalled);
-        }
     }
 }
