@@ -16,6 +16,16 @@
         public const int StartedService = 1001;
 
         /// <summary>
+        /// Event ID: Stopping the service.
+        /// </summary>
+        public const int StoppingService = 1002;
+
+        /// <summary>
+        /// Event ID: Stopped service event.
+        /// </summary>
+        public const int StoppedService = 1003;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;

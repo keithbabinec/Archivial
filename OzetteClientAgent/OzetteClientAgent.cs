@@ -83,7 +83,7 @@ namespace OzetteClientAgent
 
                 CoreLog.WriteSystemEvent(
                     string.Format("Successfully started {0} client service.", OzetteLibrary.Constants.Logging.AppName),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService);
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedService);
             }
             else
             {
@@ -100,6 +100,13 @@ namespace OzetteClientAgent
         /// </summary>
         protected override void OnStop()
         {
+            if (CoreLog != null)
+            {
+                CoreLog.WriteSystemEvent(
+                    string.Format("Stopping {0} client service.", OzetteLibrary.Constants.Logging.AppName),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppingService);
+            }
+
             if (Scan != null)
             {
                 Scan.BeginStop();
@@ -107,6 +114,13 @@ namespace OzetteClientAgent
             if (Backup != null)
             {
                 Backup.BeginStop();
+            }
+
+            if (CoreLog != null)
+            {
+                CoreLog.WriteSystemEvent(
+                    string.Format("Successfully stopped {0} client service.", OzetteLibrary.Constants.Logging.AppName),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedService);
             }
         }
 
