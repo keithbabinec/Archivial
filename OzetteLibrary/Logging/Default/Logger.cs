@@ -165,7 +165,7 @@ namespace OzetteLibrary.Logging.Default
 
                     if (successfulWrite == false)
                     {
-                        WriteSystemEvent("Failed to write a message to the tracelog.", lastError, 0);
+                        WriteSystemEvent("Failed to write a message to the tracelog.", lastError, Constants.EventIDs.FailedToWriteToTraceLog);
                     }
                 }
             }
