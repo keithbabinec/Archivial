@@ -5,6 +5,7 @@ using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Models;
 using OzetteLibrary.ServiceCore;
 using System;
+using System.Diagnostics;
 using System.ServiceProcess;
 
 namespace OzetteClientAgent
@@ -72,9 +73,17 @@ namespace OzetteClientAgent
                 // each one lives under it's own long-running thread and class.
                 // prepare the database and then start both engines.
 
+                CoreLog.WriteSystemEvent(
+                    string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName), 
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService);
+
                 PrepareDatabase();
                 StartScanEngine();
                 StartBackupEngine();
+
+                CoreLog.WriteSystemEvent(
+                    string.Format("Successfully started {0} client service.", OzetteLibrary.Constants.Logging.AppName),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService);
             }
             else
             {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OzetteLibrary.Constants
+﻿namespace OzetteLibrary.Constants
 {
     /// <summary>
     /// A constants class that contains event log IDs.
@@ -12,7 +6,17 @@ namespace OzetteLibrary.Constants
     public static class EventIDs
     {
         /// <summary>
-        /// An event ID for failing to write to the trace log.
+        /// Event ID: Starting the service.
+        /// </summary>
+        public const int StartingService = 1000;
+
+        /// <summary>
+        /// Event ID: Started service event.
+        /// </summary>
+        public const int StartedService = 1001;
+
+        /// <summary>
+        /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;
     }
