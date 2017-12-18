@@ -9,17 +9,17 @@ namespace OzetteLibrary.Logging
     public interface ILogger
     {
         /// <summary>
-        /// Ensures the custom windows event log is present.
+        /// Starts the logger.
         /// </summary>
-        /// <param name="logSource"></param>
-        /// <param name="logName"></param>
-        void SetupCustomWindowsEventLogIfNotPresent(string logSource, string logName);
+        /// <param name="EventLogSource"></param>
+        /// <param name="EventLogName"></param>
+        /// <param name="TraceLogFolderPath"></param>
+        void Start(string EventLogSource, string EventLogName, string TraceLogFolderPath);
 
         /// <summary>
-        /// Ensures the detailed logging files folder is present on disk.
+        /// Stops the logger.
         /// </summary>
-        /// <param name="path"></param>
-        void SetupTraceLogsFolderIfNotPresent(string path);
+        void Stop();
 
         /// <summary>
         /// Writes an informational message to the trace log file on disk.

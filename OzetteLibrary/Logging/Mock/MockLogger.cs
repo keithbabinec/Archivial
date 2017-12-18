@@ -50,6 +50,16 @@ namespace OzetteLibrary.Logging.Mock
         public bool WriteSystemEventWithExceptionHasBeenCalled = false;
 
         /// <summary>
+        /// Flag to set when the start method has been called.
+        /// </summary>
+        public bool StartHasBeenCalled = false;
+
+        /// <summary>
+        /// Flag to set when the stop method has been called.
+        /// </summary>
+        public bool StopHasBeenCalled = false;
+
+        /// <summary>
         /// The last exception that has been logged.
         /// </summary>
         public Exception ExceptionWritten = null;
@@ -60,22 +70,22 @@ namespace OzetteLibrary.Logging.Mock
         public StringBuilder TraceLog = new StringBuilder();
 
         /// <summary>
-        /// Ensures the custom windows event log is present.
+        /// Starts the logger.
         /// </summary>
-        /// <param name="logSource"></param>
-        /// <param name="logName"></param>
-        public void SetupCustomWindowsEventLogIfNotPresent(string logSource, string logName)
+        /// <param name="EventLogSource"></param>
+        /// <param name="EventLogName"></param>
+        /// <param name="TraceLogFolderPath"></param>
+        public void Start(string EventLogSource, string EventLogName, string TraceLogFolderPath)
         {
-            SetupCustomWindowsEventLogIfNotPresentHasBeenCalled = true;
+            StartHasBeenCalled = true;
         }
 
         /// <summary>
-        /// Ensures the detailed logging files folder is present on disk.
+        /// Stops the logger.
         /// </summary>
-        /// <param name="path"></param>
-        public void SetupTraceLogsFolderIfNotPresent(string path)
+        public void Stop()
         {
-            SetupLogsFolderIfNotPresentHasBeenCalled = true;
+            StopHasBeenCalled = true;
         }
 
         /// <summary>

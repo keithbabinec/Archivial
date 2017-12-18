@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace OzetteLibrary.Logging.Default
 {
@@ -22,6 +24,41 @@ namespace OzetteLibrary.Logging.Default
             }
 
             SourceComponent = component;
+            TraceMessageQueue = new ConcurrentQueue<string>();
+        }
+
+        /// <summary>
+        /// Starts the logger.
+        /// </summary>
+        /// <param name="EventLogSource"></param>
+        /// <param name="EventLogName"></param>
+        /// <param name="TraceLogFolderPath"></param>
+        public void Start(string EventLogSource, string EventLogName, string TraceLogFolderPath)
+        {
+            if (Running == true)
+            {
+                throw new InvalidOperationException("Logger has already been started.");
+            }
+
+            Running = true;
+
+            SetupCustomWindowsEventLogIfNotPresent(EventLogSource, EventLogName);
+            SetupTraceLogsFolderIfNotPresent(TraceLogFolderPath);
+
+            Thread tmw = new Thread(() => TraceMessageWriter());
+            tmw.Start();
+        }
+
+        /// <summary>
+        /// Stops the logger.
+        /// </summary>
+        public void Stop()
+        {
+            if (Running == true)
+            {
+                // this flags the running trace writer thread to exit.
+                Running = false;
+            }
         }
 
         /// <summary>
@@ -33,7 +70,7 @@ namespace OzetteLibrary.Logging.Default
         /// </remarks>
         /// <param name="logSource"></param>
         /// <param name="logName"></param>
-        public void SetupCustomWindowsEventLogIfNotPresent(string logSource, string logName)
+        private void SetupCustomWindowsEventLogIfNotPresent(string logSource, string logName)
         {
             if (string.IsNullOrEmpty(logSource))
             {
@@ -58,7 +95,7 @@ namespace OzetteLibrary.Logging.Default
         /// Ensures the detailed trace logging files folder is present on disk.
         /// </summary>
         /// <param name="path"></param>
-        public void SetupTraceLogsFolderIfNotPresent(string path)
+        private void SetupTraceLogsFolderIfNotPresent(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -71,6 +108,67 @@ namespace OzetteLibrary.Logging.Default
             }
 
             TraceLogFolderPath = path.TrimEnd('\\');
+        }
+
+        /// <summary>
+        /// A long-running loop/thread to write trace messages to disk.
+        /// </summary>
+        /// <remarks>
+        /// The general idea here is that when writing to a file on disk there may be write/lock issues.
+        /// They usually crop up from things like antivirus scans. If a single log message fails to write,
+        /// then this shouldn't crash the application. This function is a loop to write with retries and delays.
+        /// </remarks>
+        public void TraceMessageWriter()
+        {
+            while (Running == true)
+            {
+                string messageToWrite = null;
+
+                if (TraceMessageQueue.Count > 0)
+                {
+                    TraceMessageQueue.TryDequeue(out messageToWrite);
+                }
+
+                if (messageToWrite == null)
+                {
+                    Thread.Sleep(TimeSpan.FromMilliseconds(500));
+                }
+                else
+                {
+                    bool successfulWrite = false;
+                    Exception lastError = null;
+                    int attempts = 0;
+
+                    while (true)
+                    {
+                        attempts++;
+
+                        try
+                        {
+                            File.AppendAllText(GetCurrentTraceLogFilePath(), messageToWrite);
+                            successfulWrite = true;
+                            break;
+                        }
+                        catch (Exception ex)
+                        {
+                            if (attempts >= MaxWriteAttempts)
+                            {
+                                lastError = ex;
+                                break;
+                            }
+                            else
+                            {
+                                Thread.Sleep(TimeSpan.FromSeconds(1));
+                            }
+                        }
+                    }
+
+                    if (successfulWrite == false)
+                    {
+                        WriteSystemEvent("Failed to write a message to the tracelog.", lastError, 0);
+                    }
+                }
+            }
         }
         
         /// <summary>
@@ -88,10 +186,7 @@ namespace OzetteLibrary.Logging.Default
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
             }
 
-            var logFilePath = GetCurrentTraceLogFilePath();
-            var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Information);
-
-            File.AppendAllText(logFilePath, loggableMessage);
+            TraceMessageQueue.Enqueue(PrependMessageWithDateAndSeverity(message, EventLogEntryType.Information));
         }
 
         /// <summary>
@@ -109,10 +204,7 @@ namespace OzetteLibrary.Logging.Default
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
             }
 
-            var logFilePath = GetCurrentTraceLogFilePath();
-            var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Warning);
-
-            File.AppendAllText(logFilePath, loggableMessage);
+            TraceMessageQueue.Enqueue(PrependMessageWithDateAndSeverity(message, EventLogEntryType.Warning));
         }
 
         /// <summary>
@@ -130,10 +222,7 @@ namespace OzetteLibrary.Logging.Default
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
             }
 
-            var logFilePath = GetCurrentTraceLogFilePath();
-            var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Error);
-
-            File.AppendAllText(logFilePath, loggableMessage);
+            TraceMessageQueue.Enqueue(PrependMessageWithDateAndSeverity(message, EventLogEntryType.Error));
         }
 
         /// <summary>
@@ -156,10 +245,7 @@ namespace OzetteLibrary.Logging.Default
                 throw new ArgumentNullException(nameof(exception));
             }
 
-            var logFilePath = GetCurrentTraceLogFilePath();
-            var loggableMessage = GenerateExceptionLoggingMessage(message, exception);
-
-            File.AppendAllText(logFilePath, loggableMessage);
+            TraceMessageQueue.Enqueue(GenerateExceptionLoggingMessage(message, exception));
         }
 
         /// <summary>
@@ -209,6 +295,16 @@ namespace OzetteLibrary.Logging.Default
             var loggableMessage = GenerateExceptionLoggingMessage(message, exception);
             EventLog.WriteEntry(LogSource, loggableMessage, EventLogEntryType.Error, eventID);
         }
+
+        /// <summary>
+        /// A flag to indicate if the logger is running.
+        /// </summary>
+        private volatile bool Running = false;
+
+        /// <summary>
+        /// The number of tracelog write attempts before giving up.
+        /// </summary>
+        private const int MaxWriteAttempts = 5;
         
         /// <summary>
         /// The trace log folder path.
@@ -230,6 +326,11 @@ namespace OzetteLibrary.Logging.Default
         /// </summary>
         private string SourceComponent { get; set; }
 
+        /// <summary>
+        /// A thread-safe queue of messages to write to the trace log.
+        /// </summary>
+        private ConcurrentQueue<string> TraceMessageQueue { get; set; }
+        
         /// <summary>
         /// Returns the full file name/path of the current tracelog file.
         /// </summary>

@@ -82,12 +82,7 @@ namespace OzetteLibrary.ServiceCore
                 return;
             }
 
-            if (!SafeSetupLogsFolder(Options, Logger))
-            {
-                return;
-            }
-
-            if (!SafeSetupCustomEventLog(Options, Logger))
+            if (!SafeStartLogger(Options, Logger))
             {
                 return;
             }
@@ -117,42 +112,21 @@ namespace OzetteLibrary.ServiceCore
         }
 
         /// <summary>
-        /// Safely setup the logs folder.
+        /// Safely starts the logger.
         /// </summary>
         /// <param name="options"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        private bool SafeSetupLogsFolder(ServiceOptions options, ILogger logger)
+        private bool SafeStartLogger(ServiceOptions options, ILogger logger)
         {
             try
             {
-                logger.SetupTraceLogsFolderIfNotPresent(Options.LogFilesDirectory);
+                logger.Start(options.EventlogName, options.EventlogName, options.LogFilesDirectory);
                 return true;
             }
             catch
             {
-                ResultCode = StartupResults.FailedToConfigureLogsFolder;
-                OnCompleted(EventArgs.Empty);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Safely setup the custom event log.
-        /// </summary>
-        /// <param name="options"></param>
-        /// <param name="logger"></param>
-        /// <returns></returns>
-        private bool SafeSetupCustomEventLog(ServiceOptions options, ILogger logger)
-        {
-            try
-            {
-                logger.SetupCustomWindowsEventLogIfNotPresent(Options.EventlogName, Options.EventlogName);
-                return true;
-            }
-            catch
-            {
-                ResultCode = StartupResults.FailedToConfigureCustomEventLog;
+                ResultCode = StartupResults.FailedToConfigureLogging;
                 OnCompleted(EventArgs.Empty);
                 return false;
             }

@@ -21,13 +21,8 @@
         FailedToParseServiceOptions = 10,
 
         /// <summary>
-        /// Failed to configure the logs folder.
+        /// Failed to configure the logging.
         /// </summary>
-        FailedToConfigureLogsFolder = 11,
-
-        /// <summary>
-        /// Failed to configure the custom event log.
-        /// </summary>
-        FailedToConfigureCustomEventLog = 12,
+        FailedToConfigureLogging = 11
     }
 }
