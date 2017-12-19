@@ -94,7 +94,7 @@ namespace OzetteLibrary.Client
 
                 if (ValidateSources(result) == true)
                 {
-                    return result;
+                    return loader.SortSources(result);
                 }
                 else
                 {
