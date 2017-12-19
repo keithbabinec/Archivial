@@ -147,7 +147,7 @@ namespace OzetteClientAgent
             var log = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
             var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
 
-            Scan = new ScanEngine(db, log);
+            Scan = new ScanEngine(db, log, Initialize.Options);
             Scan.Stopped += Scan_Stopped;
             Scan.BeginStart();
         }
@@ -173,7 +173,7 @@ namespace OzetteClientAgent
             var log = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
             var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
 
-            Backup = new BackupEngine(db, log);
+            Backup = new BackupEngine(db, log, Initialize.Options);
             Backup.Stopped += Backup_Stopped;
             Backup.BeginStart();
         }

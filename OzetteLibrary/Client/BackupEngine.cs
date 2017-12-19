@@ -2,6 +2,9 @@
 using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
+using OzetteLibrary.ServiceCore;
+using System;
+using System.Threading;
 
 namespace OzetteLibrary.Client
 {
@@ -15,14 +18,23 @@ namespace OzetteLibrary.Client
         /// </summary>
         /// <param name="database"><c>IDatabase</c></param>
         /// <param name="logger"><c>ILogger</c></param>
-        public BackupEngine(IDatabase database, ILogger logger) : base(database, logger) { }
+        /// <param name="options"><c>ServiceOptions</c></param>
+        public BackupEngine(IDatabase database, ILogger logger, ServiceOptions options) : base(database, logger, options) { }
 
         /// <summary>
         /// Begins to start the backup engine, returns immediately to the caller.
         /// </summary>
         public override void BeginStart()
         {
-            OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
+            if (Running == true)
+            {
+                throw new InvalidOperationException("The engine cannot be started, it is already running.");
+            }
+
+            Running = true;
+
+            Thread pl = new Thread(() => ProcessLoop());
+            pl.Start();
         }
 
         /// <summary>
@@ -30,11 +42,27 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStop()
         {
-            lock (StatusLock)
+            if (Running == true)
             {
-                if (StopRequested == false)
+                Running = false;
+            }
+        }
+
+        /// <summary>
+        /// Core processing loop.
+        /// </summary>
+        private void ProcessLoop()
+        {
+            while (true)
+            {
+                // todo: implement engine core loop
+
+                Thread.Sleep(TimeSpan.FromSeconds(3));
+
+                if (Running == false)
                 {
-                    StopRequested = true;
+                    OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
+                    break;
                 }
             }
         }

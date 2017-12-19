@@ -1,6 +1,7 @@
 ﻿using OzetteLibrary.Database;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
+using OzetteLibrary.ServiceCore;
 using System;
 
 namespace OzetteLibrary.Engine
@@ -18,7 +19,8 @@ namespace OzetteLibrary.Engine
         /// </summary>
         /// <param name="database"><c>IDatabase</c></param>
         /// <param name="logger"><c>ILogger</c></param>
-        protected BaseEngine(IDatabase database, ILogger logger)
+        /// <param name="options"><c>ServiceOptions</c></param>
+        protected BaseEngine(IDatabase database, ILogger logger, ServiceOptions options)
         {
             if (database == null)
             {
@@ -28,11 +30,14 @@ namespace OzetteLibrary.Engine
             {
                 throw new ArgumentNullException(nameof(logger));
             }
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
             Database = database;
             Logger = logger;
-
-            StatusLock = new object();
+            Options = options;
         }
 
         /// <summary>
@@ -60,14 +65,9 @@ namespace OzetteLibrary.Engine
         }
 
         /// <summary>
-        /// A flag to indicate if a stop has been requested.
+        /// A flag to indicate if the engine is running.
         /// </summary>
-        protected bool StopRequested { get; set; }
-
-        /// <summary>
-        /// Thread locking mechanism.
-        /// </summary>
-        protected object StatusLock { get; set; }
+        protected volatile bool Running = false;
 
         /// <summary>
         /// A reference to the logger.
@@ -78,5 +78,10 @@ namespace OzetteLibrary.Engine
         /// A reference to the database.
         /// </summary>
         protected IDatabase Database { get; set; }
+
+        /// <summary>
+        /// A reference to the service options.
+        /// </summary>
+        protected ServiceOptions Options { get; set; }
     }
 }

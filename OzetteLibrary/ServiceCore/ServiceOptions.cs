@@ -24,6 +24,11 @@ namespace OzetteLibrary.ServiceCore
         public string DatabaseConnectionString { get; set; }
 
         /// <summary>
+        /// A path to the scan sources file.
+        /// </summary>
+        public string SourcesFilePath { get; set; }
+
+        /// <summary>
         /// Base constructor.
         /// </summary>
         public ServiceOptions()
@@ -44,6 +49,7 @@ namespace OzetteLibrary.ServiceCore
             LogFilesDirectory = (settings[nameof(LogFilesDirectory)] as SettingsProperty)?.DefaultValue.ToString();
             EventlogName = (settings[nameof(EventlogName)] as SettingsProperty)?.DefaultValue.ToString();
             DatabaseConnectionString = (settings[nameof(DatabaseConnectionString)] as SettingsProperty)?.DefaultValue.ToString();
+            SourcesFilePath = (settings[nameof(SourcesFilePath)] as SettingsProperty)?.DefaultValue.ToString();
         }
     }
 }

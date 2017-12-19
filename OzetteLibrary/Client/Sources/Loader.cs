@@ -15,7 +15,7 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         /// <param name="sourcesFilePath"></param>
         /// <returns></returns>
-        public SourceLocations LoadSources(string sourcesFilePath)
+        public SourceLocations LoadSourcesFile(string sourcesFilePath)
         {
             if (string.IsNullOrEmpty(sourcesFilePath))
             {

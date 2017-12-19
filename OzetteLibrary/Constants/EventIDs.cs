@@ -29,5 +29,15 @@
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;
+
+        /// <summary>
+        /// Event ID: Failed to load scan sources.
+        /// </summary>
+        public const int FailedToLoadScanSources = 2001;
+
+        /// <summary>
+        /// Event ID: Failed to validate scan sources.
+        /// </summary>
+        public const int FailedToValidateScanSources = 2002;
     }
 }

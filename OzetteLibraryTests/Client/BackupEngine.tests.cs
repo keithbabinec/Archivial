@@ -15,7 +15,7 @@ namespace OzetteLibraryTests.Client
         public void BackupEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
             OzetteLibrary.Client.BackupEngine engine =
-                new OzetteLibrary.Client.BackupEngine(null, new MockLogger());
+                new OzetteLibrary.Client.BackupEngine(null, new MockLogger(), new OzetteLibrary.ServiceCore.ServiceOptions());
         }
 
         [TestMethod()]
@@ -25,7 +25,17 @@ namespace OzetteLibraryTests.Client
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
 
             OzetteLibrary.Client.BackupEngine engine =
-                new OzetteLibrary.Client.BackupEngine(inMemoryDB, null);
+                new OzetteLibrary.Client.BackupEngine(inMemoryDB, null, new OzetteLibrary.ServiceCore.ServiceOptions());
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void BackupEngineConstructorThrowsExceptionWhenNoOptionsAreProvided()
+        {
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
+
+            OzetteLibrary.Client.BackupEngine engine =
+                new OzetteLibrary.Client.BackupEngine(inMemoryDB, new MockLogger(), null);
         }
 
         [TestMethod()]
@@ -35,7 +45,7 @@ namespace OzetteLibraryTests.Client
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
 
             OzetteLibrary.Client.BackupEngine engine =
-                new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger);
+                new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger, new OzetteLibrary.ServiceCore.ServiceOptions());
 
             Assert.IsNotNull(engine);
         }
@@ -49,7 +59,7 @@ namespace OzetteLibraryTests.Client
             inMemoryDB.PrepareDatabase();
 
             OzetteLibrary.Client.BackupEngine engine =
-                new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger);
+                new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger, new OzetteLibrary.ServiceCore.ServiceOptions());
 
             engine.BeginStart();
             engine.BeginStop();
@@ -64,7 +74,7 @@ namespace OzetteLibraryTests.Client
             inMemoryDB.PrepareDatabase();
 
             OzetteLibrary.Client.BackupEngine engine =
-                new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger);
+                new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger, new OzetteLibrary.ServiceCore.ServiceOptions());
 
             var signalStoppedEvent = new AutoResetEvent(false);
 
@@ -75,6 +85,22 @@ namespace OzetteLibraryTests.Client
             var engineStoppedSignaled = signalStoppedEvent.WaitOne(TimeSpan.FromSeconds(5));
 
             Assert.IsTrue(engineStoppedSignaled);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void BackupEngineThrowsExceptionWhenEngineIsStartedTwice()
+        {
+            var logger = new MockLogger();
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+
+            inMemoryDB.PrepareDatabase();
+
+            OzetteLibrary.Client.BackupEngine engine =
+                new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger, new OzetteLibrary.ServiceCore.ServiceOptions());
+
+            engine.BeginStart();
+            engine.BeginStart();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace OzetteLibraryTests.Client
         public void ScanEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
             OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(null, new MockLogger());
+                new OzetteLibrary.Client.ScanEngine(null, new MockLogger(), new OzetteLibrary.ServiceCore.ServiceOptions());
         }
 
         [TestMethod()]
@@ -25,7 +25,17 @@ namespace OzetteLibraryTests.Client
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
             
             OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(inMemoryDB, null);
+                new OzetteLibrary.Client.ScanEngine(inMemoryDB, null, new OzetteLibrary.ServiceCore.ServiceOptions());
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ScanEngineConstructorThrowsExceptionWhenNoOptionsAreProvided()
+        {
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
+
+            OzetteLibrary.Client.ScanEngine engine =
+                new OzetteLibrary.Client.ScanEngine(inMemoryDB, new MockLogger(), null);
         }
 
         [TestMethod()]
@@ -35,7 +45,7 @@ namespace OzetteLibraryTests.Client
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
 
             OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger);
+                new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger, new OzetteLibrary.ServiceCore.ServiceOptions());
 
             Assert.IsNotNull(engine);
         }
@@ -49,7 +59,7 @@ namespace OzetteLibraryTests.Client
             inMemoryDB.PrepareDatabase();
 
             OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger);
+                new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger, new OzetteLibrary.ServiceCore.ServiceOptions());
 
             engine.BeginStart();
             engine.BeginStop();
@@ -64,7 +74,7 @@ namespace OzetteLibraryTests.Client
             inMemoryDB.PrepareDatabase();
 
             OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger);
+                new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger, new OzetteLibrary.ServiceCore.ServiceOptions());
 
             var signalStoppedEvent = new AutoResetEvent(false);
 
@@ -75,6 +85,22 @@ namespace OzetteLibraryTests.Client
             var engineStoppedSignaled = signalStoppedEvent.WaitOne(TimeSpan.FromSeconds(5));
 
             Assert.IsTrue(engineStoppedSignaled);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ScanEngineThrowsExceptionWhenEngineIsStartedTwice()
+        {
+            var logger = new MockLogger();
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+
+            inMemoryDB.PrepareDatabase();
+
+            OzetteLibrary.Client.ScanEngine engine =
+                new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger, new OzetteLibrary.ServiceCore.ServiceOptions());
+
+            engine.BeginStart();
+            engine.BeginStart();
         }
     }
 }

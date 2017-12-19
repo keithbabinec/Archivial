@@ -12,7 +12,7 @@ namespace OzetteLibraryTests.Client.Sources
         public void SourcesLoaderThrowsExceptionWhenNoFileIsProvided()
         {
             OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
-            load.LoadSources(null);
+            load.LoadSourcesFile(null);
         }
 
         [TestMethod()]
@@ -20,7 +20,7 @@ namespace OzetteLibraryTests.Client.Sources
         {
             OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
 
-            var sources = load.LoadSources(".\\TestFiles\\SourceLocation\\EmptySourcesFile.json");
+            var sources = load.LoadSourcesFile(".\\TestFiles\\SourceLocation\\EmptySourcesFile.json");
 
             Assert.IsNotNull(sources);
             Assert.AreEqual(0, sources.Count);
@@ -32,7 +32,7 @@ namespace OzetteLibraryTests.Client.Sources
         {
             OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
 
-            var sources = load.LoadSources(".\\TestFiles\\SourceLocation\\SourcesExample1.json");
+            var sources = load.LoadSourcesFile(".\\TestFiles\\SourceLocation\\SourcesExample1.json");
 
             Assert.IsNotNull(sources);
             Assert.IsTrue(sources.Count == 2);
