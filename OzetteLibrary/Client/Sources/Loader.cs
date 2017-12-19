@@ -38,7 +38,7 @@ namespace OzetteLibrary.Client.Sources
         /// <returns></returns>
         public SourceLocations SortSources(SourceLocations sources)
         {
-            return new SourceLocations(sources.OrderByDescending(x => (int)x.Priority).ToList());
+            return new SourceLocations(sources.OrderByDescending(x => (int)x.Priority).ThenBy(y => y.FolderPath).ToList());
         }
     }
 }

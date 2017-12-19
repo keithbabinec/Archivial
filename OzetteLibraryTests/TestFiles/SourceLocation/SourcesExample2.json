@@ -1,54 +1,54 @@
 ﻿[
   {
-    "FolderPath": "C:\\dir1",
+    "FolderPath": "C:\\dir01",
     "FileMatchFilter": "*",
     "Priority": "High",
     "RevisionCount": 3
   },
   {
-    "FolderPath": "C:\\dir2",
+    "FolderPath": "C:\\dir02",
     "FileMatchFilter": "*",
     "Priority": "Medium",
     "RevisionCount": 1
   },
   {
-    "FolderPath": "C:\\dir3",
+    "FolderPath": "C:\\dir03",
     "FileMatchFilter": "*",
     "Priority": "Low",
     "RevisionCount": 1
   },
   {
-    "FolderPath": "C:\\dir4",
+    "FolderPath": "C:\\dir04",
     "FileMatchFilter": "*",
     "Priority": "Low",
     "RevisionCount": 1
   },
   {
-    "FolderPath": "C:\\dir5",
+    "FolderPath": "C:\\dir05",
     "FileMatchFilter": "*",
     "Priority": "High",
     "RevisionCount": 1
   },
   {
-    "FolderPath": "C:\\dir6",
+    "FolderPath": "C:\\dir06",
     "FileMatchFilter": "*",
     "Priority": "Low",
     "RevisionCount": 1
   },
   {
-    "FolderPath": "C:\\dir7",
+    "FolderPath": "C:\\dir07",
     "FileMatchFilter": "*",
     "Priority": "High",
     "RevisionCount": 1
   },
   {
-    "FolderPath": "C:\\dir8",
+    "FolderPath": "C:\\dir08",
     "FileMatchFilter": "*",
     "Priority": "Medium",
     "RevisionCount": 1
   },
   {
-    "FolderPath": "C:\\dir9",
+    "FolderPath": "C:\\dir09",
     "FileMatchFilter": "*",
     "Priority": "High",
     "RevisionCount": 1
