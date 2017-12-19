@@ -94,5 +94,53 @@ namespace OzetteLibraryTests.Client.Sources
             Assert.AreEqual("C:\\dir12", sources[11].FolderPath);
             Assert.AreEqual(FileBackupPriority.High, sources[11].Priority);
         }
+
+        [TestMethod()]
+        public void SourcesLoaderCanCorrectlySortByPriority()
+        {
+            OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
+
+            var sources = load.LoadSourcesFile(".\\TestFiles\\SourceLocation\\SourcesExample2.json");
+            var sorted = load.SortSources(sources);
+
+            Assert.IsNotNull(sorted);
+            Assert.IsTrue(sorted.Count == 12);
+
+            Assert.AreEqual("C:\\dir1", sorted[0].FolderPath);
+            Assert.AreEqual(FileBackupPriority.High, sorted[0].Priority);
+
+            Assert.AreEqual("C:\\dir5", sorted[1].FolderPath);
+            Assert.AreEqual(FileBackupPriority.High, sorted[1].Priority);
+
+            Assert.AreEqual("C:\\dir7", sorted[2].FolderPath);
+            Assert.AreEqual(FileBackupPriority.High, sorted[2].Priority);
+
+            Assert.AreEqual("C:\\dir9", sorted[3].FolderPath);
+            Assert.AreEqual(FileBackupPriority.High, sorted[3].Priority);
+
+            Assert.AreEqual("C:\\dir12", sorted[4].FolderPath);
+            Assert.AreEqual(FileBackupPriority.High, sorted[4].Priority);
+
+            Assert.AreEqual("C:\\dir2", sorted[5].FolderPath);
+            Assert.AreEqual(FileBackupPriority.Medium, sorted[5].Priority);
+
+            Assert.AreEqual("C:\\dir8", sorted[6].FolderPath);
+            Assert.AreEqual(FileBackupPriority.Medium, sorted[6].Priority);
+
+            Assert.AreEqual("C:\\dir10", sorted[7].FolderPath);
+            Assert.AreEqual(FileBackupPriority.Medium, sorted[7].Priority);
+
+            Assert.AreEqual("C:\\dir3", sorted[8].FolderPath);
+            Assert.AreEqual(FileBackupPriority.Low, sorted[8].Priority);
+
+            Assert.AreEqual("C:\\dir4", sorted[9].FolderPath);
+            Assert.AreEqual(FileBackupPriority.Low, sorted[9].Priority);
+
+            Assert.AreEqual("C:\\dir6", sorted[10].FolderPath);
+            Assert.AreEqual(FileBackupPriority.Low, sorted[10].Priority);
+
+            Assert.AreEqual("C:\\dir11", sorted[11].FolderPath);
+            Assert.AreEqual(FileBackupPriority.Low, sorted[11].Priority);
+        }
     }
 }
