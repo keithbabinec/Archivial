@@ -7,5 +7,12 @@ namespace OzetteLibrary.Models
     /// </summary>
     public class SourceLocations : List<SourceLocation>
     {
+        /// <summary>
+        /// Constructor that accepts a collection input.
+        /// </summary>
+        /// <param name="collection"></param>
+        public SourceLocations(IEnumerable<SourceLocation> collection) : base(collection)
+        {
+        }
     }
 }
