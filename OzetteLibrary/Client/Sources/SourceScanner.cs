@@ -41,7 +41,7 @@ namespace OzetteLibrary.Client.Sources
         /// Starts asynchronously scanning a source.
         /// </summary>
         /// <param name="source">The source definition</param>
-        public void BeginScan(SourceLocation source)
+        public IAsyncResult BeginScan(SourceLocation source)
         {
             if (source == null)
             {
@@ -70,6 +70,8 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         public void StopScan()
         {
+            Logger.WriteTraceMessage("Stopping the in-progress scan by request.");
+
             lock (ScanStatusLock)
             {
                 if (ScanInProgress)
@@ -77,6 +79,20 @@ namespace OzetteLibrary.Client.Sources
                     ScanStopRequested = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Determines if the specified source should be scanned.
+        /// </summary>
+        /// <remarks>
+        /// If a scan has been performed recently on this source, it should be skipped.
+        /// Otherwise return true.
+        /// </remarks>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public bool ShouldScan(SourceLocation source)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

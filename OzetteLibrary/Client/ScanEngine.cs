@@ -34,6 +34,7 @@ namespace OzetteLibrary.Client
             }
 
             Running = true;
+            Scanner = new SourceScanner(Database as IClientDatabase, Logger);
 
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();
@@ -51,22 +52,61 @@ namespace OzetteLibrary.Client
         }
 
         /// <summary>
+        /// The source scanning instance.
+        /// </summary>
+        private SourceScanner Scanner { get; set; }
+
+        /// <summary>
         /// Core processing loop.
         /// </summary>
         private void ProcessLoop()
         {
             while (true)
             {
+                // first: check to see if we have any valid sources defined.
+                // the sources found are returned in the order they should be scanned.
+
                 var sources = SafeImportSources(Options.SourcesFilePath);
 
                 if (sources != null)
                 {
-                    // scan sources that are overdue for a scan
+                    foreach (var source in sources)
+                    {
+                        // should we actually scan this source?
+                        // checks the DB to see if it has been scanned recently.        
 
-                    // if multiple scans need to occur: run in sequence, in order of priority
+                        if (Scanner.ShouldScan(source))
+                        {
+                            // begin-invoke the asynchronous scan operation.
+                            // watch the IAsyncResult status object to check for status updates
+                            // and wait until the scan has completed.
+
+                            var state = Scanner.BeginScan(source);
+
+                            while (state.IsCompleted == false)
+                            {
+                                Thread.Sleep(TimeSpan.FromSeconds(1));
+
+                                if (Running == false)
+                                {
+                                    // stop was requested.
+                                    // stop the currently in-progress scanning operation.
+                                    Scanner.StopScan();
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (Running == false)
+                        {
+                            // stop was requested.
+                            // do not continue scanning any remaining sources.
+                            break;
+                        }
+                    }
                 }
 
-                Thread.Sleep(TimeSpan.FromSeconds(3));
+                Thread.Sleep(TimeSpan.FromSeconds(2));
 
                 if (Running == false)
                 {
