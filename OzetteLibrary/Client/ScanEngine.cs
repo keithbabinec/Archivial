@@ -57,7 +57,7 @@ namespace OzetteLibrary.Client
         {
             while (true)
             {
-                var sources = ImportSources(Options.SourcesFilePath);
+                var sources = SafeImportSources(Options.SourcesFilePath);
 
                 if (sources != null)
                 {
@@ -79,9 +79,12 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Imports sources for scanning.
         /// </summary>
+        /// <remarks>
+        /// This function is marked as safe and should not throw exceptions.
+        /// </remarks>
         /// <param name="sourceFile"></param>
         /// <returns></returns>
-        private SourceLocations ImportSources(string sourceFile)
+        private SourceLocations SafeImportSources(string sourceFile)
         {
             try
             {
