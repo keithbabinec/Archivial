@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.Crypto;
 using OzetteLibrary.Database;
+using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Models;
 using System;
@@ -60,9 +61,13 @@ namespace OzetteLibrary.Client.Sources
             }
 
             Logger.WriteTraceMessage(string.Format("Starting scan for source: {0}", source.ToString()));
+
+            AsyncResult resultState = new AsyncResult();
             
-            Thread scanThread = new Thread(() => Scan(source));
+            Thread scanThread = new Thread(() => Scan(source, resultState));
             scanThread.Start();
+
+            return resultState;
         }
 
         /// <summary>
@@ -93,25 +98,6 @@ namespace OzetteLibrary.Client.Sources
         public bool ShouldScan(SourceLocation source)
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Event triggered when the scan has completed.
-        /// </summary>
-        public event EventHandler<ScanResults> ScanCompleted;
-
-        /// <summary>
-        /// Internal function to invoke the ScanCompleted event.
-        /// </summary>
-        /// <param name="e"></param>
-        protected virtual void OnScanCompleted(ScanResults e)
-        {
-            ScanCompleted?.Invoke(this, e);
-            lock (ScanStatusLock)
-            {
-                ScanInProgress = false;
-                ScanStopRequested = false;
-            }
         }
 
         /// <summary>
@@ -148,7 +134,8 @@ namespace OzetteLibrary.Client.Sources
         /// Performs a scan of the source location.
         /// </summary>
         /// <param name="source">The source definition</param>
-        private void Scan(SourceLocation source)
+        /// <param name="asyncState">The async result state</param>
+        private void Scan(SourceLocation source, AsyncResult asyncState)
         {
             var results = new ScanResults();
 
@@ -186,7 +173,14 @@ namespace OzetteLibrary.Client.Sources
             }
 
             WriteScanResultsToLog(results, source);
-            OnScanCompleted(results);
+
+            lock (ScanStatusLock)
+            {
+                ScanInProgress = false;
+                ScanStopRequested = false;
+            }
+
+            asyncState.Complete();
         }
 
         /// <summary>

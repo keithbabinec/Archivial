@@ -66,7 +66,7 @@ namespace OzetteLibraryTests.Client.Sources
         }
 
         [TestMethod()]
-        public void ScannerTriggersScanCompletedEventAfterScanHasCompleted()
+        public void ScannerSignalsCompleteAfterScanHasCompleted()
         {
             var logger = new MockLogger();
             var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
@@ -84,14 +84,12 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            var signalScanCompleteEvent = new AutoResetEvent(false);
+            var iasync = scanner.BeginScan(source);
 
-            scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
-            scanner.BeginScan(source);
+            bool completeSignaled = iasync.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5));
 
-            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
-
-            Assert.IsTrue(scanCompletedSignaled);
+            Assert.IsTrue(completeSignaled);
+            Assert.IsTrue(iasync.IsCompleted);
         }
 
         [TestMethod()]
@@ -113,23 +111,19 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            var signalScanCompleteEvent = new AutoResetEvent(false);
+            var iasync = scanner.BeginScan(source);
 
-            scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
-            scanner.BeginScan(source);
+            bool completeSignaled = iasync.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5));
 
-            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
-            Assert.IsTrue(scanCompletedSignaled);
+            Assert.IsTrue(completeSignaled);
+            Assert.IsTrue(iasync.IsCompleted);
 
-            // reset the signal
-            // initiate a second scan of the same source.
+            var iasync2 = scanner.BeginScan(source);
 
-            signalScanCompleteEvent.Reset();
+            bool completeSignaled2 = iasync2.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5));
 
-            scanner.BeginScan(source);
-
-            var scan2CompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
-            Assert.IsTrue(scan2CompletedSignaled);
+            Assert.IsTrue(completeSignaled2);
+            Assert.IsTrue(iasync2.IsCompleted);
         }
 
         [TestMethod()]
@@ -151,13 +145,12 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            var signalScanCompleteEvent = new AutoResetEvent(false);
+            var iasync = scanner.BeginScan(source);
 
-            scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
-            scanner.BeginScan(source);
+            bool completeSignaled = iasync.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5));
 
-            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
-            Assert.IsTrue(scanCompletedSignaled);
+            Assert.IsTrue(completeSignaled);
+            Assert.IsTrue(iasync.IsCompleted);
 
             // now check the database. 
             // do we have client objects correctly populated?
@@ -179,48 +172,6 @@ namespace OzetteLibraryTests.Client.Sources
         }
 
         [TestMethod()]
-        public void ScannerReturnsPopulatedScanResults()
-        {
-            var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
-
-            inMemoryDB.PrepareDatabase();
-
-            OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
-
-            var source = new SourceLocation()
-            {
-                FolderPath = Environment.CurrentDirectory,
-                FileMatchFilter = "*.*",
-                Priority = FileBackupPriority.Low,
-                RevisionCount = 1
-            };
-
-            var signalScanCompleteEvent = new AutoResetEvent(false);
-
-            ScanResults results = null; 
-
-            scanner.ScanCompleted += (s, e) => {
-                signalScanCompleteEvent.Set();
-                results = e;
-            };
-
-            scanner.BeginScan(source);
-
-            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
-
-            Assert.IsTrue(scanCompletedSignaled);
-            Assert.IsNotNull(results);
-
-            Assert.IsTrue(results.NewBytesFound > 0);
-            Assert.IsTrue(results.NewFilesFound > 0);
-            Assert.IsTrue(results.TotalBytesFound > 0);
-            Assert.IsTrue(results.TotalFilesFound > 0);
-            Assert.IsTrue(results.ScannedDirectoriesCount > 0);
-        }
-
-        [TestMethod()]
         public void TraceMessagesAreWrittenToTheTraceLogDuringScanning()
         {
             var logger = new MockLogger();
@@ -239,14 +190,13 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            var signalScanCompleteEvent = new AutoResetEvent(false);
+            var iasync = scanner.BeginScan(source);
 
-            scanner.ScanCompleted += (s, e) => { signalScanCompleteEvent.Set(); };
-            scanner.BeginScan(source);
+            bool completeSignaled = iasync.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5));
 
-            var scanCompletedSignaled = signalScanCompleteEvent.WaitOne(TimeSpan.FromSeconds(5));
+            Assert.IsTrue(completeSignaled);
+            Assert.IsTrue(iasync.IsCompleted);
 
-            Assert.IsTrue(scanCompletedSignaled);
             Assert.IsTrue(logger.WriteTraceMessageHasBeenCalled);
         }
     }
