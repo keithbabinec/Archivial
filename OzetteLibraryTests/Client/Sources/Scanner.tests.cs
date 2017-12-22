@@ -4,7 +4,6 @@ using OzetteLibrary.Logging.Mock;
 using OzetteLibrary.Models;
 using System;
 using System.IO;
-using System.Threading;
 
 namespace OzetteLibraryTests.Client.Sources
 {

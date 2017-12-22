@@ -14,5 +14,14 @@
     <Setting Name="SourcesFilePath" Type="System.String" Scope="Application">
       <Value Profile="(Default)">.\BackupSources.json</Value>
     </Setting>
+    <Setting Name="HighPriorityScanFrequencyInHours" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="MedPriorityScanFrequencyInHours" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">24</Value>
+    </Setting>
+    <Setting Name="LowPriorityScanFrequencyInHours" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">72</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

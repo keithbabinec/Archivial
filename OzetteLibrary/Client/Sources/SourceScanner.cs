@@ -87,20 +87,6 @@ namespace OzetteLibrary.Client.Sources
         }
 
         /// <summary>
-        /// Determines if the specified source should be scanned.
-        /// </summary>
-        /// <remarks>
-        /// If a scan has been performed recently on this source, it should be skipped.
-        /// Otherwise return true.
-        /// </remarks>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public bool ShouldScan(SourceLocation source)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// A reference to the database.
         /// </summary>
         private IClientDatabase Database { get; set; }

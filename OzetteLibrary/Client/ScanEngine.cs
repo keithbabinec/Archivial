@@ -75,7 +75,7 @@ namespace OzetteLibrary.Client
                         // should we actually scan this source?
                         // checks the DB to see if it has been scanned recently.        
 
-                        if (Scanner.ShouldScan(source))
+                        if (source.ShouldScan(Options))
                         {
                             // begin-invoke the asynchronous scan operation.
                             // watch the IAsyncResult status object to check for status updates

@@ -1,4 +1,6 @@
 ﻿using OzetteLibrary.Models.Exceptions;
+using OzetteLibrary.ServiceCore;
+using System;
 
 namespace OzetteLibrary.Models
 {
@@ -29,6 +31,57 @@ namespace OzetteLibrary.Models
         /// The number of revisions to store.
         /// </summary>
         public int RevisionCount { get; set; }
+
+        /// <summary>
+        /// The last time a scan of this source was completed.
+        /// </summary>
+        public DateTime? LastCompletedScan { get; set; }
+
+        /// <summary>
+        /// Checks to see if a source location is ready to scan again.
+        /// </summary>
+        /// <remarks>
+        /// The source location is ready to scan again once enough time has elapsed since the previous scan.
+        /// </remarks>
+        /// <returns></returns>
+        public bool ShouldScan(ServiceOptions options)
+        {
+            if (LastCompletedScan == null)
+            {
+                // no scan has completed before
+                return true;
+            }
+
+            DateTime lastAcceptableScanPoint;
+
+            if (Priority == FileBackupPriority.Low)
+            {
+                lastAcceptableScanPoint = DateTime.Now.AddHours(-options.LowPriorityScanFrequencyInHours);
+            }
+            else if (Priority == FileBackupPriority.Medium)
+            {
+                lastAcceptableScanPoint = DateTime.Now.AddHours(-options.MedPriorityScanFrequencyInHours);
+            }
+            else if (Priority == FileBackupPriority.High)
+            {
+                lastAcceptableScanPoint = DateTime.Now.AddHours(-options.HighPriorityScanFrequencyInHours);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unexpected backup priority specified: " + Priority);
+            }
+
+            if (LastCompletedScan.Value < lastAcceptableScanPoint)
+            {
+                // a scan hasn't been completed recently.
+                return true;
+            }
+            else
+            {
+                // scan already completed recently.
+                return false;
+            }
+        }
 
         /// <summary>
         /// Formats the Source Location string properties.
