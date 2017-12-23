@@ -240,5 +240,185 @@ namespace OzetteLibraryTests.Models
 
             Assert.IsTrue(true);
         }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample1()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = null;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.LowPriorityScanFrequencyInHours = 72;
+            options.MedPriorityScanFrequencyInHours = 24;
+            options.HighPriorityScanFrequencyInHours = 1;
+
+            Assert.IsTrue(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SourceLocationShouldScanExample2()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = null;
+
+            loc.ShouldScan(null);
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample3()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddMinutes(-15);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.High;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.HighPriorityScanFrequencyInHours = 1;
+
+            Assert.IsFalse(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample4()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddMinutes(-59);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.High;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.HighPriorityScanFrequencyInHours = 1;
+
+            Assert.IsFalse(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample5()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddMinutes(-61);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.High;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.HighPriorityScanFrequencyInHours = 1;
+
+            Assert.IsTrue(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample6()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddMinutes(-125);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.High;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.HighPriorityScanFrequencyInHours = 1;
+
+            Assert.IsTrue(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample7()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddHours(-15);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.MedPriorityScanFrequencyInHours = 24;
+
+            Assert.IsFalse(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample8()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddHours(-23);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.MedPriorityScanFrequencyInHours = 24;
+
+            Assert.IsFalse(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample9()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddHours(-25);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.MedPriorityScanFrequencyInHours = 24;
+
+            Assert.IsTrue(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample10()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddHours(-125);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.MedPriorityScanFrequencyInHours = 24;
+
+            Assert.IsTrue(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample11()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddHours(-15);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.LowPriorityScanFrequencyInHours = 72;
+
+            Assert.IsFalse(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample12()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddHours(-71);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.LowPriorityScanFrequencyInHours = 72;
+
+            Assert.IsFalse(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample13()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddHours(-73);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.LowPriorityScanFrequencyInHours = 72;
+
+            Assert.IsTrue(loc.ShouldScan(options));
+        }
+
+        [TestMethod()]
+        public void SourceLocationShouldScanExample14()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.LastCompletedScan = DateTime.Now.AddHours(-1250);
+            loc.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
+
+            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            options.LowPriorityScanFrequencyInHours = 72;
+
+            Assert.IsTrue(loc.ShouldScan(options));
+        }
     }
 }

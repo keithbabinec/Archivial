@@ -46,6 +46,10 @@ namespace OzetteLibrary.Models
         /// <returns></returns>
         public bool ShouldScan(ServiceOptions options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
             if (LastCompletedScan == null)
             {
                 // no scan has completed before
