@@ -3,8 +3,19 @@ using System.Threading;
 
 namespace OzetteLibrary.Events
 {
+    /// <summary>
+    /// An easy implementation of IAsyncResult.
+    /// </summary>
+    /// <remarks>
+    /// Credit: Some of this implementation format/design (particularly AsyncWaitHandle) is borrowed from the AsyncResult 
+    /// base class found under the (open sourced) System.Management.Automation namespace. Which can be viewed on the PowerShell 
+    /// github page. All non-essential features have been stripped out, so this is pretty barebones.
+    /// </remarks>
     public class AsyncResult : IAsyncResult
     {
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
         public AsyncResult()
         {
             ThreadSync = new object();
