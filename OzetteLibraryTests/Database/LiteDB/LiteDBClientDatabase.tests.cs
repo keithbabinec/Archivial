@@ -178,6 +178,48 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseGetAllSourceLocationsThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.GetAllSourceLocations();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseSetSourceLocationsThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.SetSourceLocations(null);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseUpdateSourceLocationThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.UpdateSourceLocation(null);
+        }
+
+        [TestMethod()]
         [ExpectedException(typeof(ArgumentNullException))]
         public void LiteDBClientDatabaseAddTargetThrowsIfNullTargetIsPassed()
         {
@@ -562,6 +604,233 @@ namespace OzetteLibraryTests.Database.LiteDB
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
             Assert.AreEqual(OzetteLibrary.Models.ClientFileLookupResult.Updated, result.Result);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetAllSourceLocationsReturnsEmptyCollectionInsteadOfNull()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var result = db.GetAllSourceLocations();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseReturnSourcesFromGetAllSourceLocations()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            // need a sample source
+
+            var source = new OzetteLibrary.Models.SourceLocation();
+            source.ID = 1;
+            source.FolderPath = "C:\\test\\folder";
+
+            var sources = new OzetteLibrary.Models.SourceLocations();
+            sources.Add(source);
+
+            db.SetSourceLocations(sources);
+
+            var result = db.GetAllSourceLocations();
+
+            int sourceCount = 0;
+            foreach (var dbSource in result)
+            {
+                Assert.AreEqual(source.ID, dbSource.ID);
+                Assert.AreEqual(source.FolderPath, dbSource.FolderPath);
+                sourceCount++;
+            }
+
+            Assert.AreEqual(1, sourceCount);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanUpdateSourceLocationSuccessfully()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var source = new OzetteLibrary.Models.SourceLocation();
+            source.ID = 1;
+            source.FolderPath = "C:\\test\\folder";
+
+            var sources = new OzetteLibrary.Models.SourceLocations();
+            sources.Add(source);
+
+            db.SetSourceLocations(sources);
+
+            source.LastCompletedScan = DateTime.Now.AddHours(-1);
+
+            db.UpdateSourceLocation(source);
+
+            var result = db.GetAllSourceLocations();
+
+            int sourceCount = 0;
+            foreach (var dbSource in result)
+            {
+                Assert.AreEqual(source.ID, dbSource.ID);
+                Assert.AreEqual(source.LastCompletedScan.Value.ToString(), dbSource.LastCompletedScan.Value.ToString());
+                sourceCount++;
+            }
+
+            Assert.AreEqual(1, sourceCount);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanSetSourceLocationsSuccessfullyExample1()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var source = new OzetteLibrary.Models.SourceLocation();
+            source.ID = 1;
+            source.FolderPath = "C:\\test\\folder";
+
+            var sources = new OzetteLibrary.Models.SourceLocations();
+            sources.Add(source);
+
+            db.SetSourceLocations(sources);
+
+            // manually check the db stream to make sure changes were applied.
+
+            var liteDB = new LiteDatabase(ms);
+            var sourcesCol = liteDB.GetCollection<OzetteLibrary.Models.SourceLocation>(OzetteLibrary.Constants.Database.SourceLocationsTableName);
+            var result = sourcesCol.FindAll();
+
+            int sourcesCount = 0;
+            foreach (var dbSource in result)
+            {
+                Assert.AreEqual(source.ID, dbSource.ID);
+                Assert.AreEqual(source.FolderPath, dbSource.FolderPath);
+
+                sourcesCount++;
+            }
+
+            Assert.AreEqual(1, sourcesCount);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanSetSourceLocationsSuccessfullyExample2()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var source1 = new OzetteLibrary.Models.SourceLocation();
+            source1.ID = 1;
+            source1.FolderPath = "C:\\test\\folder1";
+
+            var source2 = new OzetteLibrary.Models.SourceLocation();
+            source2.ID = 2;
+            source2.FolderPath = "C:\\test\\folder2";
+
+            var source3 = new OzetteLibrary.Models.SourceLocation();
+            source3.ID = 3;
+            source3.FolderPath = "C:\\test\\folder3";
+
+            var sources = new OzetteLibrary.Models.SourceLocations();
+            sources.Add(source1);
+            sources.Add(source2);
+            sources.Add(source3);
+
+            db.SetSourceLocations(sources);
+
+            // manually check the db stream to make sure changes were applied.
+
+            var liteDB = new LiteDatabase(ms);
+            var sourcesCol = liteDB.GetCollection<OzetteLibrary.Models.SourceLocation>(OzetteLibrary.Constants.Database.SourceLocationsTableName);
+            var result = new OzetteLibrary.Models.SourceLocations(sourcesCol.FindAll());
+
+            Assert.AreEqual(3, result.Count);
+
+            for (int i = 0; i < result.Count; i++)
+            {
+                Assert.AreEqual(sources[i].ID, result[i].ID);
+                Assert.AreEqual(sources[i].FolderPath, result[i].FolderPath);
+            }
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseCanSetSourceLocationsSuccessfullyExample3()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var source1 = new OzetteLibrary.Models.SourceLocation();
+            source1.ID = 1;
+            source1.FolderPath = "C:\\test\\folder1";
+
+            var source2 = new OzetteLibrary.Models.SourceLocation();
+            source2.ID = 2;
+            source2.FolderPath = "C:\\test\\folder2";
+
+            var source3 = new OzetteLibrary.Models.SourceLocation();
+            source3.ID = 3;
+            source3.FolderPath = "C:\\test\\folder3";
+
+            var sources = new OzetteLibrary.Models.SourceLocations();
+            sources.Add(source1);
+            sources.Add(source2);
+            sources.Add(source3);
+
+            db.SetSourceLocations(sources);
+
+            sources.RemoveAt(2);
+
+            db.SetSourceLocations(sources);
+
+            // manually check the db stream to make sure changes were applied.
+
+            var liteDB = new LiteDatabase(ms);
+            var sourcesCol = liteDB.GetCollection<OzetteLibrary.Models.SourceLocation>(OzetteLibrary.Constants.Database.SourceLocationsTableName);
+            var result = new OzetteLibrary.Models.SourceLocations(sourcesCol.FindAll());
+
+            Assert.AreEqual(2, result.Count);
+
+            for (int i = 0; i < result.Count; i++)
+            {
+                Assert.AreEqual(sources[i].ID, result[i].ID);
+                Assert.AreEqual(sources[i].FolderPath, result[i].FolderPath);
+            }
         }
     }
 }
