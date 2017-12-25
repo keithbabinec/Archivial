@@ -10,6 +10,11 @@ namespace OzetteLibrary.Models
     public class SourceLocation
     {
         /// <summary>
+        /// An identifier for the database.
+        /// </summary>
+        public int ID { get; set; }
+
+        /// <summary>
         /// The folder path to backup.
         /// </summary>
         public string FolderPath { get; set; }
@@ -93,7 +98,8 @@ namespace OzetteLibrary.Models
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("Path='{0}', Filter='{1}', Priority='{2}', RevisionCount='{3}'",
+            return string.Format("ID='{0}', Path='{1}', Filter='{2}', Priority='{3}', RevisionCount='{4}'",
+                ID,
                 FolderPath,
                 FileMatchFilter == null ? "(none)" : FileMatchFilter,
                 Priority,
@@ -108,6 +114,7 @@ namespace OzetteLibrary.Models
             ValidateFolderPath();
             ValidateFileMatchFilter();
             ValidateRevisionCount();
+            ValidateID();
         }
 
         /// <summary>
@@ -148,6 +155,17 @@ namespace OzetteLibrary.Models
             if (RevisionCount <= 0)
             {
                 throw new SourceLocationInvalidRevisionCountException();
+            }
+        }
+
+        /// <summary>
+        /// Validates that a source location ID is valid/usable.
+        /// </summary>
+        private void ValidateID()
+        {
+            if (ID <= 0)
+            {
+                throw new SourceLocationInvalidIDException();
             }
         }
     }

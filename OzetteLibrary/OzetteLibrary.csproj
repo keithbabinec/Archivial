@@ -70,6 +70,7 @@
     <Compile Include="Models\ClientFileLookup.cs" />
     <Compile Include="Models\ClientFileLookupResult.cs" />
     <Compile Include="Models\ClientFiles.cs" />
+    <Compile Include="Models\Exceptions\SourceLocationInvalidIDException.cs" />
     <Compile Include="Models\StartupResults.cs" />
     <Compile Include="Models\ClientFile.cs" />
     <Compile Include="Models\FileBackupPriority.cs" />

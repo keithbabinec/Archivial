@@ -65,11 +65,34 @@ namespace OzetteLibraryTests.Models
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(SourceLocationInvalidIDException))]
+        public void SourceLocationValidateThrowsExceptionWhenInvalidIDProvided()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.FolderPath = Environment.CurrentDirectory;
+            loc.RevisionCount = 1;
+            loc.ID = 0;
+            loc.Validate();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(SourceLocationInvalidIDException))]
+        public void SourceLocationValidateThrowsExceptionWhenInvalidIDProvided2()
+        {
+            var loc = new OzetteLibrary.Models.SourceLocation();
+            loc.FolderPath = Environment.CurrentDirectory;
+            loc.RevisionCount = 1;
+            loc.ID = -10;
+            loc.Validate();
+        }
+
+        [TestMethod()]
         public void SourceLocationValidatePassesValidExample1()
         {
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.Validate();
 
             Assert.IsTrue(true);
@@ -81,6 +104,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 10;
+            loc.ID = 1;
             loc.Validate();
 
             Assert.IsTrue(true);
@@ -92,6 +116,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 12345678;
+            loc.ID = 1;
             loc.Validate();
 
             Assert.IsTrue(true);
@@ -103,6 +128,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "";
             loc.Validate();
 
@@ -115,6 +141,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "*";
             loc.Validate();
 
@@ -127,6 +154,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "*.*";
             loc.Validate();
 
@@ -139,6 +167,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "test*";
             loc.Validate();
 
@@ -151,6 +180,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "test*.doc";
             loc.Validate();
 
@@ -163,6 +193,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "*.doc";
             loc.Validate();
 
@@ -175,6 +206,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "test.*";
             loc.Validate();
 
@@ -187,6 +219,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "t?st";
             loc.Validate();
 
@@ -199,6 +232,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "t?st.doc";
             loc.Validate();
 
@@ -211,6 +245,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "t?st.*";
             loc.Validate();
 
@@ -224,6 +259,7 @@ namespace OzetteLibraryTests.Models
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.FileMatchFilter = "t?st.do?";
+            loc.ID = 1;
             loc.Validate();
 
             Assert.IsTrue(true);
@@ -235,6 +271,7 @@ namespace OzetteLibraryTests.Models
             var loc = new OzetteLibrary.Models.SourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
+            loc.ID = 1;
             loc.FileMatchFilter = "*.d?";
             loc.Validate();
 
