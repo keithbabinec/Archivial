@@ -14,5 +14,10 @@
         /// A string constant for the targets table name.
         /// </summary>
         public const string TargetsTableName = "Targets";
+
+        /// <summary>
+        /// A string constant for the source locations table name.
+        /// </summary>
+        public const string SourceLocationsTableName = "SourceLocations";
     }
 }

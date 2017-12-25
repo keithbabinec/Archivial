@@ -83,6 +83,7 @@ namespace OzetteLibrary.Database.LiteDB
 
             map.Entity<ClientFile>().Id(x => x.FileID);
             map.Entity<Target>().Id(x => x.ID);
+            map.Entity<SourceLocation>().Id(x => x.ID);
         }
 
         /// <summary>
@@ -107,6 +108,9 @@ namespace OzetteLibrary.Database.LiteDB
                 var targetCol = db.GetCollection<Target>(Constants.Database.TargetsTableName);
                 targetCol.EnsureIndex(x => x.ID);
                 targetCol.EnsureIndex(x => x.Name);
+
+                var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
+                sourcesCol.EnsureIndex(x => x.ID);
             }
         }
         
@@ -319,6 +323,85 @@ namespace OzetteLibrary.Database.LiteDB
             {
                 var targetCol = db.GetCollection<Target>(Constants.Database.TargetsTableName);
                 targetCol.Insert(Target);
+            }
+        }
+
+        /// <summary>
+        /// Returns all source locations defined in the database.
+        /// </summary>
+        /// <returns><c>SourceLocations</c></returns>
+        public SourceLocations GetAllSourceLocations()
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
+
+                if (sourcesCol.Count() > 0)
+                {
+                    return new SourceLocations(sourcesCol.FindAll());
+                }
+                else
+                {
+                    return new SourceLocations();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets a new source locations collection in the database (this will wipe out existing sources).
+        /// </summary>
+        /// <param name="Locations"><c>SourceLocations</c></param>
+        public void SetSourceLocations(SourceLocations Locations)
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+            if (Locations == null) 
+            {
+                throw new ArgumentNullException(nameof(Locations));
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
+
+                // this effectively deletes all documents, since there source ID of 0 or less is not valid.
+                sourcesCol.Delete(x => x.ID > 0);
+
+                // insert locations (if any)
+                // note: empty (0 count) is valid input from Locations.
+                foreach (var source in Locations)
+                {
+                    sourcesCol.Insert(source);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates a single source location with the specified source.
+        /// </summary>
+        /// <param name="Location"><c>SourceLocation</c></param>
+        public void UpdateSourceLocation(SourceLocation Location)
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+            if (Location == null)
+            {
+                throw new ArgumentNullException(nameof(Location));
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
+                sourcesCol.Update(Location);
             }
         }
 

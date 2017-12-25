@@ -40,6 +40,24 @@ namespace OzetteLibrary.Database
         void AddTarget(Target Target);
 
         /// <summary>
+        /// Returns all source locations defined in the database.
+        /// </summary>
+        /// <returns><c>SourceLocations</c></returns>
+        SourceLocations GetAllSourceLocations();
+
+        /// <summary>
+        /// Sets a new source locations collection in the database (this will wipe out existing sources).
+        /// </summary>
+        /// <param name="Locations"><c>SourceLocations</c></param>
+        void SetSourceLocations(SourceLocations Locations);
+
+        /// <summary>
+        /// Updates a single source location with the specified source.
+        /// </summary>
+        /// <param name="Location"><c>SourceLocation</c></param>
+        void UpdateSourceLocation(SourceLocation Location);
+
+        /// <summary>
         /// Adds a new client file to the database.
         /// </summary>
         /// <param name="File"><c>ClientFile</c></param>
