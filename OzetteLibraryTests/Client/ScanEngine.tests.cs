@@ -99,8 +99,16 @@ namespace OzetteLibraryTests.Client
             OzetteLibrary.Client.ScanEngine engine =
                 new OzetteLibrary.Client.ScanEngine(inMemoryDB, logger, new OzetteLibrary.ServiceCore.ServiceOptions());
 
-            engine.BeginStart();
-            engine.BeginStart();
+            try
+            {
+                engine.BeginStart();
+                engine.BeginStart();
+            }
+            finally
+            {
+                engine.BeginStop();
+                Thread.Sleep(2000);
+            }
         }
     }
 }
