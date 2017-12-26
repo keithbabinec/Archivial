@@ -156,7 +156,7 @@ namespace OzetteLibrary.Logging.Default
 
                         try
                         {
-                            File.AppendAllText(GetCurrentTraceLogFilePath(), messageToWrite);
+                            File.AppendAllText(GetCurrentTraceLogFilePath(), messageToWrite + Environment.NewLine);
                             successfulWrite = true;
                             break;
                         }
