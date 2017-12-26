@@ -145,6 +145,8 @@ namespace OzetteClientAgent
             // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
 
             var log = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
+            log.Start(Initialize.Options.EventlogName, Initialize.Options.EventlogName, Initialize.Options.LogFilesDirectory);
+
             var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
 
             Scan = new ScanEngine(db, log, Initialize.Options);
@@ -193,6 +195,8 @@ namespace OzetteClientAgent
             // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
 
             var log = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
+            log.Start(Initialize.Options.EventlogName, Initialize.Options.EventlogName, Initialize.Options.LogFilesDirectory);
+
             var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
 
             Backup = new BackupEngine(db, log, Initialize.Options);
