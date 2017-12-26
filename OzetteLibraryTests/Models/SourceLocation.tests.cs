@@ -457,5 +457,136 @@ namespace OzetteLibraryTests.Models
 
             Assert.IsTrue(loc.ShouldScan(options));
         }
+
+        [TestMethod()]
+        [ExpectedException(typeof(SourceLocationsDuplicateIDException))]
+        public void SourceLocationsValidateThrowsExceptionOnDuplicateIDs()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.RevisionCount = 1;
+            loc2.ID = 2;
+            loc2.FileMatchFilter = "*";
+
+            var loc3 = new OzetteLibrary.Models.SourceLocation();
+            loc3.FolderPath = Environment.CurrentDirectory;
+            loc3.RevisionCount = 1;
+            loc3.ID = 2;
+            loc3.FileMatchFilter = "*";
+
+            var locations = new OzetteLibrary.Models.SourceLocations();
+            locations.Add(loc1);
+            locations.Add(loc2);
+            locations.Add(loc3);
+
+            // should throw
+            locations.Validate();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(SourceLocationInvalidRevisionCountException))]
+        public void SourceLocationsValidateCallsValidateOnSourcesInsideCollection()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.RevisionCount = 1;
+            loc2.ID = 2;
+            loc2.FileMatchFilter = "*";
+
+            var loc3 = new OzetteLibrary.Models.SourceLocation();
+            loc3.FolderPath = Environment.CurrentDirectory;
+            loc3.RevisionCount = 0; // this should cause a validation error
+            loc3.ID = 3;
+            loc3.FileMatchFilter = "*";
+
+            var locations = new OzetteLibrary.Models.SourceLocations();
+            locations.Add(loc1);
+            locations.Add(loc2);
+            locations.Add(loc3);
+
+            // should throw
+            locations.Validate();
+        }
+
+        [TestMethod()]
+        public void SourceLocationsValidateDoesNotThrowOnAllValidSources()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.RevisionCount = 1;
+            loc2.ID = 2;
+            loc2.FileMatchFilter = "*";
+
+            var loc3 = new OzetteLibrary.Models.SourceLocation();
+            loc3.FolderPath = Environment.CurrentDirectory;
+            loc3.RevisionCount = 1;
+            loc3.ID = 3;
+            loc3.FileMatchFilter = "*";
+
+            var locations = new OzetteLibrary.Models.SourceLocations();
+            locations.Add(loc1);
+            locations.Add(loc2);
+            locations.Add(loc3);
+
+            // should throw
+            locations.Validate();
+
+            Assert.IsTrue(true);
+        }
+
+        [TestMethod()]
+        public void SourceLocationsValidateDoesNotThrowOnSingleValidSource()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var locations = new OzetteLibrary.Models.SourceLocations();
+            locations.Add(loc1);
+
+            // should throw
+            locations.Validate();
+
+            Assert.IsTrue(true);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(SourceLocationInvalidIDException))]
+        public void SourceLocationsValidateDoesThrowOnSingleInvalidSource()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 0;
+            loc1.FileMatchFilter = "*";
+
+            var locations = new OzetteLibrary.Models.SourceLocations();
+            locations.Add(loc1);
+
+            // should throw
+            locations.Validate();
+
+            Assert.IsTrue(true);
+        }
     }
 }
