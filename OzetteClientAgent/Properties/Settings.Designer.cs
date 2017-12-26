@@ -43,24 +43,6 @@ namespace OzetteClientAgent.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Logs")]
-        public string LogFilesDirectory {
-            get {
-                return ((string)(this["LogFilesDirectory"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(".\\BackupSources.json")]
-        public string SourcesFilePath {
-            get {
-                return ((string)(this["SourcesFilePath"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public int HighPriorityScanFrequencyInHours {
             get {
@@ -83,6 +65,24 @@ namespace OzetteClientAgent.Properties {
         public int LowPriorityScanFrequencyInHours {
             get {
                 return ((int)(this["LowPriorityScanFrequencyInHours"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Ozette\\Client\\Logs")]
+        public string LogFilesDirectory {
+            get {
+                return ((string)(this["LogFilesDirectory"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Ozette\\Client\\BackupSources.json")]
+        public string SourcesFilePath {
+            get {
+                return ((string)(this["SourcesFilePath"]));
             }
         }
     }

@@ -36,6 +36,11 @@
         public const int StoppedBackupEngine = 1005;
 
         /// <summary>
+        /// Event ID: Logging initialized.
+        /// </summary>
+        public const int LoggingInitialized = 1006;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;
