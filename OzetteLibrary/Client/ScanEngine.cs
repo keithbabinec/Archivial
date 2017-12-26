@@ -169,14 +169,7 @@ namespace OzetteLibrary.Client
             try
             {
                 Logger.WriteTraceMessage("Validating scan sources.");
-
-                foreach (var src in sources)
-                {
-                    Logger.WriteTraceMessage("Validating scan source: " + src.ToString());
-                    src.Validate();
-                    Logger.WriteTraceMessage("Scan source validated.");
-                }
-
+                sources.Validate();
                 Logger.WriteTraceMessage("All scan sources validated.");
 
                 return true;

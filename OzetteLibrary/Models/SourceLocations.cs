@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OzetteLibrary.Models.Exceptions;
+using System.Collections.Generic;
 
 namespace OzetteLibrary.Models
 {
@@ -20,6 +21,31 @@ namespace OzetteLibrary.Models
         /// <param name="collection"></param>
         public SourceLocations(IEnumerable<SourceLocation> collection) : base(collection)
         {
+        }
+
+        /// <summary>
+        /// Validates all of the items in this collection.
+        /// </summary>
+        public void Validate()
+        {
+            if (Count > 0)
+            {
+                HashSet<int> definedIDs = new HashSet<int>();
+
+                foreach (var item in this)
+                {
+                    item.Validate();
+
+                    if (definedIDs.Contains(item.ID) == false)
+                    {
+                        definedIDs.Add(item.ID);
+                    }
+                    else
+                    {
+                        throw new SourceLocationsDuplicateIDException();
+                    }
+                }
+            }
         }
     }
 }
