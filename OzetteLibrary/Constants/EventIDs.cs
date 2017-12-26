@@ -26,6 +26,16 @@
         public const int StoppedService = 1003;
 
         /// <summary>
+        /// Event ID: Stopped scanning engine.
+        /// </summary>
+        public const int StoppedScanEngine = 1004;
+
+        /// <summary>
+        /// Event ID: Stopped backup engine.
+        /// </summary>
+        public const int StoppedBackupEngine = 1005;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;

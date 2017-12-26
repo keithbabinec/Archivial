@@ -159,7 +159,14 @@ namespace OzetteClientAgent
         /// <param name="e"></param>
         private void Scan_Stopped(object sender, OzetteLibrary.Events.EngineStoppedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (CoreLog != null)
+            {
+                CoreLog.WriteSystemEvent(
+                    string.Format("Scanning Engine has stopped."),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedScanEngine);
+
+                CoreLog.WriteTraceMessage("Scanning Engine has stopped.");
+            }
         }
 
         /// <summary>
@@ -185,7 +192,14 @@ namespace OzetteClientAgent
         /// <param name="e"></param>
         private void Backup_Stopped(object sender, OzetteLibrary.Events.EngineStoppedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (CoreLog != null)
+            {
+                CoreLog.WriteSystemEvent(
+                    string.Format("Backup Engine has stopped."),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedBackupEngine);
+
+                CoreLog.WriteTraceMessage("Backup Engine has stopped.");
+            }
         }
     }
 }
