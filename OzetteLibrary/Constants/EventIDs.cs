@@ -49,5 +49,15 @@
         /// Event ID: Failed to validate scan sources.
         /// </summary>
         public const int FailedToValidateScanSources = 2002;
+
+        /// <summary>
+        /// Event ID: Failed scanning engine.
+        /// </summary>
+        public const int FailedScanEngine = 2003;
+
+        /// <summary>
+        /// Event ID: Failed backup engine.
+        /// </summary>
+        public const int FailedBackupEngine = 2004;
     }
 }

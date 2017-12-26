@@ -61,58 +61,65 @@ namespace OzetteLibrary.Client
         /// </summary>
         private void ProcessLoop()
         {
-            while (true)
+            try
             {
-                // first: check to see if we have any valid sources defined.
-                // the sources found are returned in the order they should be scanned.
-
-                var sources = SafeImportSources(Options.SourcesFilePath);
-
-                if (sources != null)
+                while (true)
                 {
-                    foreach (var source in sources)
+                    // first: check to see if we have any valid sources defined.
+                    // the sources found are returned in the order they should be scanned.
+
+                    var sources = SafeImportSources(Options.SourcesFilePath);
+
+                    if (sources != null)
                     {
-                        // should we actually scan this source?
-                        // checks the DB to see if it has been scanned recently.        
-
-                        if (source.ShouldScan(Options))
+                        foreach (var source in sources)
                         {
-                            // begin-invoke the asynchronous scan operation.
-                            // watch the IAsyncResult status object to check for status updates
-                            // and wait until the scan has completed.
+                            // should we actually scan this source?
+                            // checks the DB to see if it has been scanned recently.        
 
-                            var state = Scanner.BeginScan(source);
-
-                            while (state.IsCompleted == false)
+                            if (source.ShouldScan(Options))
                             {
-                                Thread.Sleep(TimeSpan.FromSeconds(1));
+                                // begin-invoke the asynchronous scan operation.
+                                // watch the IAsyncResult status object to check for status updates
+                                // and wait until the scan has completed.
 
-                                if (Running == false)
+                                var state = Scanner.BeginScan(source);
+
+                                while (state.IsCompleted == false)
                                 {
-                                    // stop was requested.
-                                    // stop the currently in-progress scanning operation.
-                                    Scanner.StopScan();
-                                    break;
+                                    Thread.Sleep(TimeSpan.FromSeconds(1));
+
+                                    if (Running == false)
+                                    {
+                                        // stop was requested.
+                                        // stop the currently in-progress scanning operation.
+                                        Scanner.StopScan();
+                                        break;
+                                    }
                                 }
                             }
-                        }
 
-                        if (Running == false)
-                        {
-                            // stop was requested.
-                            // do not continue scanning any remaining sources.
-                            break;
+                            if (Running == false)
+                            {
+                                // stop was requested.
+                                // do not continue scanning any remaining sources.
+                                break;
+                            }
                         }
                     }
-                }
 
-                Thread.Sleep(TimeSpan.FromSeconds(2));
+                    Thread.Sleep(TimeSpan.FromSeconds(2));
 
-                if (Running == false)
-                {
-                    OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
-                    break;
+                    if (Running == false)
+                    {
+                        OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
+                        break;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                OnStopped(new EngineStoppedEventArgs(ex));
             }
         }
 

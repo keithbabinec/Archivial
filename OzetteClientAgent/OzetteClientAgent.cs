@@ -161,11 +161,26 @@ namespace OzetteClientAgent
         {
             if (CoreLog != null)
             {
-                CoreLog.WriteSystemEvent(
-                    string.Format("Scanning Engine has stopped."),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedScanEngine);
+                if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
+                {
+                    CoreLog.WriteTraceError("Scanning Engine has failed.", e.Exception);
 
-                CoreLog.WriteTraceMessage("Scanning Engine has stopped.");
+                    CoreLog.WriteSystemEvent(
+                        string.Format("Scanning Engine has failed."),
+                        e.Exception, OzetteLibrary.Constants.EventIDs.FailedScanEngine);
+                }
+                else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
+                {
+                    CoreLog.WriteTraceMessage("Scanning Engine has stopped.");
+
+                    CoreLog.WriteSystemEvent(
+                        string.Format("Scanning Engine has stopped."),
+                        EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedScanEngine);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Unexpected EngineStoppedReason: " + e.Reason);
+                }
             }
         }
 
@@ -194,11 +209,26 @@ namespace OzetteClientAgent
         {
             if (CoreLog != null)
             {
-                CoreLog.WriteSystemEvent(
-                    string.Format("Backup Engine has stopped."),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedBackupEngine);
+                if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
+                {
+                    CoreLog.WriteTraceError("Backup Engine has failed.", e.Exception);
 
-                CoreLog.WriteTraceMessage("Backup Engine has stopped.");
+                    CoreLog.WriteSystemEvent(
+                        string.Format("Backup Engine has failed."),
+                        e.Exception, OzetteLibrary.Constants.EventIDs.FailedBackupEngine);
+                }
+                else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
+                {
+                    CoreLog.WriteTraceMessage("Backup Engine has stopped.");
+
+                    CoreLog.WriteSystemEvent(
+                        string.Format("Backup Engine has stopped."),
+                        EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedBackupEngine);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Unexpected EngineStoppedReason: " + e.Reason);
+                }
             }
         }
     }

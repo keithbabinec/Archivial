@@ -53,17 +53,24 @@ namespace OzetteLibrary.Client
         /// </summary>
         private void ProcessLoop()
         {
-            while (true)
+            try
             {
-                // todo: implement engine core loop
-
-                Thread.Sleep(TimeSpan.FromSeconds(3));
-
-                if (Running == false)
+                while (true)
                 {
-                    OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
-                    break;
+                    // todo: implement engine core loop
+
+                    Thread.Sleep(TimeSpan.FromSeconds(3));
+
+                    if (Running == false)
+                    {
+                        OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
+                        break;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                OnStopped(new EngineStoppedEventArgs(ex));
             }
         }
     }
