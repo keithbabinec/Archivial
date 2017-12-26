@@ -588,5 +588,475 @@ namespace OzetteLibraryTests.Models
 
             Assert.IsTrue(true);
         }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample1()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.RevisionCount = 1;
+            loc2.ID = 2;
+            loc2.FileMatchFilter = "*";
+
+            var loc3 = new OzetteLibrary.Models.SourceLocation();
+            loc3.FolderPath = Environment.CurrentDirectory;
+            loc3.RevisionCount = 1;
+            loc3.ID = 3;
+            loc3.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1);
+            locations1.Add(loc2);
+            locations1.Add(loc3);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc1);
+            locations2.Add(loc2);
+            locations2.Add(loc3);
+
+            Assert.IsTrue(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample2()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc1);
+
+            Assert.IsTrue(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample3()
+        {
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+
+            Assert.IsTrue(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample4()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.RevisionCount = 1;
+            loc2.ID = 2;
+            loc2.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1);
+            locations1.Add(loc2);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc1);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample5()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.RevisionCount = 1;
+            loc2.ID = 2;
+            loc2.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1);
+            
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc1);
+            locations2.Add(loc2);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample6()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.RevisionCount = 1;
+            loc2.ID = 2;
+            loc2.FileMatchFilter = "*";
+
+            var loc3 = new OzetteLibrary.Models.SourceLocation();
+            loc3.FolderPath = Environment.CurrentDirectory;
+            loc3.RevisionCount = 1;
+            loc3.ID = 3;
+            loc3.FileMatchFilter = "*";
+
+            var loc4 = new OzetteLibrary.Models.SourceLocation();
+            loc4.FolderPath = Environment.CurrentDirectory;
+            loc4.RevisionCount = 1;
+            loc4.ID = 4;
+            loc4.FileMatchFilter = "*";
+
+            var loc5 = new OzetteLibrary.Models.SourceLocation();
+            loc5.FolderPath = Environment.CurrentDirectory;
+            loc5.RevisionCount = 1;
+            loc5.ID = 5;
+            loc5.FileMatchFilter = "*";
+
+            var loc6 = new OzetteLibrary.Models.SourceLocation();
+            loc6.FolderPath = Environment.CurrentDirectory;
+            loc6.RevisionCount = 1;
+            loc6.ID = 6;
+            loc6.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1);
+            locations1.Add(loc2);
+            locations1.Add(loc3);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc4);
+            locations2.Add(loc5);
+            locations2.Add(loc6);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample7()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.RevisionCount = 1;
+            loc2.ID = 1;
+            loc2.FileMatchFilter = "*.*"; // different
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc2);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample8()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.RevisionCount = 2; // different
+            loc2.ID = 1;
+            loc2.FileMatchFilter = "*"; 
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc2);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample9()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.FolderPath = Environment.CurrentDirectory + "\\Dir1"; // different
+            loc2.RevisionCount = 1; 
+            loc2.ID = 1;
+            loc2.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc2);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample10()
+        {
+            var loc1 = new OzetteLibrary.Models.SourceLocation();
+            loc1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.RevisionCount = 1;
+            loc1.ID = 1;
+            loc1.FileMatchFilter = "*";
+
+            var loc2 = new OzetteLibrary.Models.SourceLocation();
+            loc2.Priority = OzetteLibrary.Models.FileBackupPriority.Low; // different
+            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.RevisionCount = 1;
+            loc2.ID = 1;
+            loc2.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc2);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample11()
+        {
+            var loc1A = new OzetteLibrary.Models.SourceLocation();
+            loc1A.FolderPath = Environment.CurrentDirectory;
+            loc1A.RevisionCount = 1;
+            loc1A.ID = 1;
+            loc1A.FileMatchFilter = "*";
+
+            var loc2A = new OzetteLibrary.Models.SourceLocation();
+            loc2A.FolderPath = Environment.CurrentDirectory;
+            loc2A.RevisionCount = 1;
+            loc2A.ID = 2;
+            loc2A.FileMatchFilter = "*";
+
+            var loc3A = new OzetteLibrary.Models.SourceLocation();
+            loc3A.FolderPath = Environment.CurrentDirectory;
+            loc3A.RevisionCount = 1;
+            loc3A.ID = 3;
+            loc3A.FileMatchFilter = "*.mp4"; // different
+
+            var loc1B = new OzetteLibrary.Models.SourceLocation();
+            loc1B.FolderPath = Environment.CurrentDirectory;
+            loc1B.RevisionCount = 1;
+            loc1B.ID = 1;
+            loc1B.FileMatchFilter = "*";
+
+            var loc2B = new OzetteLibrary.Models.SourceLocation();
+            loc2B.FolderPath = Environment.CurrentDirectory;
+            loc2B.RevisionCount = 1;
+            loc2B.ID = 2;
+            loc2B.FileMatchFilter = "*";
+
+            var loc3B = new OzetteLibrary.Models.SourceLocation();
+            loc3B.FolderPath = Environment.CurrentDirectory;
+            loc3B.RevisionCount = 1;
+            loc3B.ID = 3;
+            loc3B.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1A);
+            locations1.Add(loc2A);
+            locations1.Add(loc3A);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc1B);
+            locations2.Add(loc2B);
+            locations2.Add(loc3B);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample12()
+        {
+            var loc1A = new OzetteLibrary.Models.SourceLocation();
+            loc1A.FolderPath = Environment.CurrentDirectory;
+            loc1A.RevisionCount = 1;
+            loc1A.ID = 1;
+            loc1A.FileMatchFilter = "*";
+
+            var loc2A = new OzetteLibrary.Models.SourceLocation();
+            loc2A.FolderPath = Environment.CurrentDirectory;
+            loc2A.RevisionCount = 5; // different
+            loc2A.ID = 2;
+            loc2A.FileMatchFilter = "*";
+
+            var loc3A = new OzetteLibrary.Models.SourceLocation();
+            loc3A.FolderPath = Environment.CurrentDirectory;
+            loc3A.RevisionCount = 1;
+            loc3A.ID = 3;
+            loc3A.FileMatchFilter = "*";
+
+            var loc1B = new OzetteLibrary.Models.SourceLocation();
+            loc1B.FolderPath = Environment.CurrentDirectory;
+            loc1B.RevisionCount = 1;
+            loc1B.ID = 1;
+            loc1B.FileMatchFilter = "*";
+
+            var loc2B = new OzetteLibrary.Models.SourceLocation();
+            loc2B.FolderPath = Environment.CurrentDirectory;
+            loc2B.RevisionCount = 1;
+            loc2B.ID = 2;
+            loc2B.FileMatchFilter = "*";
+
+            var loc3B = new OzetteLibrary.Models.SourceLocation();
+            loc3B.FolderPath = Environment.CurrentDirectory;
+            loc3B.RevisionCount = 1;
+            loc3B.ID = 3;
+            loc3B.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1A);
+            locations1.Add(loc2A);
+            locations1.Add(loc3A);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc1B);
+            locations2.Add(loc2B);
+            locations2.Add(loc3B);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample13()
+        {
+            var loc1A = new OzetteLibrary.Models.SourceLocation();
+            loc1A.FolderPath = Environment.CurrentDirectory;
+            loc1A.RevisionCount = 1;
+            loc1A.ID = 1;
+            loc1A.FileMatchFilter = "*";
+
+            var loc2A = new OzetteLibrary.Models.SourceLocation();
+            loc2A.FolderPath = Environment.CurrentDirectory + "\\Dir1"; // different
+            loc2A.RevisionCount = 1; 
+            loc2A.ID = 2;
+            loc2A.FileMatchFilter = "*";
+
+            var loc3A = new OzetteLibrary.Models.SourceLocation();
+            loc3A.FolderPath = Environment.CurrentDirectory;
+            loc3A.RevisionCount = 1;
+            loc3A.ID = 3;
+            loc3A.FileMatchFilter = "*";
+
+            var loc1B = new OzetteLibrary.Models.SourceLocation();
+            loc1B.FolderPath = Environment.CurrentDirectory;
+            loc1B.RevisionCount = 1;
+            loc1B.ID = 1;
+            loc1B.FileMatchFilter = "*";
+
+            var loc2B = new OzetteLibrary.Models.SourceLocation();
+            loc2B.FolderPath = Environment.CurrentDirectory;
+            loc2B.RevisionCount = 1;
+            loc2B.ID = 2;
+            loc2B.FileMatchFilter = "*";
+
+            var loc3B = new OzetteLibrary.Models.SourceLocation();
+            loc3B.FolderPath = Environment.CurrentDirectory;
+            loc3B.RevisionCount = 1;
+            loc3B.ID = 3;
+            loc3B.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1A);
+            locations1.Add(loc2A);
+            locations1.Add(loc3A);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc1B);
+            locations2.Add(loc2B);
+            locations2.Add(loc3B);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
+
+        [TestMethod()]
+        public void SourceLocationsCollectionHasSameContentExample14()
+        {
+            var loc1A = new OzetteLibrary.Models.SourceLocation();
+            loc1A.FolderPath = Environment.CurrentDirectory;
+            loc1A.Priority = OzetteLibrary.Models.FileBackupPriority.High; // different
+            loc1A.RevisionCount = 1;
+            loc1A.ID = 1;
+            loc1A.FileMatchFilter = "*";
+
+            var loc2A = new OzetteLibrary.Models.SourceLocation();
+            loc2A.FolderPath = Environment.CurrentDirectory;
+            loc2A.RevisionCount = 1;
+            loc2A.ID = 2;
+            loc2A.FileMatchFilter = "*";
+
+            var loc3A = new OzetteLibrary.Models.SourceLocation();
+            loc3A.FolderPath = Environment.CurrentDirectory;
+            loc3A.RevisionCount = 1;
+            loc3A.ID = 3;
+            loc3A.FileMatchFilter = "*";
+
+            var loc1B = new OzetteLibrary.Models.SourceLocation();
+            loc1B.FolderPath = Environment.CurrentDirectory;
+            loc1B.RevisionCount = 1;
+            loc1B.ID = 1;
+            loc1B.FileMatchFilter = "*";
+
+            var loc2B = new OzetteLibrary.Models.SourceLocation();
+            loc2B.FolderPath = Environment.CurrentDirectory;
+            loc2B.RevisionCount = 1;
+            loc2B.ID = 2;
+            loc2B.FileMatchFilter = "*";
+
+            var loc3B = new OzetteLibrary.Models.SourceLocation();
+            loc3B.FolderPath = Environment.CurrentDirectory;
+            loc3B.RevisionCount = 1;
+            loc3B.ID = 3;
+            loc3B.FileMatchFilter = "*";
+
+            var locations1 = new OzetteLibrary.Models.SourceLocations();
+            locations1.Add(loc1A);
+            locations1.Add(loc2A);
+            locations1.Add(loc3A);
+
+            var locations2 = new OzetteLibrary.Models.SourceLocations();
+            locations2.Add(loc1B);
+            locations2.Add(loc2B);
+            locations2.Add(loc3B);
+
+            Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
+        }
     }
 }
