@@ -41,6 +41,16 @@
         public const int LoggingInitialized = 1006;
 
         /// <summary>
+        /// Event ID: Started scanning engine.
+        /// </summary>
+        public const int StartedScanEngine = 1007;
+
+        /// <summary>
+        /// Event ID: Started backup engine.
+        /// </summary>
+        public const int StartedBackupEngine = 1008;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;
