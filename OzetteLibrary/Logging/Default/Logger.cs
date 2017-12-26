@@ -89,6 +89,7 @@ namespace OzetteLibrary.Logging.Default
 
             LogSource = logSource;
             LogName = logName;
+            EventLogInitialized = true;
         }
 
         /// <summary>
@@ -108,6 +109,7 @@ namespace OzetteLibrary.Logging.Default
             }
 
             TraceLogFolderPath = path.TrimEnd('\\');
+            TraceInitialized = true;
         }
 
         /// <summary>
@@ -181,6 +183,10 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="message"></param>
         public void WriteTraceMessage(string message)
         {
+            if (TraceInitialized == false)
+            {
+                throw new InvalidOperationException("Trace has not been initialized.");
+            }
             if (string.IsNullOrWhiteSpace(message))
             {
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
@@ -199,6 +205,10 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="message"></param>
         public void WriteTraceWarning(string message)
         {
+            if (TraceInitialized == false)
+            {
+                throw new InvalidOperationException("Trace has not been initialized.");
+            }
             if (string.IsNullOrWhiteSpace(message))
             {
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
@@ -217,6 +227,10 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="message"></param>
         public void WriteTraceError(string message)
         {
+            if (TraceInitialized == false)
+            {
+                throw new InvalidOperationException("Trace has not been initialized.");
+            }
             if (string.IsNullOrWhiteSpace(message))
             {
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
@@ -236,6 +250,10 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="exception"></param>
         public void WriteTraceError(string message, Exception exception)
         {
+            if (TraceInitialized == false)
+            {
+                throw new InvalidOperationException("Trace has not been initialized.");
+            }
             if (string.IsNullOrWhiteSpace(message))
             {
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
@@ -261,6 +279,10 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="eventID"></param>
         public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID)
         {
+            if (EventLogInitialized == false)
+            {
+                throw new InvalidOperationException("Log has not been initialized.");
+            }
             if (string.IsNullOrWhiteSpace(message))
             {
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
@@ -283,6 +305,10 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="eventID"></param>
         public void WriteSystemEvent(string message, Exception exception, int eventID)
         {
+            if (EventLogInitialized == false)
+            {
+                throw new InvalidOperationException("Log has not been initialized.");
+            }
             if (string.IsNullOrWhiteSpace(message))
             {
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
@@ -300,6 +326,16 @@ namespace OzetteLibrary.Logging.Default
         /// A flag to indicate if the logger is running.
         /// </summary>
         private volatile bool Running = false;
+
+        /// <summary>
+        /// A flag to indicate if we have initialized trace logs.
+        /// </summary>
+        private bool TraceInitialized = false;
+
+        /// <summary>
+        /// A flag to indicate if we have initialized system event logs.
+        /// </summary>
+        private bool EventLogInitialized = false;
 
         /// <summary>
         /// The number of tracelog write attempts before giving up.
