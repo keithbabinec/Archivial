@@ -137,7 +137,15 @@ namespace OzetteLibrary.Client
 
                 if (ValidateSources(result) == true)
                 {
-                    return loader.SortSources(result);
+                    // have the source locations changed from what we have in the client DB?
+                    // if yes, then refresh/update them.
+                    RefreshDatabaseSourcesIfChanged(result);
+
+                    // grab the current copy from DB (this includes last scanned timestamp)
+                    var dbSources = GetSourceLocationsFromDatabase();
+
+                    // return sorted sources.
+                    return loader.SortSources(dbSources);
                 }
                 else
                 {
@@ -155,20 +163,49 @@ namespace OzetteLibrary.Client
         }
 
         /// <summary>
+        /// Updates the source locations in the database, if changed.
+        /// </summary>
+        /// <param name="sources"></param>
+        private void RefreshDatabaseSourcesIfChanged(SourceLocations sources)
+        {
+            // get existing sources.
+
+            var dbSources = GetSourceLocationsFromDatabase();
+
+            if (dbSources.CollectionHasSameContent(sources) == false)
+            {
+                // delete all sources
+                // re-save sources to db
+
+                var clientDB = Database as IClientDatabase;
+                clientDB.SetSourceLocations(sources);
+            }
+        }
+
+        /// <summary>
+        /// Gets a copy of the source locations from the database.
+        /// </summary>
+        private SourceLocations GetSourceLocationsFromDatabase()
+        {
+            var clientDB = Database as IClientDatabase;
+            return clientDB.GetAllSourceLocations();
+        }
+
+        /// <summary>
         /// Validates the provided sources are usable.
         /// </summary>
         /// <param name="sources"></param>
         /// <returns></returns>
         private bool ValidateSources(SourceLocations sources)
         {
-            if (sources == null || sources.Count == 0)
+            if (sources == null)
             {
                 return false;
             }
 
             try
             {
-                Logger.WriteTraceMessage("Validating scan sources.");
+                Logger.WriteTraceMessage(string.Format("Validating {0} scan source(s).", sources.Count));
                 sources.Validate();
                 Logger.WriteTraceMessage("All scan sources validated.");
 
