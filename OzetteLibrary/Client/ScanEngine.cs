@@ -87,7 +87,7 @@ namespace OzetteLibrary.Client
 
                                 while (state.IsCompleted == false)
                                 {
-                                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                                    ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(2));
 
                                     if (Running == false)
                                     {
@@ -106,9 +106,13 @@ namespace OzetteLibrary.Client
                                 break;
                             }
                         }
-                    }
 
-                    Thread.Sleep(TimeSpan.FromSeconds(2));
+                        ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(10));
+                    }
+                    else
+                    {
+                        ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(30));
+                    }
 
                     if (Running == false)
                     {
@@ -140,7 +144,12 @@ namespace OzetteLibrary.Client
                 Loader loader = new Loader();
                 SourceLocations result = loader.LoadSourcesFile(sourceFile);
 
-                Logger.WriteTraceMessage("Successfully imported scan sources.");
+                Logger.WriteTraceMessage("Successfully loaded scan source file.");
+
+                if (result == null || result.Count == 0)
+                {
+                    Logger.WriteTraceMessage("No sources defined in the scan source file.");
+                }
 
                 if (ValidateSources(result) == true)
                 {

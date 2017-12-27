@@ -3,6 +3,7 @@ using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using OzetteLibrary.ServiceCore;
 using System;
+using System.Threading;
 
 namespace OzetteLibrary.Engine
 {
@@ -83,5 +84,24 @@ namespace OzetteLibrary.Engine
         /// A reference to the service options.
         /// </summary>
         protected ServiceOptions Options { get; set; }
+
+        /// <summary>
+        /// Sleeps the engine for the specified time, while checking periodically for stop request.
+        /// </summary>
+        /// <param name="SleepTime"></param>
+        protected void ThreadSleepWithStopRequestCheck(TimeSpan SleepTime)
+        {
+            DateTime sleepUntil = DateTime.Now.Add(SleepTime);
+
+            while (Running)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(500));
+
+                if (DateTime.Now > sleepUntil)
+                {
+                    break;
+                }
+            }
+        }
     }
 }
