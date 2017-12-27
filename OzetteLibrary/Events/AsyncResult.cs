@@ -44,6 +44,15 @@ namespace OzetteLibrary.Events
         }
 
         /// <summary>
+        /// Flag to indicate if the async operation was canceled.
+        /// </summary>
+        public bool IsCanceled
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// Not supported (returns null).
         /// </summary>
         public object AsyncState { get; }
@@ -77,7 +86,7 @@ namespace OzetteLibrary.Events
         }
 
         /// <summary>
-        /// Sets the async operation result to completed.
+        /// Sets the async operation result to completed (successfully).
         /// </summary>
         internal void Complete()
         {
@@ -86,6 +95,28 @@ namespace OzetteLibrary.Events
                 if (IsCompleted == false)
                 {
                     IsCompleted = true;
+                    IsCanceled = false;
+
+                    if (null != _completedWaitHandle)
+                    {
+                        _completedWaitHandle.Set();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the async operation result to canceled.
+        /// </summary>
+        internal void Cancel()
+        {
+            lock (ThreadSync)
+            {
+                if (IsCompleted == false)
+                {
+                    IsCompleted = true;
+                    IsCanceled = true;
+
                     if (null != _completedWaitHandle)
                     {
                         _completedWaitHandle.Set();

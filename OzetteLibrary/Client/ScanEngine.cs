@@ -83,7 +83,7 @@ namespace OzetteLibrary.Client
                                 // watch the IAsyncResult status object to check for status updates
                                 // and wait until the scan has completed.
 
-                                var state = Scanner.BeginScan(source);
+                                AsyncResult state = (Scanner.BeginScan(source)) as AsyncResult;
 
                                 while (state.IsCompleted == false)
                                 {
@@ -96,6 +96,11 @@ namespace OzetteLibrary.Client
                                         Scanner.StopScan();
                                         break;
                                     }
+                                }
+
+                                if (state.IsCanceled == false)
+                                {
+                                    UpdateLastScannedTimeStamp(source);
                                 }
                             }
 
@@ -196,6 +201,18 @@ namespace OzetteLibrary.Client
                 var clientDB = Database as IClientDatabase;
                 clientDB.SetSourceLocations(sources);
             }
+        }
+
+        /// <summary>
+        /// Updates the last completed scan timestamp in the database for the specified source.
+        /// </summary>
+        /// <param name="source"></param>
+        private void UpdateLastScannedTimeStamp(SourceLocation source)
+        {
+            source.LastCompletedScan = DateTime.Now;
+
+            var clientDB = Database as IClientDatabase;
+            clientDB.UpdateSourceLocation(source);
         }
 
         /// <summary>
