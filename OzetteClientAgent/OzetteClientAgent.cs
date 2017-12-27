@@ -169,11 +169,13 @@ namespace OzetteClientAgent
         {
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
-                CoreLog.WriteTraceError("Scanning Engine has failed.", e.Exception);
+                CoreLog.WriteTraceError("Scanning Engine has failed.", e.Exception, CoreLog.GenerateFullContextStackTrace());
 
                 CoreLog.WriteSystemEvent(
                     string.Format("Scanning Engine has failed."),
-                    e.Exception, OzetteLibrary.Constants.EventIDs.FailedScanEngine);
+                    e.Exception,
+                    CoreLog.GenerateFullContextStackTrace(),
+                    OzetteLibrary.Constants.EventIDs.FailedScanEngine);
             }
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
@@ -222,11 +224,13 @@ namespace OzetteClientAgent
         {
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
-                CoreLog.WriteTraceError("Backup Engine has failed.", e.Exception);
+                CoreLog.WriteTraceError("Backup Engine has failed.", e.Exception, CoreLog.GenerateFullContextStackTrace());
 
                 CoreLog.WriteSystemEvent(
                     string.Format("Backup Engine has failed."),
-                    e.Exception, OzetteLibrary.Constants.EventIDs.FailedBackupEngine);
+                    e.Exception,
+                    CoreLog.GenerateFullContextStackTrace(),
+                    OzetteLibrary.Constants.EventIDs.FailedBackupEngine);
             }
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {

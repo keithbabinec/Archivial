@@ -106,7 +106,7 @@ namespace OzetteLibrary.Crypto
             catch (Exception ex)
             {
                 // log the error
-                Logger.WriteTraceError("Failed to generate a hash for file: " + filePath, ex);
+                Logger.WriteTraceError("Failed to generate a hash for file: " + filePath, ex, Logger.GenerateFullContextStackTrace());
 
                 // return empty byte array
                 return new byte[] { };

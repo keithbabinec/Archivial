@@ -185,7 +185,7 @@ namespace OzetteLibrary.Client.Sources
             }
             catch (Exception ex)
             {
-                Logger.WriteTraceError("Failed to list directories under path: " + directory.FullName, ex);
+                Logger.WriteTraceError("Failed to list directories under path: " + directory.FullName, ex, Logger.GenerateFullContextStackTrace());
                 return null;
             }
         }
@@ -211,7 +211,8 @@ namespace OzetteLibrary.Client.Sources
                 {
                     Logger.WriteTraceError(
                         string.Format("Failed to list files under path: {0}. No match filter was used.", directory.FullName), 
-                        ex);
+                        ex,
+                        Logger.GenerateFullContextStackTrace());
                 }
                 else
                 {
@@ -219,7 +220,8 @@ namespace OzetteLibrary.Client.Sources
                         string.Format("Failed to list files under path: {0}. Match filter was used: {1}", 
                             directory.FullName,
                             matchFilter),
-                        ex);
+                        ex,
+                        Logger.GenerateFullContextStackTrace());
                 }
                 
                 return null;

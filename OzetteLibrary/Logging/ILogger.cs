@@ -60,7 +60,8 @@ namespace OzetteLibrary.Logging
         /// </remarks>
         /// <param name="message"></param>
         /// <param name="exception"></param>
-        void WriteTraceError(string message, Exception exception);
+        /// <param name="stackContext"></param>
+        void WriteTraceError(string message, Exception exception, string stackContext);
 
         /// <summary>
         /// Writes a system-level event message.
@@ -85,7 +86,14 @@ namespace OzetteLibrary.Logging
         /// </remarks>
         /// <param name="message"></param>
         /// <param name="exception"></param>
+        /// <param name="stackContext"></param>
         /// <param name="eventID"></param>
-        void WriteSystemEvent(string message, Exception exception, int eventID);
+        void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID);
+
+        /// <summary>
+        /// Generates a full stack trace from the current method context.
+        /// </summary>
+        /// <returns></returns>
+        string GenerateFullContextStackTrace();
     }
 }

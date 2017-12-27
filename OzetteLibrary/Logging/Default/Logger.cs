@@ -176,7 +176,7 @@ namespace OzetteLibrary.Logging.Default
 
                     if (successfulWrite == false)
                     {
-                        WriteSystemEvent("Failed to write a message to the tracelog.", lastError, Constants.EventIDs.FailedToWriteToTraceLog);
+                        WriteSystemEvent("Failed to write a message to the tracelog.", lastError, null, Constants.EventIDs.FailedToWriteToTraceLog);
                     }
                 }
             }
@@ -257,7 +257,8 @@ namespace OzetteLibrary.Logging.Default
         /// </remarks>
         /// <param name="message"></param>
         /// <param name="exception"></param>
-        public void WriteTraceError(string message, Exception exception)
+        /// <param name="stackContext"></param>
+        public void WriteTraceError(string message, Exception exception, string stackContext)
         {
             if (TraceInitialized == false)
             {
@@ -272,7 +273,7 @@ namespace OzetteLibrary.Logging.Default
                 throw new ArgumentNullException(nameof(exception));
             }
 
-            TraceMessageQueue.Enqueue(GenerateExceptionLoggingMessage(message, exception));
+            TraceMessageQueue.Enqueue(GenerateExceptionLoggingMessage(message, exception, stackContext));
         }
 
         /// <summary>
@@ -311,8 +312,9 @@ namespace OzetteLibrary.Logging.Default
         /// </remarks>
         /// <param name="message"></param>
         /// <param name="exception"></param>
+        /// <param name="stackContext"></param>
         /// <param name="eventID"></param>
-        public void WriteSystemEvent(string message, Exception exception, int eventID)
+        public void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID)
         {
             if (EventLogInitialized == false)
             {
@@ -327,7 +329,7 @@ namespace OzetteLibrary.Logging.Default
                 throw new ArgumentNullException(nameof(exception));
             }
 
-            var loggableMessage = GenerateExceptionLoggingMessage(message, exception);
+            var loggableMessage = GenerateExceptionLoggingMessage(message, exception, stackContext);
             EventLog.WriteEntry(LogSource, loggableMessage, EventLogEntryType.Error, eventID);
         }
 
@@ -409,8 +411,9 @@ namespace OzetteLibrary.Logging.Default
         /// </summary>
         /// <param name="message"></param>
         /// <param name="exception"></param>
+        /// <param name="contextStack"></param>
         /// <returns></returns>
-        private string GenerateExceptionLoggingMessage(string message, Exception exception)
+        private string GenerateExceptionLoggingMessage(string message, Exception exception, string contextStack)
         {
             StringBuilder r = new StringBuilder();
 
@@ -422,18 +425,80 @@ namespace OzetteLibrary.Logging.Default
 
             r.AppendLine(string.Format("Exception Message: {0}", exception.Message));
             r.AppendLine(string.Format("Exception Type: {0}", exception.GetType().FullName));
-            r.AppendLine(string.Format("Exception Stack: {0}", exception.StackTrace));
+            r.AppendLine();
+            r.AppendLine(string.Format("Exception Stack:"));
+            r.AppendLine(string.Format(exception.StackTrace));
+            r.AppendLine();
+            r.AppendLine(string.Format("Additional Context:"));
+            r.AppendLine(string.Format("{0}", contextStack));
 
             while (exception.InnerException != null)
             {
                 exception = exception.InnerException;
 
+                r.AppendLine();
                 r.AppendLine(string.Format("Inner Exception Message: {0}", exception.Message));
                 r.AppendLine(string.Format("Inner Exception Type: {0}", exception.GetType().FullName));
-                r.AppendLine(string.Format("Inner Exception Stack: {0}", exception.StackTrace));
+                r.AppendLine();
+                r.AppendLine(string.Format("Inner Exception Stack:"));
+                r.AppendLine(string.Format(exception.StackTrace));
             }
 
             return r.ToString();
+        }
+
+        /// <summary>
+        /// Generates a full stack trace from the current method context.
+        /// </summary>
+        /// <returns></returns>
+        public string GenerateFullContextStackTrace()
+        {
+            StringBuilder stackLog = new StringBuilder();
+
+            var stackTrace = new StackTrace(true);
+            var frames = stackTrace.GetFrames();
+            
+            for (int i = 1; i < frames.Length; i++) // skip the first frame (this method)
+            {
+                if (frames[i].GetFileName() != null)
+                {
+                    var filename = frames[i].GetFileName();
+                    var method = frames[i].GetMethod();
+                    var fileline = frames[i].GetFileLineNumber();
+
+                    stackLog.AppendLine(string.Format("at {0}.{1}({2}) in {3}:line {4}",
+                        method.ReflectedType.FullName,
+                        method.Name,
+                        GetMethodParamsAsString(method),
+                        filename,
+                        fileline
+                    ));
+                }
+            }
+
+            return stackLog.ToString();
+        }
+
+        /// <summary>
+        /// Prints a set of method parameters to a string.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        private static string GetMethodParamsAsString(System.Reflection.MethodBase method)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var mparams = method.GetParameters();
+
+            if (mparams != null)
+            {
+                foreach (var mp in mparams)
+                {
+                    sb.Append(mp.ToString() + ",");
+                }
+            }
+
+            return sb.ToString().TrimEnd(',');
         }
     }
 }

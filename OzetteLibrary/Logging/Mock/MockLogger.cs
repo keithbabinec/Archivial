@@ -142,7 +142,8 @@ namespace OzetteLibrary.Logging.Mock
         /// </remarks>
         /// <param name="message"></param>
         /// <param name="exception"></param>
-        public void WriteTraceError(string message, Exception exception)
+        /// <param name="stackContext"></param>
+        public void WriteTraceError(string message, Exception exception, string stackContext)
         {
             WriteTraceErrorWithExceptionHasBeenCalled = true;
             ExceptionWritten = exception;
@@ -177,8 +178,9 @@ namespace OzetteLibrary.Logging.Mock
         /// </remarks>
         /// <param name="message"></param>
         /// <param name="exception"></param>
+        /// <param name="stackContext"></param>
         /// <param name="eventID"></param>
-        public void WriteSystemEvent(string message, Exception exception, int eventID)
+        public void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID)
         {
             WriteSystemEventWithExceptionHasBeenCalled = true;
         }
@@ -196,6 +198,15 @@ namespace OzetteLibrary.Logging.Mock
                 severity.ToString(),
                 message
             );
+        }
+
+        /// <summary>
+        /// Generates a full stack trace from the current method context.
+        /// </summary>
+        /// <returns></returns>
+        public string GenerateFullContextStackTrace()
+        {
+            return string.Empty;
         }
     }
 }
