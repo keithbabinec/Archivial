@@ -100,6 +100,8 @@ namespace OzetteLibrary.Client
 
                                 if (state.IsCanceled == false)
                                 {
+                                    // the scan completed successfully (no cancel)
+                                    // update the last scanned timestamp.
                                     UpdateLastScannedTimeStamp(source);
                                 }
                             }

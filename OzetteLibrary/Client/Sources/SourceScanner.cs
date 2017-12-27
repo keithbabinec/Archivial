@@ -34,7 +34,6 @@ namespace OzetteLibrary.Client.Sources
 
             Database = database;
             Logger = logger;
-            ScanStatusLock = new object();
             Hasher = new Hasher(logger);
         }
 
@@ -48,17 +47,14 @@ namespace OzetteLibrary.Client.Sources
             {
                 throw new ArgumentNullException(nameof(source));
             }
-
-            lock (ScanStatusLock)
+            
+            if (ScanInProgress)
             {
-                if (ScanInProgress)
-                {
-                    throw new InvalidOperationException("Cannot start the scan. It is already in progress.");
-                }
-
-                ScanInProgress = true;
-                ScanStopRequested = false;
+                throw new InvalidOperationException("Cannot start the scan. It is already in progress.");
             }
+
+            ScanInProgress = true;
+            ScanStopRequested = false;
 
             Logger.WriteTraceMessage(string.Format("Starting scan for source: {0}", source.ToString()));
 
@@ -88,12 +84,9 @@ namespace OzetteLibrary.Client.Sources
         {
             Logger.WriteTraceMessage("Stopping the in-progress scan by request.");
 
-            lock (ScanStatusLock)
+            if (ScanInProgress)
             {
-                if (ScanInProgress)
-                {
-                    ScanStopRequested = true;
-                }
+                ScanStopRequested = true;
             }
         }
 
@@ -115,17 +108,12 @@ namespace OzetteLibrary.Client.Sources
         /// <summary>
         /// Flag to indicate if the scan is already in progress.
         /// </summary>
-        private bool ScanInProgress { get; set; }
+        private volatile bool ScanInProgress = false;
 
         /// <summary>
         /// Flag to indicate if the scan stop has been requested.
         /// </summary>
-        private bool ScanStopRequested { get; set; }
-
-        /// <summary>
-        /// Thread locking mechanism.
-        /// </summary>
-        private object ScanStatusLock { get; set; }
+        private volatile bool ScanStopRequested = false;
 
         /// <summary>
         /// Performs a scan of the source location.
@@ -135,6 +123,7 @@ namespace OzetteLibrary.Client.Sources
         private void Scan(SourceLocation source, AsyncResult asyncState)
         {
             var results = new ScanResults();
+            bool canceled = false;
 
             var directoriesToScan = new Queue<DirectoryInfo>();
             directoriesToScan.Enqueue(new DirectoryInfo(source.FolderPath));
@@ -144,6 +133,13 @@ namespace OzetteLibrary.Client.Sources
             
             while (directoriesToScan.Count > 0)
             {
+                // check if we need to quit (1)
+                if (ScanStopRequested)
+                {
+                    canceled = true;
+                    break;
+                }
+
                 var currentDirectory = directoriesToScan.Dequeue();
 
                 Logger.WriteTraceMessage(string.Format("Scanning directory: {0}", currentDirectory.FullName));
@@ -157,11 +153,25 @@ namespace OzetteLibrary.Client.Sources
                     }
                 }
 
+                // check if we need to quit (2)
+                if (ScanStopRequested)
+                {
+                    canceled = true;
+                    break;
+                }
+
                 var foundFiles = SafeEnumerateFiles(currentDirectory, source.FileMatchFilter);
                 if (foundFiles != null)
                 {
                     foreach (var foundFile in foundFiles)
                     {
+                        // check if we need to quit (3)
+                        if (ScanStopRequested)
+                        {
+                            canceled = true;
+                            break;
+                        }
+
                         ScanFile(results, foundFile, source);
                     }
                 }
@@ -171,13 +181,17 @@ namespace OzetteLibrary.Client.Sources
 
             WriteScanResultsToLog(results, source);
 
-            lock (ScanStatusLock)
-            {
-                ScanInProgress = false;
-                ScanStopRequested = false;
-            }
+            ScanInProgress = false;
+            ScanStopRequested = false;
 
-            asyncState.Complete();
+            if (canceled)
+            {
+                asyncState.Cancel();
+            }
+            else
+            {
+                asyncState.Complete();
+            }
         }
 
         /// <summary>
