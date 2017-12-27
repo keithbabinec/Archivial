@@ -58,17 +58,6 @@ namespace OzetteLibrary.Client.Sources
 
             Logger.WriteTraceMessage(string.Format("Starting scan for source: {0}", source.ToString()));
 
-            if (source.LastCompletedScan.HasValue)
-            {
-                Logger.WriteTraceMessage(
-                    string.Format("The last completed scan for this source was on: {0}.", 
-                    source.LastCompletedScan.Value.ToString(Constants.Logging.SortableDateTimeFormat)));
-            }
-            else
-            {
-                Logger.WriteTraceMessage("This source hasn't been scanned before, or sources have been recently updated (requiring a new scan).");
-            }
-
             AsyncResult resultState = new AsyncResult();
             
             Thread scanThread = new Thread(() => Scan(source, resultState));

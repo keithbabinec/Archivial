@@ -75,13 +75,28 @@ namespace OzetteLibrary.Client
                         foreach (var source in sources)
                         {
                             // should we actually scan this source?
-                            // checks the DB to see if it has been scanned recently.        
+                            // checks the DB to see if it has been scanned recently.
+
+                            Logger.WriteTraceMessage("Checking source location: " + source.ToString());
+
+                            if (source.LastCompletedScan.HasValue)
+                            {
+                                Logger.WriteTraceMessage(
+                                    string.Format("The last completed scan for this source location was on: {0}.",
+                                    source.LastCompletedScan.Value.ToString(Constants.Logging.SortableDateTimeFormat)));
+                            }
+                            else
+                            {
+                                Logger.WriteTraceMessage("This source location hasn't been scanned before, or source location definitions have recently been updated.");
+                            }
 
                             if (source.ShouldScan(Options))
                             {
                                 // begin-invoke the asynchronous scan operation.
                                 // watch the IAsyncResult status object to check for status updates
                                 // and wait until the scan has completed.
+
+                                Logger.WriteTraceMessage("This source needs to be scanned. Preparing scan operation now.");
 
                                 AsyncResult state = (Scanner.BeginScan(source)) as AsyncResult;
 
@@ -105,6 +120,10 @@ namespace OzetteLibrary.Client
                                     UpdateLastScannedTimeStamp(source);
                                 }
                             }
+                            else
+                            {
+                                Logger.WriteTraceMessage("This source location does not need to be scanned at this time.");
+                            }
 
                             if (Running == false)
                             {
@@ -113,13 +132,9 @@ namespace OzetteLibrary.Client
                                 break;
                             }
                         }
+                    }
 
-                        ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(10));
-                    }
-                    else
-                    {
-                        ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(30));
-                    }
+                    ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
 
                     if (Running == false)
                     {
