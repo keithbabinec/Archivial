@@ -162,7 +162,7 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// A flag to indicate if the database has been prepared.
         /// </summary>
-        private static bool DatabaseHasBeenPrepared;
+        private bool DatabaseHasBeenPrepared;
 
         /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.

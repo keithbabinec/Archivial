@@ -77,7 +77,6 @@ namespace OzetteClientAgent
                     string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName), 
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService);
 
-                PrepareDatabase();
                 StartScanEngine();
                 StartBackupEngine();
 
@@ -125,18 +124,6 @@ namespace OzetteClientAgent
         }
 
         /// <summary>
-        /// Prepares the database.
-        /// </summary>
-        /// <remarks>
-        /// This operation will pre-create collections, indexes, and object mappings.
-        /// </remarks>
-        private void PrepareDatabase()
-        {
-            var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, CoreLog);
-            db.PrepareDatabase();
-        }
-
-        /// <summary>
         /// Starts the scanning engine.
         /// </summary>
         private void StartScanEngine()
@@ -148,6 +135,7 @@ namespace OzetteClientAgent
             log.Start(Initialize.Options.EventlogName, Initialize.Options.EventlogName, Initialize.Options.LogFilesDirectory);
 
             var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
+            db.PrepareDatabase();
 
             Scan = new ScanEngine(db, log, Initialize.Options);
             Scan.Stopped += Scan_Stopped;
@@ -203,6 +191,7 @@ namespace OzetteClientAgent
             log.Start(Initialize.Options.EventlogName, Initialize.Options.EventlogName, Initialize.Options.LogFilesDirectory);
 
             var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
+            db.PrepareDatabase();
 
             Backup = new BackupEngine(db, log, Initialize.Options);
             Backup.Stopped += Backup_Stopped;
