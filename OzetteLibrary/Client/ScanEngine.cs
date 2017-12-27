@@ -76,34 +76,18 @@ namespace OzetteLibrary.Client
                         {
                             // should we actually scan this source?
                             // checks the DB to see if it has been scanned recently.
+                            WriteLastScannedInfoToTraceLog(source);
 
-                            Logger.WriteTraceMessage("Checking source location: " + source.ToString());
-
-                            if (source.LastCompletedScan.HasValue)
-                            {
-                                Logger.WriteTraceMessage(
-                                    string.Format("The last completed scan for this source location was on: {0}.",
-                                    source.LastCompletedScan.Value.ToString(Constants.Logging.SortableDateTimeFormat)));
-                            }
-                            else
-                            {
-                                Logger.WriteTraceMessage("This source location hasn't been scanned before, or source location definitions have recently been updated.");
-                            }
-
-                            if (source.ShouldScan(Options))
+                            if (ShouldScanSource(source))
                             {
                                 // begin-invoke the asynchronous scan operation.
                                 // watch the IAsyncResult status object to check for status updates
                                 // and wait until the scan has completed.
 
-                                Logger.WriteTraceMessage("This source needs to be scanned. Preparing scan operation now.");
-
                                 AsyncResult state = (Scanner.BeginScan(source)) as AsyncResult;
-
                                 while (state.IsCompleted == false)
                                 {
                                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(2));
-
                                     if (Running == false)
                                     {
                                         // stop was requested.
@@ -119,10 +103,6 @@ namespace OzetteLibrary.Client
                                     // update the last scanned timestamp.
                                     UpdateLastScannedTimeStamp(source);
                                 }
-                            }
-                            else
-                            {
-                                Logger.WriteTraceMessage("This source location does not need to be scanned at this time.");
                             }
 
                             if (Running == false)
@@ -201,6 +181,25 @@ namespace OzetteLibrary.Client
         }
 
         /// <summary>
+        /// Detects if we should scan the current source.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        private bool ShouldScanSource(SourceLocation source)
+        {
+            if (source.ShouldScan(Options))
+            {
+                Logger.WriteTraceMessage("This source needs to be scanned. Preparing scan operation now.");
+                return true;
+            }
+            else
+            {
+                Logger.WriteTraceMessage("This source location does not need to be scanned at this time.");
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Updates the source locations in the database, if changed.
         /// </summary>
         /// <param name="sources"></param>
@@ -217,6 +216,26 @@ namespace OzetteLibrary.Client
 
                 var clientDB = Database as IClientDatabase;
                 clientDB.SetSourceLocations(sources);
+            }
+        }
+
+        /// <summary>
+        /// Writes source location last-scanned date info to tracelog.
+        /// </summary>
+        /// <param name="source"></param>
+        private void WriteLastScannedInfoToTraceLog(SourceLocation source)
+        {
+            Logger.WriteTraceMessage("Checking source location: " + source.ToString());
+
+            if (source.LastCompletedScan.HasValue)
+            {
+                Logger.WriteTraceMessage(
+                    string.Format("The last completed scan for this source location was on: {0}.",
+                    source.LastCompletedScan.Value.ToString(Constants.Logging.SortableDateTimeFormat)));
+            }
+            else
+            {
+                Logger.WriteTraceMessage("This source location hasn't been scanned before, or source location definitions have recently been updated.");
             }
         }
 
