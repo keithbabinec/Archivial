@@ -6,7 +6,7 @@ namespace OzetteLibrary.Models.Exceptions
     /// <summary>
     /// An exception for invalid source location revision count.
     /// </summary>
-    public class SourceLocationInvalidRevisionCountException : Exception
+    public class SourceLocationInvalidRevisionCountException : SourceLocationException
     {
         public SourceLocationInvalidRevisionCountException()
         {

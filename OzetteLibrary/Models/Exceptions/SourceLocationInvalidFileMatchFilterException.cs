@@ -6,7 +6,7 @@ namespace OzetteLibrary.Models.Exceptions
     /// <summary>
     /// An exception for invalid source location file match filter.
     /// </summary>
-    public class SourceLocationInvalidFileMatchFilterException : Exception
+    public class SourceLocationInvalidFileMatchFilterException : SourceLocationException
     {
         public SourceLocationInvalidFileMatchFilterException()
         {

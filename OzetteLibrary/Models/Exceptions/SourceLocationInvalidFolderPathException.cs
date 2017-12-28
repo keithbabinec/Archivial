@@ -6,7 +6,7 @@ namespace OzetteLibrary.Models.Exceptions
     /// <summary>
     /// An exception for invalid source location folder path.
     /// </summary>
-    public class SourceLocationInvalidFolderPathException : Exception
+    public class SourceLocationInvalidFolderPathException : SourceLocationException
     {
         public SourceLocationInvalidFolderPathException()
         {

@@ -43,7 +43,7 @@ namespace OzetteLibrary.Models
                     }
                     else
                     {
-                        throw new SourceLocationsDuplicateIDException();
+                        throw new SourceLocationsDuplicateIDException(item.ToString());
                     }
                 }
             }

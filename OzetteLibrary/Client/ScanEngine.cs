@@ -4,6 +4,7 @@ using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Models;
+using OzetteLibrary.Models.Exceptions;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Threading;
@@ -280,13 +281,61 @@ namespace OzetteLibrary.Client
 
                 return true;
             }
-            catch (Exception ex)
+            catch (SourceLocationException ex)
             {
-                string err = "Failed to validate scan sources.";
-                Logger.WriteTraceError(err, ex, Logger.GenerateFullContextStackTrace());
-                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToValidateScanSources);
+                var msg = ConvertToFriendlyError(ex);
+                Logger.WriteTraceError(msg);
+                Logger.WriteSystemEvent(msg, System.Diagnostics.EventLogEntryType.Error, Constants.EventIDs.FailedToValidateScanSources);
 
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Converts an exception object into a friendly error message.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private string ConvertToFriendlyError(SourceLocationException ex)
+        {
+            if (ex is SourceLocationInvalidFileMatchFilterException)
+            {
+                return string.Format(
+                    "Failed to validate scan sources: A source location has an invalid (or missing) file match filter. The invalid source was: {0}",
+                    ex.Message
+                    );
+            }
+            else if (ex is SourceLocationInvalidFolderPathException)
+            {
+                return string.Format(
+                    "Failed to validate scan sources: A source location has an invalid (or missing) folder path. The invalid source was: {0}",
+                    ex.Message
+                    );
+            }
+            else if (ex is SourceLocationInvalidIDException)
+            {
+                return string.Format(
+                    "Failed to validate scan sources: A source location has an invalid (or missing) ID. The invalid source was: {0}",
+                    ex.Message
+                    );
+            }
+            else if (ex is SourceLocationInvalidRevisionCountException)
+            {
+                return string.Format(
+                    "Failed to validate scan sources: A source location has an invalid (or missing) revision count. The invalid source was: {0}",
+                    ex.Message
+                    );
+            }
+            else if (ex is SourceLocationsDuplicateIDException)
+            {
+                return string.Format(
+                    "Failed to validate scan sources: More than one source location shares the same ID. The invalid source was: {0}",
+                    ex.Message
+                    );
+            }
+            else
+            {
+                throw new InvalidOperationException("Unexpected exception type provided: " + ex.GetType().FullName);
             }
         }
     }

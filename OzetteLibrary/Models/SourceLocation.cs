@@ -124,11 +124,11 @@ namespace OzetteLibrary.Models
         {
             if (string.IsNullOrWhiteSpace(FolderPath))
             {
-                throw new SourceLocationInvalidFolderPathException();
+                throw new SourceLocationInvalidFolderPathException(this.ToString());
             }
             if (!System.IO.Directory.Exists(FolderPath))
             {
-                throw new SourceLocationInvalidFolderPathException();
+                throw new SourceLocationInvalidFolderPathException(this.ToString());
             }
         }
 
@@ -142,7 +142,7 @@ namespace OzetteLibrary.Models
                 if (!FileMatchFilter.Contains("*") && !FileMatchFilter.Contains("?"))
                 {
                     // filter was provided, but has no wildcard.
-                    throw new SourceLocationInvalidFileMatchFilterException();
+                    throw new SourceLocationInvalidFileMatchFilterException(this.ToString());
                 }
             }
         }
@@ -154,7 +154,7 @@ namespace OzetteLibrary.Models
         {
             if (RevisionCount <= 0)
             {
-                throw new SourceLocationInvalidRevisionCountException();
+                throw new SourceLocationInvalidRevisionCountException(this.ToString());
             }
         }
 
@@ -165,7 +165,7 @@ namespace OzetteLibrary.Models
         {
             if (ID <= 0)
             {
-                throw new SourceLocationInvalidIDException();
+                throw new SourceLocationInvalidIDException(this.ToString());
             }
         }
     }

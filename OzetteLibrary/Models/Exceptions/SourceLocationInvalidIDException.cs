@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace OzetteLibrary.Models.Exceptions
 {
-    public class SourceLocationInvalidIDException : Exception
+    public class SourceLocationInvalidIDException : SourceLocationException
     {
         public SourceLocationInvalidIDException()
         {

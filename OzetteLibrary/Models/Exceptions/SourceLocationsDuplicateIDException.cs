@@ -6,7 +6,7 @@ namespace OzetteLibrary.Models.Exceptions
     /// <summary>
     /// An exception for duplicate source location IDs.
     /// </summary>
-    public class SourceLocationsDuplicateIDException : Exception
+    public class SourceLocationsDuplicateIDException : SourceLocationException
     {
         public SourceLocationsDuplicateIDException()
         {
