@@ -94,7 +94,7 @@ namespace OzetteLibrary.Client
                     }
                     else
                     {
-                        Thread.Sleep(TimeSpan.FromSeconds(5));
+                        ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
                     }
 
                     if (Running == false)
@@ -113,10 +113,25 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Grabs the next file that needs to be backed up.
         /// </summary>
+        /// <remarks>
+        /// This function is marked as safe and should not throw exceptions.
+        /// </remarks>
         /// <returns></returns>
         private ClientFile SafeGetNextFileToBackup()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var clientDB = Database as IClientDatabase;
+                return clientDB.GetNextFileToBackup();
+            }
+            catch (Exception ex)
+            {
+                string err = "Failed to capture the next file ready for backup.";
+                Logger.WriteTraceError(err, ex, Logger.GenerateFullContextStackTrace());
+                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetNextFileToBackup);
+
+                return null;
+            }
         }
     }
 }

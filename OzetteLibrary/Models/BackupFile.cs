@@ -51,6 +51,11 @@ namespace OzetteLibrary.Models
         public byte[] FileHash { get; set; }
 
         /// <summary>
+        /// The file backup priority of this file.
+        /// </summary>
+        public FileBackupPriority Priority { get; set; }
+
+        /// <summary>
         /// The type of hash algorithm.
         /// </summary>
         public HashAlgorithmName HashAlgorithmType { get; set; }

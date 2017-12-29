@@ -68,5 +68,14 @@ namespace OzetteLibrary.Database
         /// </summary>
         /// <param name="File"><c>ClientFile</c></param>
         void UpdateClientFile(ClientFile File);
+
+        /// <summary>
+        /// Gets the next file that needs to be backed up.
+        /// </summary>
+        /// <remarks>
+        /// If no files need to be backed up, return null.
+        /// </remarks>
+        /// <returns><c>ClientFile</c></returns>
+        ClientFile GetNextFileToBackup();
     }
 }

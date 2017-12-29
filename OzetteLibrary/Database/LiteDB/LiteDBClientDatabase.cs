@@ -448,5 +448,71 @@ namespace OzetteLibrary.Database.LiteDB
                 targetCol.Update(File);
             }
         }
+
+        /// <summary>
+        /// Gets the next file that needs to be backed up.
+        /// </summary>
+        /// <remarks>
+        /// If no files need to be backed up, return null.
+        /// 
+        /// The ordering in which files are returned is defined as follows: (ascending)
+        /// 1. High priority unsynced files.
+        /// 2. High priority out-of-sync files.
+        /// 3. Medium priority unsynced files.
+        /// 4. Medium priority out-of-sync files.
+        /// 5. Low priority unsynced files.
+        /// 6. Low priority out-of-sync files.
+        /// </remarks>
+        /// <returns><c>ClientFile</c></returns>
+        public ClientFile GetNextFileToBackup()
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
+            FileBackupPriority[] priorities = new FileBackupPriority[]
+            {
+                FileBackupPriority.High,
+                FileBackupPriority.Medium,
+                FileBackupPriority.Low
+            };
+
+            FileStatus[] states = new FileStatus[]
+            {
+                FileStatus.Unsynced,
+                FileStatus.OutOfDate
+            };
+
+            for (int i = 0; i < priorities.Length; i++)
+            {
+                for (int j = 0; j < states.Length; j++)
+                {
+                    var matchedFile = FindNextBackupFileByPriorityAndStatus(priorities[i], states[j]);
+
+                    if (matchedFile != null)
+                    {
+                        return matchedFile;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the next file that matches the priority and status criteria.
+        /// </summary>
+        /// <param name="Priority"></param>
+        /// <param name="Status"></param>
+        /// <returns></returns>
+        private ClientFile FindNextBackupFileByPriorityAndStatus(FileBackupPriority Priority, FileStatus Status)
+        {
+            using (var db = GetLiteDBInstance())
+            {
+                var clientFilesCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
+                return clientFilesCol.FindOne(x => x.Priority == Priority && x.OverallState == Status);
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using LiteDB;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -119,6 +120,20 @@ namespace OzetteLibraryTests.Database.LiteDB
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
 
             db.GetAllTargets();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseGetNextFileToBackupThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.GetNextFileToBackup();
         }
 
         [TestMethod()]
@@ -831,6 +846,443 @@ namespace OzetteLibraryTests.Database.LiteDB
                 Assert.AreEqual(sources[i].ID, result[i].ID);
                 Assert.AreEqual(sources[i].FolderPath, result[i].FolderPath);
             }
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsNullWhenNoFilesToBackupExample1()
+        {
+            // no files in the database.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            Assert.IsNull(db.GetNextFileToBackup());
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsNullWhenNoFilesToBackupExample2()
+        {
+            // one file in the database, already backed up.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
+            c1.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, OverallStatus = OzetteLibrary.Models.FileStatus.Synced });
+
+            db.AddClientFile(c1);
+
+            Assert.IsNull(db.GetNextFileToBackup());
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsNullWhenNoFilesToBackupExample3()
+        {
+            // single file in the database, file is currently copying.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
+            c1.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, OverallStatus = OzetteLibrary.Models.FileStatus.InProgress });
+
+            db.AddClientFile(c1);
+
+            Assert.IsNull(db.GetNextFileToBackup());
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsNullWhenNoFilesToBackupExample4()
+        {
+            // multiple files in the database, all are already backed up.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
+            c1.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, OverallStatus = OzetteLibrary.Models.FileStatus.Synced });
+
+            var c2 = new OzetteLibrary.Models.ClientFile();
+            c2.FileID = Guid.NewGuid();
+            c2.Filename = "test2.mp3";
+            c2.Directory = "C:\\music";
+            c2.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
+            c2.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, OverallStatus = OzetteLibrary.Models.FileStatus.Synced });
+
+            db.AddClientFile(c1);
+            db.AddClientFile(c2);
+
+            Assert.IsNull(db.GetNextFileToBackup());
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsNullWhenNoFilesToBackupExample5()
+        {
+            // multiple files in the database, all are already backed up or copying.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
+            c1.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, OverallStatus = OzetteLibrary.Models.FileStatus.Synced });
+
+            var c2 = new OzetteLibrary.Models.ClientFile();
+            c2.FileID = Guid.NewGuid();
+            c2.Filename = "test2.mp3";
+            c2.Directory = "C:\\music";
+            c2.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
+            c2.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, OverallStatus = OzetteLibrary.Models.FileStatus.InProgress });
+
+            var c3 = new OzetteLibrary.Models.ClientFile();
+            c3.FileID = Guid.NewGuid();
+            c3.Filename = "test3.mp3";
+            c3.Directory = "C:\\music";
+            c3.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
+            c3.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, OverallStatus = OzetteLibrary.Models.FileStatus.Synced });
+
+            db.AddClientFile(c1);
+            db.AddClientFile(c2);
+            db.AddClientFile(c3);
+
+            Assert.IsNull(db.GetNextFileToBackup());
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsNullWhenNoFilesToBackupExample6()
+        {
+            // multiple files in the database (with multiple sources), all are already backed up.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
+            c1.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, OverallStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c1.CopyState.Add(2, new OzetteLibrary.Models.TargetCopyState() { TargetID = 2, OverallStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c1.CopyState.Add(3, new OzetteLibrary.Models.TargetCopyState() { TargetID = 3, OverallStatus = OzetteLibrary.Models.FileStatus.Synced });
+
+            var c2 = new OzetteLibrary.Models.ClientFile();
+            c2.FileID = Guid.NewGuid();
+            c2.Filename = "test2.mp3";
+            c2.Directory = "C:\\music";
+            c2.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
+            c2.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, OverallStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c2.CopyState.Add(2, new OzetteLibrary.Models.TargetCopyState() { TargetID = 2, OverallStatus = OzetteLibrary.Models.FileStatus.Synced });
+
+            db.AddClientFile(c1);
+            db.AddClientFile(c2);
+
+            Assert.IsNull(db.GetNextFileToBackup());
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsCorrectFileToBackupExample1()
+        {
+            // single file (unsynced). needs backup.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c1.FileID = Guid.NewGuid();
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+
+            db.AddClientFile(c1);
+
+            var nextFile = db.GetNextFileToBackup();
+            Assert.IsNotNull(nextFile);
+            Assert.AreEqual(c1.FileID, nextFile.FileID);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsCorrectFileToBackupExample2()
+        {
+            // single file (outdated). needs backup.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c1.FileID = Guid.NewGuid();
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+
+            db.AddClientFile(c1);
+
+            var nextFile = db.GetNextFileToBackup();
+            Assert.IsNotNull(nextFile);
+            Assert.AreEqual(c1.FileID, nextFile.FileID);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsCorrectFileToBackupExample3()
+        {
+            // if multiple files can be synced, return the more urgent one (unsynced over out-of-date).
+            // assuming same file priority.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+
+            var c2 = new OzetteLibrary.Models.ClientFile();
+            c2.FileID = Guid.NewGuid();
+            c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c2.Filename = "test2.mp3";
+            c2.Directory = "C:\\music";
+            c2.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+
+            db.AddClientFile(c1);
+            db.AddClientFile(c2);
+
+            var nextFile = db.GetNextFileToBackup();
+            Assert.IsNotNull(nextFile);
+            Assert.AreEqual(c2.FileID, nextFile.FileID);
+        }
+        
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsCorrectFileToBackupExample5()
+        {
+            // multiple files. all need backup- (out of date), but have different priority
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+
+            var c2 = new OzetteLibrary.Models.ClientFile();
+            c2.FileID = Guid.NewGuid();
+            c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c2.Filename = "test2.mp3";
+            c2.Directory = "C:\\music";
+            c2.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+
+            var c3 = new OzetteLibrary.Models.ClientFile();
+            c3.FileID = Guid.NewGuid();
+            c3.Priority = OzetteLibrary.Models.FileBackupPriority.High;
+            c3.Filename = "test3.mp3";
+            c3.Directory = "C:\\music";
+            c3.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+
+            db.AddClientFile(c1);
+            db.AddClientFile(c2);
+            db.AddClientFile(c3);
+
+            var nextFile = db.GetNextFileToBackup();
+            Assert.IsNotNull(nextFile);
+            Assert.AreEqual(c3.FileID, nextFile.FileID);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsCorrectFileToBackupExample6()
+        {
+            // multiple files. only one needs backup
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.OverallState = OzetteLibrary.Models.FileStatus.Synced;
+
+            var c2 = new OzetteLibrary.Models.ClientFile();
+            c2.FileID = Guid.NewGuid();
+            c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c2.Filename = "test2.mp3";
+            c2.Directory = "C:\\music";
+            c2.OverallState = OzetteLibrary.Models.FileStatus.InProgress;
+
+            var c3 = new OzetteLibrary.Models.ClientFile();
+            c3.FileID = Guid.NewGuid();
+            c3.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
+            c3.Filename = "test3.mp3";
+            c3.Directory = "C:\\music";
+            c3.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+
+            db.AddClientFile(c1);
+            db.AddClientFile(c2);
+            db.AddClientFile(c3);
+
+            var nextFile = db.GetNextFileToBackup();
+            Assert.IsNotNull(nextFile);
+            Assert.AreEqual(c3.FileID, nextFile.FileID);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsCorrectFileToBackupExample7()
+        {
+            // if multiple files can be synced, return the more urgent one (priority ordering).
+            // example: an high pri out-of-date takes priority over medium unsynced file.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+
+            var c2 = new OzetteLibrary.Models.ClientFile();
+            c2.FileID = Guid.NewGuid();
+            c2.Priority = OzetteLibrary.Models.FileBackupPriority.High;
+            c2.Filename = "test2.mp3";
+            c2.Directory = "C:\\music";
+            c2.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+
+            db.AddClientFile(c1);
+            db.AddClientFile(c2);
+
+            var nextFile = db.GetNextFileToBackup();
+            Assert.IsNotNull(nextFile);
+            Assert.AreEqual(c2.FileID, nextFile.FileID);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsCorrectFileToBackupExample8()
+        {
+            // if multiple files can be synced, return the more urgent one (priority ordering).
+            // example: an med pri out-of-date takes priority over low unsynced file.
+
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Models.ClientFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+
+            var c2 = new OzetteLibrary.Models.ClientFile();
+            c2.FileID = Guid.NewGuid();
+            c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c2.Filename = "test2.mp3";
+            c2.Directory = "C:\\music";
+            c2.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+
+            db.AddClientFile(c1);
+            db.AddClientFile(c2);
+
+            var nextFile = db.GetNextFileToBackup();
+            Assert.IsNotNull(nextFile);
+            Assert.AreEqual(c2.FileID, nextFile.FileID);
         }
     }
 }

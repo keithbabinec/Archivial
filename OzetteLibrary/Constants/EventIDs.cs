@@ -74,5 +74,10 @@
         /// Event ID: Failed backup engine.
         /// </summary>
         public const int FailedBackupEngine = 2004;
+
+        /// <summary>
+        /// Event ID: Failed to grab the next file that needs to be backed up.
+        /// </summary>
+        public const int FailedToGetNextFileToBackup = 2005;
     }
 }

@@ -5,6 +5,17 @@
     /// </summary>
     public class TargetCopyState
     {
+        /// <summary>
+        /// Default/empty constructor.
+        /// </summary>
+        public TargetCopyState()
+        {
+        }
+
+        /// <summary>
+        /// A constructor that accepts a <c>Target</c> object.
+        /// </summary>
+        /// <param name="target"></param>
         public TargetCopyState(Target target)
         {
             TargetID = target.ID;

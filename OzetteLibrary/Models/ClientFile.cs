@@ -50,6 +50,11 @@ namespace OzetteLibrary.Models
         public Dictionary<int, TargetCopyState> CopyState { get; set; }
 
         /// <summary>
+        /// An overall state across one or more targets.
+        /// </summary>
+        public FileStatus OverallState { get; set; }
+
+        /// <summary>
         /// Resets existing copy progress state.
         /// </summary>
         /// <param name="targets"></param>
@@ -61,6 +66,7 @@ namespace OzetteLibrary.Models
             }
 
             CopyState = new Dictionary<int, TargetCopyState>();
+            OverallState = FileStatus.Unsynced;
 
             foreach (var target in targets)
             {
