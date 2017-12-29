@@ -85,7 +85,7 @@ namespace OzetteLibrary.Client
                                 // watch the IAsyncResult status object to check for status updates
                                 // and wait until the scan has completed.
 
-                                AsyncResult state = (Scanner.BeginScan(source)) as AsyncResult;
+                                AsyncResult state = Scanner.BeginScan(source);
                                 while (state.IsCompleted == false)
                                 {
                                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(2));

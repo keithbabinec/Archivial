@@ -41,7 +41,7 @@ namespace OzetteLibrary.Client.Sources
         /// Starts asynchronously scanning a source.
         /// </summary>
         /// <param name="source">The source definition</param>
-        public IAsyncResult BeginScan(SourceLocation source)
+        public AsyncResult BeginScan(SourceLocation source)
         {
             if (source == null)
             {
