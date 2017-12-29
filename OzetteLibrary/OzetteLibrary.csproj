@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\BackupEngine.cs" />
+    <Compile Include="Client\Transfer\FileSender.cs" />
     <Compile Include="Constants\EventIDs.cs" />
     <Compile Include="Engine\BaseEngine.cs" />
     <Compile Include="Events\AsyncResult.cs" />

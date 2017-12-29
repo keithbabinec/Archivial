@@ -1,7 +1,9 @@
-﻿using OzetteLibrary.Database;
+﻿using OzetteLibrary.Client.Transfer;
+using OzetteLibrary.Database;
 using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
+using OzetteLibrary.Models;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Threading;
@@ -32,6 +34,7 @@ namespace OzetteLibrary.Client
             }
 
             Running = true;
+            Sender = new FileSender(Database as IClientDatabase, Logger);
 
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();
@@ -49,6 +52,11 @@ namespace OzetteLibrary.Client
         }
 
         /// <summary>
+        /// The file copy/transfer utility.
+        /// </summary>
+        private FileSender Sender { get; set; }
+
+        /// <summary>
         /// Core processing loop.
         /// </summary>
         private void ProcessLoop()
@@ -57,9 +65,37 @@ namespace OzetteLibrary.Client
             {
                 while (true)
                 {
-                    // todo: implement engine core loop
+                    // check to see if we have any files to backup.
+                    // return the next one to backup.
 
-                    Thread.Sleep(TimeSpan.FromSeconds(3));
+                    ClientFile nextFileToBackup = SafeGetNextFileToBackup();
+
+                    if (nextFileToBackup != null)
+                    {
+                        // initiate the file-send operation.
+
+                        AsyncResult state = Sender.BeginSend(nextFileToBackup);
+
+                        while (state.IsCompleted == false)
+                        {
+                            ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(2));
+                            if (Running == false)
+                            {
+                                // stop was requested.
+                                // stop the currently in-progress file send operation.
+
+                                Sender.StopSend();
+                                break;
+                            }
+                        }
+
+                        // do not sleep here.
+                        // immediately move to backing up the next file.
+                    }
+                    else
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(5));
+                    }
 
                     if (Running == false)
                     {
@@ -72,6 +108,15 @@ namespace OzetteLibrary.Client
             {
                 OnStopped(new EngineStoppedEventArgs(ex));
             }
+        }
+
+        /// <summary>
+        /// Grabs the next file that needs to be backed up.
+        /// </summary>
+        /// <returns></returns>
+        private ClientFile SafeGetNextFileToBackup()
+        {
+            throw new NotImplementedException();
         }
     }
 }
