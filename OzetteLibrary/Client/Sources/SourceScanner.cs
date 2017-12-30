@@ -47,7 +47,6 @@ namespace OzetteLibrary.Client.Sources
             {
                 throw new ArgumentNullException(nameof(source));
             }
-            
             if (ScanInProgress)
             {
                 throw new InvalidOperationException("Cannot start the scan. It is already in progress.");

@@ -86,7 +86,7 @@ namespace OzetteLibrary.Crypto
         /// <param name="hashAlgorithm">The hash algorithm to use.</param>
         /// <param name="filePath">The full path to the file on disk.</param>
         /// <returns>A byte array containing the hash</returns>
-        private byte[] GenerateFileHash(HashAlgorithmName hashAlgorithm, string filePath)
+        public byte[] GenerateFileHash(HashAlgorithmName hashAlgorithm, string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {
@@ -107,6 +107,36 @@ namespace OzetteLibrary.Crypto
             {
                 // log the error
                 Logger.WriteTraceError("Failed to generate a hash for file: " + filePath, ex, Logger.GenerateFullContextStackTrace());
+
+                // return empty byte array
+                return new byte[] { };
+            }
+        }
+
+        /// <summary>
+        /// Generates a file hash using the specified hash algorithm.
+        /// </summary>
+        /// <param name="hashAlgorithm">The hash algorithm to use.</param>
+        /// <param name="stream">The full path to the file on disk.</param>
+        /// <returns>A byte array containing the hash</returns>
+        public byte[] GenerateFileHash(HashAlgorithmName hashAlgorithm, FileStream stream)
+        {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            try
+            {
+                using (var hasher = HashAlgorithm.Create(hashAlgorithm.Name))
+                {
+                    return hasher.ComputeHash(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                // log the error
+                Logger.WriteTraceError("Failed to generate a hash from stream.", ex, Logger.GenerateFullContextStackTrace());
 
                 // return empty byte array
                 return new byte[] { };

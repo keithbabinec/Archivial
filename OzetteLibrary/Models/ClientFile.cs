@@ -73,5 +73,35 @@ namespace OzetteLibrary.Models
                 CopyState.Add(target.ID, new TargetCopyState(target));
             }
         }
+
+        /// <summary>
+        /// Returns a string representation of this object.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            if (FullSourcePath != null)
+            {
+                return string.Format("{0}", FullSourcePath);
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Determines if there is data remaining to transfer.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasDataToTransfer()
+        {
+            // TODO:
+            // check the copy state.
+            // return true if this file is capable of sending the next datablock.
+            // this means it is not in a failed state, and has data needing to be transferred.
+
+            throw new NotImplementedException();
+        }
     }
 }

@@ -6,6 +6,7 @@ using OzetteLibrary.Logging;
 using OzetteLibrary.Models;
 using OzetteLibrary.ServiceCore;
 using System;
+using System.Net.Sockets;
 using System.Threading;
 
 namespace OzetteLibrary.Client
@@ -74,7 +75,7 @@ namespace OzetteLibrary.Client
                     {
                         // initiate the file-send operation.
 
-                        AsyncResult state = Sender.BeginSend(nextFileToBackup);
+                        AsyncResult state = Sender.BeginTransfer(nextFileToBackup);
 
                         while (state.IsCompleted == false)
                         {
@@ -84,7 +85,7 @@ namespace OzetteLibrary.Client
                                 // stop was requested.
                                 // stop the currently in-progress file send operation.
 
-                                Sender.StopSend();
+                                Sender.StopTransfer();
                                 break;
                             }
                         }
