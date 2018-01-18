@@ -32,6 +32,7 @@ namespace OzetteLibrary.Client.Transfer
             Database = database;
             Logger = logger;
             Clients = new Dictionary<string, TcpClient>();
+            Hasher = new Hasher(Logger);
         }
 
         /// <summary>
@@ -43,6 +44,11 @@ namespace OzetteLibrary.Client.Transfer
         /// A reference to the logger.
         /// </summary>
         private ILogger Logger { get; set; }
+
+        /// <summary>
+        /// A reference to the hasher.
+        /// </summary>
+        private Hasher Hasher { get; set; }
 
         /// <summary>
         /// A reference to the TCP client connections.
@@ -124,15 +130,20 @@ namespace OzetteLibrary.Client.Transfer
 
                     UpdateHashIfFileHasChangedRecently(File, fs);
 
-                    // step 3: while the file has data that needs to be transferred- transfer it.
+                    // step 3: see if this file is already on the destination target(s).
+                    // this avoids resending the file if for some reason the client DB/states got wiped out.
+
+                    UpdateFileCopyStateIfFileAlreadyExistsOnTargets(File, fs);
+
+                    // step 4: while the file has data that needs to be transferred- transfer it.
                     // this includes transferring to each potential target that needs this same file block.
 
                     while (File.HasDataToTransfer())
                     {
-                        // step 3A: generate the next transfer data block.
+                        // step 4A: generate the next transfer data block.
                         var payload = GenerateNextTransferPayload(File, fs);
 
-                        // step 3B: send the transfer payload.
+                        // step 4B: send the transfer payload.
                         SendTransferPayloadToFileTargets(File, payload);
                     }
                 }
@@ -154,6 +165,21 @@ namespace OzetteLibrary.Client.Transfer
             {
                 AsyncState.Complete();
             }
+        }
+
+        /// <summary>
+        /// Updates the local file copy state if the file has already been transferred (and local DB doesn't know about it).
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="fs"></param>
+        private void UpdateFileCopyStateIfFileAlreadyExistsOnTargets(ClientFile file, FileStream fs)
+        {
+            // TODO:
+            // for each target that needs this file:
+            // > just double check that we haven't already transferred this whole file.
+            // > to avoid resending if for some reason had lost local client DB state.
+
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -183,11 +209,7 @@ namespace OzetteLibrary.Client.Transfer
         /// <returns></returns>
         private TransferPayload GenerateNextTransferPayload(ClientFile File, FileStream Stream)
         {
-            // TODO:
-            // return a new TransferPayload object with the next block of data.
-            // read the next data block from the filestream.
-
-            throw new NotImplementedException();
+            return File.GenerateNextTransferPayload(Stream, Hasher);
         }
 
         /// <summary>
@@ -206,15 +228,15 @@ namespace OzetteLibrary.Client.Transfer
                 throw new ArgumentNullException(nameof(Stream));
             }
 
-            Hasher h = new Hasher(Logger);
-            var currentHash = h.GenerateFileHash(File.HashAlgorithmType, File.FullSourcePath);
+            var currentHash = Hasher.GenerateFileHash(File.HashAlgorithmType, File.FullSourcePath);
 
             if (currentHash.Length != 0)
             {
-                if (h.TwoHashesAreTheSame(File.FileHash, currentHash) == false)
+                if (Hasher.TwoHashesAreTheSame(File.FileHash, currentHash) == false)
                 {
                     File.FileHash = currentHash;
                     File.LastChecked = DateTime.Now;
+                    File.ResetCopyState();
                     Database.UpdateClientFile(File);
                 }
             }

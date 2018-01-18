@@ -114,6 +114,31 @@ namespace OzetteLibrary.Crypto
         }
 
         /// <summary>
+        /// Generates a hash for a byte array using the specified algorithm.
+        /// </summary>
+        /// <param name="hashAlgorithm"></param>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public byte[] GenerateByteArrayHash(HashAlgorithmName hashAlgorithm, byte[] stream)
+        {
+            try
+            {
+                using (var hasher = HashAlgorithm.Create(hashAlgorithm.Name))
+                {
+                    return hasher.ComputeHash(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                // log the error
+                Logger.WriteTraceError("Failed to generate a hash for the byte stream.", ex, Logger.GenerateFullContextStackTrace());
+
+                // return empty byte array
+                return new byte[] { };
+            }
+        }
+
+        /// <summary>
         /// Generates a file hash using the specified hash algorithm.
         /// </summary>
         /// <param name="hashAlgorithm">The hash algorithm to use.</param>

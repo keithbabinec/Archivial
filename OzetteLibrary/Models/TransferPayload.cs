@@ -16,12 +16,12 @@ namespace OzetteLibrary.Models
         /// <summary>
         /// The block number currently associated with this transfer payload.
         /// </summary>
-        public int Block { get; set; }
+        public long CurrentBlockNumber { get; set; }
 
         /// <summary>
         /// The total number of blocks in this file.
         /// </summary>
-        public int TotalBlocks { get; set; }
+        public long TotalBlocks { get; set; }
 
         /// <summary>
         /// The expected hash of this payload data chunk.

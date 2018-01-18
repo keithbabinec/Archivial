@@ -43,7 +43,7 @@ namespace OzetteLibrary.Models
         /// <summary>
         /// The files size measured in bytes.
         /// </summary>
-        public ulong FileSizeBytes { get; set; }
+        public long FileSizeBytes { get; set; }
 
         /// <summary>
         /// The hash of the file. 
@@ -59,5 +59,23 @@ namespace OzetteLibrary.Models
         /// The type of hash algorithm.
         /// </summary>
         public HashAlgorithmName HashAlgorithmType { get; set; }
+
+        /// <summary>
+        /// Returns the expected number of file blocks.
+        /// </summary>
+        /// <param name="ChunkSize"></param>
+        /// <returns></returns>
+        public int GetTotalFileBlocks(int ChunkSize)
+        {
+            int blocks = Convert.ToInt32((FileSizeBytes / ChunkSize));
+            int remainder = Convert.ToInt32(FileSizeBytes % ChunkSize);
+
+            if (remainder > 0)
+            {
+                blocks++;
+            }
+
+            return blocks;
+        }
     }
 }

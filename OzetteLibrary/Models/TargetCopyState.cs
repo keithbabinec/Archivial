@@ -1,4 +1,6 @@
-﻿namespace OzetteLibrary.Models
+﻿using System;
+
+namespace OzetteLibrary.Models
 {
     /// <summary>
     /// Contains the state of an individual file against one target (destination).
@@ -19,6 +21,7 @@
         public TargetCopyState(Target target)
         {
             TargetID = target.ID;
+            ResetState();
         }
 
         /// <summary>
@@ -27,9 +30,9 @@
         public int TargetID { get; set; }
 
         /// <summary>
-        /// The state of the copy from this file to the 
+        /// The state of the copy from this file to the target.
         /// </summary>
-        public FileStatus OverallStatus { get; set; }
+        public FileStatus TargetStatus { get; set; }
 
         /// <summary>
         /// The last completed file transfer block.
@@ -40,5 +43,15 @@
         /// The total number of file transfer blocks.
         /// </summary>
         public int TotalFileChunks { get; set; }
+
+        /// <summary>
+        /// Resets copy state back to unsynced.
+        /// </summary>
+        public void ResetState()
+        {
+            TargetStatus = FileStatus.Unsynced;
+            TotalFileChunks = 0;
+            LastCompletedFileChunk = 0;
+        }
     }
 }
