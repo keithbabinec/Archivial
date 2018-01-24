@@ -20,6 +20,11 @@ namespace OzetteLibrary.Models
         /// <param name="target"></param>
         public TargetCopyState(Target target)
         {
+            if (target == null)
+            {
+                throw new ArgumentException(nameof(target));
+            }
+
             TargetID = target.ID;
             ResetState();
         }

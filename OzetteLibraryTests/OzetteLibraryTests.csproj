@@ -63,6 +63,7 @@
     <Compile Include="Models\BackupFile.tests.cs" />
     <Compile Include="Models\ClientFile.tests.cs" />
     <Compile Include="Models\SourceLocation.tests.cs" />
+    <Compile Include="Models\TargetCopyState.tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client\Sources\Loader.tests.cs" />
     <Compile Include="ServiceCore\Initialization.tests.cs" />
