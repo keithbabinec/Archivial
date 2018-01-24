@@ -222,27 +222,30 @@ namespace OzetteLibrary.Models
         {
             int? nextBlockNumberToSend = null;
 
-            foreach (var target in CopyState)
+            if (CopyState != null)
             {
-                var targetState = target.Value.TargetStatus;
+                foreach (var target in CopyState)
+                {
+                    var targetState = target.Value.TargetStatus;
 
-                if (targetState == FileStatus.InProgress)
-                {
-                    nextBlockNumberToSend = target.Value.LastCompletedFileChunk + 1;
-                    break;
-                }
-                else if (targetState == FileStatus.OutOfDate || targetState == FileStatus.Unsynced)
-                {
-                    nextBlockNumberToSend = 0;
-                    break;
-                }
-                else if (targetState == FileStatus.Synced)
-                {
-                    // disregard. file is already synced to this particular target.
-                }
-                else
-                {
-                    throw new InvalidOperationException("Unexpected target state: " + targetState.ToString());
+                    if (targetState == FileStatus.InProgress)
+                    {
+                        nextBlockNumberToSend = target.Value.LastCompletedFileChunk + 1;
+                        break;
+                    }
+                    else if (targetState == FileStatus.OutOfDate || targetState == FileStatus.Unsynced)
+                    {
+                        nextBlockNumberToSend = 0;
+                        break;
+                    }
+                    else if (targetState == FileStatus.Synced)
+                    {
+                        // disregard. file is already synced to this particular target.
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Unexpected target state: " + targetState.ToString());
+                    }
                 }
             }
 
