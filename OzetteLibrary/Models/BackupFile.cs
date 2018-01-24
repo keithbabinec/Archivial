@@ -67,6 +67,11 @@ namespace OzetteLibrary.Models
         /// <returns></returns>
         public int GetTotalFileBlocks(int ChunkSize)
         {
+            if (ChunkSize == 0)
+            {
+                throw new ArgumentException("Provide a non-zero value for chunksize.");
+            }
+
             int blocks = Convert.ToInt32((FileSizeBytes / ChunkSize));
             int remainder = Convert.ToInt32(FileSizeBytes % ChunkSize);
 
