@@ -57,7 +57,7 @@ namespace OzetteLibrary.Crypto
         /// <returns>A byte array containing the hash</returns>
         public byte[] Generate20ByteFileHash(string filePath)
         {
-            return GenerateFileHash(HashAlgorithmName.SHA1, filePath);
+            return HashCompleteFileFromFilePath(HashAlgorithmName.SHA1, filePath);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace OzetteLibrary.Crypto
         /// <returns>A byte array containing the hash</returns>
         public byte[] Generate32ByteFileHash(string filePath)
         {
-            return GenerateFileHash(HashAlgorithmName.SHA256, filePath);
+            return HashCompleteFileFromFilePath(HashAlgorithmName.SHA256, filePath);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace OzetteLibrary.Crypto
         /// <returns>A byte array containing the hash</returns>
         public byte[] Generate64ByteFileHash(string filePath)
         {
-            return GenerateFileHash(HashAlgorithmName.SHA512, filePath);
+            return HashCompleteFileFromFilePath(HashAlgorithmName.SHA512, filePath);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace OzetteLibrary.Crypto
         /// <param name="hashAlgorithm">The hash algorithm to use.</param>
         /// <param name="filePath">The full path to the file on disk.</param>
         /// <returns>A byte array containing the hash</returns>
-        public byte[] GenerateFileHash(HashAlgorithmName hashAlgorithm, string filePath)
+        public byte[] HashCompleteFileFromFilePath(HashAlgorithmName hashAlgorithm, string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {
@@ -117,15 +117,20 @@ namespace OzetteLibrary.Crypto
         /// Generates a hash for a byte array using the specified algorithm.
         /// </summary>
         /// <param name="hashAlgorithm"></param>
-        /// <param name="stream"></param>
+        /// <param name="streamBytes"></param>
         /// <returns></returns>
-        public byte[] GenerateByteArrayHash(HashAlgorithmName hashAlgorithm, byte[] stream)
+        public byte[] HashFileChunkFromByteArray(HashAlgorithmName hashAlgorithm, byte[] streamBytes)
         {
+            if (streamBytes == null || streamBytes.Length == 0)
+            {
+                throw new ArgumentException(nameof(streamBytes));
+            }
+
             try
             {
                 using (var hasher = HashAlgorithm.Create(hashAlgorithm.Name))
                 {
-                    return hasher.ComputeHash(stream);
+                    return hasher.ComputeHash(streamBytes);
                 }
             }
             catch (Exception ex)
@@ -173,7 +178,7 @@ namespace OzetteLibrary.Crypto
         /// </summary>
         /// <param name="hash"></param>
         /// <returns></returns>
-        public string HashBytesToString(byte[] hash)
+        public string ConvertHashByteArrayToString(byte[] hash)
         {
             StringBuilder sb = new StringBuilder();
             foreach (var b in hash)
@@ -190,7 +195,7 @@ namespace OzetteLibrary.Crypto
         /// <param name="hash1"></param>
         /// <param name="hash2"></param>
         /// <returns></returns>
-        public bool TwoHashesAreTheSame(byte[] hash1, byte[] hash2)
+        public bool CheckTwoByteHashesAreTheSame(byte[] hash1, byte[] hash2)
         {
             if (hash1.Length != hash2.Length)
                 return false;

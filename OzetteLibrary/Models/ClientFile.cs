@@ -161,7 +161,7 @@ namespace OzetteLibrary.Models
             // hash that chunk so we can validate it on the other side.
 
             payload.Data = ReadFileChunk(Stream, nextBlock.Value);
-            payload.ExpectedHash = Hasher.GenerateByteArrayHash(Hasher.GetDefaultHashAlgorithm(Priority), payload.Data);
+            payload.ExpectedHash = Hasher.HashFileChunkFromByteArray(Hasher.GetDefaultHashAlgorithm(Priority), payload.Data);
 
             return payload;
         }

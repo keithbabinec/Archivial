@@ -228,11 +228,11 @@ namespace OzetteLibrary.Client.Transfer
                 throw new ArgumentNullException(nameof(Stream));
             }
 
-            var currentHash = Hasher.GenerateFileHash(File.HashAlgorithmType, File.FullSourcePath);
+            var currentHash = Hasher.HashCompleteFileFromFilePath(File.HashAlgorithmType, File.FullSourcePath);
 
             if (currentHash.Length != 0)
             {
-                if (Hasher.TwoHashesAreTheSame(File.FileHash, currentHash) == false)
+                if (Hasher.CheckTwoByteHashesAreTheSame(File.FileHash, currentHash) == false)
                 {
                     File.FileHash = currentHash;
                     File.LastChecked = DateTime.Now;

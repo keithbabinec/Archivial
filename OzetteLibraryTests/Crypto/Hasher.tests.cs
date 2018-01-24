@@ -15,7 +15,7 @@ namespace OzetteLibraryTests.Crypto
 
             byte[] bytes = { 39, 16, 25, 68, 128, 64, 55, 27 };
 
-            Assert.AreEqual("39-16-25-68-128-64-55-27", h.HashBytesToString(bytes));
+            Assert.AreEqual("39-16-25-68-128-64-55-27", h.ConvertHashByteArrayToString(bytes));
         }
 
         [TestMethod]
@@ -26,7 +26,7 @@ namespace OzetteLibraryTests.Crypto
             byte[] bytes1 = { 39, 16, 25, 68, 128, 64, 55, 27 };
             byte[] bytes2 = { 39, 16, 25, 68, 128, 64, 55, 27 };
 
-            Assert.IsTrue(h.TwoHashesAreTheSame(bytes1, bytes2));
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(bytes1, bytes2));
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace OzetteLibraryTests.Crypto
             byte[] bytes1 = { 39, 16, 25, 68, 128, 64, 55, 27 };
             byte[] bytes2 = { 39, 16, 25, 68, 128, 64, 55, 27 };
 
-            Assert.IsTrue(h.TwoHashesAreTheSame(bytes2, bytes1));
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(bytes2, bytes1));
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace OzetteLibraryTests.Crypto
             byte[] bytes2 = { 39, 16, 25, 68, 128, 64, 131, 150, 216, 25,
                                     111, 227, 135, 18, 122, 14, 163, 85, 226, 30 };
 
-            Assert.IsTrue(h.TwoHashesAreTheSame(bytes1, bytes2));
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(bytes1, bytes2));
         }
 
         [TestMethod]
@@ -71,7 +71,7 @@ namespace OzetteLibraryTests.Crypto
                                     214, 206, 251, 250, 253, 35, 149, 27, 127, 233, 201, 36,
                                     219, 107, 45, 136, 215 };
 
-            Assert.IsTrue(h.TwoHashesAreTheSame(bytes1, bytes2));
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(bytes1, bytes2));
         }
 
         [TestMethod]
@@ -92,7 +92,7 @@ namespace OzetteLibraryTests.Crypto
                                     214, 206, 251, 250, 253, 35, 149, 27, 127, 233, 201, 36,
                                     219, 107, 45, 136, 215 };
 
-            Assert.IsFalse(h.TwoHashesAreTheSame(bytes1, bytes2));
+            Assert.IsFalse(h.CheckTwoByteHashesAreTheSame(bytes1, bytes2));
         }
 
         [TestMethod]
@@ -113,7 +113,7 @@ namespace OzetteLibraryTests.Crypto
                                     214, 206, 251, 250, 253, 35, 149, 27, 127, 233, 201, 36,
                                     219, 107, 45, 136, 215 };
 
-            Assert.IsFalse(h.TwoHashesAreTheSame(bytes1, bytes2));
+            Assert.IsFalse(h.CheckTwoByteHashesAreTheSame(bytes1, bytes2));
         }
 
         [TestMethod]
@@ -134,7 +134,7 @@ namespace OzetteLibraryTests.Crypto
                                     214, 206, 251, 250, 253, 35, 149, 27, 127, 233, 201, 36,
                                     219, 107, 45, 136 };
 
-            Assert.IsFalse(h.TwoHashesAreTheSame(bytes1, bytes2));
+            Assert.IsFalse(h.CheckTwoByteHashesAreTheSame(bytes1, bytes2));
         }
 
         [TestMethod]
@@ -155,7 +155,7 @@ namespace OzetteLibraryTests.Crypto
                                     214, 206, 251, 250, 253, 35, 149, 27, 127, 233, 201, 36,
                                     219, 107, 45, 136, 216 };
 
-            Assert.IsFalse(h.TwoHashesAreTheSame(bytes1, bytes2));
+            Assert.IsFalse(h.CheckTwoByteHashesAreTheSame(bytes1, bytes2));
         }
 
         [TestMethod()]
@@ -167,7 +167,7 @@ namespace OzetteLibraryTests.Crypto
             byte[] expectedHash = { 39, 16, 25, 68, 128, 64, 131, 150, 216, 25,
                                     111, 227, 135, 18, 122, 14, 163, 85, 226, 30 };
 
-            Assert.IsTrue(h.TwoHashesAreTheSame(actualHash, expectedHash));
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
         [TestMethod()]
@@ -180,7 +180,7 @@ namespace OzetteLibraryTests.Crypto
                                     254, 222, 255, 128, 156, 96, 21, 79, 196, 31,
                                     4, 129, 237, 45, 93, 69, 246, 90, 61, 209, 80, 64 };
 
-            Assert.IsTrue(h.TwoHashesAreTheSame(actualHash, expectedHash));
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
         [TestMethod()]
@@ -196,7 +196,7 @@ namespace OzetteLibraryTests.Crypto
                                     5, 201, 129, 225, 249, 132, 172, 224, 172, 225, 206,
                                     164, 213, 166, 106, 49, 170 };
 
-            Assert.IsTrue(h.TwoHashesAreTheSame(actualHash, expectedHash));
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
         [TestMethod()]
@@ -208,7 +208,7 @@ namespace OzetteLibraryTests.Crypto
             byte[] expectedHash = { 59, 46, 56, 72, 141, 74, 31, 120, 17, 24, 52,
                                     218, 140, 133, 179, 49, 83, 159, 149, 50 };
 
-            Assert.IsTrue(h.TwoHashesAreTheSame(actualHash, expectedHash));
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
         [TestMethod()]
@@ -221,7 +221,7 @@ namespace OzetteLibraryTests.Crypto
                                     117, 40, 147, 139, 169, 231, 2, 41, 38, 8, 109, 55,
                                     221, 0, 10, 29, 173, 245, 93, 11, 59 };
 
-            Assert.IsTrue(h.TwoHashesAreTheSame(actualHash, expectedHash));
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
         [TestMethod()]
@@ -237,7 +237,7 @@ namespace OzetteLibraryTests.Crypto
                                     214, 206, 251, 250, 253, 35, 149, 27, 127, 233, 201, 36,
                                     219, 107, 45, 136, 215 };
 
-            Assert.IsTrue(h.TwoHashesAreTheSame(actualHash, expectedHash));
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
         [TestMethod()]
@@ -316,6 +316,60 @@ namespace OzetteLibraryTests.Crypto
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
 
             HashAlgorithmName actual = h.GetDefaultHashAlgorithm(0);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void HasherHashFileChunkFromByteArrayThrowsOnBadInput1()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            h.HashFileChunkFromByteArray(HashAlgorithmName.SHA256, null);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void HasherHashFileChunkFromByteArrayThrowsOnBadInput2()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            h.HashFileChunkFromByteArray(HashAlgorithmName.SHA256, new byte[0]);
+        }
+
+        [TestMethod()]
+        public void HasherHashFileChunkFromByteArrayCorrectlyHashesInput1()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            var result = h.HashFileChunkFromByteArray(
+                HashAlgorithmName.SHA1,
+                new byte[]
+                {
+                     123, 126, 219, 146, 255, 226,  17,  43, 110,  18, 215, 180, 113, 204, 233, 139,
+                      70, 123, 173, 184,  10,  15,  97, 130,  74,  35, 247,   6, 175, 237, 224, 213,
+                     148,   5,  56, 227,  19,  95, 192,  34, 202, 132,  25,  83, 238, 245,  36, 161,
+                     175, 152,  72,  57, 253, 209, 189,  38, 190, 171,  12, 164,  38,  66,   1, 226
+                });
+
+            var expected = new byte[]
+            {
+                101, 135, 62, 112, 4, 11, 126, 120, 77, 230, 134, 32, 75, 23, 92, 51, 210, 30, 32, 69
+            };
+
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(result, expected));
+        }
+
+        [TestMethod()]
+        public void HasherHashFileChunkFromByteArrayCorrectlyHashesInput2()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            var result = h.HashFileChunkFromByteArray(
+                HashAlgorithmName.SHA256,
+                LargeByteStreamConstants.LargeByteStream);
+
+            var expected = new byte[]
+            {
+                243,10,203,238,4,236,188,44,192,33,121,88,216,28,69,38,148,10,50,148,149,213,98,172,50,11,162,156,0,118,246,92
+            };
+
+            Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(result, expected));
         }
     }
 }
