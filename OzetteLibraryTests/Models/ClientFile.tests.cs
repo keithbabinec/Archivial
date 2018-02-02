@@ -261,7 +261,7 @@ namespace OzetteLibraryTests.Models
 
             Assert.IsTrue(file.HasDataToTransfer(targets));
         }
-        
+
         [TestMethod()]
         public void ClientFileResetCopyStateWithExistingTargetsCorrectlyResetsState1()
         {
@@ -364,7 +364,7 @@ namespace OzetteLibraryTests.Models
             using (var filestream = new FileStream(".\\TestFiles\\SourceLocation\\EmptySourcesFile.json", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 file.GenerateNextTransferPayload(filestream, null);
-            }   
+            }
         }
 
         [TestMethod()]
@@ -455,6 +455,8 @@ namespace OzetteLibraryTests.Models
                 Url = "http:\\\\fake-backup-location.com"
             });
 
+            // generate a payload for the first block (index 0)
+
             file.ResetCopyState(targets);
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -468,9 +470,168 @@ namespace OzetteLibraryTests.Models
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferChunkSizeBytes, payload.Data.Length);
 
-                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[] 
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
                 {
                     181, 214, 35, 173, 93, 152, 78, 193, 4, 144, 156, 99, 85, 215, 93, 93, 98, 85, 204, 128
+                }));
+            }
+        }
+
+        [TestMethod()]
+        public void ClientFileGenerateNextTransferPayloadReturnsCorrectPayload2()
+        {
+            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Medium);
+            var targets = new OzetteLibrary.Models.Targets();
+
+            targets.Add(new OzetteLibrary.Models.Target()
+            {
+                ID = 1,
+                Name = "t1",
+                Port = 80,
+                RootDirectory = "C:\\backup\\incoming",
+                Url = "http:\\\\fake-backup-location.com"
+            });
+
+            // generate a payload for the first block (index 0)
+
+            file.ResetCopyState(targets);
+            
+            using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                var payload = file.GenerateNextTransferPayload(filestream, hasher);
+
+                Assert.IsNotNull(payload);
+
+                Assert.AreEqual(9, payload.TotalBlocks);
+                Assert.AreEqual(0, payload.CurrentBlockNumber);
+
+                Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferChunkSizeBytes, payload.Data.Length);
+
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
+                {
+                    188, 2, 134, 85, 252, 193, 68, 239, 20, 109, 45, 159, 115, 190, 66, 79, 237, 85,
+                    152, 169, 42, 111, 116, 189, 159, 41, 135, 185, 178, 53, 162, 26,
+                }));
+            }
+        }
+
+        [TestMethod()]
+        public void ClientFileGenerateNextTransferPayloadReturnsCorrectPayload3()
+        {
+            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            var targets = new OzetteLibrary.Models.Targets();
+
+            targets.Add(new OzetteLibrary.Models.Target()
+            {
+                ID = 1,
+                Name = "t1",
+                Port = 80,
+                RootDirectory = "C:\\backup\\incoming",
+                Url = "http:\\\\fake-backup-location.com"
+            });
+
+            // generate a payload for the second block (index 1)
+
+            file.ResetCopyState(targets);
+            file.CopyState[targets[0].ID].LastCompletedFileChunkIndex = 0;
+            file.CopyState[targets[0].ID].TargetStatus = OzetteLibrary.Models.FileStatus.InProgress;
+
+            using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                var payload = file.GenerateNextTransferPayload(filestream, hasher);
+
+                Assert.IsNotNull(payload);
+
+                Assert.AreEqual(9, payload.TotalBlocks);
+                Assert.AreEqual(1, payload.CurrentBlockNumber);
+
+                Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferChunkSizeBytes, payload.Data.Length);
+
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
+                {
+                    195, 216, 15, 17, 146, 78, 106, 226, 24, 67, 148, 215, 196, 100, 62, 114, 94, 174, 244, 112
+                }));
+            }
+        }
+
+        [TestMethod()]
+        public void ClientFileGenerateNextTransferPayloadReturnsCorrectPayload4()
+        {
+            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            var targets = new OzetteLibrary.Models.Targets();
+
+            targets.Add(new OzetteLibrary.Models.Target()
+            {
+                ID = 1,
+                Name = "t1",
+                Port = 80,
+                RootDirectory = "C:\\backup\\incoming",
+                Url = "http:\\\\fake-backup-location.com"
+            });
+
+            // generate a payload for a block in the middle (index 5)
+
+            file.ResetCopyState(targets);
+            file.CopyState[targets[0].ID].LastCompletedFileChunkIndex = 4;
+            file.CopyState[targets[0].ID].TargetStatus = OzetteLibrary.Models.FileStatus.InProgress;
+
+            using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                var payload = file.GenerateNextTransferPayload(filestream, hasher);
+
+                Assert.IsNotNull(payload);
+
+                Assert.AreEqual(9, payload.TotalBlocks);
+                Assert.AreEqual(5, payload.CurrentBlockNumber);
+
+                Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferChunkSizeBytes, payload.Data.Length);
+
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
+                {
+                    87, 235, 10, 73, 101, 181, 223, 125, 207, 62, 245, 133, 49, 181, 131, 199, 111, 104, 153, 89
+                }));
+            }
+        }
+
+        [TestMethod()]
+        public void ClientFileGenerateNextTransferPayloadReturnsCorrectPayload5()
+        {
+            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            var targets = new OzetteLibrary.Models.Targets();
+
+            targets.Add(new OzetteLibrary.Models.Target()
+            {
+                ID = 1,
+                Name = "t1",
+                Port = 80,
+                RootDirectory = "C:\\backup\\incoming",
+                Url = "http:\\\\fake-backup-location.com"
+            });
+
+            // generate a payload for the final block (index 8)
+
+            file.ResetCopyState(targets);
+            file.CopyState[targets[0].ID].LastCompletedFileChunkIndex = 7;
+            file.CopyState[targets[0].ID].TargetStatus = OzetteLibrary.Models.FileStatus.InProgress;
+
+            using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                var payload = file.GenerateNextTransferPayload(filestream, hasher);
+
+                Assert.IsNotNull(payload);
+
+                Assert.AreEqual(9, payload.TotalBlocks);
+                Assert.AreEqual(8, payload.CurrentBlockNumber);
+
+                Assert.AreEqual(102809, payload.Data.Length); // partial chunk
+
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
+                {
+                    250, 27, 250, 217, 229, 10, 217, 143, 211, 205, 186, 171, 83, 35, 218, 172, 40, 4, 138, 110
                 }));
             }
         }

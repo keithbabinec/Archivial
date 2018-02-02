@@ -42,7 +42,7 @@ namespace OzetteLibraryTests.Models
             var copyState = new OzetteLibrary.Models.TargetCopyState();
 
             Assert.AreEqual(0, copyState.TargetID);
-            Assert.AreEqual(0, copyState.LastCompletedFileChunk);
+            Assert.AreEqual(0, copyState.LastCompletedFileChunkIndex);
             Assert.AreEqual(0, copyState.TotalFileChunks);
             Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, copyState.TargetStatus);
         }
@@ -59,7 +59,7 @@ namespace OzetteLibraryTests.Models
             var copyState = new OzetteLibrary.Models.TargetCopyState(target);
 
             Assert.AreEqual(1, copyState.TargetID);
-            Assert.AreEqual(0, copyState.LastCompletedFileChunk);
+            Assert.AreEqual(-1, copyState.LastCompletedFileChunkIndex);
             Assert.AreEqual(0, copyState.TotalFileChunks);
             Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, copyState.TargetStatus);
         }
@@ -69,13 +69,13 @@ namespace OzetteLibraryTests.Models
         {
             var copyState = new OzetteLibrary.Models.TargetCopyState();
             copyState.TargetID = 1;
-            copyState.LastCompletedFileChunk = 100;
+            copyState.LastCompletedFileChunkIndex = 100;
             copyState.TotalFileChunks = 150;
             copyState.TargetStatus = OzetteLibrary.Models.FileStatus.InProgress;
             copyState.ResetState();
 
             Assert.AreEqual(1, copyState.TargetID);
-            Assert.AreEqual(0, copyState.LastCompletedFileChunk);
+            Assert.AreEqual(-1, copyState.LastCompletedFileChunkIndex);
             Assert.AreEqual(0, copyState.TotalFileChunks);
             Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, copyState.TargetStatus);
         }
@@ -85,13 +85,13 @@ namespace OzetteLibraryTests.Models
         {
             var copyState = new OzetteLibrary.Models.TargetCopyState();
             copyState.TargetID = 1;
-            copyState.LastCompletedFileChunk = 100;
+            copyState.LastCompletedFileChunkIndex = 100;
             copyState.TotalFileChunks = 100;
             copyState.TargetStatus = OzetteLibrary.Models.FileStatus.Synced;
             copyState.ResetState();
 
             Assert.AreEqual(1, copyState.TargetID);
-            Assert.AreEqual(0, copyState.LastCompletedFileChunk);
+            Assert.AreEqual(-1, copyState.LastCompletedFileChunkIndex);
             Assert.AreEqual(0, copyState.TotalFileChunks);
             Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, copyState.TargetStatus);
         }

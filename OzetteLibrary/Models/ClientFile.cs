@@ -293,14 +293,9 @@ namespace OzetteLibrary.Models
                 {
                     var targetState = target.Value.TargetStatus;
 
-                    if (targetState == FileStatus.InProgress)
+                    if (targetState == FileStatus.OutOfDate || targetState == FileStatus.Unsynced || targetState == FileStatus.InProgress)
                     {
-                        nextBlockNumberToSend = target.Value.LastCompletedFileChunk + 1;
-                        break;
-                    }
-                    else if (targetState == FileStatus.OutOfDate || targetState == FileStatus.Unsynced)
-                    {
-                        nextBlockNumberToSend = 0;
+                        nextBlockNumberToSend = target.Value.LastCompletedFileChunkIndex + 1;
                         break;
                     }
                     else if (targetState == FileStatus.Synced)

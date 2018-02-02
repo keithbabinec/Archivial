@@ -42,7 +42,10 @@ namespace OzetteLibrary.Models
         /// <summary>
         /// The last completed file transfer block.
         /// </summary>
-        public int LastCompletedFileChunk { get; set; }
+        /// <remarks>
+        /// This index starts at 0, not 1.
+        /// </remarks>
+        public int LastCompletedFileChunkIndex { get; set; }
 
         /// <summary>
         /// The total number of file transfer blocks.
@@ -56,7 +59,7 @@ namespace OzetteLibrary.Models
         {
             TargetStatus = FileStatus.Unsynced;
             TotalFileChunks = 0;
-            LastCompletedFileChunk = 0;
+            LastCompletedFileChunkIndex = -1;
         }
     }
 }
