@@ -29,5 +29,10 @@
         /// The root directory for file storage on the target system.
         /// </summary>
         public string RootDirectory { get; set; }
+
+        /// <summary>
+        /// The availability state of the target.
+        /// </summary>
+        public TargetAvailabilityState Availability { get; set; }
     }
 }

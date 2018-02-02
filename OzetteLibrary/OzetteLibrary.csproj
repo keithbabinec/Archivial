@@ -84,6 +84,7 @@
     <Compile Include="Models\Exceptions\SourceLocationInvalidFolderPathException.cs" />
     <Compile Include="Models\Exceptions\SourceLocationInvalidRevisionCountException.cs" />
     <Compile Include="Models\SourceLocations.cs" />
+    <Compile Include="Models\TargetAvailabilityState.cs" />
     <Compile Include="Models\TargetCopyState.cs" />
     <Compile Include="Models\Target.cs" />
     <Compile Include="Models\TargetFile.cs" />
