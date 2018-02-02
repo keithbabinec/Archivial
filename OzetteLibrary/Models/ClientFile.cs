@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace OzetteLibrary.Models
 {
@@ -24,16 +25,23 @@ namespace OzetteLibrary.Models
         }
 
         /// <summary>
-        /// Constructor that accepts a FileInfo object
+        /// Constructor that accepts a FileInfo object and a priority.
         /// </summary>
         /// <param name="fileInfo"></param>
-        public ClientFile(FileInfo fileInfo)
+        /// <param name="priority"></param>
+        public ClientFile(FileInfo fileInfo, FileBackupPriority priority)
         {
+            if (priority == FileBackupPriority.Unset)
+            {
+                throw new ArgumentException(nameof(priority) + " must be provided.");
+            }
+
             FileID = Guid.NewGuid();
             Filename = fileInfo.Name;
             Directory = fileInfo.DirectoryName;
             FullSourcePath = fileInfo.FullName;
             FileSizeBytes = fileInfo.Length;
+            Priority = priority;
         }
 
         /// <summary>
@@ -70,6 +78,23 @@ namespace OzetteLibrary.Models
         }
 
         /// <summary>
+        /// Sets the last checked timestamp to the current time.
+        /// </summary>
+        public void SetLastCheckedTimeStamp()
+        {
+            LastChecked = DateTime.Now;
+        }
+
+        /// <summary>
+        /// Gets the last checked timestamp
+        /// </summary>
+        /// <returns>Byte[]</returns>
+        public DateTime? GetLastCheckedTimeStamp()
+        {
+            return LastChecked;
+        }
+
+        /// <summary>
         /// Resets existing copy progress state with a new set of targets.
         /// </summary>
         /// <param name="targets"></param>
@@ -88,7 +113,7 @@ namespace OzetteLibrary.Models
                 CopyState.Add(target.ID, new TargetCopyState(target));
             }
         }
-
+        
         /// <summary>
         /// Returns a string representation of this object.
         /// </summary>

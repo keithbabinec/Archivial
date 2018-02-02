@@ -162,7 +162,7 @@ namespace OzetteLibraryTests.Models
         [ExpectedException(typeof(InvalidOperationException))]
         public void ClientFileGenerateNextTransferPayloadThrowsOnInvalidFileState4()
         {
-            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"));
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
             var targets = new OzetteLibrary.Models.Targets();
 
             targets.Add(new OzetteLibrary.Models.Target()
@@ -175,7 +175,6 @@ namespace OzetteLibraryTests.Models
             });
 
             // copy state is inconsistent
-            file.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
             file.ResetCopyState(targets);
             file.CopyState[targets[0].ID].TargetStatus = OzetteLibrary.Models.FileStatus.Synced;
             file.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
@@ -190,7 +189,7 @@ namespace OzetteLibraryTests.Models
         public void ClientFileGenerateNextTransferPayloadReturnsCorrectPayload1()
         {
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"));
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
             var targets = new OzetteLibrary.Models.Targets();
 
             targets.Add(new OzetteLibrary.Models.Target()
@@ -202,7 +201,6 @@ namespace OzetteLibraryTests.Models
                 Url = "http:\\\\fake-backup-location.com"
             });
 
-            file.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
             file.ResetCopyState(targets);
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))

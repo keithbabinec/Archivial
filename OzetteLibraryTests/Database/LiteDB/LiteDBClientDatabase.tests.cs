@@ -434,7 +434,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info);
+            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
 
             db.AddClientFile(t);
 
@@ -468,7 +468,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info);
+            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
 
             db.AddClientFile(t);
 
@@ -504,11 +504,11 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info);
+            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
 
             db.AddClientFile(t);
 
-            t.LastChecked = DateTime.Now;
+            t.SetLastCheckedTimeStamp();
 
             db.UpdateClientFile(t);
 
@@ -521,7 +521,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             {
                 Assert.AreNotEqual(Guid.Empty, file.FileID);
                 Assert.AreEqual(info.FullName, file.FullSourcePath);
-                Assert.AreEqual(t.LastChecked.ToString(), file.LastChecked.ToString());
+                Assert.AreEqual(t.GetLastCheckedTimeStamp().ToString(), file.GetLastCheckedTimeStamp().ToString());
 
                 fileCount++;
             }
@@ -544,13 +544,14 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info);
+            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
 
-            t.FileHash = hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium);
-            t.HashAlgorithmType = hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium);
-            t.LastChecked = DateTime.Now;
+            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium),
+                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium));
 
-            var result = db.GetClientFile(info.Name, info.DirectoryName, t.FileHash);
+            t.SetLastCheckedTimeStamp();
+
+            var result = db.GetClientFile(info.Name, info.DirectoryName, t.GetFileHash());
 
             Assert.IsNotNull(result);
             Assert.IsNull(result.File);
@@ -572,14 +573,15 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info);
+            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
 
-            t.FileHash = hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium);
-            t.HashAlgorithmType = hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium);
-            t.LastChecked = DateTime.Now;
+            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium),
+                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium));
+
+            t.SetLastCheckedTimeStamp();
 
             db.AddClientFile(t);
-            var result = db.GetClientFile(info.Name, info.DirectoryName, t.FileHash);
+            var result = db.GetClientFile(info.Name, info.DirectoryName, t.GetFileHash());
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
@@ -601,20 +603,22 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info);
+            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
 
-            t.FileHash = hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium);
-            t.HashAlgorithmType = hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium);
-            t.LastChecked = DateTime.Now;
+            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium),
+                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium));
+
+            t.SetLastCheckedTimeStamp();
 
             db.AddClientFile(t);
 
             // update the file
-            t.FileHash = hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.High);
-            t.HashAlgorithmType = hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.High);
-            t.LastChecked = DateTime.Now;
+            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.High),
+                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.High));
 
-            var result = db.GetClientFile(info.Name, info.DirectoryName, t.FileHash);
+            t.SetLastCheckedTimeStamp();
+
+            var result = db.GetClientFile(info.Name, info.DirectoryName, t.GetFileHash());
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);

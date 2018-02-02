@@ -164,7 +164,7 @@ namespace OzetteLibraryTests.Client.Sources
                 Assert.IsFalse(string.IsNullOrEmpty(client.Directory));
                 Assert.IsFalse(string.IsNullOrEmpty(client.Filename));
                 Assert.IsFalse(string.IsNullOrEmpty(client.FullSourcePath));
-                Assert.IsNotNull(client.LastChecked);
+                Assert.IsNotNull(client.GetLastCheckedTimeStamp());
                 Assert.IsNotNull(client.CopyState);
                 Assert.IsFalse(client.FileID == Guid.Empty);
             }

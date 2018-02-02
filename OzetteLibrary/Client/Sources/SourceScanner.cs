@@ -285,7 +285,7 @@ namespace OzetteLibrary.Client.Sources
 
             if (fileIndexLookup.Result == ClientFileLookupResult.New)
             {
-                ProcessNewFile(fileInfo, hash, hashType);
+                ProcessNewFile(fileInfo, hash, hashType, source.Priority);
                 results.NewFilesFound++;
                 results.NewBytesFound += (ulong)fileInfo.Length;
             }
@@ -313,17 +313,17 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         /// <param name="fileInfo">FileInfo details</param>
         /// <param name="fileHash">The computed hash</param>
-        /// <param name="algorithm">Hash algorithm used to compute the hash</param>
-        private void ProcessNewFile(FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
+        /// <param name="algorithm">The hash algorithm used</param>
+        /// <param name="priority">The source priority</param>
+        private void ProcessNewFile(FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm, FileBackupPriority priority)
         {
             Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is new.", fileInfo.Name));
 
             // brand new file
-            var clientFile = new ClientFile(fileInfo);
-            clientFile.FileHash = fileHash;
-            clientFile.HashAlgorithmType = algorithm;
+            var clientFile = new ClientFile(fileInfo, priority);
+            clientFile.SetFileHashWithAlgorithm(fileHash, algorithm);
             clientFile.ResetCopyState(Database.GetAllTargets());
-            clientFile.LastChecked = DateTime.Now;
+            clientFile.SetLastCheckedTimeStamp();
 
             Database.AddClientFile(clientFile);
         }
@@ -340,10 +340,9 @@ namespace OzetteLibrary.Client.Sources
             Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is updated.", fileInfo.Name));
 
             // updated file
-            fileLookup.File.FileHash = fileHash;
-            fileLookup.File.HashAlgorithmType = algorithm;
+            fileLookup.File.SetFileHashWithAlgorithm(fileHash, algorithm);
             fileLookup.File.ResetCopyState(Database.GetAllTargets());
-            fileLookup.File.LastChecked = DateTime.Now;
+            fileLookup.File.SetLastCheckedTimeStamp();
 
             Database.UpdateClientFile(fileLookup.File);
         }
@@ -359,7 +358,7 @@ namespace OzetteLibrary.Client.Sources
 
             // existing file
             // should update the last checked flag
-            fileLookup.File.LastChecked = DateTime.Now;
+            fileLookup.File.SetLastCheckedTimeStamp();
             Database.UpdateClientFile(fileLookup.File);
         }
     }

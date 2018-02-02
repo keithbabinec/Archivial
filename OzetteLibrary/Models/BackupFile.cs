@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiteDB;
+using System;
 using System.Security.Cryptography;
 
 namespace OzetteLibrary.Models
@@ -59,6 +60,40 @@ namespace OzetteLibrary.Models
         /// The type of hash algorithm.
         /// </summary>
         public HashAlgorithmName HashAlgorithmType { get; set; }
+
+        /// <summary>
+        /// Sets the file hash and hash algorithm.
+        /// </summary>
+        /// <param name="filehash"></param>
+        /// <param name="algorithm"></param>
+        public void SetFileHashWithAlgorithm(byte[] filehash, HashAlgorithmName algorithm)
+        {
+            if (filehash == null)
+            {
+                throw new ArgumentNullException(nameof(filehash));
+            }
+
+            FileHash = filehash;
+            HashAlgorithmType = algorithm;
+        }
+
+        /// <summary>
+        /// Gets the file hash.
+        /// </summary>
+        /// <returns>Byte[]</returns>
+        public byte[] GetFileHash()
+        {
+            return FileHash;
+        }
+
+        /// <summary>
+        /// Gets the file hash.
+        /// </summary>
+        /// <returns>HashAlgorithmName</returns>
+        public HashAlgorithmName GetFileHashAlgorithm()
+        {
+            return HashAlgorithmType;
+        }
 
         /// <summary>
         /// Returns the expected number of file blocks.
