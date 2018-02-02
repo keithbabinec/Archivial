@@ -6,6 +6,11 @@
     public enum FileBackupPriority
     {
         /// <summary>
+        /// The default state: unset.
+        /// </summary>
+        Unset = 0,
+
+        /// <summary>
         /// Low priority.
         /// </summary>
         Low = 1,

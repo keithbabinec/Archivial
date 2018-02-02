@@ -131,9 +131,17 @@ namespace OzetteLibrary.Models
             {
                 throw new ArgumentNullException(nameof(Stream));
             }
+            if (Hasher == null)
+            {
+                throw new ArgumentNullException(nameof(Hasher));
+            }
             if (OverallState == FileStatus.Synced)
             {
                 throw new InvalidOperationException("File is already synced.");
+            }
+            if (Priority == FileBackupPriority.Unset)
+            {
+                throw new InvalidOperationException("File has no backup priority set.");
             }
             if (CopyState == null || CopyState.Count == 0)
             {
