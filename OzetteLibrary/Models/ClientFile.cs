@@ -75,6 +75,8 @@ namespace OzetteLibrary.Models
                     item.ResetState();
                 }
             }
+
+            SetOverallStateFromCopyState();
         }
 
         /// <summary>
@@ -358,6 +360,124 @@ namespace OzetteLibrary.Models
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Flags a particular block as sent for the specified targets.
+        /// </summary>
+        /// <param name="BlockNumber"></param>
+        /// <param name="Destinations"></param>
+        public void SetBlockAsSent(int BlockNumber, List<int> Destinations)
+        {
+            if (OverallState == FileStatus.Synced)
+            {
+                throw new InvalidOperationException("File is already synced.");
+            }
+            if (CopyState == null || CopyState.Count == 0)
+            {
+                throw new InvalidOperationException("File has no targets set.");
+            }
+
+            foreach (var destinationID in Destinations)
+            {
+                if (CopyState.ContainsKey(destinationID))
+                {
+                    var state = CopyState[destinationID];
+                    state.LastCompletedFileChunkIndex = BlockNumber;
+
+                    if (state.LastCompletedFileChunkIndex == state.TotalFileChunks)
+                    {
+                        // flag this particular destination as completed.
+                        state.TargetStatus = FileStatus.Synced;
+                    }
+                    else
+                    {
+                        // file transfer is still in progress.
+                        state.TargetStatus = FileStatus.InProgress;
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Attempted to set copy state for destination that wasn't found in the copy state.");
+                }
+            }
+
+            SetOverallStateFromCopyState();
+        }
+
+        /// <summary>
+        /// Sets the OverallState from the current CopyState.
+        /// </summary>
+        private void SetOverallStateFromCopyState()
+        {
+            if (CopyState != null && CopyState.Count != 0)
+            {
+                int unsyncedCount = 0;
+                int outofdateCount = 0;
+                int inprogressCount = 0;
+                int syncedCount = 0;
+                int targetsCount = CopyState.Count;
+
+                foreach (var target in CopyState)
+                {
+                    if (target.Value.TargetStatus == FileStatus.Unsynced)
+                    {
+                        unsyncedCount++;
+                    }
+                    else if (target.Value.TargetStatus == FileStatus.OutOfDate)
+                    {
+                        outofdateCount++;
+                    }
+                    else if (target.Value.TargetStatus == FileStatus.InProgress)
+                    {
+                        inprogressCount++;
+                    }
+                    else if (target.Value.TargetStatus == FileStatus.Synced)
+                    {
+                        syncedCount++;
+                    }
+                }
+
+                // start at the highest condition and work backwards
+
+                // condition 1: everything is synced
+
+                if (syncedCount == targetsCount)
+                {
+                    OverallState = FileStatus.Synced;
+                    return;
+                }
+
+                // condition 2: something is in-progress
+
+                if (inprogressCount > 0)
+                {
+                    OverallState = FileStatus.InProgress;
+                    return;
+                }
+
+                // condition 3: something is out-of-date
+
+                if (outofdateCount > 0)
+                {
+                    OverallState = FileStatus.OutOfDate;
+                    return;
+                }
+
+                // condition 4: something is unsynced
+
+                if (unsyncedCount > 0)
+                {
+                    OverallState = FileStatus.Unsynced;
+                    return;
+                }
+            }
+            else
+            {
+                // no targets?
+                // that means we can't be in a synced state.
+                OverallState = FileStatus.Unsynced;
+            }
         }
     }
 }
