@@ -41,6 +41,7 @@ namespace OzetteLibrary.Models
             Directory = fileInfo.DirectoryName;
             FullSourcePath = fileInfo.FullName;
             FileSizeBytes = fileInfo.Length;
+            TotalFileChunks = CalculateTotalFileBlocks(Constants.Transfers.TransferChunkSizeBytes);
             Priority = priority;
         }
 
@@ -80,6 +81,27 @@ namespace OzetteLibrary.Models
         }
 
         /// <summary>
+        /// Resets existing copy progress state with a new set of targets.
+        /// </summary>
+        /// <param name="targets"></param>
+        public void ResetCopyState(Targets targets)
+        {
+            if (targets == null)
+            {
+                throw new ArgumentNullException(nameof(targets));
+            }
+
+            CopyState = new Dictionary<int, TargetCopyState>();
+
+            foreach (var target in targets)
+            {
+                CopyState.Add(target.ID, new TargetCopyState(target));
+            }
+
+            SetOverallStateFromCopyState();
+        }
+
+        /// <summary>
         /// Sets the last checked timestamp to the current time.
         /// </summary>
         public void SetLastCheckedTimeStamp()
@@ -94,26 +116,6 @@ namespace OzetteLibrary.Models
         public DateTime? GetLastCheckedTimeStamp()
         {
             return LastChecked;
-        }
-
-        /// <summary>
-        /// Resets existing copy progress state with a new set of targets.
-        /// </summary>
-        /// <param name="targets"></param>
-        public void ResetCopyState(Targets targets)
-        {
-            if (targets == null)
-            {
-                throw new ArgumentNullException(nameof(targets));
-            }
-
-            CopyState = new Dictionary<int, TargetCopyState>();
-            OverallState = FileStatus.Unsynced;
-
-            foreach (var target in targets)
-            {
-                CopyState.Add(target.ID, new TargetCopyState(target));
-            }
         }
         
         /// <summary>
@@ -222,7 +224,7 @@ namespace OzetteLibrary.Models
             TransferPayload payload = new TransferPayload();
             payload.FileID = FileID;
             payload.CurrentBlockNumber = nextBlock.Value;
-            payload.TotalBlocks = GetTotalFileBlocks(Constants.Transfers.TransferChunkSizeBytes);
+            payload.TotalBlocks = CalculateTotalFileBlocks(Constants.Transfers.TransferChunkSizeBytes);
             payload.DestinationTargetIDs = FindTargetsThatCanTransferSpecifiedBlock(nextBlock.Value);
 
             // generate the 'data' payload: the next file chunk as byte[].
@@ -369,6 +371,14 @@ namespace OzetteLibrary.Models
         /// <param name="Destinations"></param>
         public void SetBlockAsSent(int BlockNumber, List<int> Destinations)
         {
+            if (BlockNumber < 0)
+            {
+                throw new ArgumentException(nameof(BlockNumber) + " argument must be provided with a positive number.");
+            }
+            if (Destinations == null || Destinations.Count == 0)
+            {
+                throw new ArgumentException(nameof(Destinations) + " argument must be provided with at least one entry (not null or empty)");
+            }
             if (OverallState == FileStatus.Synced)
             {
                 throw new InvalidOperationException("File is already synced.");
@@ -385,7 +395,7 @@ namespace OzetteLibrary.Models
                     var state = CopyState[destinationID];
                     state.LastCompletedFileChunkIndex = BlockNumber;
 
-                    if (state.LastCompletedFileChunkIndex == state.TotalFileChunks)
+                    if (state.LastCompletedFileChunkIndex == TotalFileChunks)
                     {
                         // flag this particular destination as completed.
                         state.TargetStatus = FileStatus.Synced;

@@ -13,7 +13,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 0;
-            Assert.AreEqual(0, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(0, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -22,7 +22,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1024;
-            file.GetTotalFileBlocks(0);
+            file.CalculateTotalFileBlocks(0);
         }
 
         [TestMethod()]
@@ -30,7 +30,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1024;
-            Assert.AreEqual(1, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -38,7 +38,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 2048;
-            Assert.AreEqual(2, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -46,7 +46,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 4096;
-            Assert.AreEqual(4, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(4, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -54,7 +54,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 598016;
-            Assert.AreEqual(584, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(584, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -62,7 +62,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1023;
-            Assert.AreEqual(1, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -70,7 +70,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1;
-            Assert.AreEqual(1, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -78,7 +78,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1025;
-            Assert.AreEqual(2, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -86,7 +86,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1500;
-            Assert.AreEqual(2, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -94,7 +94,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 2046;
-            Assert.AreEqual(2, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -102,7 +102,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 2050;
-            Assert.AreEqual(3, file.GetTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(3, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
         }
 
         [TestMethod()]
@@ -110,7 +110,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 189643547895;
-            Assert.AreEqual(18519878, file.GetTotalFileBlocks(10240));
+            Assert.AreEqual(18519878, file.CalculateTotalFileBlocks(10240));
         }
 
         [TestMethod()]
@@ -118,7 +118,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 43414941001;
-            Assert.AreEqual(4239741, file.GetTotalFileBlocks(10240));
+            Assert.AreEqual(4239741, file.CalculateTotalFileBlocks(10240));
         }
 
         [TestMethod()]
@@ -126,7 +126,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 7744931200569;
-            Assert.AreEqual(167955484, file.GetTotalFileBlocks(46113));
+            Assert.AreEqual(167955484, file.CalculateTotalFileBlocks(46113));
         }
 
         [TestMethod()]
@@ -134,7 +134,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1647999899992;
-            Assert.AreEqual(228539718, file.GetTotalFileBlocks(7211));
+            Assert.AreEqual(228539718, file.CalculateTotalFileBlocks(7211));
         }
 
         [TestMethod()]
@@ -142,7 +142,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 15677400000;
-            Assert.AreEqual(154, file.GetTotalFileBlocks(102400000));
+            Assert.AreEqual(154, file.CalculateTotalFileBlocks(102400000));
         }
     }
 }

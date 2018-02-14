@@ -47,6 +47,11 @@ namespace OzetteLibrary.Models
         public long FileSizeBytes { get; set; }
 
         /// <summary>
+        /// The total number of file transfer blocks.
+        /// </summary>
+        public int TotalFileChunks { get; set; }
+
+        /// <summary>
         /// The hash of the file. 
         /// </summary>
         public byte[] FileHash { get; set; }
@@ -100,7 +105,7 @@ namespace OzetteLibrary.Models
         /// </summary>
         /// <param name="ChunkSize"></param>
         /// <returns></returns>
-        public int GetTotalFileBlocks(int ChunkSize)
+        public int CalculateTotalFileBlocks(int ChunkSize)
         {
             if (ChunkSize == 0)
             {

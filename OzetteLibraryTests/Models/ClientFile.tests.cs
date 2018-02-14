@@ -921,5 +921,280 @@ namespace OzetteLibraryTests.Models
                 }));
             }
         }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ClientFileSetBlockAsSentThrowsOnInvalidBlockNumber()
+        {
+            var targetIDs = new List<int>() { 1, 2, 3 };
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+
+            file.SetBlockAsSent(-5, targetIDs);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ClientFileSetBlockAsSentThrowsOnInvalidDestinations1()
+        {
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+
+            file.SetBlockAsSent(3, null);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ClientFileSetBlockAsSentThrowsOnInvalidDestinations2()
+        {
+            var targetIDs = new List<int>() { };
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+
+            file.SetBlockAsSent(2, targetIDs);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ClientFileSetBlockAsSentThrowsOnFileAlreadySynced()
+        {
+            var targetIDs = new List<int>() { 1, 2, 3 };
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.OverallState = OzetteLibrary.Models.FileStatus.Synced;
+
+            file.SetBlockAsSent(2, targetIDs);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ClientFileSetBlockAsSentThrowsOnMissingCopyState()
+        {
+            var targetIDs = new List<int>() { 1, 2, 3 };
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.OverallState = OzetteLibrary.Models.FileStatus.InProgress;
+
+            file.SetBlockAsSent(2, targetIDs);
+        }
+
+        [TestMethod()]
+        public void ClientFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState1()
+        {
+            var targets = new OzetteLibrary.Models.Targets();
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 1, Name = "t1" });
+
+            var targetIDs = new List<int>() { targets[0].ID };
+
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.ResetCopyState(targets);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(0, targetIDs);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.OverallState);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.CopyState[targets[0].ID].TargetStatus);
+        }
+
+        [TestMethod()]
+        public void ClientFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState2()
+        {
+            var targets = new OzetteLibrary.Models.Targets();
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 1, Name = "t1" });
+
+            var targetIDs = new List<int>() { targets[0].ID };
+
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.ResetCopyState(targets);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(4, targetIDs);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.OverallState);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.CopyState[targets[0].ID].TargetStatus);
+        }
+
+        [TestMethod()]
+        public void ClientFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState3()
+        {
+            var targets = new OzetteLibrary.Models.Targets();
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 1, Name = "t1" });
+
+            var targetIDs = new List<int>() { targets[0].ID };
+
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.ResetCopyState(targets);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(8, targetIDs);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.OverallState);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.CopyState[targets[0].ID].TargetStatus);
+        }
+
+        [TestMethod()]
+        public void ClientFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState4()
+        {
+            var targets = new OzetteLibrary.Models.Targets();
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 1, Name = "t1" });
+
+            var targetIDs = new List<int>() { targets[0].ID };
+
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.ResetCopyState(targets);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(9, targetIDs);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Synced, file.OverallState);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Synced, file.CopyState[targets[0].ID].TargetStatus);
+        }
+
+        [TestMethod()]
+        public void ClientFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState5()
+        {
+            var targets = new OzetteLibrary.Models.Targets();
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 1, Name = "t1" });
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 2, Name = "t2" });
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 3, Name = "t3" });
+
+            var targetIDs = new List<int>() { targets[0].ID, targets[1].ID, targets[2].ID };
+
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.ResetCopyState(targets);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(2, targetIDs);
+
+            // state: all are in progress
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.OverallState);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.CopyState[targets[0].ID].TargetStatus);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.CopyState[targets[1].ID].TargetStatus);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.CopyState[targets[2].ID].TargetStatus);
+        }
+
+        [TestMethod()]
+        public void ClientFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState6()
+        {
+            var targets = new OzetteLibrary.Models.Targets();
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 1, Name = "t1" });
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 2, Name = "t2" });
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 3, Name = "t3" });
+
+            var targetIDs = new List<int>() { targets[2].ID };
+
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.ResetCopyState(targets);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(5, targetIDs);
+
+            // state: at least one in progress
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.OverallState);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.CopyState[targets[0].ID].TargetStatus);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.CopyState[targets[1].ID].TargetStatus);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.InProgress, file.CopyState[targets[2].ID].TargetStatus);
+        }
+
+        [TestMethod()]
+        public void ClientFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState7()
+        {
+            var targets = new OzetteLibrary.Models.Targets();
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 1, Name = "t1" });
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 2, Name = "t2" });
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 3, Name = "t3" });
+
+            var targetIDs = new List<int>() { targets[0].ID, targets[1].ID, targets[2].ID };
+
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.ResetCopyState(targets);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(9, targetIDs);
+
+            // state: all targets synced.
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Synced, file.OverallState);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Synced, file.CopyState[targets[0].ID].TargetStatus);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Synced, file.CopyState[targets[1].ID].TargetStatus);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Synced, file.CopyState[targets[2].ID].TargetStatus);
+        }
+
+        [TestMethod()]
+        public void ClientFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState8()
+        {
+            var targets = new OzetteLibrary.Models.Targets();
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 1, Name = "t1" });
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 2, Name = "t2" });
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 3, Name = "t3" });
+            
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.ResetCopyState(targets);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.CopyState[targets[2].ID].TargetStatus = OzetteLibrary.Models.FileStatus.OutOfDate;
+            file.SetBlockAsSent(9, new List<int>() { targets[0].ID });
+            file.SetBlockAsSent(9, new List<int>() { targets[1].ID });
+
+            // state: something is out of date on at least one target.
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.OutOfDate, file.OverallState);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Synced, file.CopyState[targets[0].ID].TargetStatus);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Synced, file.CopyState[targets[1].ID].TargetStatus);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.OutOfDate, file.CopyState[targets[2].ID].TargetStatus);
+        }
+
+        [TestMethod()]
+        public void ClientFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState9()
+        {
+            var targets = new OzetteLibrary.Models.Targets();
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 1, Name = "t1" });
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 2, Name = "t2" });
+            targets.Add(new OzetteLibrary.Models.Target() { ID = 3, Name = "t3" });
+
+            var file = new OzetteLibrary.Models.ClientFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Models.FileBackupPriority.Low);
+            file.ResetCopyState(targets);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.CopyState[targets[2].ID].TargetStatus = OzetteLibrary.Models.FileStatus.Unsynced;
+            file.SetBlockAsSent(9, new List<int>() { targets[0].ID });
+            file.SetBlockAsSent(9, new List<int>() { targets[1].ID });
+
+            // state: something is unsynced on at least one target.
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.OverallState);
+
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Synced, file.CopyState[targets[0].ID].TargetStatus);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Synced, file.CopyState[targets[1].ID].TargetStatus);
+            Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, file.CopyState[targets[2].ID].TargetStatus);
+        }
     }
 }

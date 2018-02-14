@@ -48,17 +48,11 @@ namespace OzetteLibrary.Models
         public int LastCompletedFileChunkIndex { get; set; }
 
         /// <summary>
-        /// The total number of file transfer blocks.
-        /// </summary>
-        public int TotalFileChunks { get; set; }
-
-        /// <summary>
         /// Resets copy state back to unsynced.
         /// </summary>
         public void ResetState()
         {
             TargetStatus = FileStatus.Unsynced;
-            TotalFileChunks = 0;
             LastCompletedFileChunkIndex = -1;
         }
     }
