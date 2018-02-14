@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OzetteLibrary.Models
 {
@@ -12,6 +13,11 @@ namespace OzetteLibrary.Models
         /// A unique file identifier.
         /// </summary>
         public Guid FileID { get; set; }
+
+        /// <summary>
+        /// A set of destination target IDs for this payload.
+        /// </summary>
+        public List<int> DestinationTargetIDs { get; set; }
 
         /// <summary>
         /// The block number currently associated with this transfer payload.

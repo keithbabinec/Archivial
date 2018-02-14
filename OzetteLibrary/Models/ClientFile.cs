@@ -221,6 +221,7 @@ namespace OzetteLibrary.Models
             payload.FileID = FileID;
             payload.CurrentBlockNumber = nextBlock.Value;
             payload.TotalBlocks = GetTotalFileBlocks(Constants.Transfers.TransferChunkSizeBytes);
+            payload.DestinationTargetIDs = FindTargetsThatCanTransferSpecifiedBlock(nextBlock.Value);
 
             // generate the 'data' payload: the next file chunk as byte[].
             // hash that chunk so we can validate it on the other side.
@@ -285,7 +286,7 @@ namespace OzetteLibrary.Models
         /// <returns></returns>
         private int? GetNextBlockNumberToSend()
         {
-            int? nextBlockNumberToSend = null;
+            int? minBlock = null;
 
             if (CopyState != null)
             {
@@ -295,8 +296,18 @@ namespace OzetteLibrary.Models
 
                     if (targetState == FileStatus.OutOfDate || targetState == FileStatus.Unsynced || targetState == FileStatus.InProgress)
                     {
-                        nextBlockNumberToSend = target.Value.LastCompletedFileChunkIndex + 1;
-                        break;
+                        int targetNextBlock = target.Value.LastCompletedFileChunkIndex + 1;
+                        
+                        if (minBlock.HasValue == false)
+                        {
+                            // found (first) min.
+                            minBlock = targetNextBlock;
+                        }
+                        else if (targetNextBlock < minBlock.Value)
+                        {
+                            // found new min.
+                            minBlock = targetNextBlock;
+                        }
                     }
                     else if (targetState == FileStatus.Synced)
                     {
@@ -309,7 +320,44 @@ namespace OzetteLibrary.Models
                 }
             }
 
-            return nextBlockNumberToSend;
+            return minBlock;
+        }
+
+        /// <summary>
+        /// Returns a list of targets (IDs) that need a specified block number.
+        /// </summary>
+        /// <param name="blockNumber">The next block to transfer</param>
+        /// <returns></returns>
+        private List<int> FindTargetsThatCanTransferSpecifiedBlock(int blockNumber)
+        {
+            List<int> result = new List<int>();
+
+            if (CopyState != null)
+            {
+                foreach (var target in CopyState)
+                {
+                    var targetState = target.Value.TargetStatus;
+
+                    if (targetState == FileStatus.OutOfDate || targetState == FileStatus.Unsynced || targetState == FileStatus.InProgress)
+                    {
+                        int targetNextBlock = target.Value.LastCompletedFileChunkIndex + 1;
+                        if (targetNextBlock == blockNumber)
+                        {
+                            result.Add(target.Key);
+                        }
+                    }
+                    else if (targetState == FileStatus.Synced)
+                    {
+                        // disregard. file is already synced to this particular target.
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Unexpected target state: " + targetState.ToString());
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
