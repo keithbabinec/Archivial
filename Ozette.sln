@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzetteTargetAgent", "Ozette
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzetteClientAgent", "OzetteClientAgent\OzetteClientAgent.csproj", "{9030A857-1D28-4802-B559-55D17F681131}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzetteProtocol", "OzetteProtocol\OzetteProtocol.csproj", "{72EF509A-A8E6-4D89-98B0-3EAAAFEBD044}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzetteProtocolTests", "OzetteProtocolTests\OzetteProtocolTests.csproj", "{9C9CBF9C-57CA-490D-87A4-5DC1F7B99C97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{9030A857-1D28-4802-B559-55D17F681131}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9030A857-1D28-4802-B559-55D17F681131}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9030A857-1D28-4802-B559-55D17F681131}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72EF509A-A8E6-4D89-98B0-3EAAAFEBD044}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72EF509A-A8E6-4D89-98B0-3EAAAFEBD044}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72EF509A-A8E6-4D89-98B0-3EAAAFEBD044}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72EF509A-A8E6-4D89-98B0-3EAAAFEBD044}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C9CBF9C-57CA-490D-87A4-5DC1F7B99C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C9CBF9C-57CA-490D-87A4-5DC1F7B99C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C9CBF9C-57CA-490D-87A4-5DC1F7B99C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C9CBF9C-57CA-490D-87A4-5DC1F7B99C97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
