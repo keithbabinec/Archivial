@@ -138,46 +138,16 @@ namespace OzetteLibrary.Models
         /// Determines if there is data remaining to transfer.
         /// </summary>
         /// <returns></returns>
-        public bool HasDataToTransfer(Targets targets)
+        public bool HasDataToTransfer()
         {
-            // check the copy state.
-            // return true if this file is capable of sending the next datablock.
-            // this means it is not in a failed state, and has data needing to be transferred.
-
-            if (CopyState == null || CopyState.Count == 0)
-            {
-                return false;
-            }
-            if (targets == null)
-            {
-                return false;
-            }
             if (OverallState == FileStatus.Synced)
             {
                 return false;
             }
-
-            foreach (var item in CopyState)
+            else
             {
-                var itemTarget = targets.FirstOrDefault(x => x.ID == item.Key);
-
-                if (itemTarget == null)
-                {
-                    // bad copy state
-                    // we somehow can't find the target for the copystate item.
-                    throw new InvalidOperationException("No target was found for copystate item with target key: " + item.Key);
-                }
-
-                if (itemTarget.Availability == TargetAvailabilityState.Available 
-                    && item.Value.TargetStatus != FileStatus.Synced)
-                {
-                    // the target is available/online.
-                    // the item is not fully synced.
-                    return true;
-                }
+                return true;
             }
-
-            return false;
         }
 
         /// <summary>

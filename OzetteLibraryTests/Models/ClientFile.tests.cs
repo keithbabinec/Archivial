@@ -11,255 +11,37 @@ namespace OzetteLibraryTests.Models
         [TestMethod()]
         public void ClientFileHasDataToTransferReturnsValidFalseExample1()
         {
-            // no copy state
-
             var file = new OzetteLibrary.Models.ClientFile();
-
-            Assert.IsFalse(file.HasDataToTransfer(new OzetteLibrary.Models.Targets()));
-        }
-
-        [TestMethod()]
-        public void ClientFileHasDataToTransferReturnsValidFalseExample2()
-        {
-            // no targets
-
-            var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.InProgress });
-
-            Assert.IsFalse(file.HasDataToTransfer(null));
-        }
-
-        [TestMethod()]
-        public void ClientFileHasDataToTransferReturnsValidFalseExample3()
-        {
-            // all synced already
-
-            var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
             file.OverallState = OzetteLibrary.Models.FileStatus.Synced;
 
-            var targets = new OzetteLibrary.Models.Targets();
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 1,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-
-            Assert.IsFalse(file.HasDataToTransfer(targets));
-        }
-
-        [TestMethod()]
-        public void ClientFileHasDataToTransferReturnsValidFalseExample4()
-        {
-            // could sync, but the target is down
-
-            var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Unsynced });
-            file.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
-
-            var targets = new OzetteLibrary.Models.Targets();
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 1,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Failed
-            });
-
-            Assert.IsFalse(file.HasDataToTransfer(targets));
-        }
-
-        [TestMethod()]
-        public void ClientFileHasDataToTransferReturnsValidFalseExample5()
-        {
-            // has multiple targets but one file is already synced.
-            // the target of the syncable file is unavailable.
-
-            var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
-            file.CopyState.Add(2, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Unsynced });
-
-            file.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
-
-            var targets = new OzetteLibrary.Models.Targets();
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 1,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 2,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Failed
-            });
-
-            Assert.IsFalse(file.HasDataToTransfer(targets));
-        }
-
-        [TestMethod()]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void ClientFileHasDataToTransferThrowsOnTargetKeyNotFound()
-        {
-            // has data that can be synced
-            // but the target keys don't match.
-
-            var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Unsynced });
-            file.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
-
-            var targets = new OzetteLibrary.Models.Targets();
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 2,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-
-            Assert.IsTrue(file.HasDataToTransfer(targets));
+            Assert.IsFalse(file.HasDataToTransfer());
         }
 
         [TestMethod()]
         public void ClientFileHasDataToTransferReturnsValidTrueExample1()
         {
-            // has data that can be synced (unsynced)
-
             var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Unsynced });
-            file.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+            file.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
 
-            var targets = new OzetteLibrary.Models.Targets();
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 1,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-
-            Assert.IsTrue(file.HasDataToTransfer(targets));
+            Assert.IsTrue(file.HasDataToTransfer());
         }
 
         [TestMethod()]
         public void ClientFileHasDataToTransferReturnsValidTrueExample2()
         {
-            // has data that can be synced (out of date)
-
             var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.OutOfDate });
-            file.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+            file.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
 
-            var targets = new OzetteLibrary.Models.Targets();
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 1,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-
-            Assert.IsTrue(file.HasDataToTransfer(targets));
+            Assert.IsTrue(file.HasDataToTransfer());
         }
 
         [TestMethod()]
         public void ClientFileHasDataToTransferReturnsValidTrueExample3()
         {
-            // has data that can be synced (in-progress)
-
             var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.InProgress });
             file.OverallState = OzetteLibrary.Models.FileStatus.InProgress;
 
-            var targets = new OzetteLibrary.Models.Targets();
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 1,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-
-            Assert.IsTrue(file.HasDataToTransfer(targets));
-        }
-
-        [TestMethod()]
-        public void ClientFileHasDataToTransferReturnsValidTrueExample4()
-        {
-            // has multiple targets that can be synced (unsynced)
-
-            var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Unsynced });
-            file.CopyState.Add(2, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Unsynced });
-
-            file.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
-
-            var targets = new OzetteLibrary.Models.Targets();
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 1,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 2,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-
-            Assert.IsTrue(file.HasDataToTransfer(targets));
-        }
-
-        [TestMethod()]
-        public void ClientFileHasDataToTransferReturnsValidTrueExample5()
-        {
-            // has multiple targets that can be synced (unsynced)
-            // but one target is unavailable.
-
-            var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Unsynced });
-            file.CopyState.Add(2, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Unsynced });
-
-            file.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
-
-            var targets = new OzetteLibrary.Models.Targets();
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 1,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Disabled
-            });
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 2,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-
-            Assert.IsTrue(file.HasDataToTransfer(targets));
-        }
-
-        [TestMethod()]
-        public void ClientFileHasDataToTransferReturnsValidTrueExample6()
-        {
-            // has multiple targets but one file is already synced.
-
-            var file = new OzetteLibrary.Models.ClientFile();
-            file.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            file.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
-            file.CopyState.Add(2, new OzetteLibrary.Models.TargetCopyState() { TargetStatus = OzetteLibrary.Models.FileStatus.Unsynced });
-
-            file.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
-
-            var targets = new OzetteLibrary.Models.Targets();
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 1,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-            targets.Add(new OzetteLibrary.Models.Target()
-            {
-                ID = 2,
-                Availability = OzetteLibrary.Models.TargetAvailabilityState.Available
-            });
-
-            Assert.IsTrue(file.HasDataToTransfer(targets));
+            Assert.IsTrue(file.HasDataToTransfer());
         }
 
         [TestMethod()]

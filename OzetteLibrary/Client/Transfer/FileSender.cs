@@ -138,10 +138,7 @@ namespace OzetteLibrary.Client.Transfer
                     // step 4: while the file has data that needs to be transferred- transfer it.
                     // this includes transferring to each potential target that needs this same file block.
 
-                    // TODO: get these populated.
-                    Targets transferTargets = null; 
-
-                    while (File.HasDataToTransfer(transferTargets))
+                    while (File.HasDataToTransfer())
                     {
                         // step 4A: generate the next transfer data block.
                         var payload = GenerateNextTransferPayload(File, fs);
