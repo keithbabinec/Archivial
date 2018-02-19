@@ -6,7 +6,6 @@ namespace OzetteLibrary.Models
     /// <summary>
     /// Describes the contents of a single transfer stream payload. 
     /// </summary>
-    [Serializable]
     public class TransferPayload
     {
         /// <summary>

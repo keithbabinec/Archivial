@@ -133,7 +133,7 @@ namespace OzetteLibrary.Client.Transfer
                     // step 3: see if this file is already on the destination target(s).
                     // this avoids resending the file if for some reason the client DB/states got wiped out.
 
-                    UpdateFileCopyStateIfFileAlreadyExistsOnTargets(File, fs);
+                    // UpdateFileCopyStateIfFileAlreadyExistsOnTargets(File, fs);
 
                     // step 4: while the file has data that needs to be transferred- transfer it.
                     // this includes transferring to each potential target that needs this same file block.
@@ -141,10 +141,10 @@ namespace OzetteLibrary.Client.Transfer
                     while (File.HasDataToTransfer())
                     {
                         // step 4A: generate the next transfer data block.
-                        var payload = GenerateNextTransferPayload(File, fs);
+                        // var payload = GenerateNextTransferPayload(File, fs);
 
                         // step 4B: send the transfer payload.
-                        SendTransferPayloadToFileTargets(File, payload);
+                        // SendTransferPayloadToFileTargets(File, payload);
                     }
                 }
             }
@@ -167,50 +167,50 @@ namespace OzetteLibrary.Client.Transfer
             }
         }
 
-        /// <summary>
-        /// Updates the local file copy state if the file has already been transferred (and local DB doesn't know about it).
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="fs"></param>
-        private void UpdateFileCopyStateIfFileAlreadyExistsOnTargets(ClientFile file, FileStream fs)
-        {
-            // TODO:
-            // for each target that needs this file:
-            // > just double check that we haven't already transferred this whole file.
-            // > to avoid resending if for some reason had lost local client DB state.
+        ///// <summary>
+        ///// Updates the local file copy state if the file has already been transferred (and local DB doesn't know about it).
+        ///// </summary>
+        ///// <param name="file"></param>
+        ///// <param name="fs"></param>
+        //private void UpdateFileCopyStateIfFileAlreadyExistsOnTargets(ClientFile file, FileStream fs)
+        //{
+        //    // TODO:
+        //    // for each target that needs this file:
+        //    // > just double check that we haven't already transferred this whole file.
+        //    // > to avoid resending if for some reason had lost local client DB state.
 
-            throw new NotImplementedException();
-        }
+        //    throw new NotImplementedException();
+        //}
 
-        /// <summary>
-        /// Transfers a payload to one or more targets.
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="payload"></param>
-        private void SendTransferPayloadToFileTargets(ClientFile file, TransferPayload payload)
-        {
-            // TODO:
-            // for each target that needs this block:
-            // > grab an existing (or create a new) TcpClient connection to the target.
-            // > ensure it is connected/authenticated.
-            // > serialize the payload using binaryformatter
-            // > write the message to the stream
-            // > read the response from the server.
-            // > update the file's progress to the next block.
+        ///// <summary>
+        ///// Transfers a payload to one or more targets.
+        ///// </summary>
+        ///// <param name="file"></param>
+        ///// <param name="payload"></param>
+        //private void SendTransferPayloadToFileTargets(ClientFile file, TransferPayload payload)
+        //{
+        //    // TODO:
+        //    // for each target that needs this block:
+        //    // > grab an existing (or create a new) TcpClient connection to the target.
+        //    // > ensure it is connected/authenticated.
+        //    // > serialize the payload using binaryformatter
+        //    // > write the message to the stream
+        //    // > read the response from the server.
+        //    // > update the file's progress to the next block.
 
-            throw new NotImplementedException();
-        }
+        //    throw new NotImplementedException();
+        //}
 
-        /// <summary>
-        /// Generates the next transfer block payload.
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="fs"></param>
-        /// <returns></returns>
-        private TransferPayload GenerateNextTransferPayload(ClientFile File, FileStream Stream)
-        {
-            return File.GenerateNextTransferPayload(Stream, Hasher);
-        }
+        ///// <summary>
+        ///// Generates the next transfer block payload.
+        ///// </summary>
+        ///// <param name="file"></param>
+        ///// <param name="fs"></param>
+        ///// <returns></returns>
+        //private TransferPayload GenerateNextTransferPayload(ClientFile File, FileStream Stream)
+        //{
+        //    return File.GenerateNextTransferPayload(Stream, Hasher);
+        //}
 
         /// <summary>
         /// Verifies that the existing hash for the specified file is correct in the database.
