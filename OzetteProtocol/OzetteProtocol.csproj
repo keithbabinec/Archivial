@@ -40,6 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\BaseMessage.cs" />
+    <Compile Include="Models\BaseResponse.cs" />
+    <Compile Include="Models\BaseTransaction.cs" />
+    <Compile Include="Models\TransferPayloadMessage.cs" />
+    <Compile Include="Models\TransferPayloadResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
