@@ -1,5 +1,4 @@
-﻿using LiteDB;
-using System;
+﻿using System;
 using System.Security.Cryptography;
 
 namespace OzetteLibrary.Models
