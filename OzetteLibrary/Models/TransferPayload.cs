@@ -16,7 +16,7 @@ namespace OzetteLibrary.Models
         /// <summary>
         /// A set of destination target IDs for this payload.
         /// </summary>
-        public List<int> DestinationTargetIDs { get; set; }
+        public List<Guid> DestinationTargetIDs { get; set; }
 
         /// <summary>
         /// The block number currently associated with this transfer payload.

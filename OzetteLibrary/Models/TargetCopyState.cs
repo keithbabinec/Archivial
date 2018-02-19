@@ -32,7 +32,7 @@ namespace OzetteLibrary.Models
         /// <summary>
         /// Target this file is associated with.
         /// </summary>
-        public int TargetID { get; set; }
+        public Guid TargetID { get; set; }
 
         /// <summary>
         /// The state of the copy from this file to the target.

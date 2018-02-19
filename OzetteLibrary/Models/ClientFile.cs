@@ -56,7 +56,7 @@ namespace OzetteLibrary.Models
         /// The dictionary key is the target ID.
         /// The dictionary value is the copy state.
         /// </remarks>
-        public Dictionary<int, TargetCopyState> CopyState { get; set; }
+        public Dictionary<Guid, TargetCopyState> CopyState { get; set; }
 
         /// <summary>
         /// An overall state across one or more targets.
@@ -90,7 +90,7 @@ namespace OzetteLibrary.Models
                 throw new ArgumentNullException(nameof(targets));
             }
 
-            CopyState = new Dictionary<int, TargetCopyState>();
+            CopyState = new Dictionary<Guid, TargetCopyState>();
 
             foreach (var target in targets)
             {
@@ -301,9 +301,9 @@ namespace OzetteLibrary.Models
         /// </summary>
         /// <param name="blockNumber">The next block to transfer</param>
         /// <returns></returns>
-        private List<int> FindTargetsThatCanTransferSpecifiedBlock(int blockNumber)
+        private List<Guid> FindTargetsThatCanTransferSpecifiedBlock(int blockNumber)
         {
-            List<int> result = new List<int>();
+            List<Guid> result = new List<Guid>();
 
             if (CopyState != null)
             {
@@ -338,7 +338,7 @@ namespace OzetteLibrary.Models
         /// </summary>
         /// <param name="BlockNumber"></param>
         /// <param name="Destinations"></param>
-        public void SetBlockAsSent(int BlockNumber, List<int> Destinations)
+        public void SetBlockAsSent(int BlockNumber, List<Guid> Destinations)
         {
             if (BlockNumber < 0)
             {

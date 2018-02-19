@@ -25,15 +25,17 @@ namespace OzetteLibraryTests.Models
         [TestMethod()]
         public void TargetCopyStateCorrectlyAssignsTargetFromConstructor()
         {
+            var targetID1 = Guid.NewGuid();
+
             var target = new OzetteLibrary.Models.Target()
             {
-                ID = 1,
+                ID = targetID1,
                 Name = "TestTarget"
             };
 
             var copyState = new OzetteLibrary.Models.TargetCopyState(target);
 
-            Assert.AreEqual(1, copyState.TargetID);
+            Assert.AreEqual(targetID1, copyState.TargetID);
         }
 
         [TestMethod()]
@@ -41,7 +43,7 @@ namespace OzetteLibraryTests.Models
         {
             var copyState = new OzetteLibrary.Models.TargetCopyState();
 
-            Assert.AreEqual(0, copyState.TargetID);
+            Assert.AreEqual(Guid.Empty, copyState.TargetID);
             Assert.AreEqual(0, copyState.LastCompletedFileChunkIndex);
             Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, copyState.TargetStatus);
         }
@@ -49,15 +51,17 @@ namespace OzetteLibraryTests.Models
         [TestMethod()]
         public void TargetCopyStateCorrectlyInitializesCopyStateAsUnsynced2()
         {
+            var targetID1 = Guid.NewGuid();
+
             var target = new OzetteLibrary.Models.Target()
             {
-                ID = 1,
+                ID = targetID1,
                 Name = "TestTarget"
             };
 
             var copyState = new OzetteLibrary.Models.TargetCopyState(target);
 
-            Assert.AreEqual(1, copyState.TargetID);
+            Assert.AreEqual(targetID1, copyState.TargetID);
             Assert.AreEqual(-1, copyState.LastCompletedFileChunkIndex);
             Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, copyState.TargetStatus);
         }
@@ -65,13 +69,14 @@ namespace OzetteLibraryTests.Models
         [TestMethod()]
         public void TargetCopyStateResetStateCorrectlyResetsProgress()
         {
+            var targetID1 = Guid.NewGuid();
             var copyState = new OzetteLibrary.Models.TargetCopyState();
-            copyState.TargetID = 1;
+            copyState.TargetID = targetID1;
             copyState.LastCompletedFileChunkIndex = 100;
             copyState.TargetStatus = OzetteLibrary.Models.FileStatus.InProgress;
             copyState.ResetState();
 
-            Assert.AreEqual(1, copyState.TargetID);
+            Assert.AreEqual(targetID1, copyState.TargetID);
             Assert.AreEqual(-1, copyState.LastCompletedFileChunkIndex);
             Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, copyState.TargetStatus);
         }
@@ -79,13 +84,14 @@ namespace OzetteLibraryTests.Models
         [TestMethod()]
         public void TargetCopyStateResetStateCorrectlyResetsProgress2()
         {
+            var targetID1 = Guid.NewGuid();
             var copyState = new OzetteLibrary.Models.TargetCopyState();
-            copyState.TargetID = 1;
+            copyState.TargetID = targetID1;
             copyState.LastCompletedFileChunkIndex = 100;
             copyState.TargetStatus = OzetteLibrary.Models.FileStatus.Synced;
             copyState.ResetState();
 
-            Assert.AreEqual(1, copyState.TargetID);
+            Assert.AreEqual(targetID1, copyState.TargetID);
             Assert.AreEqual(-1, copyState.LastCompletedFileChunkIndex);
             Assert.AreEqual(OzetteLibrary.Models.FileStatus.Unsynced, copyState.TargetStatus);
         }

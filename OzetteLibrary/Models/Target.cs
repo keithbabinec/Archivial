@@ -1,4 +1,6 @@
-﻿namespace OzetteLibrary.Models
+﻿using System;
+
+namespace OzetteLibrary.Models
 {
     /// <summary>
     /// Describes a single backup target (destination).
@@ -6,9 +8,9 @@
     public class Target
     {
         /// <summary>
-        /// An identifier for the target to be referenced by files.
+        /// An unique identifier for the target to be referenced by files.
         /// </summary>
-        public int ID { get; set; }
+        public Guid ID { get; set; }
 
         /// <summary>
         /// The name of the target.

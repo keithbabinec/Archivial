@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace OzetteLibraryTests.Database.LiteDB
@@ -300,7 +301,8 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var t = new OzetteLibrary.Models.Target() { ID = 1, Name = "test" };
+            var targetID1 = Guid.NewGuid();
+            var t = new OzetteLibrary.Models.Target() { ID = targetID1, Name = "test" };
             db.AddTarget(t);
 
             var liteDB = new LiteDatabase(ms);
@@ -310,7 +312,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
 
-            Assert.AreEqual(1, result[0].ID);
+            Assert.AreEqual(targetID1, result[0].ID);
             Assert.AreEqual("test", result[0].Name);
         }
 
@@ -322,7 +324,8 @@ namespace OzetteLibraryTests.Database.LiteDB
             // manually add a target to the database stream.
             // then check API GetTargets()
 
-            var t = new OzetteLibrary.Models.Target() { ID = 1, Name = "test" };
+            var targetID1 = Guid.NewGuid();
+            var t = new OzetteLibrary.Models.Target() { ID = targetID1, Name = "test" };
             var ms = new MemoryStream();
             var liteDB = new LiteDatabase(ms);
             var targetCol = liteDB.GetCollection<OzetteLibrary.Models.Target>(OzetteLibrary.Constants.Database.TargetsTableName);
@@ -338,7 +341,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
 
-            Assert.AreEqual(1, result[0].ID);
+            Assert.AreEqual(targetID1, result[0].ID);
             Assert.AreEqual("test", result[0].Name);
         }
 
@@ -354,8 +357,9 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
+            var targetID1 = Guid.NewGuid();
             OzetteLibrary.Models.Target t = new OzetteLibrary.Models.Target();
-            t.ID = 1;
+            t.ID = targetID1;
             t.Name = "test";
             t.Port = 80;
             t.Url = "http://address.url.company.com";
@@ -367,7 +371,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
 
-            Assert.AreEqual(1, result[0].ID);
+            Assert.AreEqual(targetID1, result[0].ID);
             Assert.AreEqual("test", result[0].Name);
             Assert.AreEqual(80, result[0].Port);
             Assert.AreEqual("http://address.url.company.com", result[0].Url);
@@ -386,17 +390,26 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
+            var targetID1 = Guid.NewGuid();
+            var targetID2 = Guid.NewGuid();
+            var targetID3 = Guid.NewGuid();
+
             OzetteLibrary.Models.Target t = new OzetteLibrary.Models.Target();
-            t.ID = 1;
+            t.ID = targetID1;
             t.Name = "test";
 
             OzetteLibrary.Models.Target t2 = new OzetteLibrary.Models.Target();
-            t2.ID = 2;
+            t2.ID = targetID2;
             t2.Name = "test2";
 
             OzetteLibrary.Models.Target t3 = new OzetteLibrary.Models.Target();
-            t3.ID = 3;
+            t3.ID = targetID3;
             t3.Name = "test3";
+
+            var originalTargets = new OzetteLibrary.Models.Targets();
+            originalTargets.Add(t);
+            originalTargets.Add(t2);
+            originalTargets.Add(t3);
 
             db.AddTarget(t);
             db.AddTarget(t2);
@@ -407,14 +420,18 @@ namespace OzetteLibraryTests.Database.LiteDB
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Count);
 
-            Assert.AreEqual(1, result[0].ID);
-            Assert.AreEqual("test", result[0].Name);
+            // this could come back in an unexpected order.
+            // check for the existence of each target, but not the order.
 
-            Assert.AreEqual(2, result[1].ID);
-            Assert.AreEqual("test2", result[1].Name);
+            foreach (var dbTarget in result)
+            {
+                var match = originalTargets.FirstOrDefault(c => c.ID == dbTarget.ID);
 
-            Assert.AreEqual(3, result[2].ID);
-            Assert.AreEqual("test3", result[2].Name);
+                Assert.IsNotNull(match);
+
+                Assert.AreEqual(match.ID, dbTarget.ID);
+                Assert.AreEqual(match.Name, dbTarget.Name);
+            }
         }
 
         [TestMethod()]
@@ -883,12 +900,13 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
+            var targetID1 = Guid.NewGuid();
             var c1 = new OzetteLibrary.Models.ClientFile();
             c1.FileID = Guid.NewGuid();
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            c1.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c1.CopyState = new Dictionary<Guid, OzetteLibrary.Models.TargetCopyState>();
+            c1.CopyState.Add(targetID1, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
 
             db.AddClientFile(c1);
 
@@ -909,12 +927,13 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
+            var targetID1 = Guid.NewGuid();
             var c1 = new OzetteLibrary.Models.ClientFile();
             c1.FileID = Guid.NewGuid();
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            c1.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, TargetStatus = OzetteLibrary.Models.FileStatus.InProgress });
+            c1.CopyState = new Dictionary<Guid, OzetteLibrary.Models.TargetCopyState>();
+            c1.CopyState.Add(targetID1, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID1, TargetStatus = OzetteLibrary.Models.FileStatus.InProgress });
 
             db.AddClientFile(c1);
 
@@ -935,19 +954,21 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
+            var targetID1 = Guid.NewGuid();
+
             var c1 = new OzetteLibrary.Models.ClientFile();
             c1.FileID = Guid.NewGuid();
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            c1.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c1.CopyState = new Dictionary<Guid, OzetteLibrary.Models.TargetCopyState>();
+            c1.CopyState.Add(targetID1, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
 
             var c2 = new OzetteLibrary.Models.ClientFile();
             c2.FileID = Guid.NewGuid();
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
-            c2.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            c2.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c2.CopyState = new Dictionary<Guid, OzetteLibrary.Models.TargetCopyState>();
+            c2.CopyState.Add(targetID1, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
 
             db.AddClientFile(c1);
             db.AddClientFile(c2);
@@ -969,26 +990,28 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
+            var targetID1 = Guid.NewGuid();
+
             var c1 = new OzetteLibrary.Models.ClientFile();
             c1.FileID = Guid.NewGuid();
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            c1.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c1.CopyState = new Dictionary<Guid, OzetteLibrary.Models.TargetCopyState>();
+            c1.CopyState.Add(targetID1, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
 
             var c2 = new OzetteLibrary.Models.ClientFile();
             c2.FileID = Guid.NewGuid();
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
-            c2.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            c2.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, TargetStatus = OzetteLibrary.Models.FileStatus.InProgress });
+            c2.CopyState = new Dictionary<Guid, OzetteLibrary.Models.TargetCopyState>();
+            c2.CopyState.Add(targetID1, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID1, TargetStatus = OzetteLibrary.Models.FileStatus.InProgress });
 
             var c3 = new OzetteLibrary.Models.ClientFile();
             c3.FileID = Guid.NewGuid();
             c3.Filename = "test3.mp3";
             c3.Directory = "C:\\music";
-            c3.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            c3.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c3.CopyState = new Dictionary<Guid, OzetteLibrary.Models.TargetCopyState>();
+            c3.CopyState.Add(targetID1, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
 
             db.AddClientFile(c1);
             db.AddClientFile(c2);
@@ -1011,22 +1034,26 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
+            var targetID1 = Guid.NewGuid();
+            var targetID2 = Guid.NewGuid();
+            var targetID3 = Guid.NewGuid();
+
             var c1 = new OzetteLibrary.Models.ClientFile();
             c1.FileID = Guid.NewGuid();
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            c1.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
-            c1.CopyState.Add(2, new OzetteLibrary.Models.TargetCopyState() { TargetID = 2, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
-            c1.CopyState.Add(3, new OzetteLibrary.Models.TargetCopyState() { TargetID = 3, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c1.CopyState = new Dictionary<Guid, OzetteLibrary.Models.TargetCopyState>();
+            c1.CopyState.Add(targetID1, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c1.CopyState.Add(targetID2, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID2, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c1.CopyState.Add(targetID3, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID3, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
 
             var c2 = new OzetteLibrary.Models.ClientFile();
             c2.FileID = Guid.NewGuid();
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
-            c2.CopyState = new Dictionary<int, OzetteLibrary.Models.TargetCopyState>();
-            c2.CopyState.Add(1, new OzetteLibrary.Models.TargetCopyState() { TargetID = 1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
-            c2.CopyState.Add(2, new OzetteLibrary.Models.TargetCopyState() { TargetID = 2, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c2.CopyState = new Dictionary<Guid, OzetteLibrary.Models.TargetCopyState>();
+            c2.CopyState.Add(targetID1, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID1, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
+            c2.CopyState.Add(targetID2, new OzetteLibrary.Models.TargetCopyState() { TargetID = targetID2, TargetStatus = OzetteLibrary.Models.FileStatus.Synced });
 
             db.AddClientFile(c1);
             db.AddClientFile(c2);
