@@ -40,13 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Communication\MessagePipeline.cs" />
+    <Compile Include="Constants\Connections.cs" />
     <Compile Include="Models\BaseMessage.cs" />
     <Compile Include="Models\BaseResponse.cs" />
     <Compile Include="Models\BaseTransaction.cs" />
+    <Compile Include="Models\TransactionPipelineState.cs" />
     <Compile Include="Models\TransferPayloadMessage.cs" />
     <Compile Include="Models\TransferPayloadResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
