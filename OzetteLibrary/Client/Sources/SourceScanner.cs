@@ -322,7 +322,7 @@ namespace OzetteLibrary.Client.Sources
             // brand new file
             var clientFile = new ClientFile(fileInfo, priority);
             clientFile.SetFileHashWithAlgorithm(fileHash, algorithm);
-            clientFile.ResetCopyState(Database.GetAllTargets());
+            clientFile.ResetCopyState();
             clientFile.SetLastCheckedTimeStamp();
 
             Database.AddClientFile(clientFile);
@@ -341,7 +341,7 @@ namespace OzetteLibrary.Client.Sources
 
             // updated file
             fileLookup.File.SetFileHashWithAlgorithm(fileHash, algorithm);
-            fileLookup.File.ResetCopyState(Database.GetAllTargets());
+            fileLookup.File.ResetCopyState();
             fileLookup.File.SetLastCheckedTimeStamp();
 
             Database.UpdateClientFile(fileLookup.File);

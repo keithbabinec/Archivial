@@ -28,18 +28,6 @@ namespace OzetteLibrary.Database
         ClientFiles GetAllClientFiles();
 
         /// <summary>
-        /// Returns all of the targets defined in the database.
-        /// </summary>
-        /// <returns><c>Targets</c></returns>
-        Targets GetAllTargets();
-
-        /// <summary>
-        /// Adds a single target to the database.
-        /// </summary>
-        /// <param name="Target"></param>
-        void AddTarget(Target Target);
-
-        /// <summary>
         /// Returns all source locations defined in the database.
         /// </summary>
         /// <returns><c>SourceLocations</c></returns>

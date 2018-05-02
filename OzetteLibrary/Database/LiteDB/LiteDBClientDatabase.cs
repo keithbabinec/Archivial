@@ -82,7 +82,6 @@ namespace OzetteLibrary.Database.LiteDB
             var map = BsonMapper.Global;
 
             map.Entity<ClientFile>().Id(x => x.FileID);
-            map.Entity<Target>().Id(x => x.ID);
             map.Entity<SourceLocation>().Id(x => x.ID);
         }
 
@@ -104,10 +103,6 @@ namespace OzetteLibrary.Database.LiteDB
                 clientCol.EnsureIndex(x => x.Filename);
                 clientCol.EnsureIndex(x => x.Directory);
                 clientCol.EnsureIndex(x => x.FileHash);
-
-                var targetCol = db.GetCollection<Target>(Constants.Database.TargetsTableName);
-                targetCol.EnsureIndex(x => x.ID);
-                targetCol.EnsureIndex(x => x.Name);
 
                 var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
                 sourcesCol.EnsureIndex(x => x.ID);
@@ -275,54 +270,6 @@ namespace OzetteLibrary.Database.LiteDB
                 {
                     return new ClientFiles();
                 }
-            }
-        }
-
-        /// <summary>
-        /// Returns all of the targets defined in the database.
-        /// </summary>
-        /// <returns><c>Targets</c></returns>
-        public Targets GetAllTargets()
-        {
-            if (DatabaseHasBeenPrepared == false)
-            {
-                throw new InvalidOperationException("Database has not been prepared.");
-            }
-
-            using (var db = GetLiteDBInstance())
-            {
-                var targetCol = db.GetCollection<Target>(Constants.Database.TargetsTableName);
-
-                if (targetCol.Count() > 0)
-                {
-                    return new Targets(targetCol.FindAll());
-                }
-                else
-                {
-                    return new Targets();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Adds a single target to the database.
-        /// </summary>
-        /// <param name="Target"></param>
-        public void AddTarget(Target Target)
-        {
-            if (DatabaseHasBeenPrepared == false)
-            {
-                throw new InvalidOperationException("Database has not been prepared.");
-            }
-            if (Target == null)
-            {
-                throw new ArgumentNullException(nameof(Target));
-            }
-
-            using (var db = GetLiteDBInstance())
-            {
-                var targetCol = db.GetCollection<Target>(Constants.Database.TargetsTableName);
-                targetCol.Insert(Target);
             }
         }
 

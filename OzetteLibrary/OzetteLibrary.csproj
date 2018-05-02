@@ -84,11 +84,6 @@
     <Compile Include="Models\Exceptions\SourceLocationInvalidFolderPathException.cs" />
     <Compile Include="Models\Exceptions\SourceLocationInvalidRevisionCountException.cs" />
     <Compile Include="Models\SourceLocations.cs" />
-    <Compile Include="Models\TargetAvailabilityState.cs" />
-    <Compile Include="Models\TargetCopyState.cs" />
-    <Compile Include="Models\Target.cs" />
-    <Compile Include="Models\TargetFile.cs" />
-    <Compile Include="Models\Targets.cs" />
     <Compile Include="Models\TransferPayload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Crypto\Hasher.cs" />
