@@ -70,7 +70,7 @@ namespace OzetteLibrary.Client.Transfer
         /// </summary>
         /// <param name="File"></param>
         /// <returns></returns>
-        public AsyncResult BeginTransfer(ClientFile File)
+        public AsyncResult BeginTransfer(BackupFile File)
         {
             if (File == null)
             {
@@ -112,7 +112,7 @@ namespace OzetteLibrary.Client.Transfer
         /// </summary>
         /// <param name="File"></param>
         /// <param name="AsyncState"></param>
-        private void Transfer(ClientFile File, AsyncResult AsyncState)
+        private void Transfer(BackupFile File, AsyncResult AsyncState)
         {
             bool canceled = false;
 
@@ -172,7 +172,7 @@ namespace OzetteLibrary.Client.Transfer
         ///// </summary>
         ///// <param name="file"></param>
         ///// <param name="fs"></param>
-        //private void UpdateFileCopyStateIfFileAlreadyExistsOnTargets(ClientFile file, FileStream fs)
+        //private void UpdateFileCopyStateIfFileAlreadyExistsOnTargets(BackupFile file, FileStream fs)
         //{
         //    // TODO:
         //    // for each target that needs this file:
@@ -187,7 +187,7 @@ namespace OzetteLibrary.Client.Transfer
         ///// </summary>
         ///// <param name="file"></param>
         ///// <param name="payload"></param>
-        //private void SendTransferPayloadToFileTargets(ClientFile file, TransferPayload payload)
+        //private void SendTransferPayloadToFileTargets(BackupFile file, TransferPayload payload)
         //{
         //    // TODO:
         //    // for each target that needs this block:
@@ -207,7 +207,7 @@ namespace OzetteLibrary.Client.Transfer
         ///// <param name="file"></param>
         ///// <param name="fs"></param>
         ///// <returns></returns>
-        //private TransferPayload GenerateNextTransferPayload(ClientFile File, FileStream Stream)
+        //private TransferPayload GenerateNextTransferPayload(BackupFile File, FileStream Stream)
         //{
         //    return File.GenerateNextTransferPayload(Stream, Hasher);
         //}
@@ -217,7 +217,7 @@ namespace OzetteLibrary.Client.Transfer
         /// </summary>
         /// <param name="File"></param>
         /// <param name="Stream"></param>
-        private void UpdateHashIfFileHasChangedRecently(ClientFile File, FileStream Stream)
+        private void UpdateHashIfFileHasChangedRecently(BackupFile File, FileStream Stream)
         {
             if (File == null)
             {
@@ -237,7 +237,7 @@ namespace OzetteLibrary.Client.Transfer
                     File.SetFileHashWithAlgorithm(currentHash, File.GetFileHashAlgorithm());
                     File.SetLastCheckedTimeStamp();
                     File.ResetCopyState();
-                    Database.UpdateClientFile(File);
+                    Database.UpdateBackupFile(File);
                 }
             }
             else

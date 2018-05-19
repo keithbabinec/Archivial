@@ -5,12 +5,12 @@ namespace OzetteLibrary.Models
     /// <summary>
     /// A collection of <c>Target</c> objects.
     /// </summary>
-    public class ClientFiles : List<ClientFile>
+    public class BackupFiles : List<BackupFile>
     {
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public ClientFiles()
+        public BackupFiles()
         {
         }
 
@@ -18,7 +18,7 @@ namespace OzetteLibrary.Models
         /// Constructor that accepts a collection of objects.
         /// </summary>
         /// <param name="collection"></param>
-        public ClientFiles(IEnumerable<ClientFile> collection) : base(collection)
+        public BackupFiles(IEnumerable<BackupFile> collection) : base(collection)
         {
         }
     }

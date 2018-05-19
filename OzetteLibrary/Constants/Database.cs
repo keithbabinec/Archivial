@@ -8,7 +8,7 @@
         /// <summary>
         /// A string constant for the clients table name.
         /// </summary>
-        public const string ClientsTableName = "ClientFiles";
+        public const string FilesTableName = "BackupFiles";
 
         /// <summary>
         /// A string constant for the targets table name.

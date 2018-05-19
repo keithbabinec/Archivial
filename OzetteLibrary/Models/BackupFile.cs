@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace OzetteLibrary.Models
@@ -6,11 +7,39 @@ namespace OzetteLibrary.Models
     /// <summary>
     /// Describes a single file to be backed up.
     /// </summary>
-    /// <remarks>
-    /// Contains common properties that apply to file when it sits in either the client and target sides.
-    /// </remarks>
     public class BackupFile
     {
+        /// <summary>
+        /// Default/empty constructor.
+        /// </summary>
+        /// <remarks>
+        /// This is required for database operations.
+        /// </remarks>
+        public BackupFile()
+        {
+        }
+
+        /// <summary>
+        /// Constructor that accepts a FileInfo object and a priority.
+        /// </summary>
+        /// <param name="fileInfo"></param>
+        /// <param name="priority"></param>
+        public BackupFile(FileInfo fileInfo, FileBackupPriority priority)
+        {
+            if (priority == FileBackupPriority.Unset)
+            {
+                throw new ArgumentException(nameof(priority) + " must be provided.");
+            }
+
+            FileID = Guid.NewGuid();
+            Filename = fileInfo.Name;
+            Directory = fileInfo.DirectoryName;
+            FullSourcePath = fileInfo.FullName;
+            FileSizeBytes = fileInfo.Length;
+            TotalFileChunks = CalculateTotalFileBlocks(Constants.Transfers.TransferChunkSizeBytes);
+            Priority = priority;
+        }
+
         /// <summary>
         /// A unique identifier for this file which should be shared among both client and targets.
         /// </summary>
@@ -64,6 +93,73 @@ namespace OzetteLibrary.Models
         /// The type of hash algorithm.
         /// </summary>
         public HashAlgorithmName HashAlgorithmType { get; set; }
+
+        /// <summary>
+        /// The last time this file was scanned in the backup source.
+        /// </summary>
+        public DateTime? LastChecked { get; set; }
+
+        /// <summary>
+        /// An overall state across one or more targets.
+        /// </summary>
+        public FileStatus OverallState { get; set; }
+
+        /// <summary>
+        /// Resets existing copy progress state.
+        /// </summary>
+        public void ResetCopyState()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sets the last checked timestamp to the current time.
+        /// </summary>
+        public void SetLastCheckedTimeStamp()
+        {
+            LastChecked = DateTime.Now;
+        }
+
+        /// <summary>
+        /// Gets the last checked timestamp
+        /// </summary>
+        /// <returns>Byte[]</returns>
+        public DateTime? GetLastCheckedTimeStamp()
+        {
+            return LastChecked;
+        }
+
+        /// <summary>
+        /// Returns a string representation of this object.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            if (FullSourcePath != null)
+            {
+                return string.Format("{0}", FullSourcePath);
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Determines if there is data remaining to transfer.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasDataToTransfer()
+        {
+            if (OverallState == FileStatus.Synced)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         /// <summary>
         /// Sets the file hash and hash algorithm.

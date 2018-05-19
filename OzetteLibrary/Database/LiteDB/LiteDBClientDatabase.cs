@@ -81,7 +81,7 @@ namespace OzetteLibrary.Database.LiteDB
         {
             var map = BsonMapper.Global;
 
-            map.Entity<ClientFile>().Id(x => x.FileID);
+            map.Entity<BackupFile>().Id(x => x.FileID);
             map.Entity<SourceLocation>().Id(x => x.ID);
         }
 
@@ -98,7 +98,7 @@ namespace OzetteLibrary.Database.LiteDB
                 // the action of 'getting' the collection will create it if missing.
                 // EnsureIndex() will also only create the indexes if they are missing.
 
-                var clientCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
+                var clientCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
                 clientCol.EnsureIndex(x => x.FileID);
                 clientCol.EnsureIndex(x => x.Filename);
                 clientCol.EnsureIndex(x => x.Directory);
@@ -170,8 +170,8 @@ namespace OzetteLibrary.Database.LiteDB
         /// <param name="FileName">Name of the file (ex: document.doc)</param>
         /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
         /// <param name="FileHash">File hash expressed as a byte array.</param>
-        /// <returns><c>ClientFileLookup</c></returns>
-        public ClientFileLookup GetClientFile(string FileName, string DirectoryPath, byte[] FileHash)
+        /// <returns><c>BackupFileLookup</c></returns>
+        public BackupFileLookup GetBackupFile(string FileName, string DirectoryPath, byte[] FileHash)
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -181,16 +181,16 @@ namespace OzetteLibrary.Database.LiteDB
             var existingFile = FindFullMatchOnNameDirectoryAndHash(FileName, DirectoryPath, FileHash);
             if (existingFile != null)
             {
-                return new ClientFileLookup() { File = existingFile, Result = ClientFileLookupResult.Existing };
+                return new BackupFileLookup() { File = existingFile, Result = BackupFileLookupResult.Existing };
             }
 
             var updatedFile = FindFilesWithExactNameAndPathButWrongHash(FileName, DirectoryPath, FileHash);
             if (updatedFile != null)
             {
-                return new ClientFileLookup() { File = updatedFile, Result = ClientFileLookupResult.Updated };
+                return new BackupFileLookup() { File = updatedFile, Result = BackupFileLookupResult.Updated };
             }
 
-            return new ClientFileLookup() { Result = ClientFileLookupResult.New };
+            return new BackupFileLookup() { Result = BackupFileLookupResult.New };
         }
 
         /// <summary>
@@ -199,15 +199,15 @@ namespace OzetteLibrary.Database.LiteDB
         /// <param name="FileName">Name of the file (ex: document.doc)</param>
         /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
         /// <param name="FileHash">File hash expressed as a byte array.</param>
-        /// <returns><c>ClientFileLookup</c></returns>
-        private ClientFile FindFullMatchOnNameDirectoryAndHash(string FileName, string DirectoryPath, byte[] FileHash)
+        /// <returns><c>BackupFileLookup</c></returns>
+        private BackupFile FindFullMatchOnNameDirectoryAndHash(string FileName, string DirectoryPath, byte[] FileHash)
         {
             using (var db = GetLiteDBInstance())
             {
-                ClientFileLookup result = new ClientFileLookup();
+                BackupFileLookup result = new BackupFileLookup();
 
-                var clientFilesCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
-                var matchesOnHash = clientFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHash == FileHash);
+                var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
+                var matchesOnHash = backupFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHash == FileHash);
 
                 foreach (var file in matchesOnHash)
                 {
@@ -226,15 +226,15 @@ namespace OzetteLibrary.Database.LiteDB
         /// <param name="FileName">Name of the file (ex: document.doc)</param>
         /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
         /// <param name="FileHash">File hash expressed as a byte array.</param>
-        /// <returns><c>ClientFileLookup</c></returns>
-        private ClientFile FindFilesWithExactNameAndPathButWrongHash(string FileName, string DirectoryPath, byte[] FileHash)
+        /// <returns><c>BackupFileLookup</c></returns>
+        private BackupFile FindFilesWithExactNameAndPathButWrongHash(string FileName, string DirectoryPath, byte[] FileHash)
         {
             using (var db = GetLiteDBInstance())
             {
-                ClientFileLookup result = new ClientFileLookup();
+                BackupFileLookup result = new BackupFileLookup();
 
-                var clientFilesCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
-                var matchesOnHash = clientFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHash != FileHash);
+                var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
+                var matchesOnHash = backupFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHash != FileHash);
 
                 foreach (var file in matchesOnHash)
                 {
@@ -250,8 +250,8 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// Returns all of the client files in the database.
         /// </summary>
-        /// <returns><c>ClientFiles</c></returns>
-        public ClientFiles GetAllClientFiles()
+        /// <returns><c>BackupFiles</c></returns>
+        public BackupFiles GetAllBackupFiles()
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -260,15 +260,15 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var clientCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
+                var backupCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
 
-                if (clientCol.Count() > 0)
+                if (backupCol.Count() > 0)
                 {
-                    return new ClientFiles(clientCol.FindAll());
+                    return new BackupFiles(backupCol.FindAll());
                 }
                 else
                 {
-                    return new ClientFiles();
+                    return new BackupFiles();
                 }
             }
         }
@@ -355,8 +355,8 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// Adds a new client file to the database.
         /// </summary>
-        /// <param name="File"><c>ClientFile</c></param>
-        public void AddClientFile(ClientFile File)
+        /// <param name="File"><c>BackupFile</c></param>
+        public void AddBackupFile(BackupFile File)
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -369,7 +369,7 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var targetCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
+                var targetCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
                 targetCol.Insert(File);
             }
         }
@@ -377,8 +377,8 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// Updates an existing client file in the database.
         /// </summary>
-        /// <param name="File"><c>ClientFile</c></param>
-        public void UpdateClientFile(ClientFile File)
+        /// <param name="File"><c>BackupFile</c></param>
+        public void UpdateBackupFile(BackupFile File)
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -391,7 +391,7 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var targetCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
+                var targetCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
                 targetCol.Update(File);
             }
         }
@@ -410,8 +410,8 @@ namespace OzetteLibrary.Database.LiteDB
         /// 5. Low priority unsynced files.
         /// 6. Low priority out-of-sync files.
         /// </remarks>
-        /// <returns><c>ClientFile</c></returns>
-        public ClientFile GetNextFileToBackup()
+        /// <returns><c>BackupFile</c></returns>
+        public BackupFile GetNextFileToBackup()
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -453,12 +453,12 @@ namespace OzetteLibrary.Database.LiteDB
         /// <param name="Priority"></param>
         /// <param name="Status"></param>
         /// <returns></returns>
-        private ClientFile FindNextBackupFileByPriorityAndStatus(FileBackupPriority Priority, FileStatus Status)
+        private BackupFile FindNextBackupFileByPriorityAndStatus(FileBackupPriority Priority, FileStatus Status)
         {
             using (var db = GetLiteDBInstance())
             {
-                var clientFilesCol = db.GetCollection<ClientFile>(Constants.Database.ClientsTableName);
-                return clientFilesCol.FindOne(x => x.Priority == Priority && x.OverallState == Status);
+                var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
+                return backupFilesCol.FindOne(x => x.Priority == Priority && x.OverallState == Status);
             }
         }
     }

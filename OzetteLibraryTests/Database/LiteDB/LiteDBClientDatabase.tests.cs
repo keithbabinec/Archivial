@@ -1,7 +1,6 @@
 ﻿using LiteDB;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -97,7 +96,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
         [TestMethod()]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void LiteDBClientDatabaseGetClientFileThrowsIfPrepareDatabaseHasNotBeenCalled()
+        public void LiteDBClientDatabaseGetBackupFileThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
@@ -106,7 +105,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
 
-            db.GetClientFile(null, null, null);
+            db.GetBackupFile(null, null, null);
         }
 
         [TestMethod()]
@@ -125,7 +124,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
         [TestMethod()]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void LiteDBClientDatabaseGetAllClientFilesThrowsIfPrepareDatabaseHasNotBeenCalled()
+        public void LiteDBClientDatabaseGetAllBackupFilesThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
@@ -134,12 +133,12 @@ namespace OzetteLibraryTests.Database.LiteDB
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
 
-            db.GetAllClientFiles();
+            db.GetAllBackupFiles();
         }
 
         [TestMethod()]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void LiteDBClientDatabaseAddClientFileThrowsIfPrepareDatabaseHasNotBeenCalled()
+        public void LiteDBClientDatabaseAddBackupFileThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
@@ -148,12 +147,12 @@ namespace OzetteLibraryTests.Database.LiteDB
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
 
-            db.AddClientFile(null);
+            db.AddBackupFile(null);
         }
 
         [TestMethod()]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void LiteDBClientDatabaseUpdateClientFileThrowsIfPrepareDatabaseHasNotBeenCalled()
+        public void LiteDBClientDatabaseUpdateBackupFileThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
@@ -162,7 +161,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
 
-            db.UpdateClientFile(null);
+            db.UpdateBackupFile(null);
         }
 
         [TestMethod()]
@@ -208,7 +207,7 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
-        public void LiteDBClientDatabaseGetAllClientFilesReturnsEmptyCollectionInsteadOfNull()
+        public void LiteDBClientDatabaseGetAllBackupFilesReturnsEmptyCollectionInsteadOfNull()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
@@ -219,18 +218,18 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var result = db.GetAllClientFiles();
+            var result = db.GetAllBackupFiles();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod()]
-        public void LiteDBClientDatabaseReturnFilesFromGetAllClientFiles()
+        public void LiteDBClientDatabaseReturnFilesFromGetAllBackupFiles()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
-            // add a target using API AddClientFile()
+            // add a target using API AddBackupFile()
             // then manually check the stream
 
             var ms = new MemoryStream();
@@ -242,11 +241,11 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
+            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
 
-            db.AddClientFile(t);
+            db.AddBackupFile(t);
 
-            var result = db.GetAllClientFiles();
+            var result = db.GetAllBackupFiles();
 
             int fileCount = 0;
             foreach (var file in result)
@@ -260,11 +259,11 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
-        public void LiteDBClientDatabaseCanAddClientFileSuccessfully()
+        public void LiteDBClientDatabaseCanAddBackupFileSuccessfully()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
-            // add a target using API AddClientFile()
+            // add a target using API AddBackupFile()
             // then manually check the stream
 
             var ms = new MemoryStream();
@@ -276,13 +275,13 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
+            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
 
-            db.AddClientFile(t);
+            db.AddBackupFile(t);
 
             var liteDB = new LiteDatabase(ms);
-            var clientFileCol = liteDB.GetCollection<OzetteLibrary.Models.ClientFile>(OzetteLibrary.Constants.Database.ClientsTableName);
-            var result = clientFileCol.FindAll();
+            var backupFileCol = liteDB.GetCollection<OzetteLibrary.Models.BackupFile>(OzetteLibrary.Constants.Database.FilesTableName);
+            var result = backupFileCol.FindAll();
 
             int fileCount = 0;
             foreach (var file in result)
@@ -296,11 +295,11 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
-        public void LiteDBClientDatabaseCanUpdateClientFileSuccessfully()
+        public void LiteDBClientDatabaseCanUpdateBackupFileSuccessfully()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
 
-            // add a target using API AddClientFile()
+            // add a target using API AddBackupFile()
             // then manually check the stream
 
             var ms = new MemoryStream();
@@ -312,17 +311,17 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
+            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
 
-            db.AddClientFile(t);
+            db.AddBackupFile(t);
 
             t.SetLastCheckedTimeStamp();
 
-            db.UpdateClientFile(t);
+            db.UpdateBackupFile(t);
 
             var liteDB = new LiteDatabase(ms);
-            var clientFileCol = liteDB.GetCollection<OzetteLibrary.Models.ClientFile>(OzetteLibrary.Constants.Database.ClientsTableName);
-            var result = clientFileCol.FindAll();
+            var backupFileCol = liteDB.GetCollection<OzetteLibrary.Models.BackupFile>(OzetteLibrary.Constants.Database.FilesTableName);
+            var result = backupFileCol.FindAll();
 
             int fileCount = 0;
             foreach (var file in result)
@@ -338,7 +337,7 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
-        public void LiteDBClientDatabaseGetClientFileReturnsNewFileExample()
+        public void LiteDBClientDatabaseGetBackupFileReturnsNewFileExample()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
             OzetteLibrary.Crypto.Hasher hasher = new OzetteLibrary.Crypto.Hasher(logger);
@@ -352,22 +351,22 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
+            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
 
             t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium),
                           hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium));
 
             t.SetLastCheckedTimeStamp();
 
-            var result = db.GetClientFile(info.Name, info.DirectoryName, t.GetFileHash());
+            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHash());
 
             Assert.IsNotNull(result);
             Assert.IsNull(result.File);
-            Assert.AreEqual(OzetteLibrary.Models.ClientFileLookupResult.New, result.Result);
+            Assert.AreEqual(OzetteLibrary.Models.BackupFileLookupResult.New, result.Result);
         }
 
         [TestMethod()]
-        public void LiteDBClientDatabaseGetClientFileReturnsExistingFileExample()
+        public void LiteDBClientDatabaseGetBackupFileReturnsExistingFileExample()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
             OzetteLibrary.Crypto.Hasher hasher = new OzetteLibrary.Crypto.Hasher(logger);
@@ -381,23 +380,23 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
+            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
 
             t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium),
                           hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium));
 
             t.SetLastCheckedTimeStamp();
 
-            db.AddClientFile(t);
-            var result = db.GetClientFile(info.Name, info.DirectoryName, t.GetFileHash());
+            db.AddBackupFile(t);
+            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHash());
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
-            Assert.AreEqual(OzetteLibrary.Models.ClientFileLookupResult.Existing, result.Result);
+            Assert.AreEqual(OzetteLibrary.Models.BackupFileLookupResult.Existing, result.Result);
         }
 
         [TestMethod()]
-        public void LiteDBClientDatabaseGetClientFileReturnsUpdatedFileExample()
+        public void LiteDBClientDatabaseGetBackupFileReturnsUpdatedFileExample()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
             OzetteLibrary.Crypto.Hasher hasher = new OzetteLibrary.Crypto.Hasher(logger);
@@ -411,14 +410,14 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.ClientFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
+            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
 
             t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium),
                           hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium));
 
             t.SetLastCheckedTimeStamp();
 
-            db.AddClientFile(t);
+            db.AddBackupFile(t);
 
             // update the file
             t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.High),
@@ -426,11 +425,11 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             t.SetLastCheckedTimeStamp();
 
-            var result = db.GetClientFile(info.Name, info.DirectoryName, t.GetFileHash());
+            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHash());
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
-            Assert.AreEqual(OzetteLibrary.Models.ClientFileLookupResult.Updated, result.Result);
+            Assert.AreEqual(OzetteLibrary.Models.BackupFileLookupResult.Updated, result.Result);
         }
 
         [TestMethod()]
@@ -691,14 +690,14 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.ClientFile();
+            var c1 = new OzetteLibrary.Models.BackupFile();
             c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
             c1.FileID = Guid.NewGuid();
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
             c1.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
 
-            db.AddClientFile(c1);
+            db.AddBackupFile(c1);
 
             var nextFile = db.GetNextFileToBackup();
             Assert.IsNotNull(nextFile);
@@ -719,14 +718,14 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.ClientFile();
+            var c1 = new OzetteLibrary.Models.BackupFile();
             c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
             c1.FileID = Guid.NewGuid();
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
             c1.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
 
-            db.AddClientFile(c1);
+            db.AddBackupFile(c1);
 
             var nextFile = db.GetNextFileToBackup();
             Assert.IsNotNull(nextFile);
@@ -748,22 +747,22 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.ClientFile();
+            var c1 = new OzetteLibrary.Models.BackupFile();
             c1.FileID = Guid.NewGuid();
             c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
             c1.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
 
-            var c2 = new OzetteLibrary.Models.ClientFile();
+            var c2 = new OzetteLibrary.Models.BackupFile();
             c2.FileID = Guid.NewGuid();
             c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
             c2.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
 
-            db.AddClientFile(c1);
-            db.AddClientFile(c2);
+            db.AddBackupFile(c1);
+            db.AddBackupFile(c2);
 
             var nextFile = db.GetNextFileToBackup();
             Assert.IsNotNull(nextFile);
@@ -784,30 +783,30 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.ClientFile();
+            var c1 = new OzetteLibrary.Models.BackupFile();
             c1.FileID = Guid.NewGuid();
             c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
             c1.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
 
-            var c2 = new OzetteLibrary.Models.ClientFile();
+            var c2 = new OzetteLibrary.Models.BackupFile();
             c2.FileID = Guid.NewGuid();
             c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
             c2.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
 
-            var c3 = new OzetteLibrary.Models.ClientFile();
+            var c3 = new OzetteLibrary.Models.BackupFile();
             c3.FileID = Guid.NewGuid();
             c3.Priority = OzetteLibrary.Models.FileBackupPriority.High;
             c3.Filename = "test3.mp3";
             c3.Directory = "C:\\music";
             c3.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
 
-            db.AddClientFile(c1);
-            db.AddClientFile(c2);
-            db.AddClientFile(c3);
+            db.AddBackupFile(c1);
+            db.AddBackupFile(c2);
+            db.AddBackupFile(c3);
 
             var nextFile = db.GetNextFileToBackup();
             Assert.IsNotNull(nextFile);
@@ -828,30 +827,30 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.ClientFile();
+            var c1 = new OzetteLibrary.Models.BackupFile();
             c1.FileID = Guid.NewGuid();
             c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
             c1.OverallState = OzetteLibrary.Models.FileStatus.Synced;
 
-            var c2 = new OzetteLibrary.Models.ClientFile();
+            var c2 = new OzetteLibrary.Models.BackupFile();
             c2.FileID = Guid.NewGuid();
             c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
             c2.OverallState = OzetteLibrary.Models.FileStatus.InProgress;
 
-            var c3 = new OzetteLibrary.Models.ClientFile();
+            var c3 = new OzetteLibrary.Models.BackupFile();
             c3.FileID = Guid.NewGuid();
             c3.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
             c3.Filename = "test3.mp3";
             c3.Directory = "C:\\music";
             c3.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
 
-            db.AddClientFile(c1);
-            db.AddClientFile(c2);
-            db.AddClientFile(c3);
+            db.AddBackupFile(c1);
+            db.AddBackupFile(c2);
+            db.AddBackupFile(c3);
 
             var nextFile = db.GetNextFileToBackup();
             Assert.IsNotNull(nextFile);
@@ -873,22 +872,22 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.ClientFile();
+            var c1 = new OzetteLibrary.Models.BackupFile();
             c1.FileID = Guid.NewGuid();
             c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
             c1.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
 
-            var c2 = new OzetteLibrary.Models.ClientFile();
+            var c2 = new OzetteLibrary.Models.BackupFile();
             c2.FileID = Guid.NewGuid();
             c2.Priority = OzetteLibrary.Models.FileBackupPriority.High;
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
             c2.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
 
-            db.AddClientFile(c1);
-            db.AddClientFile(c2);
+            db.AddBackupFile(c1);
+            db.AddBackupFile(c2);
 
             var nextFile = db.GetNextFileToBackup();
             Assert.IsNotNull(nextFile);
@@ -910,22 +909,22 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.ClientFile();
+            var c1 = new OzetteLibrary.Models.BackupFile();
             c1.FileID = Guid.NewGuid();
             c1.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
             c1.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
 
-            var c2 = new OzetteLibrary.Models.ClientFile();
+            var c2 = new OzetteLibrary.Models.BackupFile();
             c2.FileID = Guid.NewGuid();
             c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
             c2.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
 
-            db.AddClientFile(c1);
-            db.AddClientFile(c2);
+            db.AddBackupFile(c1);
+            db.AddBackupFile(c2);
 
             var nextFile = db.GetNextFileToBackup();
             Assert.IsNotNull(nextFile);

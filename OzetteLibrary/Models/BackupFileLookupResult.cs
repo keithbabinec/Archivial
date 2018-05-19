@@ -8,7 +8,7 @@
     /// The lookup included 3-factors: file name, file location (directory), and file hash.
     /// Depending on how these factors have changed or not changed, results in one of the listed states below.
     /// </remarks>
-    public enum ClientFileLookupResult
+    public enum BackupFileLookupResult
     {
         /// <summary>
         /// The file is new to the database.

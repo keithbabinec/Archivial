@@ -281,27 +281,27 @@ namespace OzetteLibrary.Client.Sources
                 return;
             }
             
-            var fileIndexLookup = Database.GetClientFile(fileInfo.Name, fileInfo.DirectoryName, hash);
+            var fileIndexLookup = Database.GetBackupFile(fileInfo.Name, fileInfo.DirectoryName, hash);
 
-            if (fileIndexLookup.Result == ClientFileLookupResult.New)
+            if (fileIndexLookup.Result == BackupFileLookupResult.New)
             {
                 ProcessNewFile(fileInfo, hash, hashType, source.Priority);
                 results.NewFilesFound++;
                 results.NewBytesFound += (ulong)fileInfo.Length;
             }
-            else if (fileIndexLookup.Result == ClientFileLookupResult.Updated)
+            else if (fileIndexLookup.Result == BackupFileLookupResult.Updated)
             {
                 ProcessUpdatedFile(fileIndexLookup, fileInfo, hash, hashType);
                 results.UpdatedFilesFound++;
                 results.UpdatedBytesFound += (ulong)fileInfo.Length;
             }
-            else if (fileIndexLookup.Result == ClientFileLookupResult.Existing)
+            else if (fileIndexLookup.Result == BackupFileLookupResult.Existing)
             {
                 ProcessExistingFile(fileIndexLookup, fileInfo);
             }
             else
             {
-                throw new InvalidOperationException("Unexpected ClientFileLookupResult type: " + fileIndexLookup.Result);
+                throw new InvalidOperationException("Unexpected BackupFileLookupResult type: " + fileIndexLookup.Result);
             }
 
             results.TotalFilesFound++;
@@ -320,12 +320,12 @@ namespace OzetteLibrary.Client.Sources
             Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is new.", fileInfo.Name));
 
             // brand new file
-            var clientFile = new ClientFile(fileInfo, priority);
-            clientFile.SetFileHashWithAlgorithm(fileHash, algorithm);
-            clientFile.ResetCopyState();
-            clientFile.SetLastCheckedTimeStamp();
+            var backupFile = new BackupFile(fileInfo, priority);
+            backupFile.SetFileHashWithAlgorithm(fileHash, algorithm);
+            backupFile.ResetCopyState();
+            backupFile.SetLastCheckedTimeStamp();
 
-            Database.AddClientFile(clientFile);
+            Database.AddBackupFile(backupFile);
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="fileInfo">FileInfo details</param>
         /// <param name="fileHash">The computed hash</param>
         /// <param name="algorithm">Hash algorithm used to compute the hash</param>
-        private void ProcessUpdatedFile(ClientFileLookup fileLookup, FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
+        private void ProcessUpdatedFile(BackupFileLookup fileLookup, FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
         {
             Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is updated.", fileInfo.Name));
 
@@ -344,7 +344,7 @@ namespace OzetteLibrary.Client.Sources
             fileLookup.File.ResetCopyState();
             fileLookup.File.SetLastCheckedTimeStamp();
 
-            Database.UpdateClientFile(fileLookup.File);
+            Database.UpdateBackupFile(fileLookup.File);
         }
 
         /// <summary>
@@ -352,14 +352,14 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         /// <param name="fileLookup">File index lookup result</param>
         /// <param name="fileInfo">FileInfo details</param>
-        private void ProcessExistingFile(ClientFileLookup fileLookup, FileInfo fileInfo)
+        private void ProcessExistingFile(BackupFileLookup fileLookup, FileInfo fileInfo)
         {
             Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is unchanged.", fileInfo.Name));
 
             // existing file
             // should update the last checked flag
             fileLookup.File.SetLastCheckedTimeStamp();
-            Database.UpdateClientFile(fileLookup.File);
+            Database.UpdateBackupFile(fileLookup.File);
         }
     }
 }

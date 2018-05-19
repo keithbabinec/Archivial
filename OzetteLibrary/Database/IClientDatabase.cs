@@ -18,14 +18,14 @@ namespace OzetteLibrary.Database
         /// <param name="FileName">Name of the file (ex: document.doc)</param>
         /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
         /// <param name="FileHash">File hash expressed as a byte array.</param>
-        /// <returns><c>ClientFileLookup</c></returns>
-        ClientFileLookup GetClientFile(string FileName, string DirectoryPath, byte[] FileHash);
+        /// <returns><c>BackupFileLookup</c></returns>
+        BackupFileLookup GetBackupFile(string FileName, string DirectoryPath, byte[] FileHash);
 
         /// <summary>
         /// Returns all of the client files in the database.
         /// </summary>
-        /// <returns><c>ClientFiles</c></returns>
-        ClientFiles GetAllClientFiles();
+        /// <returns><c>BackupFile</c></returns>
+        BackupFiles GetAllBackupFiles();
 
         /// <summary>
         /// Returns all source locations defined in the database.
@@ -48,14 +48,14 @@ namespace OzetteLibrary.Database
         /// <summary>
         /// Adds a new client file to the database.
         /// </summary>
-        /// <param name="File"><c>ClientFile</c></param>
-        void AddClientFile(ClientFile File);
+        /// <param name="File"><c>BackupFile</c></param>
+        void AddBackupFile(BackupFile File);
 
         /// <summary>
         /// Updates an existing client file in the database.
         /// </summary>
-        /// <param name="File"><c>ClientFile</c></param>
-        void UpdateClientFile(ClientFile File);
+        /// <param name="File"><c>BackupFile</c></param>
+        void UpdateBackupFile(BackupFile File);
 
         /// <summary>
         /// Gets the next file that needs to be backed up.
@@ -63,7 +63,7 @@ namespace OzetteLibrary.Database
         /// <remarks>
         /// If no files need to be backed up, return null.
         /// </remarks>
-        /// <returns><c>ClientFile</c></returns>
-        ClientFile GetNextFileToBackup();
+        /// <returns><c>BackupFile</c></returns>
+        BackupFile GetNextFileToBackup();
     }
 }

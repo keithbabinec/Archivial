@@ -69,7 +69,7 @@ namespace OzetteLibrary.Client
                     // check to see if we have any files to backup.
                     // return the next one to backup.
 
-                    ClientFile nextFileToBackup = SafeGetNextFileToBackup();
+                    BackupFile nextFileToBackup = SafeGetNextFileToBackup();
 
                     if (nextFileToBackup != null)
                     {
@@ -118,7 +118,7 @@ namespace OzetteLibrary.Client
         /// This function is marked as safe and should not throw exceptions.
         /// </remarks>
         /// <returns></returns>
-        private ClientFile SafeGetNextFileToBackup()
+        private BackupFile SafeGetNextFileToBackup()
         {
             try
             {
