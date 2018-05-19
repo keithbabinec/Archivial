@@ -6,9 +6,14 @@
     public static class Database
     {
         /// <summary>
-        /// A string constant for the clients table name.
+        /// A string constant for the backup files table name.
         /// </summary>
         public const string FilesTableName = "BackupFiles";
+
+        /// <summary>
+        /// A string constant for the directory map table name.
+        /// </summary>
+        public const string DirectoryMapTableName = "DirectoryMap";
 
         /// <summary>
         /// A string constant for the targets table name.

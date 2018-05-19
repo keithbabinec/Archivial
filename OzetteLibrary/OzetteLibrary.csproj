@@ -78,9 +78,12 @@
     <Compile Include="Models\BackupFileLookup.cs" />
     <Compile Include="Models\BackupFileLookupResult.cs" />
     <Compile Include="Models\BackupFiles.cs" />
+    <Compile Include="Models\DirectoryMapItem.cs" />
     <Compile Include="Models\Exceptions\SourceLocationException.cs" />
     <Compile Include="Models\Exceptions\SourceLocationInvalidIDException.cs" />
     <Compile Include="Models\Exceptions\SourceLocationsDuplicateIDException.cs" />
+    <Compile Include="Models\ProviderPath.cs" />
+    <Compile Include="Models\ProviderTypes.cs" />
     <Compile Include="Models\StartupResults.cs" />
     <Compile Include="Models\FileBackupPriority.cs" />
     <Compile Include="Models\ScanResults.cs" />

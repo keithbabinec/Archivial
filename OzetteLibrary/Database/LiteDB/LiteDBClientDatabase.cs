@@ -98,11 +98,14 @@ namespace OzetteLibrary.Database.LiteDB
                 // the action of 'getting' the collection will create it if missing.
                 // EnsureIndex() will also only create the indexes if they are missing.
 
-                var clientCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
-                clientCol.EnsureIndex(x => x.FileID);
-                clientCol.EnsureIndex(x => x.Filename);
-                clientCol.EnsureIndex(x => x.Directory);
-                clientCol.EnsureIndex(x => x.FileHash);
+                var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
+                backupFilesCol.EnsureIndex(x => x.FileID);
+                backupFilesCol.EnsureIndex(x => x.Filename);
+                backupFilesCol.EnsureIndex(x => x.Directory);
+                backupFilesCol.EnsureIndex(x => x.FileHash);
+
+                var dirMapCol = db.GetCollection<DirectoryMapItem>(Constants.Database.DirectoryMapTableName);
+                dirMapCol.EnsureIndex(x => x.LocalPath);
 
                 var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
                 sourcesCol.EnsureIndex(x => x.ID);
