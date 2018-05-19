@@ -28,6 +28,16 @@ namespace OzetteLibrary.Database
         BackupFiles GetAllBackupFiles();
 
         /// <summary>
+        /// Returns the directory map item for the specified local directory.
+        /// </summary>
+        /// <remarks>
+        /// A new directory map item will be created if none currently exists for the specified folder.
+        /// </remarks>
+        /// <param name="DirectoryPath">Local directory path. Ex: 'C:\bin\programs'</param>
+        /// <returns><c>DirectoryMapItem</c></returns>
+        DirectoryMapItem GetDirectoryMapItem(string DirectoryPath);
+
+        /// <summary>
         /// Returns all source locations defined in the database.
         /// </summary>
         /// <returns><c>SourceLocations</c></returns>

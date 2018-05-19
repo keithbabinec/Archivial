@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace OzetteLibrary.Models
 {
@@ -16,11 +16,32 @@ namespace OzetteLibrary.Models
         public string LocalPath { get; set; }
 
         /// <summary>
-        /// A collection of provider paths for where this folder maps to.
+        /// The unique identifier for this directory.
         /// </summary>
-        /// <example>
-        /// Ex: [{ Provider: "ProviderTypes.Azure", RemotePath: "storage-container-c7839365-1c1a-4f41-bc90-2daa26c832cf" }]
-        /// </example>
-        public List<ProviderPath> ProviderPaths { get; set; }
+        /// <remarks>
+        /// This ID is used to calculate the remote path for each cloud storage provider.
+        /// For example: 'container-c7839365-1c1a-4f41-bc90-2daa26c832cf'.
+        /// </remarks>
+        public Guid ID { get; set; }
+
+        /// <summary>
+        /// Calculates the provider-specific remote path. 
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <returns></returns>
+        public string GetRemotePath(ProviderTypes Provider)
+        {
+            // Different cloud providers may have different naming rules for URIs.
+            // Azure for example is all lowercase required.
+
+            if (Provider == ProviderTypes.Azure)
+            {
+                return string.Format("{0}-{1}", Constants.Logging.AppName, ID.ToString()).ToLower();
+            }
+            else
+            {
+                throw new NotImplementedException("unexpected provider type: " + Provider.ToString());
+            }
+        }
     }
 }

@@ -106,6 +106,7 @@ namespace OzetteLibrary.Database.LiteDB
 
                 var dirMapCol = db.GetCollection<DirectoryMapItem>(Constants.Database.DirectoryMapTableName);
                 dirMapCol.EnsureIndex(x => x.LocalPath);
+                dirMapCol.EnsureIndex(x => x.ID);
 
                 var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
                 sourcesCol.EnsureIndex(x => x.ID);
@@ -234,8 +235,6 @@ namespace OzetteLibrary.Database.LiteDB
         {
             using (var db = GetLiteDBInstance())
             {
-                BackupFileLookup result = new BackupFileLookup();
-
                 var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
                 var matchesOnHash = backupFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHash != FileHash);
 
@@ -272,6 +271,53 @@ namespace OzetteLibrary.Database.LiteDB
                 else
                 {
                     return new BackupFiles();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the directory map item for the specified local directory.
+        /// </summary>
+        /// <remarks>
+        /// A new directory map item will be created if none currently exists for the specified folder.
+        /// </remarks>
+        /// <param name="DirectoryPath">Local directory path. Ex: 'C:\bin\programs'</param>
+        /// <returns><c>DirectoryMapItem</c></returns>
+        public DirectoryMapItem GetDirectoryMapItem(string DirectoryPath)
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+            if (string.IsNullOrWhiteSpace(DirectoryPath))
+            {
+                throw new ArgumentException("Must provide a valid directory path.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var mapItemsCol = db.GetCollection<DirectoryMapItem>(Constants.Database.DirectoryMapTableName);
+                var foundDir = mapItemsCol.FindOne(x => x.LocalPath == DirectoryPath);
+
+                if (foundDir != null)
+                {
+                    // directory mapping already exists.
+                    // return it.
+
+                    return foundDir;
+                }
+                else
+                {
+                    // directory mapping is not found.
+                    // make a new one and save it.
+
+                    DirectoryMapItem mappedItem = new DirectoryMapItem();
+                    mappedItem.ID = Guid.NewGuid();
+                    mappedItem.LocalPath = DirectoryPath;
+
+                    mapItemsCol.Insert(mappedItem);
+
+                    return mappedItem;
                 }
             }
         }
