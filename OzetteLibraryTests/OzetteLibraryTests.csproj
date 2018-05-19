@@ -59,7 +59,6 @@
     <Compile Include="Client\Sources\Scanner.tests.cs" />
     <Compile Include="Crypto\Hasher.tests.cs" />
     <Compile Include="Database\LiteDB\LiteDBClientDatabase.tests.cs" />
-    <Compile Include="Database\LiteDB\LiteDBTargetDatabase.tests.cs" />
     <Compile Include="Models\BackupFile.tests.cs" />
     <Compile Include="Models\SourceLocation.tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

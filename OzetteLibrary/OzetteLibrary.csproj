@@ -70,9 +70,7 @@
     <Compile Include="Constants\Logging.cs" />
     <Compile Include="Database\IClientDatabase.cs" />
     <Compile Include="Database\IDatabase.cs" />
-    <Compile Include="Database\ITargetDatabase.cs" />
     <Compile Include="Database\LiteDB\LiteDBClientDatabase.cs" />
-    <Compile Include="Database\LiteDB\LiteDBTargetDatabase.cs" />
     <Compile Include="Events\EngineStoppedReason.cs" />
     <Compile Include="Logging\Default\Logger.cs" />
     <Compile Include="Logging\ILogger.cs" />
@@ -101,6 +99,7 @@
     <Compile Include="ServiceCore\ServiceOptions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Providers\Azure\" />
     <Folder Include="Target\" />
   </ItemGroup>
   <ItemGroup>
