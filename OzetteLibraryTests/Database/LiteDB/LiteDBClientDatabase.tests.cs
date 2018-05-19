@@ -207,6 +207,116 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseGetDirectoryMapItemThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.GetDirectoryMapItem(null);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void LiteDBClientDatabaseGetDirectoryMapItemThrowsIfNullDirectoryIsPassed()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            db.GetDirectoryMapItem(null);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void LiteDBClientDatabaseGetDirectoryMapItemThrowsIfEmptyDirectoryIsPassed()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            db.GetDirectoryMapItem("");
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetDirectoryMapItemCorrectlyReturnsNewDirectory()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var item = db.GetDirectoryMapItem("C:\\Bin\\Programs");
+
+            Assert.IsNotNull(item);
+            Assert.IsTrue(item.ID != Guid.Empty);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetDirectoryMapItemCorrectlyReturnsExistingDirectory()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var item = db.GetDirectoryMapItem("C:\\Bin\\Programs");
+
+            Assert.IsNotNull(item);
+            Assert.IsTrue(item.ID != Guid.Empty);
+
+            var item2 = db.GetDirectoryMapItem("C:\\Bin\\Programs");
+
+            Assert.IsNotNull(item2);
+            Assert.IsTrue(item.ID == item2.ID);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetDirectoryMapItemCorrectlyReturnsExistingDirectoryWhenCaseDoesntMatch()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var item = db.GetDirectoryMapItem("c:\\bin\\PROGRAMS");
+
+            Assert.IsNotNull(item);
+            Assert.IsTrue(item.ID != Guid.Empty);
+
+            var item2 = db.GetDirectoryMapItem("C:\\Bin\\Programs");
+
+            Assert.IsNotNull(item2);
+            Assert.IsTrue(item.ID == item2.ID);
+        }
+
+        [TestMethod()]
         public void LiteDBClientDatabaseGetAllBackupFilesReturnsEmptyCollectionInsteadOfNull()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();

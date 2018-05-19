@@ -294,10 +294,18 @@ namespace OzetteLibrary.Database.LiteDB
                 throw new ArgumentException("Must provide a valid directory path.");
             }
 
+            // folder matching is case-insensitive in Windows. 
+            // ensure the folder lookup is performed in this way to ensure consistent results.
+            
+            // do this by storing/searching all results in lowercase.
+            // this is faster then doing case-insensitive lookup matches.
+
+            string lowerDirPath = DirectoryPath.ToLower();
+
             using (var db = GetLiteDBInstance())
             {
                 var mapItemsCol = db.GetCollection<DirectoryMapItem>(Constants.Database.DirectoryMapTableName);
-                var foundDir = mapItemsCol.FindOne(x => x.LocalPath == DirectoryPath);
+                var foundDir = mapItemsCol.FindOne(x => x.LocalPath == lowerDirPath);
 
                 if (foundDir != null)
                 {
@@ -313,7 +321,7 @@ namespace OzetteLibrary.Database.LiteDB
 
                     DirectoryMapItem mappedItem = new DirectoryMapItem();
                     mappedItem.ID = Guid.NewGuid();
-                    mappedItem.LocalPath = DirectoryPath;
+                    mappedItem.LocalPath = lowerDirPath;
 
                     mapItemsCol.Insert(mappedItem);
 
