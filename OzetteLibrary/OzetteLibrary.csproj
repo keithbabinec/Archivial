@@ -82,8 +82,8 @@
     <Compile Include="Models\Exceptions\SourceLocationException.cs" />
     <Compile Include="Models\Exceptions\SourceLocationInvalidIDException.cs" />
     <Compile Include="Models\Exceptions\SourceLocationsDuplicateIDException.cs" />
-    <Compile Include="Providers\Azure\AzureProviderOptions.cs" />
     <Compile Include="Providers\ProviderOptions.cs" />
+    <Compile Include="Providers\ProviderOptionsLoader.cs" />
     <Compile Include="Providers\ProviderTypes.cs" />
     <Compile Include="Models\StartupResults.cs" />
     <Compile Include="Models\FileBackupPriority.cs" />
