@@ -1,4 +1,6 @@
 ﻿using OzetteLibrary.Models;
+using OzetteLibrary.Providers;
+using System.Collections.Generic;
 
 namespace OzetteLibrary.Database
 {
@@ -7,6 +9,25 @@ namespace OzetteLibrary.Database
     /// </summary>
     public interface IClientDatabase : IDatabase
     {
+        /// <summary>
+        /// Commits the provider options to the database.
+        /// </summary>
+        /// <param name="Provider">A list of Provider options</param>
+        void SetProviders(List<ProviderOptions> Provider);
+
+        /// <summary>
+        /// Returns all of the providers defined in the database.
+        /// </summary>
+        /// <returns>An array of Provider types</returns>
+        ProviderTypes[] GetProvidersList();
+
+        /// <summary>
+        /// Returns the provider options for the specified provider.
+        /// </summary>
+        /// <param name="ProviderType">A single provider type.</param>
+        /// <returns><c>ProviderOptions</c></returns>
+        ProviderOptions GetProviderOptions(ProviderTypes ProviderType);
+
         /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.
         /// </summary>

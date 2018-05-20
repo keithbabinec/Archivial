@@ -1,7 +1,9 @@
 ﻿using LiteDB;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Models;
+using OzetteLibrary.Providers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OzetteLibrary.Database.LiteDB
@@ -162,6 +164,34 @@ namespace OzetteLibrary.Database.LiteDB
         /// A flag to indicate if the database has been prepared.
         /// </summary>
         private bool DatabaseHasBeenPrepared;
+
+        /// <summary>
+        /// Commits the provider options to the database.
+        /// </summary>
+        /// <param name="Provider">A list of Provider options</param>
+        public void SetProviders(List<ProviderOptions> Provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns all of the providers defined in the database.
+        /// </summary>
+        /// <returns>An array of Provider types</returns>
+        public ProviderTypes[] GetProvidersList()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns the provider options for the specified provider.
+        /// </summary>
+        /// <param name="ProviderType">A single provider type.</param>
+        /// <returns><c>ProviderOptions</c></returns>
+        public ProviderOptions GetProviderOptions(ProviderTypes ProviderType)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.
