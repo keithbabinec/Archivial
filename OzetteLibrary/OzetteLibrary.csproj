@@ -105,9 +105,7 @@
     <Compile Include="ServiceCore\Initialization.cs" />
     <Compile Include="ServiceCore\ServiceOptions.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Target\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
