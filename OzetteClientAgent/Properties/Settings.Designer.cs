@@ -85,5 +85,14 @@ namespace OzetteClientAgent.Properties {
                 return ((string)(this["SourcesFilePath"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Ozette\\Client\\ProviderOptions.json")]
+        public string ProvidersFilePath {
+            get {
+                return ((string)(this["ProvidersFilePath"]));
+            }
+        }
     }
 }
