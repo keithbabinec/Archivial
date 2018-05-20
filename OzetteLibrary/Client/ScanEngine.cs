@@ -5,8 +5,10 @@ using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Models;
 using OzetteLibrary.Models.Exceptions;
+using OzetteLibrary.Providers;
 using OzetteLibrary.ServiceCore;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace OzetteLibrary.Client
@@ -71,7 +73,12 @@ namespace OzetteLibrary.Client
 
                     var sources = SafeImportSources(Options.SourcesFilePath);
 
-                    if (sources != null)
+                    // second: check to see if we have any valid providers defined.
+                    // we can't backup to any target locations without providers loaded.
+
+                    bool loadedProviders = SafeImportProviders(Options.ProviderOptionsFilePath);
+
+                    if (sources != null && loadedProviders)
                     {
                         foreach (var source in sources)
                         {
@@ -178,6 +185,84 @@ namespace OzetteLibrary.Client
                 Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToLoadScanSources);
 
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Imports providers into the database.
+        /// </summary>
+        /// <remarks>
+        /// This function is marked as safe and should not throw exceptions.
+        /// </remarks>
+        /// <param name="providersFile"></param>
+        /// <returns></returns>
+        private bool SafeImportProviders(string providersFile)
+        {
+            try
+            {
+                Logger.WriteTraceMessage("Importing provider options sources from: " + providersFile);
+
+                ProviderOptionsLoader loader = new ProviderOptionsLoader();
+                List<ProviderOptions> result = loader.LoadOptionsFile(providersFile);
+
+                Logger.WriteTraceMessage("Successfully loaded provider options file.");
+
+                if (result == null || result.Count == 0)
+                {
+                    Logger.WriteTraceMessage("No provider options defined in the scan source file.");
+                    return false;
+                }
+
+                if (ValidateProviderOptions(result) == true)
+                {
+                    // always ensure the providers are updated in the database.
+                    var clientDB = Database as IClientDatabase;
+                    clientDB.SetProviders(result);
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                string err = "Failed to import provider options.";
+                Logger.WriteTraceError(err, ex, Logger.GenerateFullContextStackTrace());
+                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToLoadProviderOptions);
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Validates that provider options are usable.
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        private bool ValidateProviderOptions(List<ProviderOptions> providers)
+        {
+            try
+            {
+                Logger.WriteTraceMessage(string.Format("Validating {0} provider option set(s).", providers.Count));
+
+                foreach (var optionSet in providers)
+                {
+                    optionSet.Validate();
+                }
+
+                Logger.WriteTraceMessage("All scan sources validated.");
+
+                return true;
+            }
+            catch (ProviderOptionsException ex)
+            {
+                string err = "Failed to validate provider options.";
+                Logger.WriteTraceError(err, ex, Logger.GenerateFullContextStackTrace());
+                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToValidateProviderOptions);
+
+                return false;
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OzetteLibrary.Providers
 {
@@ -16,5 +17,13 @@ namespace OzetteLibrary.Providers
         /// A collection options in key-value pair form.
         /// </summary>
         public Dictionary<string, string> Options { get; set; }
+
+        /// <summary>
+        /// Validates that the provider options are usable.
+        /// </summary>
+        public void Validate()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

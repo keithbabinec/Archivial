@@ -29,6 +29,11 @@ namespace OzetteLibrary.ServiceCore
         public string SourcesFilePath { get; set; }
 
         /// <summary>
+        /// A path to the provider options file.
+        /// </summary>
+        public string ProviderOptionsFilePath { get; set; }
+
+        /// <summary>
         /// High priority scan frequency
         /// </summary>
         public int HighPriorityScanFrequencyInHours { get; set; }
@@ -42,7 +47,7 @@ namespace OzetteLibrary.ServiceCore
         /// Low priority scan frequency
         /// </summary>
         public int LowPriorityScanFrequencyInHours { get; set; }
-
+        
         /// <summary>
         /// Base constructor.
         /// </summary>
@@ -65,6 +70,7 @@ namespace OzetteLibrary.ServiceCore
             EventlogName = (settings[nameof(EventlogName)] as SettingsProperty)?.DefaultValue.ToString();
             DatabaseConnectionString = (settings[nameof(DatabaseConnectionString)] as SettingsProperty)?.DefaultValue.ToString();
             SourcesFilePath = (settings[nameof(SourcesFilePath)] as SettingsProperty)?.DefaultValue.ToString();
+            ProviderOptionsFilePath = (settings[nameof(ProviderOptionsFilePath)] as SettingsProperty)?.DefaultValue.ToString();
             HighPriorityScanFrequencyInHours = Convert.ToInt32((settings[nameof(HighPriorityScanFrequencyInHours)] as SettingsProperty)?.DefaultValue);
             MedPriorityScanFrequencyInHours = Convert.ToInt32((settings[nameof(MedPriorityScanFrequencyInHours)] as SettingsProperty)?.DefaultValue);
             LowPriorityScanFrequencyInHours = Convert.ToInt32((settings[nameof(LowPriorityScanFrequencyInHours)] as SettingsProperty)?.DefaultValue);

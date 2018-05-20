@@ -79,5 +79,15 @@
         /// Event ID: Failed to grab the next file that needs to be backed up.
         /// </summary>
         public const int FailedToGetNextFileToBackup = 2005;
+
+        /// <summary>
+        /// Event ID: Failed to load provider options.
+        /// </summary>
+        public const int FailedToLoadProviderOptions = 2006;
+
+        /// <summary>
+        /// Event ID: Failed to validate provider options.
+        /// </summary>
+        public const int FailedToValidateProviderOptions = 2007;
     }
 }
