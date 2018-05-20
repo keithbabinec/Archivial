@@ -119,7 +119,7 @@ namespace OzetteLibrary.Crypto
         /// <param name="hashAlgorithm"></param>
         /// <param name="streamBytes"></param>
         /// <returns></returns>
-        public byte[] HashFileChunkFromByteArray(HashAlgorithmName hashAlgorithm, byte[] streamBytes)
+        public byte[] HashFileBlockFromByteArray(HashAlgorithmName hashAlgorithm, byte[] streamBytes)
         {
             if (streamBytes == null || streamBytes.Length == 0)
             {

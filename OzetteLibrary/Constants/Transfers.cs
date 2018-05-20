@@ -6,8 +6,8 @@
     public class Transfers
     {
         /// <summary>
-        /// The transfer chunk size.
+        /// The transfer block size.
         /// </summary>
-        public const int TransferChunkSizeBytes = 1048576; // 1MB
+        public const int TransferBlockSizeBytes = 1048576; // 1MB
     }
 }

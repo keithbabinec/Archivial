@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Models
+﻿namespace OzetteLibrary.Providers
 {
     /// <summary>
     /// Describes possible target cloud providers.

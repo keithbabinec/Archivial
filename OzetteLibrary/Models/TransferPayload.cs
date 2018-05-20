@@ -29,12 +29,12 @@ namespace OzetteLibrary.Models
         public long TotalBlocks { get; set; }
 
         /// <summary>
-        /// The expected hash of this payload data chunk.
+        /// The expected hash of this payload data block.
         /// </summary>
         public byte[] ExpectedHash { get; set; }
 
         /// <summary>
-        /// The actual payload/file data chunk.
+        /// The actual payload/file data block.
         /// </summary>
         public byte[] Data { get; set; }
     }

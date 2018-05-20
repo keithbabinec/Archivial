@@ -13,7 +13,7 @@ namespace OzetteLibraryTests.Models
             var item = new OzetteLibrary.Models.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
-            item.GetRemotePath((OzetteLibrary.Models.ProviderTypes.Azure)-1);
+            item.GetRemotePath((OzetteLibrary.Providers.ProviderTypes.Azure)-1);
         }
 
         [TestMethod()]
@@ -23,7 +23,7 @@ namespace OzetteLibraryTests.Models
             item.ID = Guid.NewGuid();
             item.LocalPath = "C:\\Bin\\Programs";
 
-            var path = item.GetRemotePath(OzetteLibrary.Models.ProviderTypes.Azure);
+            var path = item.GetRemotePath(OzetteLibrary.Providers.ProviderTypes.Azure);
 
             Assert.IsNotNull(path);
 
@@ -43,7 +43,7 @@ namespace OzetteLibraryTests.Models
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
 
-            var path = item.GetRemotePath(OzetteLibrary.Models.ProviderTypes.Azure);
+            var path = item.GetRemotePath(OzetteLibrary.Providers.ProviderTypes.Azure);
 
             Assert.IsNotNull(path);
 
@@ -58,7 +58,7 @@ namespace OzetteLibraryTests.Models
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
 
-            var path = item.GetRemotePath(OzetteLibrary.Models.ProviderTypes.Azure);
+            var path = item.GetRemotePath(OzetteLibrary.Providers.ProviderTypes.Azure);
 
             Assert.IsNotNull(path);
 
@@ -78,7 +78,7 @@ namespace OzetteLibraryTests.Models
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
 
-            var path = item.GetRemotePath(OzetteLibrary.Models.ProviderTypes.Azure);
+            var path = item.GetRemotePath(OzetteLibrary.Providers.ProviderTypes.Azure);
 
             Assert.IsNotNull(path);
             Assert.IsTrue(path.Length > 0);

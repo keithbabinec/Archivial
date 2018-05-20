@@ -82,7 +82,7 @@
     <Compile Include="Models\Exceptions\SourceLocationException.cs" />
     <Compile Include="Models\Exceptions\SourceLocationInvalidIDException.cs" />
     <Compile Include="Models\Exceptions\SourceLocationsDuplicateIDException.cs" />
-    <Compile Include="Models\ProviderTypes.cs" />
+    <Compile Include="Providers\ProviderTypes.cs" />
     <Compile Include="Models\StartupResults.cs" />
     <Compile Include="Models\FileBackupPriority.cs" />
     <Compile Include="Models\ScanResults.cs" />
@@ -96,11 +96,14 @@
     <Compile Include="Crypto\Hasher.cs" />
     <Compile Include="Models\BackupFile.cs" />
     <Compile Include="Models\FileStatus.cs" />
+    <Compile Include="Providers\Azure\AzureProviderFileOperations.cs" />
+    <Compile Include="Providers\Azure\AzureProviderFileStatus.cs" />
+    <Compile Include="Providers\IProviderFileOperations.cs" />
+    <Compile Include="Providers\ProviderFileStatus.cs" />
     <Compile Include="ServiceCore\Initialization.cs" />
     <Compile Include="ServiceCore\ServiceOptions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Providers\Azure\" />
     <Folder Include="Target\" />
   </ItemGroup>
   <ItemGroup>

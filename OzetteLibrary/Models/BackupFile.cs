@@ -36,7 +36,7 @@ namespace OzetteLibrary.Models
             Directory = fileInfo.DirectoryName;
             FullSourcePath = fileInfo.FullName;
             FileSizeBytes = fileInfo.Length;
-            TotalFileChunks = CalculateTotalFileBlocks(Constants.Transfers.TransferChunkSizeBytes);
+            TotalFileBlocks = CalculateTotalFileBlocks(Constants.Transfers.TransferBlockSizeBytes);
             Priority = priority;
         }
 
@@ -77,7 +77,7 @@ namespace OzetteLibrary.Models
         /// <summary>
         /// The total number of file transfer blocks.
         /// </summary>
-        public int TotalFileChunks { get; set; }
+        public int TotalFileBlocks { get; set; }
 
         /// <summary>
         /// The hash of the file. 
@@ -198,17 +198,17 @@ namespace OzetteLibrary.Models
         /// <summary>
         /// Returns the expected number of file blocks.
         /// </summary>
-        /// <param name="ChunkSize"></param>
+        /// <param name="BlockSize"></param>
         /// <returns></returns>
-        public int CalculateTotalFileBlocks(int ChunkSize)
+        public int CalculateTotalFileBlocks(int BlockSize)
         {
-            if (ChunkSize == 0)
+            if (BlockSize == 0)
             {
-                throw new ArgumentException("Provide a non-zero value for chunksize.");
+                throw new ArgumentException("Provide a non-zero value for block size.");
             }
 
-            int blocks = Convert.ToInt32((FileSizeBytes / ChunkSize));
-            int remainder = Convert.ToInt32(FileSizeBytes % ChunkSize);
+            int blocks = Convert.ToInt32((FileSizeBytes / BlockSize));
+            int remainder = Convert.ToInt32(FileSizeBytes % BlockSize);
 
             if (remainder > 0)
             {

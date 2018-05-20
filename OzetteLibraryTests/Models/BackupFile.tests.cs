@@ -6,19 +6,19 @@ namespace OzetteLibraryTests.Models
     [TestClass()]
     public class BackupFileTests
     {
-        private const int DefaultChunkSizeBytes = 1024;
+        private const int DefaultBlockSizeBytes = 1024;
 
         [TestMethod()]
         public void BackupFileGetTotalFileBlocksHandlesZeroFileLength()
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 0;
-            Assert.AreEqual(0, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(0, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]
         [ExpectedException(typeof(ArgumentException))]
-        public void BackupFileGetTotalFileBlocksThrowsWhenProvidedZeroChunkSize()
+        public void BackupFileGetTotalFileBlocksThrowsWhenProvidedZeroBlockSize()
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1024;
@@ -30,7 +30,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1024;
-            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]
@@ -38,7 +38,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 2048;
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]
@@ -46,7 +46,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 4096;
-            Assert.AreEqual(4, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(4, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]
@@ -54,7 +54,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 598016;
-            Assert.AreEqual(584, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(584, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]
@@ -62,7 +62,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1023;
-            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]
@@ -70,7 +70,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1;
-            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]
@@ -78,7 +78,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1025;
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]
@@ -86,7 +86,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 1500;
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]
@@ -94,7 +94,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 2046;
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]
@@ -102,7 +102,7 @@ namespace OzetteLibraryTests.Models
         {
             var file = new OzetteLibrary.Models.BackupFile();
             file.FileSizeBytes = 2050;
-            Assert.AreEqual(3, file.CalculateTotalFileBlocks(DefaultChunkSizeBytes));
+            Assert.AreEqual(3, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
         }
 
         [TestMethod()]

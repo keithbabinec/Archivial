@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OzetteLibrary.Providers;
+using System;
 
 namespace OzetteLibrary.Models
 {
@@ -36,7 +37,7 @@ namespace OzetteLibrary.Models
 
             if (Provider == ProviderTypes.Azure)
             {
-                return string.Format("{0}-{1}", Constants.Logging.AppName, ID.ToString()).ToLower();
+                return string.Format("{0}-directory-{1}", Constants.Logging.AppName, ID.ToString()).ToLower();
             }
             else
             {

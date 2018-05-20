@@ -320,25 +320,25 @@ namespace OzetteLibraryTests.Crypto
 
         [TestMethod()]
         [ExpectedException(typeof(ArgumentException))]
-        public void HasherHashFileChunkFromByteArrayThrowsOnBadInput1()
+        public void HasherHashFileBlockFromByteArrayThrowsOnBadInput1()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
-            h.HashFileChunkFromByteArray(HashAlgorithmName.SHA256, null);
+            h.HashFileBlockFromByteArray(HashAlgorithmName.SHA256, null);
         }
 
         [TestMethod()]
         [ExpectedException(typeof(ArgumentException))]
-        public void HasherHashFileChunkFromByteArrayThrowsOnBadInput2()
+        public void HasherHashFileBlockFromByteArrayThrowsOnBadInput2()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
-            h.HashFileChunkFromByteArray(HashAlgorithmName.SHA256, new byte[0]);
+            h.HashFileBlockFromByteArray(HashAlgorithmName.SHA256, new byte[0]);
         }
 
         [TestMethod()]
-        public void HasherHashFileChunkFromByteArrayCorrectlyHashesInput1()
+        public void HasherHashFileBlockFromByteArrayCorrectlyHashesInput1()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
-            var result = h.HashFileChunkFromByteArray(
+            var result = h.HashFileBlockFromByteArray(
                 HashAlgorithmName.SHA1,
                 new byte[]
                 {
@@ -357,10 +357,10 @@ namespace OzetteLibraryTests.Crypto
         }
 
         [TestMethod()]
-        public void HasherHashFileChunkFromByteArrayCorrectlyHashesInput2()
+        public void HasherHashFileBlockFromByteArrayCorrectlyHashesInput2()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
-            var result = h.HashFileChunkFromByteArray(
+            var result = h.HashFileBlockFromByteArray(
                 HashAlgorithmName.SHA256,
                 LargeByteStreamConstants.LargeByteStream);
 
