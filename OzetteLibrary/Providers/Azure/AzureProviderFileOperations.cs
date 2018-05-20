@@ -3,6 +3,9 @@ using System;
 
 namespace OzetteLibrary.Providers.Azure
 {
+    /// <summary>
+    /// Contains file operations for the Azure cloud storage provider.
+    /// </summary>
     public class AzureProviderFileOperations : IProviderFileOperations
     {
         /// <summary>
