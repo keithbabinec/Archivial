@@ -6,7 +6,6 @@ using OzetteLibrary.Logging;
 using OzetteLibrary.Models;
 using OzetteLibrary.ServiceCore;
 using System;
-using System.Net.Sockets;
 using System.Threading;
 
 namespace OzetteLibrary.Client

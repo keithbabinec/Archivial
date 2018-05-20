@@ -166,52 +166,7 @@ namespace OzetteLibrary.Client.Transfer
                 AsyncState.Complete();
             }
         }
-
-        ///// <summary>
-        ///// Updates the local file copy state if the file has already been transferred (and local DB doesn't know about it).
-        ///// </summary>
-        ///// <param name="file"></param>
-        ///// <param name="fs"></param>
-        //private void UpdateFileCopyStateIfFileAlreadyExistsOnTargets(BackupFile file, FileStream fs)
-        //{
-        //    // TODO:
-        //    // for each target that needs this file:
-        //    // > just double check that we haven't already transferred this whole file.
-        //    // > to avoid resending if for some reason had lost local client DB state.
-
-        //    throw new NotImplementedException();
-        //}
-
-        ///// <summary>
-        ///// Transfers a payload to one or more targets.
-        ///// </summary>
-        ///// <param name="file"></param>
-        ///// <param name="payload"></param>
-        //private void SendTransferPayloadToFileTargets(BackupFile file, TransferPayload payload)
-        //{
-        //    // TODO:
-        //    // for each target that needs this block:
-        //    // > grab an existing (or create a new) TcpClient connection to the target.
-        //    // > ensure it is connected/authenticated.
-        //    // > serialize the payload using binaryformatter
-        //    // > write the message to the stream
-        //    // > read the response from the server.
-        //    // > update the file's progress to the next block.
-
-        //    throw new NotImplementedException();
-        //}
-
-        ///// <summary>
-        ///// Generates the next transfer block payload.
-        ///// </summary>
-        ///// <param name="file"></param>
-        ///// <param name="fs"></param>
-        ///// <returns></returns>
-        //private TransferPayload GenerateNextTransferPayload(BackupFile File, FileStream Stream)
-        //{
-        //    return File.GenerateNextTransferPayload(Stream, Hasher);
-        //}
-
+        
         /// <summary>
         /// Verifies that the existing hash for the specified file is correct in the database.
         /// </summary>
