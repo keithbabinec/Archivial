@@ -183,7 +183,7 @@ namespace OzetteLibrary.Client.Transfer
                 throw new ArgumentNullException(nameof(Stream));
             }
 
-            var currentHash = Hasher.HashCompleteFileFromFilePath(File.GetFileHashAlgorithm(), File.FullSourcePath);
+            var currentHash = Hasher.GenerateFileHash(File.GetFileHashAlgorithm(), Stream);
 
             if (currentHash.Length != 0)
             {
