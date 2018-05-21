@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage;
+using OzetteLibrary.Models.Exceptions;
+using System;
 using System.Collections.Generic;
 
 namespace OzetteLibrary.Providers
@@ -23,7 +25,39 @@ namespace OzetteLibrary.Providers
         /// </summary>
         public void Validate()
         {
-            throw new NotImplementedException();
+            if (Options == null || Options.Count == 0)
+            {
+                throw new ProviderOptionsException("No provider-specific options were specified.");
+            }
+
+            if (Type == ProviderTypes.Azure)
+            {
+                ValidateAzureOptions();
+            }
+            else
+            {
+                throw new NotImplementedException("Unexpected provider option type.");
+            }
+        }
+
+        /// <summary>
+        /// Validates Azure-specific provider options.
+        /// </summary>
+        private void ValidateAzureOptions()
+        {
+            if (Options.ContainsKey("ConnectionString") == false || string.IsNullOrWhiteSpace(Options["ConnectionString"]))
+            {
+                throw new ProviderOptionsException("Azure Provider: Expected option was missing: ConnectionString");
+            }
+
+            try
+            {
+                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Options["ConnectionString"]);
+            }
+            catch (Exception)
+            {
+                throw new ProviderOptionsException("Azure Provider: ConnectionString argument was not a valid connection string.");
+            }
         }
     }
 }
