@@ -16,9 +16,9 @@
         public const string DirectoryMapTableName = "DirectoryMap";
 
         /// <summary>
-        /// A string constant for the targets table name.
+        /// A string constant for the providers table name.
         /// </summary>
-        public const string TargetsTableName = "Targets";
+        public const string ProvidersTableName = "Providers";
 
         /// <summary>
         /// A string constant for the source locations table name.

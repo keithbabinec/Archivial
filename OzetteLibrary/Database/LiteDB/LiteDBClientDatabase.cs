@@ -6,6 +6,7 @@ using OzetteLibrary.Providers;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace OzetteLibrary.Database.LiteDB
 {
@@ -113,6 +114,9 @@ namespace OzetteLibrary.Database.LiteDB
 
                 var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
                 sourcesCol.EnsureIndex(x => x.ID);
+
+                var providersCol = db.GetCollection<ProviderOptions>(Constants.Database.ProvidersTableName);
+                // no indexes required on this collection
             }
         }
         
@@ -170,9 +174,31 @@ namespace OzetteLibrary.Database.LiteDB
         /// Commits the provider options to the database.
         /// </summary>
         /// <param name="Provider">A list of Provider options</param>
-        public void SetProviders(List<ProviderOptions> Provider)
+        public void SetProviders(List<ProviderOptions> Providers)
         {
-            throw new NotImplementedException();
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+            if (Providers == null)
+            {
+                throw new ArgumentNullException(nameof(Providers));
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var providersCol = db.GetCollection<ProviderOptions>(Constants.Database.ProvidersTableName);
+
+                // remove all documents in this collection
+                providersCol.Delete(x => 1 == 1);
+
+                // insert providers (if any)
+                // note: empty (0 count) is valid input from Locations.
+                foreach (var provider in Providers)
+                {
+                    providersCol.Insert(provider);
+                }
+            }
         }
 
         /// <summary>
@@ -181,7 +207,24 @@ namespace OzetteLibrary.Database.LiteDB
         /// <returns>An array of Provider types</returns>
         public ProviderTypes[] GetProvidersList()
         {
-            throw new NotImplementedException();
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var providersCol = db.GetCollection<ProviderOptions>(Constants.Database.ProvidersTableName);
+
+                if (providersCol.Count() > 0)
+                {
+                    return providersCol.FindAll().Select(x => x.Type).ToArray();
+                }
+                else
+                {
+                    return new ProviderTypes[0];
+                }
+            }
         }
 
         /// <summary>
@@ -191,7 +234,24 @@ namespace OzetteLibrary.Database.LiteDB
         /// <returns><c>ProviderOptions</c></returns>
         public ProviderOptions GetProviderOptions(ProviderTypes ProviderType)
         {
-            throw new NotImplementedException();
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var providersCol = db.GetCollection<ProviderOptions>(Constants.Database.ProvidersTableName);
+
+                if (providersCol.Count() > 0)
+                {
+                    return providersCol.Find(x => x.Type == ProviderType).FirstOrDefault();
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
         /// <summary>
