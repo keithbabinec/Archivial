@@ -2,7 +2,7 @@
 using OzetteLibrary.Exceptions;
 using System;
 
-namespace OzetteLibraryTests.Models
+namespace OzetteLibraryTests.Folders
 {
     [TestClass()]
     public class SourceLocationTests

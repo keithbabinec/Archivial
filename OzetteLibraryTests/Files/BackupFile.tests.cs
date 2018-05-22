@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace OzetteLibraryTests.Models
+namespace OzetteLibraryTests.Files
 {
     [TestClass()]
     public class BackupFileTests
