@@ -221,6 +221,48 @@ namespace OzetteLibraryTests.Database.LiteDB
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseSetProvidersThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.SetProviders(null);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseGetProvidersListThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.GetProvidersList();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseGetProviderOptionsThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.GetProviderOptions(OzetteLibrary.Providers.ProviderTypes.Azure);
+        }
+
+        [TestMethod()]
         [ExpectedException(typeof(ArgumentException))]
         public void LiteDBClientDatabaseGetDirectoryMapItemThrowsIfNullDirectoryIsPassed()
         {
@@ -540,6 +582,165 @@ namespace OzetteLibraryTests.Database.LiteDB
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
             Assert.AreEqual(OzetteLibrary.Files.BackupFileLookupResult.Updated, result.Result);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void LiteDBClientDatabaseSetProvidersThrowsOnNullInput()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            db.SetProviders(null);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseSetProvidersDoesNotThrowOnEmptyCollection()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            db.SetProviders(new System.Collections.Generic.List<OzetteLibrary.Providers.ProviderOptions>());
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseSetProvidersCorrectlySavesProvidersList()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var provList = new System.Collections.Generic.List<OzetteLibrary.Providers.ProviderOptions>();
+            provList.Add(new OzetteLibrary.Providers.ProviderOptions() { Type = OzetteLibrary.Providers.ProviderTypes.Azure });
+
+            db.SetProviders(provList);
+
+            // manually check the db stream to make sure changes were applied.
+
+            var liteDB = new LiteDatabase(ms);
+            var provDBCol = liteDB.GetCollection<OzetteLibrary.Providers.ProviderOptions>(OzetteLibrary.Constants.Database.ProvidersTableName);
+
+            Assert.AreEqual(1, provDBCol.FindAll().ToList().Count);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetProvidersListReturnsEmptyArrayWhenNoProvidersPresent()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var result = db.GetProvidersList();
+
+            Assert.AreEqual(typeof(OzetteLibrary.Providers.ProviderTypes[]), result.GetType());
+            Assert.AreEqual(0, result.Length);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetProvidersListCorrectlyReturnsProvidersArray()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var provList = new System.Collections.Generic.List<OzetteLibrary.Providers.ProviderOptions>();
+            provList.Add(new OzetteLibrary.Providers.ProviderOptions() { Type = OzetteLibrary.Providers.ProviderTypes.Azure });
+
+            db.SetProviders(provList);
+
+            var result = db.GetProvidersList();
+
+            Assert.AreEqual(typeof(OzetteLibrary.Providers.ProviderTypes[]), result.GetType());
+            Assert.AreEqual(1, result.Length);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetProviderOptionsCorrectlyReturnsOptionsForSingleItem()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var provList = new System.Collections.Generic.List<OzetteLibrary.Providers.ProviderOptions>();
+            provList.Add(new OzetteLibrary.Providers.ProviderOptions() { Type = OzetteLibrary.Providers.ProviderTypes.Azure });
+
+            db.SetProviders(provList);
+
+            var result = db.GetProviderOptions(OzetteLibrary.Providers.ProviderTypes.Azure);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(OzetteLibrary.Providers.ProviderTypes.Azure, result.Type);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetProviderOptionsReturnsNullWhenTheCollectionIsEmpty()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var result = db.GetProviderOptions(OzetteLibrary.Providers.ProviderTypes.Azure);
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod()]
+        public void LiteDBClientDatabaseGetProviderOptionsReturnsNullWhenTheWrongTypeIsSpecified()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+
+            db.PrepareDatabase();
+
+            var provList = new System.Collections.Generic.List<OzetteLibrary.Providers.ProviderOptions>();
+            provList.Add(new OzetteLibrary.Providers.ProviderOptions() { Type = OzetteLibrary.Providers.ProviderTypes.AWS });
+
+            db.SetProviders(provList);
+
+            var result = db.GetProviderOptions(OzetteLibrary.Providers.ProviderTypes.Azure);
+
+            Assert.IsNull(result);
         }
 
         [TestMethod()]

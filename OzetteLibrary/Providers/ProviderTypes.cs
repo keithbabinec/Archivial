@@ -8,6 +8,11 @@
         /// <summary>
         /// Microsoft Azure cloud storage.
         /// </summary>
-        Azure = 0
+        Azure = 0,
+
+        /// <summary>
+        /// Amazon Web Services cloud storage.
+        /// </summary>
+        AWS = 1
     }
 }
