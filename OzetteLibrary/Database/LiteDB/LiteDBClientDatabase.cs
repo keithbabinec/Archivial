@@ -1,6 +1,7 @@
 ﻿using LiteDB;
+using OzetteLibrary.Files;
+using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
-using OzetteLibrary.Models;
 using OzetteLibrary.Providers;
 using System;
 using System.Collections.Generic;

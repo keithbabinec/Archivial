@@ -2,7 +2,6 @@
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Logging.Default;
-using OzetteLibrary.Models;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;

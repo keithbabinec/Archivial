@@ -351,7 +351,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
+            var t = new OzetteLibrary.Files.BackupFile(info, OzetteLibrary.Files.FileBackupPriority.Low);
 
             db.AddBackupFile(t);
 
@@ -385,12 +385,12 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
+            var t = new OzetteLibrary.Files.BackupFile(info, OzetteLibrary.Files.FileBackupPriority.Low);
 
             db.AddBackupFile(t);
 
             var liteDB = new LiteDatabase(ms);
-            var backupFileCol = liteDB.GetCollection<OzetteLibrary.Models.BackupFile>(OzetteLibrary.Constants.Database.FilesTableName);
+            var backupFileCol = liteDB.GetCollection<OzetteLibrary.Files.BackupFile>(OzetteLibrary.Constants.Database.FilesTableName);
             var result = backupFileCol.FindAll();
 
             int fileCount = 0;
@@ -421,7 +421,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Low);
+            var t = new OzetteLibrary.Files.BackupFile(info, OzetteLibrary.Files.FileBackupPriority.Low);
 
             db.AddBackupFile(t);
 
@@ -430,7 +430,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.UpdateBackupFile(t);
 
             var liteDB = new LiteDatabase(ms);
-            var backupFileCol = liteDB.GetCollection<OzetteLibrary.Models.BackupFile>(OzetteLibrary.Constants.Database.FilesTableName);
+            var backupFileCol = liteDB.GetCollection<OzetteLibrary.Files.BackupFile>(OzetteLibrary.Constants.Database.FilesTableName);
             var result = backupFileCol.FindAll();
 
             int fileCount = 0;
@@ -461,10 +461,10 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
+            var t = new OzetteLibrary.Files.BackupFile(info, OzetteLibrary.Files.FileBackupPriority.Medium);
 
-            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium),
-                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium));
+            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Files.FileBackupPriority.Medium),
+                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.Medium));
 
             t.SetLastCheckedTimeStamp();
 
@@ -472,7 +472,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             Assert.IsNotNull(result);
             Assert.IsNull(result.File);
-            Assert.AreEqual(OzetteLibrary.Models.BackupFileLookupResult.New, result.Result);
+            Assert.AreEqual(OzetteLibrary.Files.BackupFileLookupResult.New, result.Result);
         }
 
         [TestMethod()]
@@ -490,10 +490,10 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
+            var t = new OzetteLibrary.Files.BackupFile(info, OzetteLibrary.Files.FileBackupPriority.Medium);
 
-            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium),
-                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium));
+            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Files.FileBackupPriority.Medium),
+                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.Medium));
 
             t.SetLastCheckedTimeStamp();
 
@@ -502,7 +502,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
-            Assert.AreEqual(OzetteLibrary.Models.BackupFileLookupResult.Existing, result.Result);
+            Assert.AreEqual(OzetteLibrary.Files.BackupFileLookupResult.Existing, result.Result);
         }
 
         [TestMethod()]
@@ -520,18 +520,18 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Models.BackupFile(info, OzetteLibrary.Models.FileBackupPriority.Medium);
+            var t = new OzetteLibrary.Files.BackupFile(info, OzetteLibrary.Files.FileBackupPriority.Medium);
 
-            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.Medium),
-                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium));
+            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Files.FileBackupPriority.Medium),
+                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.Medium));
 
             t.SetLastCheckedTimeStamp();
 
             db.AddBackupFile(t);
 
             // update the file
-            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Models.FileBackupPriority.High),
-                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.High));
+            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Files.FileBackupPriority.High),
+                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.High));
 
             t.SetLastCheckedTimeStamp();
 
@@ -539,7 +539,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
-            Assert.AreEqual(OzetteLibrary.Models.BackupFileLookupResult.Updated, result.Result);
+            Assert.AreEqual(OzetteLibrary.Files.BackupFileLookupResult.Updated, result.Result);
         }
 
         [TestMethod()]
@@ -574,11 +574,11 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample source
 
-            var source = new OzetteLibrary.Models.SourceLocation();
+            var source = new OzetteLibrary.Folders.SourceLocation();
             source.ID = 1;
             source.FolderPath = "C:\\test\\folder";
 
-            var sources = new OzetteLibrary.Models.SourceLocations();
+            var sources = new OzetteLibrary.Folders.SourceLocations();
             sources.Add(source);
 
             db.SetSourceLocations(sources);
@@ -608,11 +608,11 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var source = new OzetteLibrary.Models.SourceLocation();
+            var source = new OzetteLibrary.Folders.SourceLocation();
             source.ID = 1;
             source.FolderPath = "C:\\test\\folder";
 
-            var sources = new OzetteLibrary.Models.SourceLocations();
+            var sources = new OzetteLibrary.Folders.SourceLocations();
             sources.Add(source);
 
             db.SetSourceLocations(sources);
@@ -646,11 +646,11 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var source = new OzetteLibrary.Models.SourceLocation();
+            var source = new OzetteLibrary.Folders.SourceLocation();
             source.ID = 1;
             source.FolderPath = "C:\\test\\folder";
 
-            var sources = new OzetteLibrary.Models.SourceLocations();
+            var sources = new OzetteLibrary.Folders.SourceLocations();
             sources.Add(source);
 
             db.SetSourceLocations(sources);
@@ -658,7 +658,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             // manually check the db stream to make sure changes were applied.
 
             var liteDB = new LiteDatabase(ms);
-            var sourcesCol = liteDB.GetCollection<OzetteLibrary.Models.SourceLocation>(OzetteLibrary.Constants.Database.SourceLocationsTableName);
+            var sourcesCol = liteDB.GetCollection<OzetteLibrary.Folders.SourceLocation>(OzetteLibrary.Constants.Database.SourceLocationsTableName);
             var result = sourcesCol.FindAll();
 
             int sourcesCount = 0;
@@ -685,19 +685,19 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var source1 = new OzetteLibrary.Models.SourceLocation();
+            var source1 = new OzetteLibrary.Folders.SourceLocation();
             source1.ID = 1;
             source1.FolderPath = "C:\\test\\folder1";
 
-            var source2 = new OzetteLibrary.Models.SourceLocation();
+            var source2 = new OzetteLibrary.Folders.SourceLocation();
             source2.ID = 2;
             source2.FolderPath = "C:\\test\\folder2";
 
-            var source3 = new OzetteLibrary.Models.SourceLocation();
+            var source3 = new OzetteLibrary.Folders.SourceLocation();
             source3.ID = 3;
             source3.FolderPath = "C:\\test\\folder3";
 
-            var sources = new OzetteLibrary.Models.SourceLocations();
+            var sources = new OzetteLibrary.Folders.SourceLocations();
             sources.Add(source1);
             sources.Add(source2);
             sources.Add(source3);
@@ -707,8 +707,8 @@ namespace OzetteLibraryTests.Database.LiteDB
             // manually check the db stream to make sure changes were applied.
 
             var liteDB = new LiteDatabase(ms);
-            var sourcesCol = liteDB.GetCollection<OzetteLibrary.Models.SourceLocation>(OzetteLibrary.Constants.Database.SourceLocationsTableName);
-            var result = new OzetteLibrary.Models.SourceLocations(sourcesCol.FindAll());
+            var sourcesCol = liteDB.GetCollection<OzetteLibrary.Folders.SourceLocation>(OzetteLibrary.Constants.Database.SourceLocationsTableName);
+            var result = new OzetteLibrary.Folders.SourceLocations(sourcesCol.FindAll());
 
             Assert.AreEqual(3, result.Count);
 
@@ -731,19 +731,19 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var source1 = new OzetteLibrary.Models.SourceLocation();
+            var source1 = new OzetteLibrary.Folders.SourceLocation();
             source1.ID = 1;
             source1.FolderPath = "C:\\test\\folder1";
 
-            var source2 = new OzetteLibrary.Models.SourceLocation();
+            var source2 = new OzetteLibrary.Folders.SourceLocation();
             source2.ID = 2;
             source2.FolderPath = "C:\\test\\folder2";
 
-            var source3 = new OzetteLibrary.Models.SourceLocation();
+            var source3 = new OzetteLibrary.Folders.SourceLocation();
             source3.ID = 3;
             source3.FolderPath = "C:\\test\\folder3";
 
-            var sources = new OzetteLibrary.Models.SourceLocations();
+            var sources = new OzetteLibrary.Folders.SourceLocations();
             sources.Add(source1);
             sources.Add(source2);
             sources.Add(source3);
@@ -757,8 +757,8 @@ namespace OzetteLibraryTests.Database.LiteDB
             // manually check the db stream to make sure changes were applied.
 
             var liteDB = new LiteDatabase(ms);
-            var sourcesCol = liteDB.GetCollection<OzetteLibrary.Models.SourceLocation>(OzetteLibrary.Constants.Database.SourceLocationsTableName);
-            var result = new OzetteLibrary.Models.SourceLocations(sourcesCol.FindAll());
+            var sourcesCol = liteDB.GetCollection<OzetteLibrary.Folders.SourceLocation>(OzetteLibrary.Constants.Database.SourceLocationsTableName);
+            var result = new OzetteLibrary.Folders.SourceLocations(sourcesCol.FindAll());
 
             Assert.AreEqual(2, result.Count);
 
@@ -800,12 +800,12 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.BackupFile();
-            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            var c1 = new OzetteLibrary.Files.BackupFile();
+            c1.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
             c1.FileID = Guid.NewGuid();
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+            c1.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
 
             db.AddBackupFile(c1);
 
@@ -828,12 +828,12 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.BackupFile();
-            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            var c1 = new OzetteLibrary.Files.BackupFile();
+            c1.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
             c1.FileID = Guid.NewGuid();
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+            c1.OverallState = OzetteLibrary.Files.FileStatus.OutOfDate;
 
             db.AddBackupFile(c1);
 
@@ -857,19 +857,19 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.BackupFile();
+            var c1 = new OzetteLibrary.Files.BackupFile();
             c1.FileID = Guid.NewGuid();
-            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c1.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+            c1.OverallState = OzetteLibrary.Files.FileStatus.OutOfDate;
 
-            var c2 = new OzetteLibrary.Models.BackupFile();
+            var c2 = new OzetteLibrary.Files.BackupFile();
             c2.FileID = Guid.NewGuid();
-            c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c2.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
-            c2.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+            c2.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
 
             db.AddBackupFile(c1);
             db.AddBackupFile(c2);
@@ -893,26 +893,26 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.BackupFile();
+            var c1 = new OzetteLibrary.Files.BackupFile();
             c1.FileID = Guid.NewGuid();
-            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c1.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+            c1.OverallState = OzetteLibrary.Files.FileStatus.OutOfDate;
 
-            var c2 = new OzetteLibrary.Models.BackupFile();
+            var c2 = new OzetteLibrary.Files.BackupFile();
             c2.FileID = Guid.NewGuid();
-            c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c2.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
-            c2.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+            c2.OverallState = OzetteLibrary.Files.FileStatus.OutOfDate;
 
-            var c3 = new OzetteLibrary.Models.BackupFile();
+            var c3 = new OzetteLibrary.Files.BackupFile();
             c3.FileID = Guid.NewGuid();
-            c3.Priority = OzetteLibrary.Models.FileBackupPriority.High;
+            c3.Priority = OzetteLibrary.Files.FileBackupPriority.High;
             c3.Filename = "test3.mp3";
             c3.Directory = "C:\\music";
-            c3.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+            c3.OverallState = OzetteLibrary.Files.FileStatus.OutOfDate;
 
             db.AddBackupFile(c1);
             db.AddBackupFile(c2);
@@ -937,26 +937,26 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.BackupFile();
+            var c1 = new OzetteLibrary.Files.BackupFile();
             c1.FileID = Guid.NewGuid();
-            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c1.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.OverallState = OzetteLibrary.Models.FileStatus.Synced;
+            c1.OverallState = OzetteLibrary.Files.FileStatus.Synced;
 
-            var c2 = new OzetteLibrary.Models.BackupFile();
+            var c2 = new OzetteLibrary.Files.BackupFile();
             c2.FileID = Guid.NewGuid();
-            c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c2.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
-            c2.OverallState = OzetteLibrary.Models.FileStatus.InProgress;
+            c2.OverallState = OzetteLibrary.Files.FileStatus.InProgress;
 
-            var c3 = new OzetteLibrary.Models.BackupFile();
+            var c3 = new OzetteLibrary.Files.BackupFile();
             c3.FileID = Guid.NewGuid();
-            c3.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
+            c3.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
             c3.Filename = "test3.mp3";
             c3.Directory = "C:\\music";
-            c3.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+            c3.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
 
             db.AddBackupFile(c1);
             db.AddBackupFile(c2);
@@ -982,19 +982,19 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.BackupFile();
+            var c1 = new OzetteLibrary.Files.BackupFile();
             c1.FileID = Guid.NewGuid();
-            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c1.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+            c1.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
 
-            var c2 = new OzetteLibrary.Models.BackupFile();
+            var c2 = new OzetteLibrary.Files.BackupFile();
             c2.FileID = Guid.NewGuid();
-            c2.Priority = OzetteLibrary.Models.FileBackupPriority.High;
+            c2.Priority = OzetteLibrary.Files.FileBackupPriority.High;
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
-            c2.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+            c2.OverallState = OzetteLibrary.Files.FileStatus.OutOfDate;
 
             db.AddBackupFile(c1);
             db.AddBackupFile(c2);
@@ -1019,19 +1019,19 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var c1 = new OzetteLibrary.Models.BackupFile();
+            var c1 = new OzetteLibrary.Files.BackupFile();
             c1.FileID = Guid.NewGuid();
-            c1.Priority = OzetteLibrary.Models.FileBackupPriority.Low;
+            c1.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
             c1.Filename = "test.mp3";
             c1.Directory = "C:\\music";
-            c1.OverallState = OzetteLibrary.Models.FileStatus.Unsynced;
+            c1.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
 
-            var c2 = new OzetteLibrary.Models.BackupFile();
+            var c2 = new OzetteLibrary.Files.BackupFile();
             c2.FileID = Guid.NewGuid();
-            c2.Priority = OzetteLibrary.Models.FileBackupPriority.Medium;
+            c2.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
             c2.Filename = "test2.mp3";
             c2.Directory = "C:\\music";
-            c2.OverallState = OzetteLibrary.Models.FileStatus.OutOfDate;
+            c2.OverallState = OzetteLibrary.Files.FileStatus.OutOfDate;
 
             db.AddBackupFile(c1);
             db.AddBackupFile(c2);

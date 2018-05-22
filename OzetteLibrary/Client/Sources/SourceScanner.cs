@@ -1,8 +1,9 @@
 ﻿using OzetteLibrary.Crypto;
 using OzetteLibrary.Database;
 using OzetteLibrary.Events;
+using OzetteLibrary.Files;
+using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
-using OzetteLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

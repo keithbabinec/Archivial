@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Mock;
-using OzetteLibrary.Models;
 using System;
 using System.IO;
 
@@ -52,11 +51,11 @@ namespace OzetteLibraryTests.Client.Sources
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
-            var source = new SourceLocation()
+            var source = new OzetteLibrary.Folders.SourceLocation()
             {
                 FolderPath = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",
-                Priority = FileBackupPriority.Low,
+                Priority = OzetteLibrary.Files.FileBackupPriority.Low,
                 RevisionCount = 1
             };
 

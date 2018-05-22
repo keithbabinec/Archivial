@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace OzetteLibrary.Models.Exceptions
+namespace OzetteLibrary.Exceptions
 {
     /// <summary>
     /// An exception for invalid source location file match filter.

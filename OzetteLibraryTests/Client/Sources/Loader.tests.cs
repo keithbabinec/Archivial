@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OzetteLibrary.Models;
+using OzetteLibrary.Files;
 using System;
 
 namespace OzetteLibraryTests.Client.Sources
@@ -24,7 +24,7 @@ namespace OzetteLibraryTests.Client.Sources
 
             Assert.IsNotNull(sources);
             Assert.AreEqual(0, sources.Count);
-            Assert.AreEqual(typeof(OzetteLibrary.Models.SourceLocations), sources.GetType());
+            Assert.AreEqual(typeof(OzetteLibrary.Folders.SourceLocations), sources.GetType());
         }
 
         [TestMethod()]

@@ -1,5 +1,5 @@
 ﻿using Microsoft.WindowsAzure.Storage;
-using OzetteLibrary.Models.Exceptions;
+using OzetteLibrary.Exceptions;
 using System;
 using System.Collections.Generic;
 

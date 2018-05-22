@@ -1,8 +1,9 @@
-﻿using OzetteLibrary.Models.Exceptions;
+﻿using OzetteLibrary.Exceptions;
+using OzetteLibrary.Files;
 using OzetteLibrary.ServiceCore;
 using System;
 
-namespace OzetteLibrary.Models
+namespace OzetteLibrary.Folders
 {
     /// <summary>
     /// Describes a single requested source backup location.

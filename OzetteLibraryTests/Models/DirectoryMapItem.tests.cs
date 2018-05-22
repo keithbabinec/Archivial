@@ -10,7 +10,7 @@ namespace OzetteLibraryTests.Models
         [ExpectedException(typeof(NotImplementedException))]
         public void DirectoryMapItemGetRemotePathCorrectlyThrowsOnInvalidProvider()
         {
-            var item = new OzetteLibrary.Models.DirectoryMapItem();
+            var item = new OzetteLibrary.Folders.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
             item.GetRemotePath((OzetteLibrary.Providers.ProviderTypes.Azure)-1);
@@ -19,7 +19,7 @@ namespace OzetteLibraryTests.Models
         [TestMethod()]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureLowerCase()
         {
-            var item = new OzetteLibrary.Models.DirectoryMapItem();
+            var item = new OzetteLibrary.Folders.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "C:\\Bin\\Programs";
 
@@ -39,7 +39,7 @@ namespace OzetteLibraryTests.Models
         [TestMethod()]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureBetween3And63Chars()
         {
-            var item = new OzetteLibrary.Models.DirectoryMapItem();
+            var item = new OzetteLibrary.Folders.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
 
@@ -54,7 +54,7 @@ namespace OzetteLibraryTests.Models
         [TestMethod()]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureOnlyLettersNumbersAndDashes()
         {
-            var item = new OzetteLibrary.Models.DirectoryMapItem();
+            var item = new OzetteLibrary.Folders.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
 
@@ -74,7 +74,7 @@ namespace OzetteLibraryTests.Models
         [TestMethod()]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureStartsWithOnlyLetterOrNumber()
         {
-            var item = new OzetteLibrary.Models.DirectoryMapItem();
+            var item = new OzetteLibrary.Folders.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
 

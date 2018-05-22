@@ -245,7 +245,7 @@ namespace OzetteLibraryTests.Crypto
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
 
-            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Models.FileBackupPriority.Low);
+            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Files.FileBackupPriority.Low);
 
             Assert.AreEqual(20, actualHash.Length);
         }
@@ -255,7 +255,7 @@ namespace OzetteLibraryTests.Crypto
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
 
-            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Models.FileBackupPriority.Medium);
+            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Files.FileBackupPriority.Medium);
 
             Assert.AreEqual(32, actualHash.Length);
         }
@@ -265,7 +265,7 @@ namespace OzetteLibraryTests.Crypto
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
 
-            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Models.FileBackupPriority.High);
+            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Files.FileBackupPriority.High);
 
             Assert.AreEqual(64, actualHash.Length);
         }
@@ -284,7 +284,7 @@ namespace OzetteLibraryTests.Crypto
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
 
-            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Low);
+            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.Low);
 
             Assert.AreEqual(HashAlgorithmName.SHA1, actual);
         }
@@ -294,7 +294,7 @@ namespace OzetteLibraryTests.Crypto
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
 
-            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.Medium);
+            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.Medium);
 
             Assert.AreEqual(HashAlgorithmName.SHA256, actual);
         }
@@ -304,7 +304,7 @@ namespace OzetteLibraryTests.Crypto
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
 
-            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Models.FileBackupPriority.High);
+            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.High);
 
             Assert.AreEqual(HashAlgorithmName.SHA512, actual);
         }

@@ -1,7 +1,7 @@
 ﻿using OzetteLibrary.Providers;
 using System;
 
-namespace OzetteLibrary.Models
+namespace OzetteLibrary.Folders
 {
     /// <summary>
     /// A class that describes the local to remote path mapping for a directory.

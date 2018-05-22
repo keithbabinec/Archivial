@@ -3,13 +3,13 @@ using OzetteLibrary.Database;
 using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
-using OzetteLibrary.Models;
-using OzetteLibrary.Models.Exceptions;
+using OzetteLibrary.Exceptions;
 using OzetteLibrary.Providers;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using OzetteLibrary.Folders;
 
 namespace OzetteLibrary.Client
 {

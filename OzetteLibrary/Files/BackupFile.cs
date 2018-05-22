@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace OzetteLibrary.Models
+namespace OzetteLibrary.Files
 {
     /// <summary>
     /// Describes a single file to be backed up.

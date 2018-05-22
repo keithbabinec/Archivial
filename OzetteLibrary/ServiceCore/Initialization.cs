@@ -2,7 +2,6 @@
 using System.Configuration;
 using OzetteLibrary.Logging;
 using System.Threading;
-using OzetteLibrary.Models;
 
 namespace OzetteLibrary.ServiceCore
 {

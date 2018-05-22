@@ -8,7 +8,7 @@ namespace OzetteLibraryTests.Providers
     public class ProviderOptionsTests
     {
         [TestMethod()]
-        [ExpectedException(typeof(OzetteLibrary.Models.Exceptions.ProviderOptionsException))]
+        [ExpectedException(typeof(OzetteLibrary.Exceptions.ProviderOptionsException))]
         public void ProviderOptionsValidateThrowsWhenNoOptionsArePresent()
         {
             OzetteLibrary.Providers.ProviderOptions optionSet = new OzetteLibrary.Providers.ProviderOptions();
@@ -30,7 +30,7 @@ namespace OzetteLibraryTests.Providers
         }
 
         [TestMethod()]
-        [ExpectedException(typeof(OzetteLibrary.Models.Exceptions.ProviderOptionsException))]
+        [ExpectedException(typeof(OzetteLibrary.Exceptions.ProviderOptionsException))]
         public void ProviderOptionsForAzureThrowWhenConnectionStringArgIsMissing()
         {
             OzetteLibrary.Providers.ProviderOptions optionSet = new OzetteLibrary.Providers.ProviderOptions();
@@ -42,7 +42,7 @@ namespace OzetteLibraryTests.Providers
         }
 
         [TestMethod()]
-        [ExpectedException(typeof(OzetteLibrary.Models.Exceptions.ProviderOptionsException))]
+        [ExpectedException(typeof(OzetteLibrary.Exceptions.ProviderOptionsException))]
         public void ProviderOptionsForAzureThrowWhenConnectionStringIsInvalid()
         {
             OzetteLibrary.Providers.ProviderOptions optionSet = new OzetteLibrary.Providers.ProviderOptions();

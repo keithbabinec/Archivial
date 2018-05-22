@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OzetteLibrary.Models
+namespace OzetteLibrary.Files
 {
     /// <summary>
     /// A collection of <c>Target</c> objects.

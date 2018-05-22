@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Models
+﻿namespace OzetteLibrary.ServiceCore
 {
     /// <summary>
     /// Describes possible startup/initialization results.

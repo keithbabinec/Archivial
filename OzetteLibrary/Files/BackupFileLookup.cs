@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OzetteLibrary.Models
+namespace OzetteLibrary.Files
 {
     /// <summary>
     /// Contains the result of a Client file lookup.

@@ -2,12 +2,12 @@
 using OzetteLibrary.Database;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
-using OzetteLibrary.Models;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Threading;
 using OzetteLibrary.Crypto;
 using System.IO;
+using OzetteLibrary.Files;
 
 namespace OzetteLibrary.Client.Transfer
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OzetteLibrary.Models
+namespace OzetteLibrary.Folders
 {
     /// <summary>
     /// A results object containing the results of a source scan operation.

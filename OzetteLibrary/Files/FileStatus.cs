@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Models
+﻿namespace OzetteLibrary.Files
 {
     /// <summary>
     /// Describes the possible file backup states.
