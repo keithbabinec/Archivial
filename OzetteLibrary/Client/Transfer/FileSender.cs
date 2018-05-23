@@ -166,7 +166,18 @@ namespace OzetteLibrary.Client.Transfer
                 AsyncState.Complete();
             }
         }
-        
+
+        /// <summary>
+        /// Generates the next transfer block payload.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="fs"></param>
+        /// <returns></returns>
+        private TransferPayload GenerateNextTransferPayload(BackupFile File, FileStream Stream)
+        {
+            return File.GenerateNextTransferPayload(Stream, Hasher);
+        }
+
         /// <summary>
         /// Verifies that the existing hash for the specified file is correct in the database.
         /// </summary>
