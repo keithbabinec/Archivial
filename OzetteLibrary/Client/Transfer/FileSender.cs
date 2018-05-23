@@ -191,7 +191,7 @@ namespace OzetteLibrary.Client.Transfer
                 {
                     File.SetFileHashWithAlgorithm(currentHash, File.GetFileHashAlgorithm());
                     File.SetLastCheckedTimeStamp();
-                    File.ResetCopyState();
+                    File.ResetCopyState(Database.GetProvidersList());
                     Database.UpdateBackupFile(File);
                 }
             }

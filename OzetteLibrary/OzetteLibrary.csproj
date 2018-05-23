@@ -72,6 +72,7 @@
     <Compile Include="Database\IDatabase.cs" />
     <Compile Include="Database\LiteDB\LiteDBClientDatabase.cs" />
     <Compile Include="Events\EngineStoppedReason.cs" />
+    <Compile Include="Files\TransferPayload.cs" />
     <Compile Include="Logging\Default\Logger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Mock\MockLogger.cs" />
@@ -99,7 +100,6 @@
     <Compile Include="Files\BackupFile.cs" />
     <Compile Include="Files\FileStatus.cs" />
     <Compile Include="Providers\Azure\AzureProviderFileOperations.cs" />
-    <Compile Include="Providers\Azure\AzureProviderFileStatus.cs" />
     <Compile Include="Providers\IProviderFileOperations.cs" />
     <Compile Include="Providers\ProviderFileStatus.cs" />
     <Compile Include="ServiceCore\Initialization.cs" />

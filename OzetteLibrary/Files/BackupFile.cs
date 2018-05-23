@@ -1,4 +1,7 @@
-﻿using System;
+﻿using OzetteLibrary.Crypto;
+using OzetteLibrary.Providers;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -41,7 +44,7 @@ namespace OzetteLibrary.Files
         }
 
         /// <summary>
-        /// A unique identifier for this file which should be shared among both client and targets.
+        /// A unique identifier for this file which should be shared among both client and providers.
         /// </summary>
         public Guid FileID { get; set; }
 
@@ -100,16 +103,343 @@ namespace OzetteLibrary.Files
         public DateTime? LastChecked { get; set; }
 
         /// <summary>
-        /// An overall state across one or more targets.
+        /// The state of this file across one or more providers.
+        /// </summary>
+        /// <remarks>
+        /// The dictionary key is the provider type.
+        /// The dictionary value is the provider file state.
+        /// </remarks>
+        public Dictionary<ProviderTypes, ProviderFileStatus> CopyState { get; set; }
+
+        /// <summary>
+        /// An overall state across one or more providers.
         /// </summary>
         public FileStatus OverallState { get; set; }
 
         /// <summary>
-        /// Resets existing copy progress state.
+        /// Resets existing copy progress state with the specified providers.
         /// </summary>
-        public void ResetCopyState()
+        /// <param name="providers"></param>
+        public void ResetCopyState(ProviderTypes[] providers)
         {
-            throw new NotImplementedException();
+            CopyState = new Dictionary<ProviderTypes, ProviderFileStatus>();
+
+            foreach (var provider in providers)
+            {
+                CopyState.Add(provider, new ProviderFileStatus(provider));
+            }
+
+            SetOverallStateFromCopyState();
+        }
+
+        /// <summary>
+        /// Sets the OverallState from the current CopyState.
+        /// </summary>
+        private void SetOverallStateFromCopyState()
+        {
+            if (CopyState != null && CopyState.Count != 0)
+            {
+                int unsyncedCount = 0;
+                int outofdateCount = 0;
+                int inprogressCount = 0;
+                int syncedCount = 0;
+                int providersCount = CopyState.Count;
+
+                foreach (var provider in CopyState)
+                {
+                    if (provider.Value.SyncStatus == FileStatus.Unsynced)
+                    {
+                        unsyncedCount++;
+                    }
+                    else if (provider.Value.SyncStatus == FileStatus.OutOfDate)
+                    {
+                        outofdateCount++;
+                    }
+                    else if (provider.Value.SyncStatus == FileStatus.InProgress)
+                    {
+                        inprogressCount++;
+                    }
+                    else if (provider.Value.SyncStatus == FileStatus.Synced)
+                    {
+                        syncedCount++;
+                    }
+                }
+
+                // start at the highest condition and work backwards
+
+                // condition 1: everything is synced
+
+                if (syncedCount == providersCount)
+                {
+                    OverallState = FileStatus.Synced;
+                    return;
+                }
+
+                // condition 2: something is in-progress
+
+                if (inprogressCount > 0)
+                {
+                    OverallState = FileStatus.InProgress;
+                    return;
+                }
+
+                // condition 3: something is out-of-date
+
+                if (outofdateCount > 0)
+                {
+                    OverallState = FileStatus.OutOfDate;
+                    return;
+                }
+
+                // condition 4: something is unsynced
+
+                if (unsyncedCount > 0)
+                {
+                    OverallState = FileStatus.Unsynced;
+                    return;
+                }
+            }
+            else
+            {
+                // no providers?
+                // that means we can't be in a synced state.
+                OverallState = FileStatus.Unsynced;
+            }
+        }
+
+        /// <summary>
+        /// Returns the next transfer payload object
+        /// </summary>
+        /// <param name="Stream"></param>
+        /// <param name="Hasher"></param>
+        /// <returns></returns>
+        public TransferPayload GenerateNextTransferPayload(FileStream Stream, Hasher Hasher)
+        {
+            if (Stream == null)
+            {
+                throw new ArgumentNullException(nameof(Stream));
+            }
+            if (Hasher == null)
+            {
+                throw new ArgumentNullException(nameof(Hasher));
+            }
+            if (OverallState == FileStatus.Synced)
+            {
+                throw new InvalidOperationException("File is already synced.");
+            }
+            if (Priority == FileBackupPriority.Unset)
+            {
+                throw new InvalidOperationException("File has no backup priority set.");
+            }
+            if (CopyState == null || CopyState.Count == 0)
+            {
+                throw new InvalidOperationException("File has no targets set.");
+            }
+
+            // determine which block we need to send next.
+            // find the first available block.
+
+            var nextBlock = GetNextBlockNumberToSend();
+
+            if (nextBlock.HasValue == false)
+            {
+                throw new InvalidOperationException(string.Format("NextBlock was not found. CopyState and OverallState ({0}) are inconsistent.", OverallState.ToString()));
+            }
+
+            // construct a new payload object with basic metadata/ids
+
+            TransferPayload payload = new TransferPayload();
+            payload.FileID = FileID;
+            payload.CurrentBlockNumber = nextBlock.Value;
+            payload.TotalBlocks = CalculateTotalFileBlocks(Constants.Transfers.TransferBlockSizeBytes);
+            payload.DestinationProviders = FindProvidersThatCanTransferSpecifiedBlock(nextBlock.Value);
+
+            // generate the 'data' payload: the next file block as byte[].
+            // hash that block so we can validate it on the other side.
+
+            payload.Data = ReadFileBlock(Stream, nextBlock.Value);
+            payload.ExpectedHash = Hasher.HashFileBlockFromByteArray(Hasher.GetDefaultHashAlgorithm(Priority), payload.Data);
+
+            return payload;
+        }
+
+        /// <summary>
+        /// Reads the specified file block data into an array of bytes.
+        /// </summary>
+        /// <param name="Stream"></param>
+        /// <param name="BlockNumber"></param>
+        /// <returns></returns>
+        private byte[] ReadFileBlock(FileStream Stream, int BlockNumber)
+        {
+            // set the position in the file to the current block offset.
+
+            int blockSize = Constants.Transfers.TransferBlockSizeBytes;
+            long offset = blockSize * BlockNumber;
+            Stream.Seek(offset, SeekOrigin.Begin);
+
+            // size the buffer appropriately.
+            // to either the full block size, or a partial (last) block.
+
+            long bytesRemainingToRead = FileSizeBytes - Stream.Position;
+            if (bytesRemainingToRead > blockSize)
+            {
+                // more than we can fit in the buffer.
+                // then just use the full buffer size.
+
+                bytesRemainingToRead = blockSize;
+            }
+
+            // read the next block.
+            // note: Just calling Read() is likely to return less then the full buffer ask.
+            // read runs in a loop until the end of file, or end of the expected block size.
+
+            byte[] buffer = new byte[bytesRemainingToRead];
+            int bytesReadSoFar = 0;
+
+            while (bytesRemainingToRead > 0)
+            {
+                int latestBytesReadCount = Stream.Read(buffer, bytesReadSoFar, (int)bytesRemainingToRead);
+                if (latestBytesReadCount == 0)
+                {
+                    break;
+                }
+
+                bytesReadSoFar += latestBytesReadCount;
+                bytesRemainingToRead -= latestBytesReadCount;
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Returns the next block number to send/transfer.
+        /// </summary>
+        /// <returns></returns>
+        private int? GetNextBlockNumberToSend()
+        {
+            int? minBlock = null;
+
+            if (CopyState != null)
+            {
+                foreach (var provider in CopyState)
+                {
+                    var providerState = provider.Value.SyncStatus;
+
+                    if (providerState == FileStatus.OutOfDate || providerState == FileStatus.Unsynced || providerState == FileStatus.InProgress)
+                    {
+                        int providerNextBlock = provider.Value.LastCompletedFileBlockIndex + 1;
+
+                        if (minBlock.HasValue == false)
+                        {
+                            // found (first) min.
+                            minBlock = providerNextBlock;
+                        }
+                        else if (providerNextBlock < minBlock.Value)
+                        {
+                            // found new min.
+                            minBlock = providerNextBlock;
+                        }
+                    }
+                    else if (providerState == FileStatus.Synced)
+                    {
+                        // disregard. file is already synced to this particular provider.
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Unexpected provider state: " + providerState.ToString());
+                    }
+                }
+            }
+
+            return minBlock;
+        }
+
+        /// <summary>
+        /// Returns a list of providers that need a specified block number.
+        /// </summary>
+        /// <param name="blockNumber">The next block to transfer</param>
+        /// <returns></returns>
+        private List<ProviderTypes> FindProvidersThatCanTransferSpecifiedBlock(int blockNumber)
+        {
+            List<ProviderTypes> result = new List<ProviderTypes>();
+
+            if (CopyState != null)
+            {
+                foreach (var provider in CopyState)
+                {
+                    var providerState = provider.Value.SyncStatus;
+
+                    if (providerState == FileStatus.OutOfDate || providerState == FileStatus.Unsynced || providerState == FileStatus.InProgress)
+                    {
+                        int providerNextBlock = provider.Value.LastCompletedFileBlockIndex + 1;
+                        if (providerNextBlock == blockNumber)
+                        {
+                            result.Add(provider.Key);
+                        }
+                    }
+                    else if (providerState == FileStatus.Synced)
+                    {
+                        // disregard. file is already synced to this particular provider.
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Unexpected provider state: " + providerState.ToString());
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Flags a particular block as sent for the specified providers.
+        /// </summary>
+        /// <param name="BlockNumber"></param>
+        /// <param name="Providers"></param>
+        public void SetBlockAsSent(int BlockNumber, List<ProviderTypes> Providers)
+        {
+            if (BlockNumber < 0)
+            {
+                throw new ArgumentException(nameof(BlockNumber) + " argument must be provided with a positive number.");
+            }
+            if (Providers == null || Providers.Count == 0)
+            {
+                throw new ArgumentException(nameof(Providers) + " argument must be provided with at least one entry (not null or empty)");
+            }
+            if (OverallState == FileStatus.Synced)
+            {
+                throw new InvalidOperationException("File is already synced.");
+            }
+            if (CopyState == null || CopyState.Count == 0)
+            {
+                throw new InvalidOperationException("File has no copystate set.");
+            }
+
+            foreach (var providerType in Providers)
+            {
+                if (CopyState.ContainsKey(providerType))
+                {
+                    var state = CopyState[providerType];
+                    state.LastCompletedFileBlockIndex = BlockNumber;
+
+                    if (state.LastCompletedFileBlockIndex == TotalFileBlocks)
+                    {
+                        // flag this particular destination as completed.
+                        state.SyncStatus = FileStatus.Synced;
+                    }
+                    else
+                    {
+                        // file transfer is still in progress.
+                        state.SyncStatus = FileStatus.InProgress;
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Attempted to set copy state for destination that wasn't found in the copy state.");
+                }
+            }
+
+            SetOverallStateFromCopyState();
         }
 
         /// <summary>
