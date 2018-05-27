@@ -180,5 +180,65 @@ namespace OzetteLibraryTests.Files
 
             Assert.IsTrue(file.HasDataToTransfer());
         }
+
+        [TestMethod()]
+        public void BackupFileResetCopyStateCorrectlyResetsState1()
+        {
+            var provider1 = OzetteLibrary.Providers.ProviderTypes.AWS;
+            var provider2 = OzetteLibrary.Providers.ProviderTypes.Azure;
+
+            var file = new OzetteLibrary.Files.BackupFile();
+
+            file.CopyState = new System.Collections.Generic.Dictionary
+                <OzetteLibrary.Providers.ProviderTypes, 
+                OzetteLibrary.Providers.ProviderFileStatus>();
+
+            file.CopyState.Add(
+                provider1, 
+                new OzetteLibrary.Providers.ProviderFileStatus() {
+                    Provider = provider1,
+                    SyncStatus = OzetteLibrary.Files.FileStatus.InProgress
+                });
+
+            file.ResetCopyState(new OzetteLibrary.Providers.ProviderTypes[] { provider1, provider2 });
+
+            Assert.AreEqual(2, file.CopyState.Count);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.CopyState[provider1].SyncStatus);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.CopyState[provider2].SyncStatus);
+        }
+
+        [TestMethod()]
+        public void BackupFileResetCopyStateCorrectlyResetsState2()
+        {
+            var provider1 = OzetteLibrary.Providers.ProviderTypes.AWS;
+            var provider2 = OzetteLibrary.Providers.ProviderTypes.Azure;
+
+            var file = new OzetteLibrary.Files.BackupFile();
+
+            file.CopyState = new System.Collections.Generic.Dictionary
+                <OzetteLibrary.Providers.ProviderTypes,
+                OzetteLibrary.Providers.ProviderFileStatus>();
+
+            file.CopyState.Add(
+                provider1,
+                new OzetteLibrary.Providers.ProviderFileStatus()
+                {
+                    Provider = provider1,
+                    SyncStatus = OzetteLibrary.Files.FileStatus.Synced
+                });
+
+            file.CopyState.Add(
+                provider2,
+                new OzetteLibrary.Providers.ProviderFileStatus()
+                {
+                    Provider = provider2,
+                    SyncStatus = OzetteLibrary.Files.FileStatus.Synced
+                });
+
+            file.ResetCopyState(new OzetteLibrary.Providers.ProviderTypes[] { provider1 });
+
+            Assert.AreEqual(1, file.CopyState.Count);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.CopyState[provider1].SyncStatus);
+        }
     }
 }
