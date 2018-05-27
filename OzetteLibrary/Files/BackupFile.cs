@@ -16,7 +16,7 @@ namespace OzetteLibrary.Files
         /// Default/empty constructor.
         /// </summary>
         /// <remarks>
-        /// This is required for database operations.
+        /// This is required for serialization purposes.
         /// </remarks>
         public BackupFile()
         {

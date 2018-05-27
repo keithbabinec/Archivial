@@ -144,5 +144,41 @@ namespace OzetteLibraryTests.Files
             file.FileSizeBytes = 15677400000;
             Assert.AreEqual(154, file.CalculateTotalFileBlocks(102400000));
         }
+
+        [TestMethod()]
+        public void BackupFileHasDataToTransferReturnsValidFalseExample1()
+        {
+            var file = new OzetteLibrary.Files.BackupFile();
+            file.OverallState = OzetteLibrary.Files.FileStatus.Synced;
+
+            Assert.IsFalse(file.HasDataToTransfer());
+        }
+
+        [TestMethod()]
+        public void BackupFileHasDataToTransferReturnsValidTrueExample1()
+        {
+            var file = new OzetteLibrary.Files.BackupFile();
+            file.OverallState = OzetteLibrary.Files.FileStatus.OutOfDate;
+
+            Assert.IsTrue(file.HasDataToTransfer());
+        }
+
+        [TestMethod()]
+        public void BackupFileHasDataToTransferReturnsValidTrueExample2()
+        {
+            var file = new OzetteLibrary.Files.BackupFile();
+            file.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
+
+            Assert.IsTrue(file.HasDataToTransfer());
+        }
+
+        [TestMethod()]
+        public void BackupFileHasDataToTransferReturnsValidTrueExample3()
+        {
+            var file = new OzetteLibrary.Files.BackupFile();
+            file.OverallState = OzetteLibrary.Files.FileStatus.InProgress;
+
+            Assert.IsTrue(file.HasDataToTransfer());
+        }
     }
 }
