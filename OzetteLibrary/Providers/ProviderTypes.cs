@@ -13,6 +13,11 @@
         /// <summary>
         /// Amazon Web Services cloud storage.
         /// </summary>
-        AWS = 1
+        AWS = 1,
+
+        /// <summary>
+        /// Google cloud storage provider.
+        /// </summary>
+        Google = 2
     }
 }
