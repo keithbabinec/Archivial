@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OzetteLibraryTests.Files
@@ -673,6 +674,129 @@ namespace OzetteLibraryTests.Files
                     87, 235, 10, 73, 101, 181, 223, 125, 207, 62, 245, 133, 49, 181, 131, 199, 111, 104, 153, 89
                 }));
             }
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BackupFileSetBlockAsSentThrowsOnInvalidBlockNumber()
+        {
+            var providerTypes = new List<OzetteLibrary.Providers.ProviderTypes>() { OzetteLibrary.Providers.ProviderTypes.Azure };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+
+            file.SetBlockAsSent(-5, providerTypes);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BackupFileSetBlockAsSentThrowsOnInvalidDestinations1()
+        {
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+
+            file.SetBlockAsSent(3, null);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BackupFileSetBlockAsSentThrowsOnInvalidDestinations2()
+        {
+            var providerTypes = new List<OzetteLibrary.Providers.ProviderTypes>() { };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+
+            file.SetBlockAsSent(2, providerTypes);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void BackupFileSetBlockAsSentThrowsOnFileAlreadySynced()
+        {
+            var providerTypes = new List<OzetteLibrary.Providers.ProviderTypes>() { OzetteLibrary.Providers.ProviderTypes.Azure };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            file.OverallState = OzetteLibrary.Files.FileStatus.Synced;
+
+            file.SetBlockAsSent(2, providerTypes);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void BackupFileSetBlockAsSentThrowsOnMissingCopyState()
+        {
+            var providerTypes = new List<OzetteLibrary.Providers.ProviderTypes>() { OzetteLibrary.Providers.ProviderTypes.Azure };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            file.OverallState = OzetteLibrary.Files.FileStatus.InProgress;
+
+            file.SetBlockAsSent(2, providerTypes);
+        }
+
+        [TestMethod()]
+        public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState1()
+        {
+            var providerTypes = new List<OzetteLibrary.Providers.ProviderTypes>() { OzetteLibrary.Providers.ProviderTypes.Azure };
+
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            file.ResetCopyState(providerTypes.ToArray());
+
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(0, providerTypes);
+
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[providerTypes[0]].SyncStatus);
+        }
+
+        [TestMethod()]
+        public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState2()
+        {
+            var providerTypes = new List<OzetteLibrary.Providers.ProviderTypes>() { OzetteLibrary.Providers.ProviderTypes.Azure };
+
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            file.ResetCopyState(providerTypes.ToArray());
+
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(4, providerTypes);
+
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[providerTypes[0]].SyncStatus);
+        }
+
+        [TestMethod()]
+        public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState3()
+        {
+            var providerTypes = new List<OzetteLibrary.Providers.ProviderTypes>() { OzetteLibrary.Providers.ProviderTypes.Azure };
+
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            file.ResetCopyState(providerTypes.ToArray());
+
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(8, providerTypes);
+
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[providerTypes[0]].SyncStatus);
+        }
+
+        [TestMethod()]
+        public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState4()
+        {
+            var providerTypes = new List<OzetteLibrary.Providers.ProviderTypes>() { OzetteLibrary.Providers.ProviderTypes.Azure };
+
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            file.ResetCopyState(providerTypes.ToArray());
+
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
+
+            // this example file has 9 total blocks
+
+            file.SetBlockAsSent(9, providerTypes);
+
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.OverallState);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.CopyState[providerTypes[0]].SyncStatus);
         }
     }
 }
