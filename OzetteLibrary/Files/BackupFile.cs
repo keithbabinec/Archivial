@@ -392,19 +392,15 @@ namespace OzetteLibrary.Files
         }
 
         /// <summary>
-        /// Flags a particular block as sent for the specified providers.
+        /// Flags a particular block as sent for the specified provider.
         /// </summary>
         /// <param name="BlockNumber"></param>
         /// <param name="Providers"></param>
-        public void SetBlockAsSent(int BlockNumber, List<ProviderTypes> Providers)
+        public void SetBlockAsSent(int BlockNumber, ProviderTypes Provider)
         {
             if (BlockNumber < 0)
             {
                 throw new ArgumentException(nameof(BlockNumber) + " argument must be provided with a positive number.");
-            }
-            if (Providers == null || Providers.Count == 0)
-            {
-                throw new ArgumentException(nameof(Providers) + " argument must be provided with at least one entry (not null or empty)");
             }
             if (OverallState == FileStatus.Synced)
             {
@@ -415,28 +411,25 @@ namespace OzetteLibrary.Files
                 throw new InvalidOperationException("File has no copystate set.");
             }
 
-            foreach (var providerType in Providers)
+            if (CopyState.ContainsKey(Provider))
             {
-                if (CopyState.ContainsKey(providerType))
-                {
-                    var state = CopyState[providerType];
-                    state.LastCompletedFileBlockIndex = BlockNumber;
+                var state = CopyState[Provider];
+                state.LastCompletedFileBlockIndex = BlockNumber;
 
-                    if (state.LastCompletedFileBlockIndex == TotalFileBlocks)
-                    {
-                        // flag this particular destination as completed.
-                        state.SyncStatus = FileStatus.Synced;
-                    }
-                    else
-                    {
-                        // file transfer is still in progress.
-                        state.SyncStatus = FileStatus.InProgress;
-                    }
+                if (state.LastCompletedFileBlockIndex == TotalFileBlocks)
+                {
+                    // flag this particular destination as completed.
+                    state.SyncStatus = FileStatus.Synced;
                 }
                 else
                 {
-                    throw new InvalidOperationException("Attempted to set copy state for destination that wasn't found in the copy state.");
+                    // file transfer is still in progress.
+                    state.SyncStatus = FileStatus.InProgress;
                 }
+            }
+            else
+            {
+                throw new InvalidOperationException("Attempted to set copy state for destination that wasn't found in the copy state.");
             }
 
             SetOverallStateFromCopyState();
