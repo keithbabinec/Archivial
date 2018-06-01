@@ -15,17 +15,6 @@ namespace OzetteLibrary.Providers
         ProviderFileStatus GetFileStatus(BackupFile file);
 
         /// <summary>
-        /// Uploads the entire contents of a file.
-        /// </summary>
-        /// <remarks>
-        /// This is useful for small files that fit under the maximum file block transfer size.
-        /// For large files, use UploadFileBlock() instead.
-        /// </remarks>
-        /// <param name="file"><c>BackupFile</c></param>
-        /// <param name="data">A byte array stream of file contents/data.</param>
-        void UploadFile(BackupFile file, byte[] data);
-
-        /// <summary>
         /// Uploads a single block of a larger file.
         /// </summary>
         /// <remarks>

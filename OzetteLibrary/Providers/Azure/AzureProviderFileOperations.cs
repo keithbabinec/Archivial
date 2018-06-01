@@ -19,20 +19,6 @@ namespace OzetteLibrary.Providers.Azure
         }
 
         /// <summary>
-        /// Uploads the entire contents of a file to Azure cloud storage.
-        /// </summary>
-        /// <remarks>
-        /// This is useful for small files that fit under the maximum file block transfer size.
-        /// For large files, use UploadFileBlock() instead.
-        /// </remarks>
-        /// <param name="file"><c>BackupFile</c></param>
-        /// <param name="data">A byte array stream of file contents/data.</param>
-        public void UploadFile(BackupFile file, byte[] data)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Uploads a single block of a larger file Azure cloud storage.
         /// </summary>
         /// <remarks>
