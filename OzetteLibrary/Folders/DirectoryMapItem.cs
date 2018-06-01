@@ -30,10 +30,15 @@ namespace OzetteLibrary.Folders
         /// </summary>
         /// <param name="Provider"></param>
         /// <returns></returns>
-        public string GetRemotePath(ProviderTypes Provider)
+        public string GetRemoteContainerName(ProviderTypes Provider)
         {
             // Different cloud providers may have different naming rules for URIs.
             // Azure for example is all lowercase required.
+
+            if (ID == Guid.Empty)
+            {
+                throw new InvalidOperationException("Cannot generate container name. Directory ID has not been set.");
+            }
 
             if (Provider == ProviderTypes.Azure)
             {
