@@ -1,6 +1,7 @@
 ﻿using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
+using OzetteLibrary.ServiceCore;
 using System.Collections.Generic;
 
 namespace OzetteLibrary.Database
@@ -10,6 +11,22 @@ namespace OzetteLibrary.Database
     /// </summary>
     public interface IClientDatabase : IDatabase
     {
+        /// <summary>
+        /// Saves an application setting to the database.
+        /// </summary>
+        /// <param name="option">ServiceOption</param>
+        void SetApplicationOption(ServiceOption option);
+
+        /// <summary>
+        /// Retrieves an application setting value from the database.
+        /// </summary>
+        /// <remarks>
+        /// Returns null if the setting is not found.
+        /// </remarks>
+        /// <param name="SettingName">The setting name.</param>
+        /// <returns>The setting value.</returns>
+        string GetApplicationOption(string SettingName);
+
         /// <summary>
         /// Commits the provider options to the database.
         /// </summary>

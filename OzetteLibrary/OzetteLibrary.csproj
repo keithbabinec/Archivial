@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -87,6 +88,9 @@
     <Compile Include="Providers\ProviderOptions.cs" />
     <Compile Include="Providers\ProviderOptionsLoader.cs" />
     <Compile Include="Providers\ProviderTypes.cs" />
+    <Compile Include="Secrets\ISecretStore.cs" />
+    <Compile Include="Secrets\ProtectedDataStore.cs" />
+    <Compile Include="ServiceCore\ServiceOption.cs" />
     <Compile Include="ServiceCore\StartupResults.cs" />
     <Compile Include="Files\FileBackupPriority.cs" />
     <Compile Include="Folders\ScanResults.cs" />

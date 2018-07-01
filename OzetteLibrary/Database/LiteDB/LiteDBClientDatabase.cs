@@ -3,6 +3,7 @@ using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Providers;
+using OzetteLibrary.ServiceCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -102,6 +103,10 @@ namespace OzetteLibrary.Database.LiteDB
                 // the action of 'getting' the collection will create it if missing.
                 // EnsureIndex() will also only create the indexes if they are missing.
 
+                var optionsCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
+                optionsCol.EnsureIndex(x => x.ID);
+                optionsCol.EnsureIndex(x => x.Name);
+
                 var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
                 backupFilesCol.EnsureIndex(x => x.FileID);
                 backupFilesCol.EnsureIndex(x => x.Filename);
@@ -115,8 +120,9 @@ namespace OzetteLibrary.Database.LiteDB
                 var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
                 sourcesCol.EnsureIndex(x => x.ID);
 
+                // collections without indexes:
+
                 var providersCol = db.GetCollection<ProviderOptions>(Constants.Database.ProvidersTableName);
-                // no indexes required on this collection
             }
         }
         
@@ -169,6 +175,77 @@ namespace OzetteLibrary.Database.LiteDB
         /// A flag to indicate if the database has been prepared.
         /// </summary>
         private bool DatabaseHasBeenPrepared;
+
+        /// <summary>
+        /// Saves an application setting to the database.
+        /// </summary>
+        /// <param name="option">ServiceOption</param>
+        public void SetApplicationOption(ServiceOption option)
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+            if (option == null)
+            {
+                throw new ArgumentNullException(nameof(option));
+            }
+            if (option.ID > 0)
+            {
+                throw new ArgumentException(nameof(option.ID) + " must be provided.");
+            }
+            if (string.IsNullOrWhiteSpace(option.Name))
+            {
+                throw new ArgumentException(nameof(option.Name) + " must be provided.");
+            }
+            if (string.IsNullOrWhiteSpace(option.Value))
+            {
+                throw new ArgumentException(nameof(option.Value) + " must be provided.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var providersCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
+
+                providersCol.Upsert(option);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves an application setting value from the database.
+        /// </summary>
+        /// <remarks>
+        /// Returns null if the setting is not found.
+        /// </remarks>
+        /// <param name="SettingName">The setting name.</param>
+        /// <returns>The setting value.</returns>
+        public string GetApplicationOption(string SettingName)
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+            if (string.IsNullOrWhiteSpace(SettingName))
+            {
+                throw new ArgumentException(nameof(SettingName) + " must be provided.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var providersCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
+
+                var setting = providersCol.FindOne(x => x.Name == SettingName);
+
+                if (setting != null)
+                {
+                    return setting.Value;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         /// <summary>
         /// Commits the provider options to the database.

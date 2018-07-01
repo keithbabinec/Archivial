@@ -24,5 +24,10 @@
         /// A string constant for the source locations table name.
         /// </summary>
         public const string SourceLocationsTableName = "SourceLocations";
+
+        /// <summary>
+        /// A string constant for the service options table name.
+        /// </summary>
+        public const string ServiceOptionsTableName = "ServiceOptions";
     }
 }
