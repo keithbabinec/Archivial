@@ -51,17 +51,17 @@ namespace OzetteLibrary.Secrets
         /// <summary>
         /// Returns the specified secret from the secret store.
         /// </summary>
-        /// <param name="SecretName">Name of the secret</param>
+        /// <param name="SecretID">ID of the secret</param>
         /// <returns>The secret value</returns>
-        public string GetApplicationSecret(string SecretName)
+        public string GetApplicationSecret(int SecretID)
         {
             // pull encrypted secret from the database.
 
-            var settingValue = Database.GetApplicationOption(SecretName);
+            var settingValue = Database.GetApplicationOption(SecretID);
 
             if (string.IsNullOrWhiteSpace(settingValue))
             {
-                throw new Exception("Secret not found in application store: " + SecretName);
+                throw new Exception("Secret ID not found in application store: " + SecretID);
             }
 
             var settingBytes = Encoding.Unicode.GetBytes(settingValue);

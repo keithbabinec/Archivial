@@ -60,6 +60,7 @@
     <Compile Include="Client\BackupEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
     <Compile Include="Constants\EventIDs.cs" />
+    <Compile Include="Constants\OptionIDs.cs" />
     <Compile Include="Constants\Transfers.cs" />
     <Compile Include="Engine\BaseEngine.cs" />
     <Compile Include="Events\AsyncResult.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Database\LiteDB\LiteDBClientDatabase.cs" />
     <Compile Include="Events\EngineStoppedReason.cs" />
     <Compile Include="Files\TransferPayload.cs" />
+    <Compile Include="Folders\ScanFrequencies.cs" />
     <Compile Include="Logging\Default\Logger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Mock\MockLogger.cs" />
@@ -106,8 +108,6 @@
     <Compile Include="Providers\Azure\AzureProviderFileOperations.cs" />
     <Compile Include="Providers\IProviderFileOperations.cs" />
     <Compile Include="Providers\ProviderFileStatus.cs" />
-    <Compile Include="ServiceCore\Initialization.cs" />
-    <Compile Include="ServiceCore\ServiceOptions.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

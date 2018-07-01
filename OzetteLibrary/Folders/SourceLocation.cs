@@ -50,7 +50,7 @@ namespace OzetteLibrary.Folders
         /// The source location is ready to scan again once enough time has elapsed since the previous scan.
         /// </remarks>
         /// <returns></returns>
-        public bool ShouldScan(ServiceOptions options)
+        public bool ShouldScan(ScanFrequencies options)
         {
             if (options == null)
             {

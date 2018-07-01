@@ -10,9 +10,9 @@ namespace OzetteLibrary.Secrets
         /// <summary>
         /// Returns the specified secret from the secret store.
         /// </summary>
-        /// <param name="SecretName">Name of the secret</param>
+        /// <param name="SecretID">ID of the secret</param>
         /// <returns>The secret value</returns>
-        string GetApplicationSecret(string SecretName);
+        string GetApplicationSecret(int SecretID);
 
         /// <summary>
         /// Sets the specified application option into the secret store.

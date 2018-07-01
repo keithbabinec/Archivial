@@ -19,5 +19,10 @@
         /// The setting value.
         /// </summary>
         public string Value { get; set; }
+
+        /// <summary>
+        /// A flag to indicate if the setting is an encrypted type.
+        /// </summary>
+        public bool IsEncryptedOption { get; set; }
     }
 }

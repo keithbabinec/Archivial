@@ -217,24 +217,20 @@ namespace OzetteLibrary.Database.LiteDB
         /// <remarks>
         /// Returns null if the setting is not found.
         /// </remarks>
-        /// <param name="SettingName">The setting name.</param>
+        /// <param name="SettingID">The setting ID number.</param>
         /// <returns>The setting value.</returns>
-        public string GetApplicationOption(string SettingName)
+        public string GetApplicationOption(int SettingID)
         {
             if (DatabaseHasBeenPrepared == false)
             {
                 throw new InvalidOperationException("Database has not been prepared.");
-            }
-            if (string.IsNullOrWhiteSpace(SettingName))
-            {
-                throw new ArgumentException(nameof(SettingName) + " must be provided.");
             }
 
             using (var db = GetLiteDBInstance())
             {
                 var providersCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
 
-                var setting = providersCol.FindOne(x => x.Name == SettingName);
+                var setting = providersCol.FindOne(x => x.ID == SettingID);
 
                 if (setting != null)
                 {

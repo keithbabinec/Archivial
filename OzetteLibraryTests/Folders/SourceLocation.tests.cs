@@ -284,7 +284,7 @@ namespace OzetteLibraryTests.Folders
             var loc = new OzetteLibrary.Folders.SourceLocation();
             loc.LastCompletedScan = null;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.LowPriorityScanFrequencyInHours = 72;
             options.MedPriorityScanFrequencyInHours = 24;
             options.HighPriorityScanFrequencyInHours = 1;
@@ -309,7 +309,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddMinutes(-15);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.High;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.HighPriorityScanFrequencyInHours = 1;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -322,7 +322,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddMinutes(-59);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.High;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.HighPriorityScanFrequencyInHours = 1;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -335,7 +335,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddMinutes(-61);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.High;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.HighPriorityScanFrequencyInHours = 1;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -348,7 +348,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddMinutes(-125);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.High;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.HighPriorityScanFrequencyInHours = 1;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -361,7 +361,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddHours(-15);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.MedPriorityScanFrequencyInHours = 24;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -374,7 +374,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddHours(-23);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.MedPriorityScanFrequencyInHours = 24;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -387,7 +387,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddHours(-25);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.MedPriorityScanFrequencyInHours = 24;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -400,7 +400,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddHours(-125);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.MedPriorityScanFrequencyInHours = 24;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -413,7 +413,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddHours(-15);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.LowPriorityScanFrequencyInHours = 72;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -426,7 +426,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddHours(-71);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.LowPriorityScanFrequencyInHours = 72;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -439,7 +439,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddHours(-73);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.LowPriorityScanFrequencyInHours = 72;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -452,7 +452,7 @@ namespace OzetteLibraryTests.Folders
             loc.LastCompletedScan = DateTime.Now.AddHours(-1250);
             loc.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
 
-            var options = new OzetteLibrary.ServiceCore.ServiceOptions();
+            var options = new OzetteLibrary.Folders.ScanFrequencies();
             options.LowPriorityScanFrequencyInHours = 72;
 
             Assert.IsTrue(loc.ShouldScan(options));

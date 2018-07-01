@@ -4,7 +4,6 @@ using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Files;
 using OzetteLibrary.Logging;
-using OzetteLibrary.ServiceCore;
 using System;
 using System.Threading;
 
@@ -21,7 +20,7 @@ namespace OzetteLibrary.Client
         /// <param name="database"><c>IDatabase</c></param>
         /// <param name="logger"><c>ILogger</c></param>
         /// <param name="options"><c>ServiceOptions</c></param>
-        public BackupEngine(IDatabase database, ILogger logger, ServiceOptions options) : base(database, logger, options) { }
+        public BackupEngine(IDatabase database, ILogger logger) : base(database, logger) { }
 
         /// <summary>
         /// Begins to start the backup engine, returns immediately to the caller.

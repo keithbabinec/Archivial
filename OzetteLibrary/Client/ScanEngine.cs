@@ -5,7 +5,6 @@ using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Providers;
-using OzetteLibrary.ServiceCore;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -24,7 +23,7 @@ namespace OzetteLibrary.Client
         /// <param name="database"><c>IDatabase</c></param>
         /// <param name="logger"><c>ILogger</c></param>
         /// <param name="options"><c>ServiceOptions</c></param>
-        public ScanEngine(IDatabase database, ILogger logger, ServiceOptions options) : base(database, logger, options) { }
+        public ScanEngine(IDatabase database, ILogger logger) : base(database, logger) { }
 
         /// <summary>
         /// Begins to start the scanning engine, returns immediately to the caller.
@@ -68,15 +67,22 @@ namespace OzetteLibrary.Client
             {
                 while (true)
                 {
-                    // first: check to see if we have any valid sources defined.
+                    // first: grab current options from the database
+
+                    var db = Database as IClientDatabase;
+                    var sourcesFilePath = db.GetApplicationOption(Constants.OptionIDs.SourcesFilePath);
+                    var providersFilePath = db.GetApplicationOption(Constants.OptionIDs.ProvidersFilePath);
+                    var scanOptions = GetScanFrequencies(db);
+
+                    // second: check to see if we have any valid sources defined.
                     // the sources found are returned in the order they should be scanned.
 
-                    var sources = SafeImportSources(Options.SourcesFilePath);
+                    var sources = SafeImportSources(sourcesFilePath);
 
-                    // second: check to see if we have any valid providers defined.
+                    // third: check to see if we have any valid providers defined.
                     // we can't backup to any target locations without providers loaded.
 
-                    bool loadedProviders = SafeImportProviders(Options.ProviderOptionsFilePath);
+                    bool loadedProviders = SafeImportProviders(providersFilePath);
 
                     if (sources != null && loadedProviders)
                     {
@@ -86,7 +92,7 @@ namespace OzetteLibrary.Client
                             // checks the DB to see if it has been scanned recently.
                             WriteLastScannedInfoToTraceLog(source);
 
-                            if (ShouldScanSource(source))
+                            if (ShouldScanSource(source, scanOptions))
                             {
                                 // begin-invoke the asynchronous scan operation.
                                 // watch the IAsyncResult status object to check for status updates
@@ -135,6 +141,27 @@ namespace OzetteLibrary.Client
             {
                 OnStopped(new EngineStoppedEventArgs(ex));
             }
+        }
+
+        /// <summary>
+        /// Pull the current scanning options from the database.
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        private ScanFrequencies GetScanFrequencies(IClientDatabase db)
+        {
+            ScanFrequencies scan = new ScanFrequencies();
+
+            scan.LowPriorityScanFrequencyInHours = 
+                Convert.ToInt32(db.GetApplicationOption(Constants.OptionIDs.LowPriorityScanFrequencyInHours));
+
+            scan.MedPriorityScanFrequencyInHours =
+                Convert.ToInt32(db.GetApplicationOption(Constants.OptionIDs.MedPriorityScanFrequencyInHours));
+
+            scan.HighPriorityScanFrequencyInHours =
+                Convert.ToInt32(db.GetApplicationOption(Constants.OptionIDs.HighPriorityScanFrequencyInHours));
+
+            return scan;
         }
 
         /// <summary>
@@ -270,10 +297,11 @@ namespace OzetteLibrary.Client
         /// Detects if we should scan the current source.
         /// </summary>
         /// <param name="source"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
-        private bool ShouldScanSource(SourceLocation source)
+        private bool ShouldScanSource(SourceLocation source, ScanFrequencies options)
         {
-            if (source.ShouldScan(Options))
+            if (source.ShouldScan(options))
             {
                 Logger.WriteTraceMessage("This source needs to be scanned. Preparing scan operation now.");
                 return true;

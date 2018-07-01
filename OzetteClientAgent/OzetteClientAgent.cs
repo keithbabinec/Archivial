@@ -2,10 +2,10 @@
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Logging.Default;
-using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
 using System.ServiceProcess;
+using System.Threading;
 
 namespace OzetteClientAgent
 {
@@ -32,21 +32,13 @@ namespace OzetteClientAgent
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            CoreLog = new Logger(OzetteLibrary.Constants.Logging.CoreServiceComponentName);
-            Initialize = new Initialization(CoreLog);
-            Initialize.Completed += InitHelper_Completed;
-            Initialize.BeginStart(Properties.Settings.Default.Properties);
+            Thread t = new Thread(() => CoreStart());
         }
 
         /// <summary>
         /// A reference to the core service log.
         /// </summary>
         private ILogger CoreLog { get; set; }
-
-        /// <summary>
-        /// A reference to the initialization helper.
-        /// </summary>
-        private Initialization Initialize { get; set; }
 
         /// <summary>
         /// A reference to the scanning engine instance.
@@ -59,38 +51,32 @@ namespace OzetteClientAgent
         private BackupEngine Backup { get; set; }
         
         /// <summary>
-        /// Callback event for when the initialization thread has completed.
+        /// Core application start.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void InitHelper_Completed(object sender, EventArgs e)
+        private void CoreStart()
         {
-            if (Initialize.ResultCode == StartupResults.Success)
-            {
-                // in the client agent the core loop consists of two pieces.
-                // first is the scan engine, and the second is the backup engine.
-                // each one lives under it's own long-running thread and class.
-                // prepare the database and then start both engines.
+            // in the client agent the core loop consists of two pieces.
+            // first is the scan engine, and the second is the backup engine.
+            // each one lives under it's own long-running thread and class.
+            // prepare the database and then start both engines.
 
-                CoreLog.WriteSystemEvent(
-                    string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName), 
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService);
+            CoreLog = new Logger(OzetteLibrary.Constants.Logging.CoreServiceComponentName);
 
-                StartScanEngine();
-                StartBackupEngine();
+            CoreLog.Start(
+                Properties.Settings.Default.EventlogName, 
+                Properties.Settings.Default.EventlogName, 
+                Properties.Settings.Default.LogFilesDirectory);
 
-                CoreLog.WriteSystemEvent(
-                    string.Format("Successfully started {0} client service.", OzetteLibrary.Constants.Logging.AppName),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedService);
-            }
-            else
-            {
-                // safe exit without crash.
-                // set the exit code so service control manager knows there is a problem.
+            CoreLog.WriteSystemEvent(
+                string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName), 
+                EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService);
 
-                ExitCode = (int)Initialize.ResultCode;
-                Stop();
-            }
+            StartScanEngine();
+            StartBackupEngine();
+
+            CoreLog.WriteSystemEvent(
+                string.Format("Successfully started {0} client service.", OzetteLibrary.Constants.Logging.AppName),
+                EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedService);
         }
 
         /// <summary>
@@ -131,12 +117,16 @@ namespace OzetteClientAgent
             // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
 
             var log = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
-            log.Start(Initialize.Options.EventlogName, Initialize.Options.EventlogName, Initialize.Options.LogFilesDirectory);
 
-            var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
+            log.Start(
+                Properties.Settings.Default.EventlogName,
+                Properties.Settings.Default.EventlogName,
+                Properties.Settings.Default.LogFilesDirectory);
+
+            var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
             db.PrepareDatabase();
 
-            Scan = new ScanEngine(db, log, Initialize.Options);
+            Scan = new ScanEngine(db, log);
             Scan.Stopped += Scan_Stopped;
             Scan.BeginStart();
 
@@ -187,12 +177,16 @@ namespace OzetteClientAgent
             // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
 
             var log = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
-            log.Start(Initialize.Options.EventlogName, Initialize.Options.EventlogName, Initialize.Options.LogFilesDirectory);
 
-            var db = new LiteDBClientDatabase(Initialize.Options.DatabaseConnectionString, log);
+            log.Start(
+                Properties.Settings.Default.EventlogName,
+                Properties.Settings.Default.EventlogName,
+                Properties.Settings.Default.LogFilesDirectory);
+
+            var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
             db.PrepareDatabase();
 
-            Backup = new BackupEngine(db, log, Initialize.Options);
+            Backup = new BackupEngine(db, log);
             Backup.Stopped += Backup_Stopped;
             Backup.BeginStart();
 

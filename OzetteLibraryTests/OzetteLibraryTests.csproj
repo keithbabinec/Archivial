@@ -67,7 +67,6 @@
     <Compile Include="Providers\ProviderFileStatus.tests.cs" />
     <Compile Include="Providers\ProviderOptions.tests.cs" />
     <Compile Include="Providers\ProviderOptionsLoader.tests.cs" />
-    <Compile Include="ServiceCore\Initialization.tests.cs" />
     <Compile Include="Crypto\LargeByteStreamConstants.cs" />
   </ItemGroup>
   <ItemGroup>

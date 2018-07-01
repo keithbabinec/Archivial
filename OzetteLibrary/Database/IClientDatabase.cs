@@ -23,9 +23,9 @@ namespace OzetteLibrary.Database
         /// <remarks>
         /// Returns null if the setting is not found.
         /// </remarks>
-        /// <param name="SettingName">The setting name.</param>
+        /// <param name="SettingID">The setting ID number.</param>
         /// <returns>The setting value.</returns>
-        string GetApplicationOption(string SettingName);
+        string GetApplicationOption(int SettingID);
 
         /// <summary>
         /// Commits the provider options to the database.

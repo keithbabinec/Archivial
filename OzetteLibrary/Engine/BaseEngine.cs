@@ -1,7 +1,6 @@
 ﻿using OzetteLibrary.Database;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
-using OzetteLibrary.ServiceCore;
 using System;
 using System.Threading;
 
@@ -21,7 +20,7 @@ namespace OzetteLibrary.Engine
         /// <param name="database"><c>IDatabase</c></param>
         /// <param name="logger"><c>ILogger</c></param>
         /// <param name="options"><c>ServiceOptions</c></param>
-        protected BaseEngine(IDatabase database, ILogger logger, ServiceOptions options)
+        protected BaseEngine(IDatabase database, ILogger logger)
         {
             if (database == null)
             {
@@ -31,14 +30,9 @@ namespace OzetteLibrary.Engine
             {
                 throw new ArgumentNullException(nameof(logger));
             }
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
 
             Database = database;
             Logger = logger;
-            Options = options;
         }
 
         /// <summary>
@@ -79,11 +73,6 @@ namespace OzetteLibrary.Engine
         /// A reference to the database.
         /// </summary>
         protected IDatabase Database { get; set; }
-
-        /// <summary>
-        /// A reference to the service options.
-        /// </summary>
-        protected ServiceOptions Options { get; set; }
 
         /// <summary>
         /// Sleeps the engine for the specified time, while checking periodically for stop request.
