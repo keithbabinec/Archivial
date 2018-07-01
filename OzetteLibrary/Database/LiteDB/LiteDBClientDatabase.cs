@@ -136,7 +136,7 @@ namespace OzetteLibrary.Database.LiteDB
             {
                 var optionsCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
 
-                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.SourcesFilePath) != null)
+                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.SourcesFilePath) == null)
                 {
                     optionsCol.Insert(
                         new ServiceOption()
@@ -148,7 +148,7 @@ namespace OzetteLibrary.Database.LiteDB
                         });
                 }
 
-                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.ProvidersFilePath) != null)
+                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.ProvidersFilePath) == null)
                 {
                     optionsCol.Insert(
                         new ServiceOption()
@@ -160,7 +160,7 @@ namespace OzetteLibrary.Database.LiteDB
                         });
                 }
 
-                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.LowPriorityScanFrequencyInHours) != null)
+                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.LowPriorityScanFrequencyInHours) == null)
                 {
                     optionsCol.Insert(
                         new ServiceOption()
@@ -172,7 +172,7 @@ namespace OzetteLibrary.Database.LiteDB
                         });
                 }
 
-                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.MedPriorityScanFrequencyInHours) != null)
+                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.MedPriorityScanFrequencyInHours) == null)
                 {
                     optionsCol.Insert(
                         new ServiceOption()
@@ -184,7 +184,7 @@ namespace OzetteLibrary.Database.LiteDB
                         });
                 }
 
-                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.HighPriorityScanFrequencyInHours) != null)
+                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.HighPriorityScanFrequencyInHours) == null)
                 {
                     optionsCol.Insert(
                         new ServiceOption()
