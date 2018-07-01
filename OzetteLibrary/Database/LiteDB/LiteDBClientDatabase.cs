@@ -70,6 +70,7 @@ namespace OzetteLibrary.Database.LiteDB
         {
             ConfigureDatabaseIdentityMappings();
             ConfigureDatabaseCollections();
+            ConfigureDefaultApplicationSettingsIfMissing();
 
             DatabaseHasBeenPrepared = true;
         }
@@ -125,7 +126,78 @@ namespace OzetteLibrary.Database.LiteDB
                 var providersCol = db.GetCollection<ProviderOptions>(Constants.Database.ProvidersTableName);
             }
         }
-        
+
+        /// <summary>
+        /// Set the default setting options if they are missing.
+        /// </summary>
+        private void ConfigureDefaultApplicationSettingsIfMissing()
+        {
+            using (var db = GetLiteDBInstance())
+            {
+                var optionsCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
+
+                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.SourcesFilePath) != null)
+                {
+                    optionsCol.Insert(
+                        new ServiceOption()
+                        {
+                            ID = Constants.OptionIDs.SourcesFilePath,
+                            Name = nameof(Constants.OptionIDs.SourcesFilePath),
+                            IsEncryptedOption = false,
+                            Value = "C:\\Program Files\\Ozette\\Client\\BackupSources.json"
+                        });
+                }
+
+                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.ProvidersFilePath) != null)
+                {
+                    optionsCol.Insert(
+                        new ServiceOption()
+                        {
+                            ID = Constants.OptionIDs.ProvidersFilePath,
+                            Name = nameof(Constants.OptionIDs.ProvidersFilePath),
+                            IsEncryptedOption = false,
+                            Value = "C:\\Program Files\\Ozette\\Client\\ProviderOptions.json"
+                        });
+                }
+
+                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.LowPriorityScanFrequencyInHours) != null)
+                {
+                    optionsCol.Insert(
+                        new ServiceOption()
+                        {
+                            ID = Constants.OptionIDs.LowPriorityScanFrequencyInHours,
+                            Name = nameof(Constants.OptionIDs.LowPriorityScanFrequencyInHours),
+                            IsEncryptedOption = false,
+                            Value = "72"
+                        });
+                }
+
+                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.MedPriorityScanFrequencyInHours) != null)
+                {
+                    optionsCol.Insert(
+                        new ServiceOption()
+                        {
+                            ID = Constants.OptionIDs.MedPriorityScanFrequencyInHours,
+                            Name = nameof(Constants.OptionIDs.MedPriorityScanFrequencyInHours),
+                            IsEncryptedOption = false,
+                            Value = "24"
+                        });
+                }
+
+                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.HighPriorityScanFrequencyInHours) != null)
+                {
+                    optionsCol.Insert(
+                        new ServiceOption()
+                        {
+                            ID = Constants.OptionIDs.HighPriorityScanFrequencyInHours,
+                            Name = nameof(Constants.OptionIDs.HighPriorityScanFrequencyInHours),
+                            IsEncryptedOption = false,
+                            Value = "1"
+                        });
+                }
+            }
+        }
+
         /// <summary>
         /// Returns a LiteDB instance.
         /// </summary>
