@@ -1,8 +1,0 @@
-﻿[
-  {
-    "Type": "Azure",
-    "Options": {
-      "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=MyStorageAccountName;AccountKey=MyStorageAccountKey;EndpointSuffix=core.windows.net"
-    }
-  }
-]

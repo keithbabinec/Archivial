@@ -5,7 +5,6 @@ using OzetteLibrary.Logging;
 using OzetteLibrary.Providers;
 using OzetteLibrary.ServiceCore;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -87,8 +86,11 @@ namespace OzetteLibrary.Database.LiteDB
         {
             var map = BsonMapper.Global;
 
+            map.Entity<ServiceOption>().Id(x => x.ID);
             map.Entity<BackupFile>().Id(x => x.FileID);
+            map.Entity<DirectoryMapItem>().Id(x => x.ID);
             map.Entity<SourceLocation>().Id(x => x.ID);
+            map.Entity<Provider>().Id(x => x.ID);
         }
 
         /// <summary>
@@ -121,9 +123,8 @@ namespace OzetteLibrary.Database.LiteDB
                 var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
                 sourcesCol.EnsureIndex(x => x.ID);
 
-                // collections without indexes:
-
-                var providersCol = db.GetCollection<ProviderOptions>(Constants.Database.ProvidersTableName);
+                var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
+                providersCol.EnsureIndex(x => x.ID);
             }
         }
 
@@ -316,10 +317,10 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
-        /// Commits the provider options to the database.
+        /// Commits the providers collection to the database.
         /// </summary>
-        /// <param name="Provider">A list of Provider options</param>
-        public void SetProviders(List<ProviderOptions> Providers)
+        /// <param name="Providers">A collection of providers.</param>
+        public void SetProviders(ProvidersCollection Providers)
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -332,7 +333,7 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<ProviderOptions>(Constants.Database.ProvidersTableName);
+                var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
 
                 // remove all documents in this collection
                 providersCol.Delete(x => 1 == 1);
@@ -349,8 +350,8 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// Returns all of the providers defined in the database.
         /// </summary>
-        /// <returns>An array of Provider types</returns>
-        public ProviderTypes[] GetProvidersList()
+        /// <returns>A collection of providers.</returns>
+        public ProvidersCollection GetProvidersList()
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -359,42 +360,15 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<ProviderOptions>(Constants.Database.ProvidersTableName);
+                var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
 
                 if (providersCol.Count() > 0)
                 {
-                    return providersCol.FindAll().Select(x => x.Type).ToArray();
+                    return new ProvidersCollection(providersCol.FindAll());
                 }
                 else
                 {
-                    return new ProviderTypes[0];
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns the provider options for the specified provider.
-        /// </summary>
-        /// <param name="ProviderType">A single provider type.</param>
-        /// <returns><c>ProviderOptions</c></returns>
-        public ProviderOptions GetProviderOptions(ProviderTypes ProviderType)
-        {
-            if (DatabaseHasBeenPrepared == false)
-            {
-                throw new InvalidOperationException("Database has not been prepared.");
-            }
-
-            using (var db = GetLiteDBInstance())
-            {
-                var providersCol = db.GetCollection<ProviderOptions>(Constants.Database.ProvidersTableName);
-
-                if (providersCol.Count() > 0)
-                {
-                    return providersCol.Find(x => x.Type == ProviderType).FirstOrDefault();
-                }
-                else
-                {
-                    return null;
+                    return new ProvidersCollection();
                 }
             }
         }

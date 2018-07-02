@@ -28,23 +28,16 @@ namespace OzetteLibrary.Database
         string GetApplicationOption(int SettingID);
 
         /// <summary>
-        /// Commits the provider options to the database.
+        /// Commits the providers collection to the database.
         /// </summary>
-        /// <param name="Provider">A list of Provider options</param>
-        void SetProviders(List<ProviderOptions> Provider);
+        /// <param name="Providers">A collection of providers.</param>
+        void SetProviders(ProvidersCollection Providers);
 
         /// <summary>
         /// Returns all of the providers defined in the database.
         /// </summary>
-        /// <returns>An array of Provider types</returns>
-        ProviderTypes[] GetProvidersList();
-
-        /// <summary>
-        /// Returns the provider options for the specified provider.
-        /// </summary>
-        /// <param name="ProviderType">A single provider type.</param>
-        /// <returns><c>ProviderOptions</c></returns>
-        ProviderOptions GetProviderOptions(ProviderTypes ProviderType);
+        /// <returns>A collection of providers.</returns>
+        ProvidersCollection GetProvidersList();
 
         /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.

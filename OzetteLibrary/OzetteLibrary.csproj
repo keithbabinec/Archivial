@@ -87,8 +87,8 @@
     <Compile Include="Exceptions\SourceLocationException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidIDException.cs" />
     <Compile Include="Exceptions\SourceLocationsDuplicateIDException.cs" />
-    <Compile Include="Providers\ProviderOptions.cs" />
-    <Compile Include="Providers\ProviderOptionsLoader.cs" />
+    <Compile Include="Providers\Provider.cs" />
+    <Compile Include="Providers\ProvidersCollection.cs" />
     <Compile Include="Providers\ProviderTypes.cs" />
     <Compile Include="Secrets\ISecretStore.cs" />
     <Compile Include="Secrets\ProtectedDataStore.cs" />
