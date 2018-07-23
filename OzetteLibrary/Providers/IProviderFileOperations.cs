@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Providers
 {
@@ -14,7 +15,7 @@ namespace OzetteLibrary.Providers
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <returns><c>ProviderFileStatus</c></returns>
-        ProviderFileStatus GetFileStatus(BackupFile file, DirectoryMapItem directory);
+        Task<ProviderFileStatus> GetFileStatus(BackupFile file, DirectoryMapItem directory);
 
         /// <summary>
         /// Uploads a single block of a larger file.
@@ -27,6 +28,6 @@ namespace OzetteLibrary.Providers
         /// <param name="data">A byte array stream of file contents/data.</param>
         /// <param name="currentBlock">The block number associated with the specified data.</param>
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
-        void UploadFileBlock(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlock, int totalBlocks);
+        Task UploadFileBlock(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlock, int totalBlocks);
     }
 }
