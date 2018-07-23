@@ -117,6 +117,31 @@ namespace OzetteLibrary.Files
         public FileStatus OverallState { get; set; }
 
         /// <summary>
+        /// Returns the remote file name for the specified provider.
+        /// </summary>
+        /// <param name="provider">The cloud provider.</param>
+        /// <returns>A </returns>
+        public string GetRemoteFileName(ProviderTypes provider)
+        {
+            // Different cloud providers may have different naming rules for URIs.
+            // Azure for example is all lowercase required.
+
+            if (FileID == Guid.Empty)
+            {
+                throw new InvalidOperationException("Cannot generate file name. FileID has not been set.");
+            }
+
+            if (provider == ProviderTypes.Azure)
+            {
+                return string.Format("{0}-file-{1}", Constants.Logging.AppName, FileID.ToString()).ToLower();
+            }
+            else
+            {
+                throw new NotImplementedException("unexpected provider type: " + provider.ToString());
+            }
+        }
+
+        /// <summary>
         /// Resets existing copy progress state with the specified providers.
         /// </summary>
         /// <param name="providers"></param>

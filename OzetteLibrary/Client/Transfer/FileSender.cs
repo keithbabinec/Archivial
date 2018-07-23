@@ -108,7 +108,7 @@ namespace OzetteLibrary.Client.Transfer
         }
 
         /// <summary>
-        /// Performs a transfer of the specified file to the target locations.
+        /// Performs a transfer of the specified file to the target providers.
         /// </summary>
         /// <param name="File"></param>
         /// <param name="AsyncState"></param>

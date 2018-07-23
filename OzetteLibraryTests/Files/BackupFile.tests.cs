@@ -192,12 +192,13 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile();
 
             file.CopyState = new System.Collections.Generic.Dictionary
-                <OzetteLibrary.Providers.ProviderTypes, 
+                <OzetteLibrary.Providers.ProviderTypes,
                 OzetteLibrary.Providers.ProviderFileStatus>();
 
             file.CopyState.Add(
-                provider1, 
-                new OzetteLibrary.Providers.ProviderFileStatus() {
+                provider1,
+                new OzetteLibrary.Providers.ProviderFileStatus()
+                {
                     Provider = provider1,
                     SyncStatus = OzetteLibrary.Files.FileStatus.InProgress
                 });
@@ -886,6 +887,21 @@ namespace OzetteLibraryTests.Files
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.OverallState);
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus);
+        }
+
+        [TestMethod]
+        public void BackupFileGetRemoteFileNameReturnsCorrectlyFormattedNameForAzureProvider()
+        {
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+
+            // reset auto-generated id for stable test result.
+            file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
+
+            var remoteName = file.GetRemoteFileName(OzetteLibrary.Providers.ProviderTypes.Azure);
+            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258";
+
+            Assert.IsNotNull(remoteName);
+            Assert.AreEqual(expected, remoteName);
         }
     }
 }

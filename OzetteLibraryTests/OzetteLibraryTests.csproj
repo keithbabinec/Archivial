@@ -64,6 +64,7 @@
     <Compile Include="Folders\SourceLocation.tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client\Sources\Loader.tests.cs" />
+    <Compile Include="Providers\Azure\AzureProviderFileOperations.tests.cs" />
     <Compile Include="Providers\ProviderFileStatus.tests.cs" />
     <Compile Include="Crypto\LargeByteStreamConstants.cs" />
   </ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
+using OzetteLibrary.Logging;
 using System;
 
 namespace OzetteLibrary.Providers.Azure
@@ -9,9 +10,39 @@ namespace OzetteLibrary.Providers.Azure
     /// </summary>
     public class AzureProviderFileOperations : IProviderFileOperations
     {
-        public AzureProviderFileOperations()
+        /// <summary>
+        /// A reference to the storage account name.
+        /// </summary>
+        private string StorageAccountName;
+
+        /// <summary>
+        /// A reference to the SAS token.
+        /// </summary>
+        private string StorageAccountSASToken;
+
+        /// <summary>
+        /// Constructor that accepts a storage account name and storage account SAS token.
+        /// </summary>
+        /// <param name="logger">A logging utility instance.</param>
+        /// <param name="storageAccountName">The azure storage account name.</param>
+        /// <param name="storageAccountSASToken">SAS token for accessing the resource.</param>
+        public AzureProviderFileOperations(ILogger logger, string storageAccountName, string storageAccountSASToken)
         {
-            // TODO: input/accept provider options: things like the connection string, storage account name, keys, etc.
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+            if (string.IsNullOrWhiteSpace(storageAccountName))
+            {
+                throw new ArgumentException(nameof(storageAccountName) + " must be provided.");
+            }
+            if (string.IsNullOrWhiteSpace(storageAccountSASToken))
+            {
+                throw new ArgumentException(nameof(storageAccountSASToken) + " must be provided.");
+            }
+
+            StorageAccountName = storageAccountName;
+            StorageAccountSASToken = storageAccountSASToken;
         }
 
         /// <summary>
@@ -23,7 +54,8 @@ namespace OzetteLibrary.Providers.Azure
         public ProviderFileStatus GetFileStatus(BackupFile file, DirectoryMapItem directory)
         {
             // calculate my uri
-            var uri = GetFileUri("<storage account>", directory.GetRemoteContainerName(ProviderTypes.Azure), file.FileID.ToString().ToLower());
+
+            var uri = GetFileUri(directory.GetRemoteContainerName(ProviderTypes.Azure), file.GetRemoteFileName(ProviderTypes.Azure));
 
             // does the file exist at the specified uri?
 
@@ -57,16 +89,11 @@ namespace OzetteLibrary.Providers.Azure
         /// <summary>
         /// Returns the Azure resource URI.
         /// </summary>
-        /// <param name="storageAccountName">The azure storage account name.</param>
         /// <param name="containerName">The azure storage container name.</param>
         /// <param name="blobName">The azure storage blob name.</param>
-        /// <returns></returns>
-        private string GetFileUri(string storageAccountName, string containerName, string blobName)
+        /// <returns>A string formatted as a URI</returns>
+        public string GetFileUri(string containerName, string blobName)
         {
-            if (string.IsNullOrWhiteSpace(storageAccountName))
-            {
-                throw new ArgumentNullException(nameof(storageAccountName));
-            }
             if (string.IsNullOrWhiteSpace(containerName))
             {
                 throw new ArgumentNullException(nameof(containerName));
@@ -79,7 +106,7 @@ namespace OzetteLibrary.Providers.Azure
             // example uri:
             // https://myaccount.blob.core.windows.net/mycontainer/myblob 
 
-            return string.Format("https://{0}.blob.core.windows.net/{1}/{2}", storageAccountName, containerName, blobName);
+            return string.Format("https://{0}.blob.core.windows.net/{1}/{2}?{3}", StorageAccountName, containerName, blobName, StorageAccountSASToken);
         }
     }
 }
