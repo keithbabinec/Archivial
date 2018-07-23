@@ -10,7 +10,7 @@ namespace OzetteLibraryTests.Client
     [TestClass]
     public class BackupEngineTests
     {
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void BackupEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
@@ -18,7 +18,7 @@ namespace OzetteLibraryTests.Client
                 new OzetteLibrary.Client.BackupEngine(null, new MockLogger());
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void BackupEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
@@ -28,7 +28,7 @@ namespace OzetteLibraryTests.Client
                 new OzetteLibrary.Client.BackupEngine(inMemoryDB, null);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void BackupEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
@@ -40,7 +40,7 @@ namespace OzetteLibraryTests.Client
             Assert.IsNotNull(engine);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void BackupEngineCanStartAndStop()
         {
             var logger = new MockLogger();
@@ -55,7 +55,7 @@ namespace OzetteLibraryTests.Client
             engine.BeginStop();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void BackupEngineTriggersStoppedEventWhenEngineHasStopped()
         {
             var logger = new MockLogger();
@@ -77,7 +77,7 @@ namespace OzetteLibraryTests.Client
             Assert.IsTrue(engineStoppedSignaled);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void BackupEngineThrowsExceptionWhenEngineIsStartedTwice()
         {

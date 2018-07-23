@@ -5,10 +5,10 @@ using System.Security.Cryptography;
 
 namespace OzetteLibraryTests.Crypto
 {
-    [TestClass()]
+    [TestClass]
     public class HasherTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void HasherCanCorrectlyConvertHashBytesToString()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -158,7 +158,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.IsFalse(h.CheckTwoByteHashesAreTheSame(bytes1, bytes2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherCanCorrectlyGenerate20ByteSmallFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -170,7 +170,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherCanCorrectlyGenerate32ByteSmallFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -183,7 +183,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherCanCorrectlyGenerate64ByteSmallFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -199,7 +199,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherCanCorrectlyGenerate20ByteMediumFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -211,7 +211,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherCanCorrectlyGenerate32ByteMediumFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -224,7 +224,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherCanCorrectlyGenerate64ByteMediumFileHash()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -240,7 +240,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(actualHash, expectedHash));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherGenerateDefaultHashReturnsCorrectLength1()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -250,7 +250,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.AreEqual(20, actualHash.Length);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherGenerateDefaultHashReturnsCorrectLength2()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -260,7 +260,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.AreEqual(32, actualHash.Length);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherGenerateDefaultHashReturnsCorrectLength3()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -270,7 +270,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.AreEqual(64, actualHash.Length);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(NotImplementedException))]
         public void HasherGenerateDefaultHashThrowsOnInvalidBackupPriority()
         {
@@ -279,7 +279,7 @@ namespace OzetteLibraryTests.Crypto
             byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", 0);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherGetDefaultHashAlgorithmReturnsCorrectAlgorithm1()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -289,7 +289,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.AreEqual(HashAlgorithmName.SHA1, actual);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherGetDefaultHashAlgorithmReturnsCorrectAlgorithm2()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -299,7 +299,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.AreEqual(HashAlgorithmName.SHA256, actual);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherGetDefaultHashAlgorithmReturnsCorrectAlgorithm3()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -309,7 +309,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.AreEqual(HashAlgorithmName.SHA512, actual);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(NotImplementedException))]
         public void HasherGetDefaultHashAlgorithmThrowsOnInvalidBackupPriority()
         {
@@ -318,7 +318,7 @@ namespace OzetteLibraryTests.Crypto
             HashAlgorithmName actual = h.GetDefaultHashAlgorithm(0);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void HasherHashFileBlockFromByteArrayThrowsOnBadInput1()
         {
@@ -326,7 +326,7 @@ namespace OzetteLibraryTests.Crypto
             h.HashFileBlockFromByteArray(HashAlgorithmName.SHA256, null);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void HasherHashFileBlockFromByteArrayThrowsOnBadInput2()
         {
@@ -334,7 +334,7 @@ namespace OzetteLibraryTests.Crypto
             h.HashFileBlockFromByteArray(HashAlgorithmName.SHA256, new byte[0]);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherHashFileBlockFromByteArrayCorrectlyHashesInput1()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
@@ -356,7 +356,7 @@ namespace OzetteLibraryTests.Crypto
             Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(result, expected));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HasherHashFileBlockFromByteArrayCorrectlyHashesInput2()
         {
             OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());

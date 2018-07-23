@@ -8,10 +8,10 @@ using System.IO;
 
 namespace OzetteLibraryTests.Client.Sources
 {
-    [TestClass()]
+    [TestClass]
     public class ScannerTests
     {
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScannerConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
@@ -19,7 +19,7 @@ namespace OzetteLibraryTests.Client.Sources
                 new OzetteLibrary.Client.Sources.SourceScanner(null, new MockLogger());
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScannerConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
@@ -29,7 +29,7 @@ namespace OzetteLibraryTests.Client.Sources
                 new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, null);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ScannerConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
@@ -41,7 +41,7 @@ namespace OzetteLibraryTests.Client.Sources
             Assert.IsNotNull(scanner);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void ScannerThrowsWhenBeginScanIsCalledAfterScanHasAlreadyStarted()
         {
@@ -65,7 +65,7 @@ namespace OzetteLibraryTests.Client.Sources
             scanner.BeginScan(source);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ScannerSignalsCompleteAfterScanHasCompleted()
         {
             var logger = new MockLogger();
@@ -92,7 +92,7 @@ namespace OzetteLibraryTests.Client.Sources
             Assert.IsTrue(iasync.IsCompleted);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ScannerCanScanSuccessfullyAfterCompletingAnEarlierScan()
         {
             var logger = new MockLogger();
@@ -126,7 +126,7 @@ namespace OzetteLibraryTests.Client.Sources
             Assert.IsTrue(iasync2.IsCompleted);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ScannerCanAddClientFilesToDatabaseWithCorrectMetadata()
         {
             var logger = new MockLogger();
@@ -171,7 +171,7 @@ namespace OzetteLibraryTests.Client.Sources
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void TraceMessagesAreWrittenToTheTraceLogDuringScanning()
         {
             var logger = new MockLogger();

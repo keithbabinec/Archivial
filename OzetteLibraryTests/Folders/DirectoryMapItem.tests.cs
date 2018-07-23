@@ -3,10 +3,10 @@ using System;
 
 namespace OzetteLibraryTests.Folders
 {
-    [TestClass()]
+    [TestClass]
     public class DirectoryMapItemTests
     {
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(NotImplementedException))]
         public void DirectoryMapItemGetRemotePathCorrectlyThrowsOnInvalidProvider()
         {
@@ -16,7 +16,7 @@ namespace OzetteLibraryTests.Folders
             item.GetRemoteContainerName((OzetteLibrary.Providers.ProviderTypes.Azure)-1);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureLowerCase()
         {
             var item = new OzetteLibrary.Folders.DirectoryMapItem();
@@ -36,7 +36,7 @@ namespace OzetteLibraryTests.Folders
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureBetween3And63Chars()
         {
             var item = new OzetteLibrary.Folders.DirectoryMapItem();
@@ -51,7 +51,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(path.Length <= 63);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureOnlyLettersNumbersAndDashes()
         {
             var item = new OzetteLibrary.Folders.DirectoryMapItem();
@@ -71,7 +71,7 @@ namespace OzetteLibraryTests.Folders
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureStartsWithOnlyLetterOrNumber()
         {
             var item = new OzetteLibrary.Folders.DirectoryMapItem();

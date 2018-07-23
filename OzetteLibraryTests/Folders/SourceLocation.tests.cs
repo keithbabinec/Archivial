@@ -4,10 +4,10 @@ using System;
 
 namespace OzetteLibraryTests.Folders
 {
-    [TestClass()]
+    [TestClass]
     public class SourceLocationTests
     {
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationInvalidFolderPathException))]
         public void SourceLocationValidateThrowsExceptionWhenInvalidFolderPathIsProvided()
         {
@@ -15,7 +15,7 @@ namespace OzetteLibraryTests.Folders
             loc.Validate();
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationInvalidFolderPathException))]
         public void SourceLocationValidateThrowsExceptionWhenInvalidFolderPathIsProvided2()
         {
@@ -24,7 +24,7 @@ namespace OzetteLibraryTests.Folders
             loc.Validate();
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationInvalidFileMatchFilterException))]
         public void SourceLocationValidateThrowsExceptionWhenInvalidFileMatchPatternIsProvided()
         {
@@ -34,7 +34,7 @@ namespace OzetteLibraryTests.Folders
             loc.Validate();
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationInvalidFileMatchFilterException))]
         public void SourceLocationValidateThrowsExceptionWhenInvalidFileMatchPatternIsProvided2()
         {
@@ -44,7 +44,7 @@ namespace OzetteLibraryTests.Folders
             loc.Validate();
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationInvalidRevisionCountException))]
         public void SourceLocationValidateThrowsExceptionWhenInvalidRevisionCountProvided()
         {
@@ -54,7 +54,7 @@ namespace OzetteLibraryTests.Folders
             loc.Validate();
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationInvalidRevisionCountException))]
         public void SourceLocationValidateThrowsExceptionWhenInvalidRevisionCountProvided2()
         {
@@ -64,7 +64,7 @@ namespace OzetteLibraryTests.Folders
             loc.Validate();
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationInvalidIDException))]
         public void SourceLocationValidateThrowsExceptionWhenInvalidIDProvided()
         {
@@ -75,7 +75,7 @@ namespace OzetteLibraryTests.Folders
             loc.Validate();
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationInvalidIDException))]
         public void SourceLocationValidateThrowsExceptionWhenInvalidIDProvided2()
         {
@@ -86,7 +86,7 @@ namespace OzetteLibraryTests.Folders
             loc.Validate();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample1()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -98,7 +98,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample2()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -110,7 +110,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample3()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -122,7 +122,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample4()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -135,7 +135,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample5()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -148,7 +148,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample6()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -161,7 +161,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample7()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -174,7 +174,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample8()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -187,7 +187,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample9()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -200,7 +200,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample10()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -213,7 +213,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample11()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -226,7 +226,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample12()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -239,7 +239,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample13()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -252,7 +252,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample14()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -265,7 +265,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationValidatePassesValidExample15()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -278,7 +278,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample1()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -292,7 +292,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void SourceLocationShouldScanExample2()
         {
@@ -302,7 +302,7 @@ namespace OzetteLibraryTests.Folders
             loc.ShouldScan(null);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample3()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -315,7 +315,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample4()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -328,7 +328,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample5()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -341,7 +341,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample6()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -354,7 +354,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample7()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -367,7 +367,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample8()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -380,7 +380,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample9()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -393,7 +393,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample10()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -406,7 +406,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample11()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -419,7 +419,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample12()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -432,7 +432,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample13()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -445,7 +445,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationShouldScanExample14()
         {
             var loc = new OzetteLibrary.Folders.SourceLocation();
@@ -458,7 +458,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(loc.ShouldScan(options));
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationsDuplicateIDException))]
         public void SourceLocationsValidateThrowsExceptionOnDuplicateIDs()
         {
@@ -489,7 +489,7 @@ namespace OzetteLibraryTests.Folders
             locations.Validate();
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationInvalidRevisionCountException))]
         public void SourceLocationsValidateCallsValidateOnSourcesInsideCollection()
         {
@@ -520,7 +520,7 @@ namespace OzetteLibraryTests.Folders
             locations.Validate();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsValidateDoesNotThrowOnAllValidSources()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -552,7 +552,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsValidateDoesNotThrowOnSingleValidSource()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -570,7 +570,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(SourceLocationInvalidIDException))]
         public void SourceLocationsValidateDoesThrowOnSingleInvalidSource()
         {
@@ -589,7 +589,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample1()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -623,7 +623,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample2()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -641,7 +641,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample3()
         {
             var locations1 = new OzetteLibrary.Folders.SourceLocations();
@@ -650,7 +650,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsTrue(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample4()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -675,7 +675,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample5()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -700,7 +700,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample6()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -752,7 +752,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample7()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -776,7 +776,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample8()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -800,7 +800,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample9()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -824,7 +824,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample10()
         {
             var loc1 = new OzetteLibrary.Folders.SourceLocation();
@@ -850,7 +850,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample11()
         {
             var loc1A = new OzetteLibrary.Folders.SourceLocation();
@@ -902,7 +902,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample12()
         {
             var loc1A = new OzetteLibrary.Folders.SourceLocation();
@@ -954,7 +954,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample13()
         {
             var loc1A = new OzetteLibrary.Folders.SourceLocation();
@@ -1006,7 +1006,7 @@ namespace OzetteLibraryTests.Folders
             Assert.IsFalse(locations1.CollectionHasSameContent(locations2));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourceLocationsCollectionHasSameContentExample14()
         {
             var loc1A = new OzetteLibrary.Folders.SourceLocation();

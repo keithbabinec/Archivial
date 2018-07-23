@@ -4,10 +4,10 @@ using System;
 
 namespace OzetteLibraryTests.Client.Sources
 {
-    [TestClass()]
+    [TestClass]
     public class LoaderTests
     {
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void SourcesLoaderThrowsExceptionWhenNoFileIsProvided()
         {
@@ -15,7 +15,7 @@ namespace OzetteLibraryTests.Client.Sources
             load.LoadSourcesFile(null);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourcesLoaderSafelyReturnsEmptySourcesCollectionFromEmptySourceFile()
         {
             OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
@@ -27,7 +27,7 @@ namespace OzetteLibraryTests.Client.Sources
             Assert.AreEqual(typeof(OzetteLibrary.Folders.SourceLocations), sources.GetType());
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourcesLoaderCanLoadExample1()
         {
             OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
@@ -48,7 +48,7 @@ namespace OzetteLibraryTests.Client.Sources
             Assert.AreEqual(1, sources[1].RevisionCount);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourcesLoaderCanLoadExample2()
         {
             OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
@@ -95,7 +95,7 @@ namespace OzetteLibraryTests.Client.Sources
             Assert.AreEqual(FileBackupPriority.High, sources[11].Priority);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourcesLoaderCanCorrectlySortByPriority()
         {
             OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();
@@ -143,7 +143,7 @@ namespace OzetteLibraryTests.Client.Sources
             Assert.AreEqual(FileBackupPriority.Low, sorted[11].Priority);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SourcesLoaderCanCorrectlySortByPriorityAndRevisionCount()
         {
             OzetteLibrary.Client.Sources.Loader load = new OzetteLibrary.Client.Sources.Loader();

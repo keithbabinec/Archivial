@@ -5,7 +5,7 @@ namespace OzetteLibraryTests.Providers
     [TestClass]
     public class ProviderFileStatusTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void ProviderFileStatusResetStateDoesNotThrowIfNoProviderIsPresent()
         {
             var copyState = new OzetteLibrary.Providers.ProviderFileStatus();
@@ -14,7 +14,7 @@ namespace OzetteLibraryTests.Providers
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ProviderFileStatusCorrectlyAssignsProviderFromConstructor()
         {
             var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.AWS);
@@ -22,7 +22,7 @@ namespace OzetteLibraryTests.Providers
             Assert.AreEqual(OzetteLibrary.Providers.ProviderTypes.AWS, copyState.Provider);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ProviderFileStatusCorrectlyInitializesCopyStateAsUnsynced()
         {
             var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.AWS);
@@ -31,7 +31,7 @@ namespace OzetteLibraryTests.Providers
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, copyState.SyncStatus);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ProviderFileStatusResetStateCorrectlyResetsProgress()
         {
             var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.AWS);
@@ -44,7 +44,7 @@ namespace OzetteLibraryTests.Providers
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, copyState.SyncStatus);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ProviderFileStatusResetStateCorrectlyResetsProgress2()
         {
             var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.AWS);
