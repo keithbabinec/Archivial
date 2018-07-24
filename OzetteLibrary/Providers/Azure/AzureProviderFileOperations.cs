@@ -1,8 +1,11 @@
 ﻿using Microsoft.WindowsAzure.Storage.Blob;
+using OzetteLibrary.Constants;
+using OzetteLibrary.Exceptions;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OzetteLibrary.Providers.Azure
@@ -75,19 +78,10 @@ namespace OzetteLibrary.Providers.Azure
             {
                 // -- query metadata
                 // -- determine state from metadata
-
+                
                 await blob.FetchAttributesAsync().ConfigureAwait(false);
 
-                if (blob.Metadata.ContainsKey("SyncStatus"))
-                {
-                    fileStatus.SyncStatus = (FileStatus) Enum.Parse(typeof(FileStatus), blob.Metadata["SyncStatus"]);
-                }
-                if (blob.Metadata.ContainsKey("LastCompletedFileBlockIndex"))
-                {
-                    fileStatus.LastCompletedFileBlockIndex = Convert.ToInt32(blob.Metadata["LastCompletedFileBlockIndex"]);
-                }
-
-                fileStatus.Metadata = blob.Metadata;
+                fileStatus.ApplyMetadataToState(blob.Metadata);
 
                 return fileStatus;
             }

@@ -1,4 +1,7 @@
-﻿using OzetteLibrary.Files;
+﻿using OzetteLibrary.Constants;
+using OzetteLibrary.Exceptions;
+using OzetteLibrary.Files;
+using System;
 using System.Collections.Generic;
 
 namespace OzetteLibrary.Providers
@@ -56,6 +59,49 @@ namespace OzetteLibrary.Providers
             SyncStatus = FileStatus.Unsynced;
             LastCompletedFileBlockIndex = -1;
             Metadata = null;
+        }
+
+        /// <summary>
+        /// Applies the metadata found in the provider state to this object.
+        /// </summary>
+        /// <param name="providerMetadata"></param>
+        public void ApplyMetadataToState(IDictionary<string, string> providerMetadata)
+        {
+            if (providerMetadata == null)
+            {
+                throw new ArgumentNullException(nameof(providerMetadata));
+            }
+
+            if (Provider == ProviderTypes.Azure)
+            {
+                if (!providerMetadata.ContainsKey(ProviderMetadata.AzureProviderSyncStatusKeyName))
+                {
+                    throw new ProviderMetadataMissingException(ProviderMetadata.AzureProviderSyncStatusKeyName);
+                }
+                if (!providerMetadata.ContainsKey(ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName))
+                {
+                    throw new ProviderMetadataMissingException(ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName);
+                }
+
+                FileStatus parsedStatus;
+                if (!Enum.TryParse(providerMetadata[ProviderMetadata.AzureProviderSyncStatusKeyName], out parsedStatus))
+                {
+                    throw new ProviderMetadataMalformedException(ProviderMetadata.AzureProviderSyncStatusKeyName);
+                }
+
+                int parsedLastBlock;
+                if (!int.TryParse(providerMetadata[ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName], out parsedLastBlock))
+                {
+                    throw new ProviderMetadataMalformedException(ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName);
+                }
+
+                SyncStatus = parsedStatus;
+                LastCompletedFileBlockIndex = parsedLastBlock;
+            }
+            else
+            {
+                throw new NotImplementedException("Provider is not implemented: " + Provider.ToString());
+            }
         }
     }
 }
