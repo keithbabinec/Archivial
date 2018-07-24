@@ -1,4 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 
 namespace OzetteLibraryTests.Providers
 {
@@ -55,6 +57,99 @@ namespace OzetteLibraryTests.Providers
             Assert.AreEqual(OzetteLibrary.Providers.ProviderTypes.AWS, copyState.Provider);
             Assert.AreEqual(-1, copyState.LastCompletedFileBlockIndex);
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, copyState.SyncStatus);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ProviderFileStatusApplyMetadataToStateThrowsOnNullMetadata()
+        {
+            var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.Azure);
+            copyState.ResetState();
+            copyState.ApplyMetadataToState(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void ProviderFileStatusApplyMetadataToStateThrowsOnNonImplementedProvider()
+        {
+            var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.Google);
+            copyState.ResetState();
+
+            var metadata = new Dictionary<string, string>();
+
+            copyState.ApplyMetadataToState(metadata);
+        }
+
+        [TestMethod]
+        public void ProviderFileStatusApplyAzureMetadataToStateCorrectlyParsesRequiredProperties()
+        {
+            var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.Azure);
+            copyState.ResetState();
+
+            var metadata = new Dictionary<string, string>();
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName, "4");
+
+            copyState.ApplyMetadataToState(metadata);
+
+            Assert.IsNotNull(copyState.Metadata);
+            Assert.AreEqual(metadata.Count, copyState.Metadata.Count);
+            Assert.AreEqual(4, copyState.LastCompletedFileBlockIndex);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, copyState.SyncStatus);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OzetteLibrary.Exceptions.ProviderMetadataMissingException))]
+        public void ProviderFileStatusApplyAzureMetadataToStateThrowsOnMissingSyncStatus()
+        {
+            var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.Azure);
+            copyState.ResetState();
+
+            var metadata = new Dictionary<string, string>();
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName, "4");
+
+            copyState.ApplyMetadataToState(metadata);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OzetteLibrary.Exceptions.ProviderMetadataMissingException))]
+        public void ProviderFileStatusApplyAzureMetadataToStateThrowsOnMissingLastCompletedBlock()
+        {
+            var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.Azure);
+            copyState.ResetState();
+
+            var metadata = new Dictionary<string, string>();
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
+
+            copyState.ApplyMetadataToState(metadata);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OzetteLibrary.Exceptions.ProviderMetadataMalformedException))]
+        public void ProviderFileStatusApplyAzureMetadataToStateThrowsOnMalformedSyncStatus()
+        {
+            var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.Azure);
+            copyState.ResetState();
+
+            var metadata = new Dictionary<string, string>();
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderSyncStatusKeyName, "InPogress"); // misspelled, should not parse
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName, "4");
+
+            copyState.ApplyMetadataToState(metadata);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OzetteLibrary.Exceptions.ProviderMetadataMalformedException))]
+        public void ProviderFileStatusApplyAzureMetadataToStateThrowsOnMalformedLastCompletedBlock()
+        {
+            var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.Azure);
+            copyState.ResetState();
+
+            var metadata = new Dictionary<string, string>();
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName, "what?"); // not a number, should not parse.
+
+            copyState.ApplyMetadataToState(metadata);
         }
     }
 }

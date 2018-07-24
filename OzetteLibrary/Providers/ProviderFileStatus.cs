@@ -97,6 +97,7 @@ namespace OzetteLibrary.Providers
 
                 SyncStatus = parsedStatus;
                 LastCompletedFileBlockIndex = parsedLastBlock;
+                Metadata = providerMetadata;
             }
             else
             {
