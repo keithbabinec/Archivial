@@ -87,8 +87,8 @@ namespace OzetteLibrary.Providers.Azure
             }
             else
             {
-                // the default state for a freshly initialized file status object is unsynched.
-                // since the blob doesn't exist, the file is unsynched.
+                // the default state for a freshly initialized file status object is unsynced.
+                // since the blob doesn't exist, the file is unsynced.
 
                 return fileStatus;
             }
