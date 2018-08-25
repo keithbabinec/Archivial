@@ -18,10 +18,10 @@ namespace OzetteLibrary.Providers
         Task<ProviderFileStatus> GetFileStatus(BackupFile file, DirectoryMapItem directory);
 
         /// <summary>
-        /// Uploads a single block of a larger file.
+        /// Uploads a single block of a file to the cloud provider.
         /// </summary>
         /// <remarks>
-        /// If this file is the final block in the file, the file should be committed and/or the transaction finalized.
+        /// If this file is the only (or final) block in the file, the file should be committed and/or the transaction finalized.
         /// </remarks>
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>

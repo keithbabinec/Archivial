@@ -12,6 +12,10 @@ namespace OzetteLibrary.Crypto
     /// </summary>
     public class Hasher
     {
+        /// <summary>
+        /// Constructor that accepts a logging helper instance.
+        /// </summary>
+        /// <param name="logger"></param>
         public Hasher(ILogger logger)
         {
             if (logger == null)
@@ -22,6 +26,9 @@ namespace OzetteLibrary.Crypto
             Logger = logger;
         }
 
+        /// <summary>
+        /// A reference to the logging helper.
+        /// </summary>
         private ILogger Logger { get; set; }
 
         /// <summary>
@@ -187,6 +194,16 @@ namespace OzetteLibrary.Crypto
             }
             sb.Remove(sb.Length - 1, 1);
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Converts an array of bytes into a base64 encoded string.
+        /// </summary>
+        /// <param name="hash"></param>
+        /// <returns></returns>
+        public string ConvertHashByteArrayToBase64EncodedString(byte[] hash)
+        {
+            return Convert.ToBase64String(hash);
         }
 
         /// <summary>
