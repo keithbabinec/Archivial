@@ -74,25 +74,25 @@ namespace OzetteLibrary.Providers
 
             if (Provider == ProviderTypes.Azure)
             {
-                if (!providerMetadata.ContainsKey(ProviderMetadata.AzureProviderSyncStatusKeyName))
+                if (!providerMetadata.ContainsKey(ProviderMetadata.ProviderSyncStatusKeyName))
                 {
-                    throw new ProviderMetadataMissingException(ProviderMetadata.AzureProviderSyncStatusKeyName);
+                    throw new ProviderMetadataMissingException(ProviderMetadata.ProviderSyncStatusKeyName);
                 }
-                if (!providerMetadata.ContainsKey(ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName))
+                if (!providerMetadata.ContainsKey(ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName))
                 {
-                    throw new ProviderMetadataMissingException(ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName);
+                    throw new ProviderMetadataMissingException(ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName);
                 }
 
                 FileStatus parsedStatus;
-                if (!Enum.TryParse(providerMetadata[ProviderMetadata.AzureProviderSyncStatusKeyName], out parsedStatus))
+                if (!Enum.TryParse(providerMetadata[ProviderMetadata.ProviderSyncStatusKeyName], out parsedStatus))
                 {
-                    throw new ProviderMetadataMalformedException(ProviderMetadata.AzureProviderSyncStatusKeyName);
+                    throw new ProviderMetadataMalformedException(ProviderMetadata.ProviderSyncStatusKeyName);
                 }
 
                 int parsedLastBlock;
-                if (!int.TryParse(providerMetadata[ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName], out parsedLastBlock))
+                if (!int.TryParse(providerMetadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName], out parsedLastBlock))
                 {
-                    throw new ProviderMetadataMalformedException(ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName);
+                    throw new ProviderMetadataMalformedException(ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName);
                 }
 
                 SyncStatus = parsedStatus;

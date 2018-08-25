@@ -87,8 +87,8 @@ namespace OzetteLibraryTests.Providers
             copyState.ResetState();
 
             var metadata = new Dictionary<string, string>();
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName, "4");
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName, "4");
 
             copyState.ApplyMetadataToState(metadata);
 
@@ -106,7 +106,7 @@ namespace OzetteLibraryTests.Providers
             copyState.ResetState();
 
             var metadata = new Dictionary<string, string>();
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName, "4");
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName, "4");
 
             copyState.ApplyMetadataToState(metadata);
         }
@@ -119,7 +119,7 @@ namespace OzetteLibraryTests.Providers
             copyState.ResetState();
 
             var metadata = new Dictionary<string, string>();
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
 
             copyState.ApplyMetadataToState(metadata);
         }
@@ -132,8 +132,8 @@ namespace OzetteLibraryTests.Providers
             copyState.ResetState();
 
             var metadata = new Dictionary<string, string>();
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderSyncStatusKeyName, "InPogress"); // misspelled, should not parse
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName, "4");
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderSyncStatusKeyName, "InPogress"); // misspelled, should not parse
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName, "4");
 
             copyState.ApplyMetadataToState(metadata);
         }
@@ -146,8 +146,8 @@ namespace OzetteLibraryTests.Providers
             copyState.ResetState();
 
             var metadata = new Dictionary<string, string>();
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName, "what?"); // not a number, should not parse.
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
+            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName, "what?"); // not a number, should not parse.
 
             copyState.ApplyMetadataToState(metadata);
         }

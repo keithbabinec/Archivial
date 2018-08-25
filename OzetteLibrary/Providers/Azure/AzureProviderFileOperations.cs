@@ -5,10 +5,8 @@ using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OzetteLibrary.Providers.Azure
@@ -39,6 +37,11 @@ namespace OzetteLibrary.Providers.Azure
         private Hasher Hasher;
 
         /// <summary>
+        /// A reference to the provider utilities helper instance.
+        /// </summary>
+        private AzureProviderUtilities ProviderUtilities;
+
+        /// <summary>
         /// Constructor that accepts a storage account name and storage account SAS token.
         /// </summary>
         /// <param name="logger">A logging utility instance.</param>
@@ -61,6 +64,7 @@ namespace OzetteLibrary.Providers.Azure
 
             Logger = logger;
             Hasher = new Hasher(logger);
+            ProviderUtilities = new AzureProviderUtilities();
             StorageAccountName = storageAccountName;
             StorageAccountSASToken = storageAccountSASToken;
         }
@@ -76,9 +80,16 @@ namespace OzetteLibrary.Providers.Azure
             Logger.WriteTraceMessage("Checking the Azure provider status for file: " + file.FullSourcePath);
             
             // calculate my uri
-            var sasBlobUri = GetFileUri(directory.GetRemoteContainerName(ProviderTypes.Azure), file.GetRemoteFileName(ProviderTypes.Azure));
+
+            var sasBlobUri = ProviderUtilities.GetFileUri(
+                    StorageAccountName,
+                    StorageAccountSASToken,
+                    directory.GetRemoteContainerName(ProviderTypes.Azure), 
+                    file.GetRemoteFileName(ProviderTypes.Azure)
+            );
 
             // does the file exist at the specified uri?
+
             CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri));
 
             var fileStatus = new ProviderFileStatus(ProviderTypes.Azure);
@@ -120,7 +131,12 @@ namespace OzetteLibrary.Providers.Azure
 
             // calculate my uri
 
-            var sasBlobUri = GetFileUri(directory.GetRemoteContainerName(ProviderTypes.Azure), file.GetRemoteFileName(ProviderTypes.Azure));
+            var sasBlobUri = ProviderUtilities.GetFileUri(
+                    StorageAccountName,
+                    StorageAccountSASToken,
+                    directory.GetRemoteContainerName(ProviderTypes.Azure),
+                    file.GetRemoteFileName(ProviderTypes.Azure)
+            );
 
             // hash the block. Azure has an integrity check on the server side if we supply the expected md5 hash.
 
@@ -136,92 +152,29 @@ namespace OzetteLibrary.Providers.Azure
 
             using (var stream = new MemoryStream(data))
             {
-                var encodedBlockIdString = GenerateBlockIdentifierBase64String(file.FileID, currentBlock);
+                var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlock);
                 await blob.PutBlockAsync(encodedBlockIdString, stream, blockMd5Hash);
             }
 
             // after the block has been uploaded it is in an uncommitted state.
             // commit this block (plus any previously committed blocks).
 
-            var blockListToCommit = GenerateListOfBlocksToCommit(file.FileID, currentBlock);
+            var blockListToCommit = ProviderUtilities.GenerateListOfBlocksToCommit(file.FileID, currentBlock);
             await blob.PutBlockListAsync(blockListToCommit);
 
             // update metadata/status
 
-            blob.Metadata[ProviderMetadata.AzureProviderSyncStatusKeyName] = 
+            blob.Metadata[ProviderMetadata.ProviderSyncStatusKeyName] = 
                 (currentBlock == totalBlocks ? 
                     FileStatus.Synced.ToString() :
                     FileStatus.InProgress.ToString());
 
-            blob.Metadata[ProviderMetadata.AzureProviderLastCompletedFileBlockIndexKeyName] = currentBlock.ToString();
+            blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlock.ToString();
+            blob.Metadata[ProviderMetadata.FullSourcePathKeyName] = file.FullSourcePath;
+
             await blob.SetMetadataAsync();
 
             Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0} for file: {1}", currentBlock, file.FullSourcePath));
-        }
-
-        /// <summary>
-        /// Generates a list base64 encoded block identifiers to commit.
-        /// </summary>
-        /// <remarks>
-        /// Azure references block IDs with base64 encoded strings.
-        /// One or more block IDs are committed to make a single CloudBlockBlob object.
-        /// Generate the list of block IDs up to the current block.
-        /// </remarks>
-        /// <param name="fileID"></param>
-        /// <param name="currentBlock"></param>
-        /// <returns></returns>
-        private List<string> GenerateListOfBlocksToCommit(Guid fileID, int currentBlock)
-        {
-            List<string> blockIDs = new List<string>();
-
-            for (int i = 1; i <= currentBlock; i++)
-            {
-                blockIDs.Add(GenerateBlockIdentifierBase64String(fileID, i));
-            }
-
-            return blockIDs;
-        }
-
-        /// <summary>
-        /// Generates a base64 encoded block identifier.
-        /// </summary>
-        /// <remarks>
-        /// Azure references block IDs with base64 encoded strings.
-        /// One or more block IDs are committed to make a single CloudBlockBlob object.
-        /// </remarks>
-        /// <param name="fileID"></param>
-        /// <param name="blockNumber"></param>
-        /// <returns></returns>
-        private string GenerateBlockIdentifierBase64String(Guid fileID, int blockNumber)
-        {
-            return Convert.ToBase64String(
-                Encoding.UTF8.GetBytes(
-                    string.Format("{0}-{1}", fileID.ToString(), blockNumber)
-                )
-            );
-        }
-
-        /// <summary>
-        /// Returns the Azure resource URI.
-        /// </summary>
-        /// <param name="containerName">The azure storage container name.</param>
-        /// <param name="blobName">The azure storage blob name.</param>
-        /// <returns>A string formatted as a URI</returns>
-        public string GetFileUri(string containerName, string blobName)
-        {
-            if (string.IsNullOrWhiteSpace(containerName))
-            {
-                throw new ArgumentNullException(nameof(containerName));
-            }
-            if (string.IsNullOrWhiteSpace(blobName))
-            {
-                throw new ArgumentNullException(nameof(blobName));
-            }
-
-            // example uri:
-            // https://myaccount.blob.core.windows.net/mycontainer/myblob 
-
-            return string.Format("https://{0}.blob.core.windows.net/{1}/{2}?{3}", StorageAccountName, containerName, blobName, StorageAccountSASToken);
         }
     }
 }
