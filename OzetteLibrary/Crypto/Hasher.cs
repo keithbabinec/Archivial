@@ -199,10 +199,15 @@ namespace OzetteLibrary.Crypto
         /// <summary>
         /// Converts an array of bytes into a base64 encoded string.
         /// </summary>
-        /// <param name="hash"></param>
-        /// <returns></returns>
+        /// <param name="hash">A populated byte array.</param>
+        /// <returns>Base64 encoded string</returns>
         public string ConvertHashByteArrayToBase64EncodedString(byte[] hash)
         {
+            if (hash == null || hash.Length == 0)
+            {
+                throw new ArgumentException(nameof(hash) + " must be provided.");
+            }
+
             return Convert.ToBase64String(hash);
         }
 

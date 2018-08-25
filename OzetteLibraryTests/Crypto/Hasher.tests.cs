@@ -371,5 +371,43 @@ namespace OzetteLibraryTests.Crypto
 
             Assert.IsTrue(h.CheckTwoByteHashesAreTheSame(result, expected));
         }
+
+        [TestMethod]
+        public void HasherConvertHashByteArrayToBase64EncodedStringReturnsValidBase64String()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+
+            var input = new byte[]
+            {
+                243,10,203,238,4,236,188,44,192,33,121,88,216,28,69,38,148,10,50,148,149,213,98,172,50,11,162,156,0,118,246,92
+            };
+
+            var result = h.ConvertHashByteArrayToBase64EncodedString(input);
+            var expected = "8wrL7gTsvCzAIXlY2BxFJpQKMpSV1WKsMguinAB29lw=";
+
+            Assert.AreEqual(result, expected);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void HasherConvertHashByteArrayToBase64EncodedStringThrowsOnNullByteArray()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+
+            byte[] input = null;
+
+            h.ConvertHashByteArrayToBase64EncodedString(input);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void HasherConvertHashByteArrayToBase64EncodedStringThrowsOnEmptyByteArray()
+        {
+            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+
+            byte[] input = new byte[0];
+
+            h.ConvertHashByteArrayToBase64EncodedString(input);
+        }
     }
 }
