@@ -94,6 +94,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ozette.runsettings" />
     <None Include="packages.config" />
     <Content Include="TestFiles\SourceLocation\SourcesExample2.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
