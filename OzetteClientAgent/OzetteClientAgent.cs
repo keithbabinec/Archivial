@@ -2,7 +2,9 @@
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Logging.Default;
+using OzetteLibrary.Providers;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.ServiceProcess;
 using System.Threading;
@@ -49,7 +51,12 @@ namespace OzetteClientAgent
         /// A reference to the backup engine instance.
         /// </summary>
         private BackupEngine Backup { get; set; }
-        
+
+        /// <summary>
+        /// A reference to the backup providers.
+        /// </summary>
+        private Dictionary<ProviderTypes, IProviderFileOperations> Providers { get; set; }
+
         /// <summary>
         /// Core application start.
         /// </summary>
@@ -71,6 +78,7 @@ namespace OzetteClientAgent
                 string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName), 
                 EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService);
 
+            ConfigureProviders();
             StartScanEngine();
             StartBackupEngine();
 
@@ -109,6 +117,14 @@ namespace OzetteClientAgent
         }
 
         /// <summary>
+        /// Configures the cloud backup providers collection.
+        /// </summary>
+        private void ConfigureProviders()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Starts the scanning engine.
         /// </summary>
         private void StartScanEngine()
@@ -126,7 +142,7 @@ namespace OzetteClientAgent
             var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
             db.PrepareDatabase();
 
-            Scan = new ScanEngine(db, log, null);
+            Scan = new ScanEngine(db, log, Providers);
             Scan.Stopped += Scan_Stopped;
             Scan.BeginStart();
 
@@ -186,7 +202,7 @@ namespace OzetteClientAgent
             var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
             db.PrepareDatabase();
 
-            Backup = new BackupEngine(db, log, null);
+            Backup = new BackupEngine(db, log, Providers);
             Backup.Stopped += Backup_Stopped;
             Backup.BeginStart();
 
