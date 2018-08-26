@@ -126,7 +126,7 @@ namespace OzetteClientAgent
             var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
             db.PrepareDatabase();
 
-            Scan = new ScanEngine(db, log);
+            Scan = new ScanEngine(db, log, null);
             Scan.Stopped += Scan_Stopped;
             Scan.BeginStart();
 
@@ -186,7 +186,7 @@ namespace OzetteClientAgent
             var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
             db.PrepareDatabase();
 
-            Backup = new BackupEngine(db, log);
+            Backup = new BackupEngine(db, log, null);
             Backup.Stopped += Backup_Stopped;
             Backup.BeginStart();
 

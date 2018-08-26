@@ -4,7 +4,9 @@ using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Files;
 using OzetteLibrary.Logging;
+using OzetteLibrary.Providers;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace OzetteLibrary.Client
@@ -17,10 +19,10 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Constructor that accepts a database and logger.
         /// </summary>
-        /// <param name="database"><c>IDatabase</c></param>
-        /// <param name="logger"><c>ILogger</c></param>
-        /// <param name="options"><c>ServiceOptions</c></param>
-        public BackupEngine(IDatabase database, ILogger logger) : base(database, logger) { }
+        /// <param name="database">The client database connection.</param>
+        /// <param name="logger">A logging instance.</param>
+        /// <param name="providers">A collection of cloud backup providers.</param>
+        public BackupEngine(IDatabase database, ILogger logger, Dictionary<ProviderTypes, IProviderFileOperations> providers) : base(database, logger, providers) { }
 
         /// <summary>
         /// Begins to start the backup engine, returns immediately to the caller.
@@ -33,7 +35,7 @@ namespace OzetteLibrary.Client
             }
 
             Running = true;
-            Sender = new FileSender(Database as IClientDatabase, Logger);
+            Sender = new FileSender(Database as IClientDatabase, Logger, Providers);
 
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();

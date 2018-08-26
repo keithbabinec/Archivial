@@ -20,10 +20,10 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Constructor that accepts a database and logger.
         /// </summary>
-        /// <param name="database"><c>IDatabase</c></param>
-        /// <param name="logger"><c>ILogger</c></param>
-        /// <param name="options"><c>ServiceOptions</c></param>
-        public ScanEngine(IDatabase database, ILogger logger) : base(database, logger) { }
+        /// <param name="database">The client database connection.</param>
+        /// <param name="logger">A logging instance.</param>
+        /// <param name="providers">A collection of cloud backup providers.</param>
+        public ScanEngine(IDatabase database, ILogger logger, Dictionary<ProviderTypes, IProviderFileOperations> providers) : base(database, logger, providers) { }
 
         /// <summary>
         /// Begins to start the scanning engine, returns immediately to the caller.
@@ -333,35 +333,35 @@ namespace OzetteLibrary.Client
                 return string.Format(
                     "Failed to validate scan sources: A source location has an invalid (or missing) file match filter. The invalid source was: {0}",
                     ex.Message
-                    );
+                );
             }
             else if (ex is SourceLocationInvalidFolderPathException)
             {
                 return string.Format(
                     "Failed to validate scan sources: A source location has an invalid (or missing) folder path. The invalid source was: {0}",
                     ex.Message
-                    );
+                );
             }
             else if (ex is SourceLocationInvalidIDException)
             {
                 return string.Format(
                     "Failed to validate scan sources: A source location has an invalid (or missing) ID. The invalid source was: {0}",
                     ex.Message
-                    );
+                );
             }
             else if (ex is SourceLocationInvalidRevisionCountException)
             {
                 return string.Format(
                     "Failed to validate scan sources: A source location has an invalid (or missing) revision count. The invalid source was: {0}",
                     ex.Message
-                    );
+                );
             }
             else if (ex is SourceLocationsDuplicateIDException)
             {
                 return string.Format(
                     "Failed to validate scan sources: More than one source location shares the same ID. The invalid source was: {0}",
                     ex.Message
-                    );
+                );
             }
             else
             {

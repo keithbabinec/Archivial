@@ -2,12 +2,12 @@
 using OzetteLibrary.Database;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
-using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Threading;
 using OzetteLibrary.Crypto;
 using System.IO;
 using OzetteLibrary.Files;
+using OzetteLibrary.Providers;
 
 namespace OzetteLibrary.Client.Transfer
 {
@@ -16,9 +16,10 @@ namespace OzetteLibrary.Client.Transfer
         /// <summary>
         /// A constructor that accepts a database and logger.
         /// </summary>
-        /// <param name="database"></param>
-        /// <param name="logger"></param>
-        public FileSender(IClientDatabase database, ILogger logger)
+        /// <param name="database">The client database connection.</param>
+        /// <param name="logger">A logging instance.</param>
+        /// <param name="providers">A collection of cloud backup providers.</param>
+        public FileSender(IClientDatabase database, ILogger logger, Dictionary<ProviderTypes, IProviderFileOperations> providers)
         {
             if (database == null)
             {
@@ -28,10 +29,18 @@ namespace OzetteLibrary.Client.Transfer
             {
                 throw new ArgumentNullException(nameof(logger));
             }
+            if (providers == null)
+            {
+                throw new ArgumentNullException(nameof(providers));
+            }
+            if (providers.Count == 0)
+            {
+                throw new ArgumentException(nameof(providers) + " must be provided.");
+            }
 
             Database = database;
             Logger = logger;
-            Clients = new Dictionary<string, TcpClient>();
+            Providers = providers;
             Hasher = new Hasher(Logger);
         }
 
@@ -51,9 +60,9 @@ namespace OzetteLibrary.Client.Transfer
         private Hasher Hasher { get; set; }
 
         /// <summary>
-        /// A reference to the TCP client connections.
+        /// A reference to the provider connections.
         /// </summary>
-        private Dictionary<string, TcpClient> Clients { get; set; }
+        private Dictionary<ProviderTypes, IProviderFileOperations> Providers { get; set; }
 
         /// <summary>
         /// Flag to indicate if the transfer operation is currently in progress.
@@ -133,7 +142,7 @@ namespace OzetteLibrary.Client.Transfer
                     // step 3: see if this file is already on the destination target(s).
                     // this avoids resending the file if for some reason the client DB/states got wiped out.
 
-                    // UpdateFileCopyStateIfFileAlreadyExistsOnTargets(File, fs);
+                    UpdateFileCopyStateIfFileAlreadyExistsOnTargets(File, fs);
 
                     // step 4: while the file has data that needs to be transferred- transfer it.
                     // this includes transferring to each potential target that needs this same file block.
@@ -176,6 +185,24 @@ namespace OzetteLibrary.Client.Transfer
         private TransferPayload GenerateNextTransferPayload(BackupFile File, FileStream Stream)
         {
             return File.GenerateNextTransferPayload(Stream, Hasher);
+        }
+
+        /// <summary>
+        /// Updates the local file copy state if the file has already been transferred (and local DB doesn't know about it).
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="fs"></param>
+        private void UpdateFileCopyStateIfFileAlreadyExistsOnTargets(BackupFile file, FileStream fs)
+        {
+            // TODO:
+            // for each target that needs this file:
+            // > just double check that we haven't already transferred this whole file.
+            // > to avoid resending if for some reason had lost local client DB state.
+
+            foreach (var provider in file.CopyState)
+            {
+                
+            }
         }
 
         /// <summary>

@@ -1,7 +1,9 @@
 ﻿using OzetteLibrary.Database;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
+using OzetteLibrary.Providers;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace OzetteLibrary.Engine
@@ -17,10 +19,10 @@ namespace OzetteLibrary.Engine
         /// <summary>
         /// Constructor that accepts a database and logger.
         /// </summary>
-        /// <param name="database"><c>IDatabase</c></param>
-        /// <param name="logger"><c>ILogger</c></param>
-        /// <param name="options"><c>ServiceOptions</c></param>
-        protected BaseEngine(IDatabase database, ILogger logger)
+        /// <param name="database">The client database connection.</param>
+        /// <param name="logger">A logging instance.</param>
+        /// <param name="providers">A collection of cloud backup providers.</param>
+        protected BaseEngine(IDatabase database, ILogger logger, Dictionary<ProviderTypes, IProviderFileOperations> providers)
         {
             if (database == null)
             {
@@ -30,9 +32,18 @@ namespace OzetteLibrary.Engine
             {
                 throw new ArgumentNullException(nameof(logger));
             }
+            if (providers == null)
+            {
+                throw new ArgumentNullException(nameof(providers));
+            }
+            if (providers.Count == 0)
+            {
+                throw new ArgumentException(nameof(providers) + " must be provided.");
+            }
 
             Database = database;
             Logger = logger;
+            Providers = providers;
         }
 
         /// <summary>
@@ -73,6 +84,11 @@ namespace OzetteLibrary.Engine
         /// A reference to the database.
         /// </summary>
         protected IDatabase Database { get; set; }
+
+        /// <summary>
+        /// A reference to the cloud providers.
+        /// </summary>
+        protected Dictionary<ProviderTypes, IProviderFileOperations> Providers { get; set; }
 
         /// <summary>
         /// Sleeps the engine for the specified time, while checking periodically for stop request.
