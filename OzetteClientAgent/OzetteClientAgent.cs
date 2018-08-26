@@ -6,7 +6,6 @@ using OzetteLibrary.Providers;
 using OzetteLibrary.Providers.Azure;
 using OzetteLibrary.Secrets;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.ServiceProcess;
@@ -136,7 +135,7 @@ namespace OzetteClientAgent
 
                 var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, CoreLog);
                 db.PrepareDatabase();
-                ProtectedDataStore protectedStore = new ProtectedDataStore(db, DataProtectionScope.CurrentUser, new byte[0]);
+                ProtectedDataStore protectedStore = new ProtectedDataStore(db, DataProtectionScope.LocalMachine, new byte[0]);
 
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
