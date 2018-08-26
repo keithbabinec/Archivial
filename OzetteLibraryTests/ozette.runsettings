@@ -8,8 +8,7 @@
           <CodeCoverage>
             <ModulePaths>
               <Include>
-                <ModulePath>OzetteClientAgent.exe</ModulePath>
-                <ModulePath>OzetteLibrary.dll</ModulePath>
+                <ModulePath>.*OzetteLibrary.dll$</ModulePath>
                 <!-- Add more ModulePath nodes here. -->
               </Include>
             </ModulePaths>
