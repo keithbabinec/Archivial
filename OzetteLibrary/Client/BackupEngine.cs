@@ -21,8 +21,8 @@ namespace OzetteLibrary.Client
         /// </summary>
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
-        /// <param name="providers">A collection of cloud backup providers.</param>
-        public BackupEngine(IDatabase database, ILogger logger, Dictionary<ProviderTypes, IProviderFileOperations> providers) : base(database, logger, providers) { }
+        /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
+        public BackupEngine(IDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
 
         /// <summary>
         /// Begins to start the backup engine, returns immediately to the caller.

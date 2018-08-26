@@ -3,9 +3,12 @@ using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Providers;
+using OzetteLibrary.Providers.Azure;
+using OzetteLibrary.Secrets;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.ServiceProcess;
 using System.Threading;
 
@@ -53,9 +56,9 @@ namespace OzetteClientAgent
         private BackupEngine Backup { get; set; }
 
         /// <summary>
-        /// A reference to the backup providers.
+        /// A reference to the backup provider connections.
         /// </summary>
-        private Dictionary<ProviderTypes, IProviderFileOperations> Providers { get; set; }
+        private ProviderConnectionsCollection ProviderConnections { get; set; }
 
         /// <summary>
         /// Core application start.
@@ -78,7 +81,7 @@ namespace OzetteClientAgent
                 string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName), 
                 EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService);
 
-            ConfigureProviders();
+            ConfigureProviderConnections();
             StartScanEngine();
             StartBackupEngine();
 
@@ -117,11 +120,63 @@ namespace OzetteClientAgent
         }
 
         /// <summary>
-        /// Configures the cloud backup providers collection.
+        /// Configures the cloud backup provider connections.
         /// </summary>
-        private void ConfigureProviders()
+        private void ConfigureProviderConnections()
         {
-            throw new NotImplementedException();
+            var startingMessage = "Configuring cloud backup provider connections.";
+            CoreLog.WriteTraceMessage(startingMessage);
+            CoreLog.WriteSystemEvent(startingMessage, EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguringCloudProviderConnections);
+
+            ProviderConnections = new ProviderConnectionsCollection();
+
+            try
+            {
+                // establish the database and protected store.
+
+                var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, CoreLog);
+                db.PrepareDatabase();
+                ProtectedDataStore protectedStore = new ProtectedDataStore(db, DataProtectionScope.CurrentUser, new byte[0]);
+
+                // configure the provider implementation instances.
+                // add each to the collection of providers.
+
+                var providersList = db.GetProvidersList();
+                foreach (var provider in providersList)
+                {
+                    if (provider.Enabled)
+                    {
+                        switch (provider.Type)
+                        {
+                            case ProviderTypes.Azure:
+                                {
+                                    string storageAccountName = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
+                                    string storageAccountToken = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountToken);
+
+                                    AzureProviderFileOperations azureConnection = new AzureProviderFileOperations(CoreLog, storageAccountName, storageAccountToken);
+                                    ProviderConnections.Add(ProviderTypes.Azure, azureConnection);
+
+                                    break;
+                                }
+                            default:
+                                {
+                                    throw new NotImplementedException("Unexpected provider type specified: " + provider.Type.ToString());
+                                }
+                        }
+                    }
+                }
+
+                var completedMessage = "Successfully configured cloud backup provider connections.";
+                CoreLog.WriteTraceMessage(completedMessage);
+                CoreLog.WriteSystemEvent(completedMessage, EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguredCloudProviderConnections);
+            }
+            catch (Exception ex)
+            {
+                var message = "Failed to configure cloud backup provider connections.";
+                var context = CoreLog.GenerateFullContextStackTrace();
+                CoreLog.WriteTraceError(message, ex, context);
+                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedToConfigureCloudProviderConnections);
+            }
         }
 
         /// <summary>
@@ -142,7 +197,7 @@ namespace OzetteClientAgent
             var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
             db.PrepareDatabase();
 
-            Scan = new ScanEngine(db, log, Providers);
+            Scan = new ScanEngine(db, log, ProviderConnections);
             Scan.Stopped += Scan_Stopped;
             Scan.BeginStart();
 
@@ -202,7 +257,7 @@ namespace OzetteClientAgent
             var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
             db.PrepareDatabase();
 
-            Backup = new BackupEngine(db, log, Providers);
+            Backup = new BackupEngine(db, log, ProviderConnections);
             Backup.Stopped += Backup_Stopped;
             Backup.BeginStart();
 

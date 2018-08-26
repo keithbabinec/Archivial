@@ -51,6 +51,16 @@
         public const int StartedBackupEngine = 1008;
 
         /// <summary>
+        /// Event ID: Configuring cloud provider connections.
+        /// </summary>
+        public const int ConfiguringCloudProviderConnections = 1009;
+
+        /// <summary>
+        /// Event ID: Configured cloud provider connections.
+        /// </summary>
+        public const int ConfiguredCloudProviderConnections = 1010;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;
@@ -89,5 +99,10 @@
         /// Event ID: Failed to validate provider options.
         /// </summary>
         public const int FailedToValidateProviderOptions = 2007;
+
+        /// <summary>
+        /// Event ID: Failed to configure cloud provider connections.
+        /// </summary>
+        public const int FailedToConfigureCloudProviderConnections = 2008;
     }
 }

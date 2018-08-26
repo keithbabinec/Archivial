@@ -4,7 +4,6 @@ using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Mock;
 using OzetteLibrary.Providers;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -13,9 +12,9 @@ namespace OzetteLibraryTests.Client
     [TestClass]
     public class ScanEngineTests
     {
-        private Dictionary<ProviderTypes, IProviderFileOperations> GenerateMockProviders()
+        private ProviderConnectionsCollection GenerateMockProviders()
         {
-            Dictionary<ProviderTypes, IProviderFileOperations> providers = new Dictionary<ProviderTypes, IProviderFileOperations>();
+            var providers = new ProviderConnectionsCollection();
             var mockedProvider = new Mock<IProviderFileOperations>();
             providers.Add(ProviderTypes.Azure, mockedProvider.Object);
 

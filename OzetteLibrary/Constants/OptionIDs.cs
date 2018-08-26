@@ -29,5 +29,15 @@
         /// Option: ProvidersFilePath.
         /// </summary>
         public const int ProvidersFilePath = 5;
+
+        /// <summary>
+        /// Option: AzureStorageAccountName.
+        /// </summary>
+        public const int AzureStorageAccountName = 6;
+
+        /// <summary>
+        /// Option: AzureStorageAccountToken.
+        /// </summary>
+        public const int AzureStorageAccountToken = 7;
     }
 }

@@ -21,8 +21,8 @@ namespace OzetteLibrary.Engine
         /// </summary>
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
-        /// <param name="providers">A collection of cloud backup providers.</param>
-        protected BaseEngine(IDatabase database, ILogger logger, Dictionary<ProviderTypes, IProviderFileOperations> providers)
+        /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
+        protected BaseEngine(IDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections)
         {
             if (database == null)
             {
@@ -32,18 +32,18 @@ namespace OzetteLibrary.Engine
             {
                 throw new ArgumentNullException(nameof(logger));
             }
-            if (providers == null)
+            if (providerConnections == null)
             {
-                throw new ArgumentNullException(nameof(providers));
+                throw new ArgumentNullException(nameof(providerConnections));
             }
-            if (providers.Count == 0)
+            if (providerConnections.Count == 0)
             {
-                throw new ArgumentException(nameof(providers) + " must be provided.");
+                throw new ArgumentException(nameof(providerConnections) + " must be provided.");
             }
 
             Database = database;
             Logger = logger;
-            Providers = providers;
+            Providers = providerConnections;
         }
 
         /// <summary>
