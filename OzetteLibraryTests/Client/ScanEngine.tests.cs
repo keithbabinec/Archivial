@@ -41,6 +41,29 @@ namespace OzetteLibraryTests.Client
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ScanEngineConstructorThrowsExceptionWhenNullProvidersAreProvided()
+        {
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
+
+            OzetteLibrary.Client.ScanEngine engine =
+                new OzetteLibrary.Client.ScanEngine(inMemoryDB, new MockLogger(), null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ScanEngineConstructorThrowsExceptionWhenNoProvidersAreProvided()
+        {
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
+
+            var providers = GenerateMockProviders();
+            providers.Clear(); // a valid collection, but empty
+
+            OzetteLibrary.Client.ScanEngine engine =
+                new OzetteLibrary.Client.ScanEngine(inMemoryDB, new MockLogger(), providers);
+        }
+
+        [TestMethod]
         public void ScanEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
