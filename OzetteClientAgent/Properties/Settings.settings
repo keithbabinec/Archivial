@@ -11,5 +11,8 @@
     <Setting Name="LogFilesDirectory" Type="System.String" Scope="Application">
       <Value Profile="(Default)">C:\Program Files\Ozette\Client\Logs</Value>
     </Setting>
+    <Setting Name="ProtectionIVSecretName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">OzetteProtectionIV</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

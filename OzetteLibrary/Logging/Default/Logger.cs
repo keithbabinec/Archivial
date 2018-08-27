@@ -46,8 +46,6 @@ namespace OzetteLibrary.Logging.Default
             SetupCustomWindowsEventLogIfNotPresent(EventLogSource, EventLogName);
             SetupTraceLogsFolderIfNotPresent(TraceLogFolderPath);
 
-            //WriteSystemEvent
-
             StringBuilder setupMessage = new StringBuilder();
             setupMessage.AppendLine(string.Format("Logging has been configured for component: {0}", SourceComponent));
             setupMessage.AppendLine(string.Format("Tracelog Path: {0}", GetCurrentTraceLogFilePath()));

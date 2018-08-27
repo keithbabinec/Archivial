@@ -49,5 +49,14 @@ namespace OzetteClientAgent.Properties {
                 return ((string)(this["LogFilesDirectory"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("OzetteProtectionIV")]
+        public string ProtectionIVSecretName {
+            get {
+                return ((string)(this["ProtectionIVSecretName"]));
+            }
+        }
     }
 }

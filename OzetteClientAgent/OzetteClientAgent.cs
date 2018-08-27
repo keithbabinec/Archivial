@@ -37,6 +37,7 @@ namespace OzetteClientAgent
         protected override void OnStart(string[] args)
         {
             Thread t = new Thread(() => CoreStart());
+            t.Start();
         }
 
         /// <summary>
@@ -80,9 +81,23 @@ namespace OzetteClientAgent
                 string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName), 
                 EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService);
 
-            ConfigureProviderConnections();
-            StartScanEngine();
-            StartBackupEngine();
+            if (!ConfigureProviderConnections())
+            {
+                Stop();
+                return;
+            }
+
+            if (!StartScanEngine())
+            {
+                Stop();
+                return;
+            }
+
+            if (!StartBackupEngine())
+            {
+                Stop();
+                return;
+            }
 
             CoreLog.WriteSystemEvent(
                 string.Format("Successfully started {0} client service.", OzetteLibrary.Constants.Logging.AppName),
@@ -121,7 +136,8 @@ namespace OzetteClientAgent
         /// <summary>
         /// Configures the cloud backup provider connections.
         /// </summary>
-        private void ConfigureProviderConnections()
+        /// <returns>True if successful, otherwise false.</returns>
+        private bool ConfigureProviderConnections()
         {
             var startingMessage = "Configuring cloud backup provider connections.";
             CoreLog.WriteTraceMessage(startingMessage);
@@ -135,7 +151,17 @@ namespace OzetteClientAgent
 
                 var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, CoreLog);
                 db.PrepareDatabase();
-                ProtectedDataStore protectedStore = new ProtectedDataStore(db, DataProtectionScope.LocalMachine, new byte[0]);
+
+                var ivEncodedString = Environment.GetEnvironmentVariable(Properties.Settings.Default.ProtectionIVSecretName);
+
+                if (string.IsNullOrWhiteSpace(ivEncodedString))
+                {
+                    throw new Exception("Protection IV secret not found in environment variables.");
+                }
+
+                var ivBytes = Convert.FromBase64String(ivEncodedString);
+
+                ProtectedDataStore protectedStore = new ProtectedDataStore(db, DataProtectionScope.LocalMachine, ivBytes);
 
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
@@ -168,6 +194,7 @@ namespace OzetteClientAgent
                 var completedMessage = "Successfully configured cloud backup provider connections.";
                 CoreLog.WriteTraceMessage(completedMessage);
                 CoreLog.WriteSystemEvent(completedMessage, EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguredCloudProviderConnections);
+                return true;
             }
             catch (Exception ex)
             {
@@ -175,36 +202,51 @@ namespace OzetteClientAgent
                 var context = CoreLog.GenerateFullContextStackTrace();
                 CoreLog.WriteTraceError(message, ex, context);
                 CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedToConfigureCloudProviderConnections);
+                return false;
             }
         }
 
         /// <summary>
         /// Starts the scanning engine.
         /// </summary>
-        private void StartScanEngine()
+        /// <returns>True if successful, otherwise false.</returns>
+        private bool StartScanEngine()
         {
             // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
             // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
 
-            var log = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
+            try
+            {
+                var log = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
 
-            log.Start(
-                Properties.Settings.Default.EventlogName,
-                Properties.Settings.Default.EventlogName,
-                Properties.Settings.Default.LogFilesDirectory);
+                log.Start(
+                    Properties.Settings.Default.EventlogName,
+                    Properties.Settings.Default.EventlogName,
+                    Properties.Settings.Default.LogFilesDirectory);
 
-            var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
-            db.PrepareDatabase();
+                var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
+                db.PrepareDatabase();
 
-            Scan = new ScanEngine(db, log, ProviderConnections);
-            Scan.Stopped += Scan_Stopped;
-            Scan.BeginStart();
+                Scan = new ScanEngine(db, log, ProviderConnections);
+                Scan.Stopped += Scan_Stopped;
+                Scan.BeginStart();
 
-            CoreLog.WriteTraceMessage("Scanning Engine has started.");
+                CoreLog.WriteTraceMessage("Scanning Engine has started.");
 
-            CoreLog.WriteSystemEvent(
-                string.Format("Scanning Engine has started."),
-                EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedScanEngine);
+                CoreLog.WriteSystemEvent(
+                    string.Format("Scanning Engine has started."),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedScanEngine);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var message = "Failed to start the scanning engine.";
+                var context = CoreLog.GenerateFullContextStackTrace();
+                CoreLog.WriteTraceError(message, ex, context);
+                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedScanEngine);
+                return false;
+            }
         }
 
         /// <summary>
@@ -241,30 +283,44 @@ namespace OzetteClientAgent
         /// <summary>
         /// Starts the backup engine.
         /// </summary>
-        private void StartBackupEngine()
+        /// <returns>True if successful, otherwise false.</returns>
+        private bool StartBackupEngine()
         {
             // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
             // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
 
-            var log = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
+            try
+            {
+                var log = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
 
-            log.Start(
-                Properties.Settings.Default.EventlogName,
-                Properties.Settings.Default.EventlogName,
-                Properties.Settings.Default.LogFilesDirectory);
+                log.Start(
+                    Properties.Settings.Default.EventlogName,
+                    Properties.Settings.Default.EventlogName,
+                    Properties.Settings.Default.LogFilesDirectory);
 
-            var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
-            db.PrepareDatabase();
+                var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
+                db.PrepareDatabase();
 
-            Backup = new BackupEngine(db, log, ProviderConnections);
-            Backup.Stopped += Backup_Stopped;
-            Backup.BeginStart();
+                Backup = new BackupEngine(db, log, ProviderConnections);
+                Backup.Stopped += Backup_Stopped;
+                Backup.BeginStart();
 
-            CoreLog.WriteTraceMessage("Backup Engine has started.");
+                CoreLog.WriteTraceMessage("Backup Engine has started.");
 
-            CoreLog.WriteSystemEvent(
-                string.Format("Backup Engine has started."),
-                EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedBackupEngine);
+                CoreLog.WriteSystemEvent(
+                    string.Format("Backup Engine has started."),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedBackupEngine);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var message = "Failed to start the backup engine.";
+                var context = CoreLog.GenerateFullContextStackTrace();
+                CoreLog.WriteTraceError(message, ex, context);
+                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedBackupEngine);
+                return false;
+            }
         }
 
         /// <summary>
