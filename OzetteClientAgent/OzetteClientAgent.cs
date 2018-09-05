@@ -134,12 +134,12 @@ namespace OzetteClientAgent
         }
 
         /// <summary>
-        /// Configures the cloud backup provider connections.
+        /// Configures the cloud storage provider connections.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
         private bool ConfigureProviderConnections()
         {
-            var startingMessage = "Configuring cloud backup provider connections.";
+            var startingMessage = "Configuring cloud storage provider connections.";
             CoreLog.WriteTraceMessage(startingMessage);
             CoreLog.WriteSystemEvent(startingMessage, EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguringCloudProviderConnections);
 
@@ -168,24 +168,26 @@ namespace OzetteClientAgent
 
                 var providersList = db.GetProvidersList();
 
-                if (providersList.Count == 0)
-                {
-                    throw new Exception("No cloud backup providers are listed in the database. The installer should be run to configure all required prerequisites.");
-                }
-
                 foreach (var provider in providersList)
                 {
+                    CoreLog.WriteTraceMessage(
+                        string.Format("A cloud provider was found in the configuration database: Name: {0}, Enabled: {1}, ID: {2}", 
+                            provider.Type.ToString(), provider.Enabled.ToString(), provider.ID));
+
                     if (provider.Enabled)
                     {
                         switch (provider.Type)
                         {
                             case ProviderTypes.Azure:
                                 {
+                                    CoreLog.WriteTraceMessage("Checking for Azure cloud storage provider connection settings.");
                                     string storageAccountName = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
                                     string storageAccountToken = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountToken);
 
+                                    CoreLog.WriteTraceMessage("Initializing Azure cloud storage provider.");
                                     AzureProviderFileOperations azureConnection = new AzureProviderFileOperations(CoreLog, storageAccountName, storageAccountToken);
                                     ProviderConnections.Add(ProviderTypes.Azure, azureConnection);
+                                    CoreLog.WriteTraceMessage("Successfully initialized the cloud storage provider.");
 
                                     break;
                                 }
@@ -197,14 +199,19 @@ namespace OzetteClientAgent
                     }
                 }
 
-                var completedMessage = "Successfully configured cloud backup provider connections.";
+                if (ProviderConnections.Count == 0)
+                {
+                    throw new Exception("No cloud storage providers are listed in the database, or no cloud storage providers are currently enabled.");
+                }
+
+                var completedMessage = "Successfully configured cloud storage provider connections.";
                 CoreLog.WriteTraceMessage(completedMessage);
                 CoreLog.WriteSystemEvent(completedMessage, EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguredCloudProviderConnections);
                 return true;
             }
             catch (Exception ex)
             {
-                var message = "Failed to configure cloud backup provider connections.";
+                var message = "Failed to configure cloud storage provider connections.";
                 var context = CoreLog.GenerateFullContextStackTrace();
                 CoreLog.WriteTraceError(message, ex, context);
                 CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedToConfigureCloudProviderConnections);

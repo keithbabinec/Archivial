@@ -25,7 +25,8 @@ namespace OzetteClientAgent.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Filename=OzetteClient.db;Journal=true;Mode=Exclusive")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Filename=C:\\Program Files\\Ozette\\Client\\Database\\OzetteClient.db;Journal=true;Mod" +
+            "e=Exclusive")]
         public string DatabaseConnectionString {
             get {
                 return ((string)(this["DatabaseConnectionString"]));

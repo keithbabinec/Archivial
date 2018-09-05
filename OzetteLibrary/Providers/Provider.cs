@@ -1,7 +1,7 @@
 ﻿namespace OzetteLibrary.Providers
 {
     /// <summary>
-    /// Describes a cloud backup provider.
+    /// Describes a cloud storage provider.
     /// </summary>
     public class Provider
     {
