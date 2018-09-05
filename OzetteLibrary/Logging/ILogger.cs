@@ -74,7 +74,8 @@ namespace OzetteLibrary.Logging
         /// <param name="message"></param>
         /// <param name="severity"></param>
         /// <param name="eventID"></param>
-        void WriteSystemEvent(string message, EventLogEntryType severity, int eventID);
+        /// <param name="writeToTraceLog"></param>
+        void WriteSystemEvent(string message, EventLogEntryType severity, int eventID, bool writeToTraceLog);
 
         /// <summary>
         /// Writes a system-level error message with exception.
@@ -88,7 +89,8 @@ namespace OzetteLibrary.Logging
         /// <param name="exception"></param>
         /// <param name="stackContext"></param>
         /// <param name="eventID"></param>
-        void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID);
+        /// <param name="writeToTraceLog"></param>
+        void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID, bool writeToTraceLog);
 
         /// <summary>
         /// Generates a full stack trace from the current method context.

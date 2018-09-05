@@ -163,7 +163,8 @@ namespace OzetteLibrary.Logging.Mock
         /// <param name="message"></param>
         /// <param name="severity"></param>
         /// <param name="eventID"></param>
-        public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID)
+        /// <param name="writeToTraceLog"></param>
+        public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID, bool writeToTraceLog)
         {
             WriteSystemEventHasBeenCalled = true;
         }
@@ -180,7 +181,8 @@ namespace OzetteLibrary.Logging.Mock
         /// <param name="exception"></param>
         /// <param name="stackContext"></param>
         /// <param name="eventID"></param>
-        public void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID)
+        /// <param name="writeToTraceLog"></param>
+        public void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID, bool writeToTraceLog)
         {
             WriteSystemEventWithExceptionHasBeenCalled = true;
         }

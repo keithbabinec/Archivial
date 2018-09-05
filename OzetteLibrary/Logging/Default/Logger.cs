@@ -50,7 +50,7 @@ namespace OzetteLibrary.Logging.Default
             setupMessage.AppendLine(string.Format("Logging has been configured for component: {0}", SourceComponent));
             setupMessage.AppendLine(string.Format("Tracelog Path: {0}", GetCurrentTraceLogFilePath()));
 
-            WriteSystemEvent(setupMessage.ToString(), EventLogEntryType.Information, EventIDs.LoggingInitialized);
+            WriteSystemEvent(setupMessage.ToString(), EventLogEntryType.Information, EventIDs.LoggingInitialized, false);
 
             Thread tmw = new Thread(() => TraceMessageWriter());
             tmw.Start();
@@ -174,7 +174,7 @@ namespace OzetteLibrary.Logging.Default
 
                     if (successfulWrite == false)
                     {
-                        WriteSystemEvent("Failed to write a message to the tracelog.", lastError, null, Constants.EventIDs.FailedToWriteToTraceLog);
+                        WriteSystemEvent("Failed to write a message to the tracelog.", lastError, null, EventIDs.FailedToWriteToTraceLog, false);
                     }
                 }
             }
@@ -285,7 +285,8 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="message"></param>
         /// <param name="severity"></param>
         /// <param name="eventID"></param>
-        public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID)
+        /// <param name="writeToTraceLog"></param>
+        public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID, bool writeToTraceLog)
         {
             if (EventLogInitialized == false)
             {
@@ -298,6 +299,12 @@ namespace OzetteLibrary.Logging.Default
 
             var loggableMessage = PrependMessageWithDateAndSeverity(message, severity);
             EventLog.WriteEntry(LogSource, loggableMessage, severity, eventID);
+
+            if (writeToTraceLog && TraceInitialized)
+            {
+                // also append this message to the tracelog.
+                TraceMessageQueue.Enqueue(loggableMessage);
+            }
         }
 
         /// <summary>
@@ -312,7 +319,8 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="exception"></param>
         /// <param name="stackContext"></param>
         /// <param name="eventID"></param>
-        public void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID)
+        /// <param name="writeToTraceLog"></param>
+        public void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID, bool writeToTraceLog)
         {
             if (EventLogInitialized == false)
             {
@@ -329,6 +337,12 @@ namespace OzetteLibrary.Logging.Default
 
             var loggableMessage = GenerateExceptionLoggingMessage(message, exception, stackContext);
             EventLog.WriteEntry(LogSource, loggableMessage, EventLogEntryType.Error, eventID);
+
+            if (writeToTraceLog && TraceInitialized)
+            {
+                // also append this message to the tracelog.
+                TraceMessageQueue.Enqueue(loggableMessage);
+            }
         }
 
         /// <summary>

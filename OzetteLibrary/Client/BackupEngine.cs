@@ -128,8 +128,7 @@ namespace OzetteLibrary.Client
             catch (Exception ex)
             {
                 string err = "Failed to capture the next file ready for backup.";
-                Logger.WriteTraceError(err, ex, Logger.GenerateFullContextStackTrace());
-                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetNextFileToBackup);
+                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetNextFileToBackup, true);
 
                 return null;
             }

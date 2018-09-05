@@ -78,8 +78,8 @@ namespace OzetteClientAgent
                 Properties.Settings.Default.LogFilesDirectory);
 
             CoreLog.WriteSystemEvent(
-                string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName), 
-                EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService);
+                string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName),
+                EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService, true);
 
             if (!ConfigureProviderConnections())
             {
@@ -101,7 +101,7 @@ namespace OzetteClientAgent
 
             CoreLog.WriteSystemEvent(
                 string.Format("Successfully started {0} client service.", OzetteLibrary.Constants.Logging.AppName),
-                EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedService);
+                EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedService, true);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace OzetteClientAgent
             {
                 CoreLog.WriteSystemEvent(
                     string.Format("Stopping {0} client service.", OzetteLibrary.Constants.Logging.AppName),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppingService);
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppingService, true);
             }
 
             if (Scan != null)
@@ -129,7 +129,7 @@ namespace OzetteClientAgent
             {
                 CoreLog.WriteSystemEvent(
                     string.Format("Successfully stopped {0} client service.", OzetteLibrary.Constants.Logging.AppName),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedService);
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedService, true);
             }
         }
 
@@ -139,9 +139,7 @@ namespace OzetteClientAgent
         /// <returns>True if successful, otherwise false.</returns>
         private bool ConfigureProviderConnections()
         {
-            var startingMessage = "Configuring cloud storage provider connections.";
-            CoreLog.WriteTraceMessage(startingMessage);
-            CoreLog.WriteSystemEvent(startingMessage, EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguringCloudProviderConnections);
+            CoreLog.WriteSystemEvent("Configuring cloud storage provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguringCloudProviderConnections, true);
 
             ProviderConnections = new ProviderConnectionsCollection();
 
@@ -204,17 +202,14 @@ namespace OzetteClientAgent
                     throw new Exception("No cloud storage providers are listed in the database, or no cloud storage providers are currently enabled.");
                 }
 
-                var completedMessage = "Successfully configured cloud storage provider connections.";
-                CoreLog.WriteTraceMessage(completedMessage);
-                CoreLog.WriteSystemEvent(completedMessage, EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguredCloudProviderConnections);
+                CoreLog.WriteSystemEvent("Successfully configured cloud storage provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguredCloudProviderConnections, true);
                 return true;
             }
             catch (Exception ex)
             {
                 var message = "Failed to configure cloud storage provider connections.";
                 var context = CoreLog.GenerateFullContextStackTrace();
-                CoreLog.WriteTraceError(message, ex, context);
-                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedToConfigureCloudProviderConnections);
+                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedToConfigureCloudProviderConnections, true);
                 return false;
             }
         }
@@ -244,11 +239,9 @@ namespace OzetteClientAgent
                 Scan.Stopped += Scan_Stopped;
                 Scan.BeginStart();
 
-                CoreLog.WriteTraceMessage("Scanning Engine has started.");
-
                 CoreLog.WriteSystemEvent(
                     string.Format("Scanning Engine has started."),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedScanEngine);
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedScanEngine, true);
 
                 return true;
             }
@@ -256,8 +249,7 @@ namespace OzetteClientAgent
             {
                 var message = "Failed to start the scanning engine.";
                 var context = CoreLog.GenerateFullContextStackTrace();
-                CoreLog.WriteTraceError(message, ex, context);
-                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedScanEngine);
+                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedScanEngine, true);
                 return false;
             }
         }
@@ -271,21 +263,17 @@ namespace OzetteClientAgent
         {
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
-                CoreLog.WriteTraceError("Scanning Engine has failed.", e.Exception, CoreLog.GenerateFullContextStackTrace());
-
                 CoreLog.WriteSystemEvent(
                     string.Format("Scanning Engine has failed."),
                     e.Exception,
                     CoreLog.GenerateFullContextStackTrace(),
-                    OzetteLibrary.Constants.EventIDs.FailedScanEngine);
+                    OzetteLibrary.Constants.EventIDs.FailedScanEngine, true);
             }
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
-                CoreLog.WriteTraceMessage("Scanning Engine has stopped.");
-
                 CoreLog.WriteSystemEvent(
                     string.Format("Scanning Engine has stopped."),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedScanEngine);
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedScanEngine, true);
             }
             else
             {
@@ -318,11 +306,9 @@ namespace OzetteClientAgent
                 Backup.Stopped += Backup_Stopped;
                 Backup.BeginStart();
 
-                CoreLog.WriteTraceMessage("Backup Engine has started.");
-
                 CoreLog.WriteSystemEvent(
                     string.Format("Backup Engine has started."),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedBackupEngine);
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedBackupEngine, true);
 
                 return true;
             }
@@ -330,8 +316,7 @@ namespace OzetteClientAgent
             {
                 var message = "Failed to start the backup engine.";
                 var context = CoreLog.GenerateFullContextStackTrace();
-                CoreLog.WriteTraceError(message, ex, context);
-                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedBackupEngine);
+                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedBackupEngine, true);
                 return false;
             }
         }
@@ -345,21 +330,17 @@ namespace OzetteClientAgent
         {
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
-                CoreLog.WriteTraceError("Backup Engine has failed.", e.Exception, CoreLog.GenerateFullContextStackTrace());
-
                 CoreLog.WriteSystemEvent(
                     string.Format("Backup Engine has failed."),
                     e.Exception,
                     CoreLog.GenerateFullContextStackTrace(),
-                    OzetteLibrary.Constants.EventIDs.FailedBackupEngine);
+                    OzetteLibrary.Constants.EventIDs.FailedBackupEngine, true);
             }
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
-                CoreLog.WriteTraceMessage("Backup Engine has stopped.");
-
                 CoreLog.WriteSystemEvent(
                     string.Format("Backup Engine has stopped."),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedBackupEngine);
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedBackupEngine, true);
             }
             else
             {

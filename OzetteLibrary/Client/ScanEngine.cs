@@ -203,8 +203,7 @@ namespace OzetteLibrary.Client
             catch (Exception ex)
             {
                 string err = "Failed to import scan sources.";
-                Logger.WriteTraceError(err, ex, Logger.GenerateFullContextStackTrace());
-                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToLoadScanSources);
+                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToLoadScanSources, true);
 
                 return null;
             }
@@ -314,8 +313,7 @@ namespace OzetteLibrary.Client
             catch (SourceLocationException ex)
             {
                 var msg = ConvertToFriendlyError(ex);
-                Logger.WriteTraceError(msg);
-                Logger.WriteSystemEvent(msg, System.Diagnostics.EventLogEntryType.Error, Constants.EventIDs.FailedToValidateScanSources);
+                Logger.WriteSystemEvent(msg, System.Diagnostics.EventLogEntryType.Error, Constants.EventIDs.FailedToValidateScanSources, true);
 
                 return false;
             }
