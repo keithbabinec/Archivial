@@ -1,4 +1,5 @@
 ﻿using OzetteLibrary.Database;
+using OzetteLibrary.Exceptions;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Security.Cryptography;
@@ -61,7 +62,7 @@ namespace OzetteLibrary.Secrets
 
             if (string.IsNullOrWhiteSpace(settingValue))
             {
-                throw new Exception("Secret ID not found in application store: " + SecretID);
+                throw new ApplicationSecretMissingException("Secret ID not found in application store: " + SecretID);
             }
 
             var settingBytes = Encoding.Unicode.GetBytes(settingValue);

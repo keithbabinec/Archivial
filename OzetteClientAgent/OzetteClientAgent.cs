@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.Client;
 using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Exceptions;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Providers;
@@ -169,7 +170,7 @@ namespace OzetteClientAgent
                 foreach (var provider in providersList)
                 {
                     CoreLog.WriteTraceMessage(
-                        string.Format("A cloud provider was found in the configuration database: Name: {0}, Enabled: {1}, ID: {2}", 
+                        string.Format("A cloud provider was found in the configuration database: Name: {0}, Enabled: {1}, ID: {2}",
                             provider.Type.ToString(), provider.Enabled.ToString(), provider.ID));
 
                     if (provider.Enabled)
@@ -199,11 +200,21 @@ namespace OzetteClientAgent
 
                 if (ProviderConnections.Count == 0)
                 {
-                    throw new Exception("No cloud storage providers are listed in the database, or no cloud storage providers are currently enabled.");
+                    CoreLog.WriteSystemEvent("Failed to configure cloud storage provider connections: No providers were listed in the database, or providers are not enabled.",
+                        EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.FailedToConfigureProvidersNoFoundOrEnabled, true);
+
+                    return false;
                 }
 
                 CoreLog.WriteSystemEvent("Successfully configured cloud storage provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguredCloudProviderConnections, true);
                 return true;
+            }
+            catch (ApplicationSecretMissingException)
+            {
+                CoreLog.WriteSystemEvent("Failed to configure cloud storage provider connections: A cloud storage provider is missing required connection settings.", 
+                    EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.FailedToConfigureProvidersMissingSettings, true);
+
+                return false;
             }
             catch (Exception ex)
             {

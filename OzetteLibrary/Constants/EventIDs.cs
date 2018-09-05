@@ -104,5 +104,15 @@
         /// Event ID: Failed to configure cloud provider connections.
         /// </summary>
         public const int FailedToConfigureCloudProviderConnections = 2008;
+
+        /// <summary>
+        /// Event ID: Failed to configure cloud provider connections due to missing settings.
+        /// </summary>
+        public const int FailedToConfigureProvidersMissingSettings = 2009;
+
+        /// <summary>
+        /// Event ID: Failed to configure cloud provider connections due to no (enabled) providers being listed in the database.
+        /// </summary>
+        public const int FailedToConfigureProvidersNoFoundOrEnabled = 2010;
     }
 }
