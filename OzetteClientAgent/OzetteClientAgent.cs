@@ -167,6 +167,12 @@ namespace OzetteClientAgent
                 // add each to the collection of providers.
 
                 var providersList = db.GetProvidersList();
+
+                if (providersList.Count == 0)
+                {
+                    throw new Exception("No cloud backup providers are listed in the database. The installer should be run to configure all required prerequisites.");
+                }
+
                 foreach (var provider in providersList)
                 {
                     if (provider.Enabled)
