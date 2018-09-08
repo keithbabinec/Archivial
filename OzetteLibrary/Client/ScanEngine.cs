@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using OzetteLibrary.Folders;
+using System.IO;
 
 namespace OzetteLibrary.Client
 {
@@ -199,6 +200,11 @@ namespace OzetteLibrary.Client
                 {
                     return null;
                 }
+            }
+            catch (FileNotFoundException)
+            {
+                Logger.WriteSystemEvent("We expected a backup sources file at the following path, but it wasn't found: " + sourceFile, System.Diagnostics.EventLogEntryType.Error, Constants.EventIDs.FailedToLoadScanSources, true);
+                return null;
             }
             catch (Exception ex)
             {
