@@ -84,7 +84,7 @@ namespace OzetteLibrary.Secrets
             {
                 throw new ArgumentNullException(nameof(Option));
             }
-            if (Option.ID > 0)
+            if (Option.ID <= 0)
             {
                 throw new ArgumentException(nameof(Option.ID) + " must be provided.");
             }
