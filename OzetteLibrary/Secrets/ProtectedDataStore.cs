@@ -65,13 +65,13 @@ namespace OzetteLibrary.Secrets
                 throw new ApplicationSecretMissingException("Secret ID not found in application store: " + SecretID);
             }
 
-            var settingBytes = Encoding.Unicode.GetBytes(settingValue);
+            var settingBytes = Encoding.Default.GetBytes(settingValue);
 
             // decrypt secret and return value
 
             var decryptedBytes = ProtectedData.Unprotect(settingBytes, Entropy, Scope);
 
-            return Encoding.Unicode.GetString(decryptedBytes);
+            return Encoding.Default.GetString(decryptedBytes);
         }
 
         /// <summary>
@@ -99,9 +99,9 @@ namespace OzetteLibrary.Secrets
 
             // encrypt secret value
 
-            var unencryptedBytes = Encoding.Unicode.GetBytes(Option.Value);
+            var unencryptedBytes = Encoding.Default.GetBytes(Option.Value);
             var encryptedBytes = ProtectedData.Protect(unencryptedBytes, Entropy, Scope);
-            Option.Value = Encoding.Unicode.GetString(encryptedBytes);
+            Option.Value = Encoding.Default.GetString(encryptedBytes);
 
             // store secret in configuration
 

@@ -46,6 +46,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -80,6 +81,7 @@
     <Compile Include="Providers\Azure\AzureProviderUtilities.tests.cs" />
     <Compile Include="Providers\ProviderFileStatus.tests.cs" />
     <Compile Include="Crypto\LargeByteStreamConstants.cs" />
+    <Compile Include="Secrets\ProtectedDataStore.tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestFiles\Hasher\MediumFile.mp3">
