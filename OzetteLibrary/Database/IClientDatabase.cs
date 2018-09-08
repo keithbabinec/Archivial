@@ -49,9 +49,9 @@ namespace OzetteLibrary.Database
         /// </remarks>
         /// <param name="FileName">Name of the file (ex: document.doc)</param>
         /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
-        /// <param name="FileHash">File hash expressed as a byte array.</param>
+        /// <param name="FileHash">File hash expressed as a string.</param>
         /// <returns><c>BackupFileLookup</c></returns>
-        BackupFileLookup GetBackupFile(string FileName, string DirectoryPath, byte[] FileHash);
+        BackupFileLookup GetBackupFile(string FileName, string DirectoryPath, string FileHashString);
 
         /// <summary>
         /// Returns all of the client files in the database.

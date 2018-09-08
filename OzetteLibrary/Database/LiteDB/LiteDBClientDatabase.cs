@@ -114,7 +114,7 @@ namespace OzetteLibrary.Database.LiteDB
                 backupFilesCol.EnsureIndex(x => x.FileID);
                 backupFilesCol.EnsureIndex(x => x.Filename);
                 backupFilesCol.EnsureIndex(x => x.Directory);
-                backupFilesCol.EnsureIndex(x => x.FileHash);
+                backupFilesCol.EnsureIndex(x => x.FileHashString);
 
                 var dirMapCol = db.GetCollection<DirectoryMapItem>(Constants.Database.DirectoryMapTableName);
                 dirMapCol.EnsureIndex(x => x.LocalPath);
@@ -383,22 +383,22 @@ namespace OzetteLibrary.Database.LiteDB
         /// </remarks>
         /// <param name="FileName">Name of the file (ex: document.doc)</param>
         /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
-        /// <param name="FileHash">File hash expressed as a byte array.</param>
+        /// <param name="FileHash">File hash expressed as a string.</param>
         /// <returns><c>BackupFileLookup</c></returns>
-        public BackupFileLookup GetBackupFile(string FileName, string DirectoryPath, byte[] FileHash)
+        public BackupFileLookup GetBackupFile(string FileName, string DirectoryPath, string FileHashString)
         {
             if (DatabaseHasBeenPrepared == false)
             {
                 throw new InvalidOperationException("Database has not been prepared.");
             }
 
-            var existingFile = FindFullMatchOnNameDirectoryAndHash(FileName, DirectoryPath, FileHash);
+            var existingFile = FindFullMatchOnNameDirectoryAndHash(FileName, DirectoryPath, FileHashString);
             if (existingFile != null)
             {
                 return new BackupFileLookup() { File = existingFile, Result = BackupFileLookupResult.Existing };
             }
 
-            var updatedFile = FindFilesWithExactNameAndPathButWrongHash(FileName, DirectoryPath, FileHash);
+            var updatedFile = FindFilesWithExactNameAndPathButWrongHash(FileName, DirectoryPath, FileHashString);
             if (updatedFile != null)
             {
                 return new BackupFileLookup() { File = updatedFile, Result = BackupFileLookupResult.Updated };
@@ -412,16 +412,16 @@ namespace OzetteLibrary.Database.LiteDB
         /// </summary>
         /// <param name="FileName">Name of the file (ex: document.doc)</param>
         /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
-        /// <param name="FileHash">File hash expressed as a byte array.</param>
+        /// <param name="FileHash">File hash expressed as a string.</param>
         /// <returns><c>BackupFileLookup</c></returns>
-        private BackupFile FindFullMatchOnNameDirectoryAndHash(string FileName, string DirectoryPath, byte[] FileHash)
+        private BackupFile FindFullMatchOnNameDirectoryAndHash(string FileName, string DirectoryPath, string FileHashString)
         {
             using (var db = GetLiteDBInstance())
             {
                 BackupFileLookup result = new BackupFileLookup();
 
                 var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
-                var matchesOnHash = backupFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHash == FileHash);
+                var matchesOnHash = backupFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHashString == FileHashString);
 
                 foreach (var file in matchesOnHash)
                 {
@@ -441,12 +441,12 @@ namespace OzetteLibrary.Database.LiteDB
         /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
         /// <param name="FileHash">File hash expressed as a byte array.</param>
         /// <returns><c>BackupFileLookup</c></returns>
-        private BackupFile FindFilesWithExactNameAndPathButWrongHash(string FileName, string DirectoryPath, byte[] FileHash)
+        private BackupFile FindFilesWithExactNameAndPathButWrongHash(string FileName, string DirectoryPath, string FileHashString)
         {
             using (var db = GetLiteDBInstance())
             {
                 var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
-                var matchesOnHash = backupFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHash != FileHash);
+                var matchesOnHash = backupFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHashString != FileHashString);
 
                 foreach (var file in matchesOnHash)
                 {

@@ -88,6 +88,11 @@ namespace OzetteLibrary.Files
         public byte[] FileHash { get; set; }
 
         /// <summary>
+        /// The string representation of the file hash, for match comparisons.
+        /// </summary>
+        public string FileHashString { get; set; }
+
+        /// <summary>
         /// The file backup priority of this file.
         /// </summary>
         public FileBackupPriority Priority { get; set; }
@@ -525,6 +530,7 @@ namespace OzetteLibrary.Files
             }
 
             FileHash = filehash;
+            FileHashString = string.Join("-", FileHash);
             HashAlgorithmType = algorithm;
         }
 
@@ -535,6 +541,15 @@ namespace OzetteLibrary.Files
         public byte[] GetFileHash()
         {
             return FileHash;
+        }
+
+        /// <summary>
+        /// Gets the file hash string representation.
+        /// </summary>
+        /// <returns></returns>
+        public string GetFileHashString()
+        {
+            return FileHashString;
         }
 
         /// <summary>

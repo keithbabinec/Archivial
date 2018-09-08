@@ -496,7 +496,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             t.SetLastCheckedTimeStamp();
 
-            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHash());
+            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHashString());
 
             Assert.IsNotNull(result);
             Assert.IsNull(result.File);
@@ -526,7 +526,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             t.SetLastCheckedTimeStamp();
 
             db.AddBackupFile(t);
-            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHash());
+            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHashString());
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
@@ -563,7 +563,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             t.SetLastCheckedTimeStamp();
 
-            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHash());
+            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHashString());
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);

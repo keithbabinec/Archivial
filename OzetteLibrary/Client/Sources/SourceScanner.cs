@@ -281,8 +281,9 @@ namespace OzetteLibrary.Client.Sources
                 // error has already been logged by the hasher
                 return;
             }
-            
-            var fileIndexLookup = Database.GetBackupFile(fileInfo.Name, fileInfo.DirectoryName, hash);
+
+            var fileHashString = string.Join("-", hash);
+            var fileIndexLookup = Database.GetBackupFile(fileInfo.Name, fileInfo.DirectoryName, fileHashString);
 
             if (fileIndexLookup.Result == BackupFileLookupResult.New)
             {
