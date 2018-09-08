@@ -6,7 +6,6 @@ using OzetteLibrary.Logging;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Providers;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using OzetteLibrary.Folders;
 using System.IO;
