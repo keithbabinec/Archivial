@@ -263,7 +263,7 @@ namespace OzetteLibrary.Database.LiteDB
             {
                 throw new ArgumentNullException(nameof(option));
             }
-            if (option.ID > 0)
+            if (option.ID <= 0)
             {
                 throw new ArgumentException(nameof(option.ID) + " must be provided.");
             }
