@@ -47,9 +47,24 @@ namespace OzetteCmd
         static void DisplayHelp()
         {
             var help = new StringBuilder();
-            help.AppendLine(string.Format("----------------------------------------"));
-            help.AppendLine(string.Format("--- {0} command line utility help/usage", OzetteLibrary.Constants.Logging.AppName));
-
+            help.AppendLine("-----------------------------------------------------");
+            help.AppendLine("--- Ozette Cloud Backup command line utility");
+            help.AppendLine();
+            help.AppendLine("General usage:");
+            help.AppendLine("\tOzetteCmd.exe <command> --Option1Name Option1Value --Option2Name Option2Value");
+            help.AppendLine();
+            help.AppendLine("Commands:");
+            help.AppendLine();
+            help.AppendLine("\tinstall");
+            help.AppendLine("\t\t[--installdirectory]\tAn optional value to specify the installation folder.");
+            help.AppendLine("\t\t[--databasepath]\tAn optional value to specify the database file path.");
+            help.AppendLine();
+            help.AppendLine("\tconfigure-encryption");
+            help.AppendLine("\t\t--protectioniv\tA passphrase to customize the encryption.");
+            help.AppendLine();
+            help.AppendLine("\tconfigure-azure");
+            help.AppendLine("\t\t--azurestorageaccountname\tThe name of the Azure storage account to backup files to.");
+            help.AppendLine("\t\t--azurestorageaccounttoken\tThe access token for the Azure storage account.");
 
             Console.WriteLine(help.ToString());
         }
