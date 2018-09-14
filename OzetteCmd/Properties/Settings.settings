@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="OzetteCmd.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="EventlogName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">OzetteCmd</Value>
+    </Setting>
+    <Setting Name="LogFilesDirectory" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Program Files\Ozette\Client\Logs</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

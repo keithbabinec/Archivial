@@ -26,6 +26,11 @@
         public const string CoreServiceComponentName = "ServiceCore";
 
         /// <summary>
+        /// A string constant for the installer component name.
+        /// </summary>
+        public const string InstallationComponentName = "Installer";
+
+        /// <summary>
         /// A string constant for the standard date format to use on files.
         /// </summary>
         public const string SortableDateFormat = "yyyy_MM_dd";

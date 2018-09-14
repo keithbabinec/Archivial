@@ -58,6 +58,10 @@
   <ItemGroup>
     <Compile Include="Client\BackupEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
+    <Compile Include="CommandLine\Commands\Install.cs" />
+    <Compile Include="CommandLine\InstallationArguments.cs" />
+    <Compile Include="CommandLine\Parser.cs" />
+    <Compile Include="CommandLine\Arguments.cs" />
     <Compile Include="Constants\EventIDs.cs" />
     <Compile Include="Constants\OptionIDs.cs" />
     <Compile Include="Constants\ProviderMetadata.cs" />
