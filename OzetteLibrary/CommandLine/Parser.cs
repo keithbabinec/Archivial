@@ -94,7 +94,23 @@ namespace OzetteLibrary.CommandLine
         /// <returns></returns>
         private bool ParseConfigureEncryptionArgs(string[] args, out Arguments parsed)
         {
-            throw new System.NotImplementedException();
+            // initialize args object with default
+            var configArgs = new ConfigureEncryptionArguments();
+            var map = ExtractArguments(args);
+
+            if (map.ContainsKey("protectioniv"))
+            {
+                configArgs.ProtectionIv = map["protectioniv"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            parsed = configArgs;
+            return true;
         }
 
         /// <summary>
@@ -105,7 +121,34 @@ namespace OzetteLibrary.CommandLine
         /// <returns></returns>
         private bool ParseConfigureAzureArgs(string[] args, out Arguments parsed)
         {
-            throw new System.NotImplementedException();
+            // initialize args object with default
+            var configArgs = new ConfigureAzureArguments();
+            var map = ExtractArguments(args);
+
+            if (map.ContainsKey("azurestorageaccountname"))
+            {
+                configArgs.AzureStorageAccountName = map["azurestorageaccountname"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            if (map.ContainsKey("azurestorageaccounttoken"))
+            {
+                configArgs.AzureStorageAccountToken = map["azurestorageaccounttoken"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            parsed = configArgs;
+            return true;
         }
 
         /// <summary>

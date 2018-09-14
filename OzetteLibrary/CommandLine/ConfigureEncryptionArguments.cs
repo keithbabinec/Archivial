@@ -5,5 +5,10 @@
     /// </summary>
     public class ConfigureEncryptionArguments : Arguments
     {
+        /// <summary>
+        /// The encryption initialization vector.
+        /// </summary>
+        public string ProtectionIv { get; set; }
+
     }
 }
