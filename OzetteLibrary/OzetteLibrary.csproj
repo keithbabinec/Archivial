@@ -64,6 +64,7 @@
     <Compile Include="CommandLine\InstallationArguments.cs" />
     <Compile Include="CommandLine\Parser.cs" />
     <Compile Include="CommandLine\Arguments.cs" />
+    <Compile Include="Constants\CommandLine.cs" />
     <Compile Include="Constants\EventIDs.cs" />
     <Compile Include="Constants\OptionIDs.cs" />
     <Compile Include="Constants\ProviderMetadata.cs" />

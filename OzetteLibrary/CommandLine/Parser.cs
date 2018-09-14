@@ -69,7 +69,7 @@ namespace OzetteLibrary.CommandLine
             else
             {
                 // apply default
-                installArgs.InstallDirectory = "C:\\Program Files\\Ozette Cloud Backup\\Client";
+                installArgs.InstallDirectory = Constants.CommandLine.DefaultInstallLocation;
             }
 
             if (map.ContainsKey("databasepath"))
@@ -79,7 +79,7 @@ namespace OzetteLibrary.CommandLine
             else
             {
                 // apply default
-                installArgs.DatabasePath = "C:\\Program Files\\Ozette Cloud Backup\\Database\\Ozette.db";
+                installArgs.DatabasePath = Constants.CommandLine.DefaultDatabaseFilePath;
             }
 
             parsed = installArgs;
@@ -169,11 +169,11 @@ namespace OzetteLibrary.CommandLine
                         // there is no next argumnt
                         // or the next argument is another parameter option
                         // this means no value is provided. assume a switch param.
-                        map.Add(args[i].ToLower(), "true");
+                        map.Add(args[i].ToLower().Substring(2), "true");
                     }
                     else
                     {
-                        map.Add(args[i].ToLower(), args[i + 1]);
+                        map.Add(args[i].ToLower().Substring(2), args[i + 1]);
                     }
                 }
             }
