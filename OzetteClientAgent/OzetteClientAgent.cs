@@ -6,6 +6,7 @@ using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Providers;
 using OzetteLibrary.Providers.Azure;
 using OzetteLibrary.Secrets;
+using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
@@ -74,9 +75,9 @@ namespace OzetteClientAgent
             CoreLog = new Logger(OzetteLibrary.Constants.Logging.CoreServiceComponentName);
 
             CoreLog.Start(
-                Properties.Settings.Default.EventlogName, 
-                Properties.Settings.Default.EventlogName, 
-                Properties.Settings.Default.LogFilesDirectory);
+                CoreSettings.EventlogName,
+                CoreSettings.EventlogName,
+                CoreSettings.LogFilesDirectory);
 
             CoreLog.WriteSystemEvent(
                 string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName),
@@ -148,10 +149,10 @@ namespace OzetteClientAgent
             {
                 // establish the database and protected store.
 
-                var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, CoreLog);
+                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString, CoreLog);
                 db.PrepareDatabase();
 
-                var ivEncodedString = Environment.GetEnvironmentVariable(Properties.Settings.Default.ProtectionIVSecretName);
+                var ivEncodedString = Environment.GetEnvironmentVariable(CoreSettings.ProtectionIVSecretName);
 
                 if (string.IsNullOrWhiteSpace(ivEncodedString))
                 {
@@ -239,11 +240,11 @@ namespace OzetteClientAgent
                 var log = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
 
                 log.Start(
-                    Properties.Settings.Default.EventlogName,
-                    Properties.Settings.Default.EventlogName,
-                    Properties.Settings.Default.LogFilesDirectory);
+                    CoreSettings.EventlogName,
+                    CoreSettings.EventlogName,
+                    CoreSettings.LogFilesDirectory);
 
-                var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
+                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString, log);
                 db.PrepareDatabase();
 
                 Scan = new ScanEngine(db, log, ProviderConnections);
@@ -306,11 +307,11 @@ namespace OzetteClientAgent
                 var log = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
 
                 log.Start(
-                    Properties.Settings.Default.EventlogName,
-                    Properties.Settings.Default.EventlogName,
-                    Properties.Settings.Default.LogFilesDirectory);
+                    CoreSettings.EventlogName,
+                    CoreSettings.EventlogName,
+                    CoreSettings.LogFilesDirectory);
 
-                var db = new LiteDBClientDatabase(Properties.Settings.Default.DatabaseConnectionString, log);
+                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString, log);
                 db.PrepareDatabase();
 
                 Backup = new BackupEngine(db, log, ProviderConnections);

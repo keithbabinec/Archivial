@@ -65,6 +65,7 @@
     <Compile Include="CommandLine\Parser.cs" />
     <Compile Include="CommandLine\Arguments.cs" />
     <Compile Include="Constants\CommandLine.cs" />
+    <Compile Include="Constants\CoreSettingNames.cs" />
     <Compile Include="Constants\EventIDs.cs" />
     <Compile Include="Constants\OptionIDs.cs" />
     <Compile Include="Constants\ProviderMetadata.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Database\IDatabase.cs" />
     <Compile Include="Database\LiteDB\LiteDBClientDatabase.cs" />
     <Compile Include="Events\EngineStoppedReason.cs" />
+    <Compile Include="Exceptions\ApplicationCoreSettingMissingException.cs" />
     <Compile Include="Exceptions\ApplicationSecretMissingException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMalformedException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMissingException.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="Providers\ProviderTypes.cs" />
     <Compile Include="Secrets\ISecretStore.cs" />
     <Compile Include="Secrets\ProtectedDataStore.cs" />
+    <Compile Include="ServiceCore\CoreSettings.cs" />
     <Compile Include="ServiceCore\ServiceOption.cs" />
     <Compile Include="ServiceCore\StartupResults.cs" />
     <Compile Include="Files\FileBackupPriority.cs" />
