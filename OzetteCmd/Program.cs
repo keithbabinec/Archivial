@@ -2,6 +2,7 @@
 using OzetteLibrary.CommandLine.Commands;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Logging.Default;
+using OzetteLibrary.ServiceCore;
 using System;
 using System.Text;
 
@@ -79,9 +80,9 @@ namespace OzetteCmd
             var logger = new Logger(componentName);
 
             logger.Start(
-                Properties.Settings.Default.EventlogName,
-                Properties.Settings.Default.EventlogName,
-                Properties.Settings.Default.LogFilesDirectory);
+                CoreSettings.EventlogName,
+                CoreSettings.EventlogName,
+                CoreSettings.LogFilesDirectory);
 
             return logger;
         }
