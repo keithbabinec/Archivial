@@ -1,8 +1,5 @@
 ﻿using OzetteLibrary.CommandLine;
 using OzetteLibrary.CommandLine.Commands;
-using OzetteLibrary.Logging;
-using OzetteLibrary.Logging.Default;
-using OzetteLibrary.ServiceCore;
 using System;
 using System.Text;
 
@@ -26,10 +23,7 @@ namespace OzetteCmd
             {
                 if (parsed is InstallationArguments)
                 {
-                    var logger = InitializeLogger(OzetteLibrary.Constants.Logging.InstallationComponentName);
-                    var installArgs = parsed as InstallationArguments;
-
-                    Install.Run(logger, installArgs);
+                    Install.Run(parsed as InstallationArguments);
                 }
                 else
                 {
@@ -68,23 +62,6 @@ namespace OzetteCmd
             help.AppendLine("\t\t--azurestorageaccounttoken\tThe access token for the Azure storage account.");
 
             Console.WriteLine(help.ToString());
-        }
-
-        /// <summary>
-        /// Initializes the logging component.
-        /// </summary>
-        /// <param name="componentName"></param>
-        /// <returns></returns>
-        static ILogger InitializeLogger(string componentName)
-        {
-            var logger = new Logger(componentName);
-
-            logger.Start(
-                CoreSettings.EventlogName,
-                CoreSettings.EventlogName,
-                CoreSettings.LogFilesDirectory);
-
-            return logger;
         }
     }
 }

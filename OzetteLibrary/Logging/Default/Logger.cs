@@ -346,6 +346,28 @@ namespace OzetteLibrary.Logging.Default
         }
 
         /// <summary>
+        /// Writes a system-level message to the console only.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="severity"></param>
+        public void WriteConsole(string message, EventLogEntryType severity = EventLogEntryType.Information)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
+            }
+
+            if (severity == EventLogEntryType.Error)
+            {
+                Console.Error.WriteLine(PrependMessageWithDateAndSeverity(message, severity));
+            }
+            else
+            {
+                Console.WriteLine(PrependMessageWithDateAndSeverity(message, severity));
+            }
+        }
+
+        /// <summary>
         /// A flag to indicate if the logger is running.
         /// </summary>
         private volatile bool Running = false;

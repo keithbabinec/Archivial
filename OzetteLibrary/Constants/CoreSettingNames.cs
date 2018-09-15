@@ -11,9 +11,14 @@
         public const string ProtectionIV = "OZETTE_PROTECTIONIV";
 
         /// <summary>
-        /// The log files setting name.
+        /// The log files path setting.
         /// </summary>
         public const string LogFilesDirectory = "OZETTE_LOGFILESDIRECTORY";
+
+        /// <summary>
+        /// The installation directory path.
+        /// </summary>
+        public const string InstallationDirectory = "OZETTE_INSTALLATIONDIRECTORY";
 
         /// <summary>
         /// The event log name.

@@ -42,6 +42,21 @@ namespace OzetteLibrary.ServiceCore
         /// <summary>
         /// Returns the log files directory.
         /// </summary>
+        public static string InstallationDirectory
+        {
+            get
+            {
+                return GetCoreSetting(CoreSettingNames.InstallationDirectory);
+            }
+            set
+            {
+                SetCoreSetting(CoreSettingNames.InstallationDirectory, value);
+            }
+        }
+
+        /// <summary>
+        /// Returns the log files directory.
+        /// </summary>
         public static string LogFilesDirectory
         {
             get

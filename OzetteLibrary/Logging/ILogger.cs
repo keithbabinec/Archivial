@@ -93,6 +93,13 @@ namespace OzetteLibrary.Logging
         void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID, bool writeToTraceLog);
 
         /// <summary>
+        /// Writes a system-level message to the console only.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="severity"></param>
+        void WriteConsole(string message, EventLogEntryType severity);
+
+        /// <summary>
         /// Generates a full stack trace from the current method context.
         /// </summary>
         /// <returns></returns>
