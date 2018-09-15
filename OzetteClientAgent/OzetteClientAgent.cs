@@ -152,13 +152,7 @@ namespace OzetteClientAgent
                 var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString, CoreLog);
                 db.PrepareDatabase();
 
-                var ivEncodedString = Environment.GetEnvironmentVariable(CoreSettings.ProtectionIVSecretName);
-
-                if (string.IsNullOrWhiteSpace(ivEncodedString))
-                {
-                    throw new Exception("Protection IV secret not found in environment variables.");
-                }
-
+                var ivEncodedString = CoreSettings.ProtectionIv;
                 var ivBytes = Convert.FromBase64String(ivEncodedString);
 
                 ProtectedDataStore protectedStore = new ProtectedDataStore(db, DataProtectionScope.LocalMachine, ivBytes);

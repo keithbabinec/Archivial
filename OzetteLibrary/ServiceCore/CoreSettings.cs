@@ -57,7 +57,7 @@ namespace OzetteLibrary.ServiceCore
         /// <summary>
         /// Returns the encryption IV value.
         /// </summary>
-        public static string ProtectionIVSecretName
+        public static string ProtectionIv
         {
             get
             {
