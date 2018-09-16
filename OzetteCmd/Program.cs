@@ -61,9 +61,6 @@ namespace OzetteCmd
             help.AppendLine("\tinstall");
             help.AppendLine("\t\t[--installdirectory]\tAn optional value to specify the installation folder.");
             help.AppendLine();
-            help.AppendLine("\tconfigure-encryption");
-            help.AppendLine("\t\t--protectioniv\tA passphrase to customize the encryption.");
-            help.AppendLine();
             help.AppendLine("\tconfigure-azure");
             help.AppendLine("\t\t--azurestorageaccountname\tThe name of the Azure storage account to backup files to.");
             help.AppendLine("\t\t--azurestorageaccounttoken\tThe access token for the Azure storage account.");
