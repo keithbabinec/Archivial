@@ -214,7 +214,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
                 var installArgs = string.Format(
                     "create \"OzetteCloudBackup\" binPath= \"{0}\" start= \"auto\" DisplayName= \"Ozette Cloud Backup Agent\"",
-                    CoreSettings.InstallationDirectory);
+                    Path.Combine(CoreSettings.InstallationDirectory, "OzetteClientAgent.exe"));
 
                 Process createServiceProcess = new Process();
                 createServiceProcess.StartInfo = new ProcessStartInfo()
