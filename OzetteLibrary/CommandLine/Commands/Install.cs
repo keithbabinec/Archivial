@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.ServiceProcess;
+using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 
@@ -47,8 +50,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Step 6: Creating Ozette Client Service.");
                 CreateClientService();
 
-                Logger.WriteConsole("--- Step 7: Starting Ozette Client Service.");
-                StartClientService();
+                Logger.WriteConsole("--- Installation completed successfully.");
 
                 return true;
             }
@@ -189,7 +191,12 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         private static void CreateInitialDatabase()
         {
-            throw new NotImplementedException();
+            Logger.WriteConsole("Preparing database now.");
+
+            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
+            db.PrepareDatabase();
+
+            Logger.WriteConsole("Database successfully prepared.");
         }
 
         /// <summary>
@@ -197,15 +204,64 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         private static void CreateClientService()
         {
-            throw new NotImplementedException();
-        }
+            Logger.WriteConsole("Checking to see if OzetteCloudBackup windows service already exists.");
 
-        /// <summary>
-        /// Starts the client windows service.
-        /// </summary>
-        private static void StartClientService()
-        {
-            throw new NotImplementedException();
+            var existingServices = ServiceController.GetServices();
+                        
+            if (existingServices.Any(x => x.ServiceName == "OzetteCloudBackup") == false)
+            {
+                Logger.WriteConsole("Creating OzetteCloudBackup windows service now.");
+
+                var installArgs = string.Format(
+                    "create \"OzetteCloudBackup\" binPath= \"{0}\" start= \"auto\" DisplayName= \"Ozette Cloud Backup Agent\"",
+                    CoreSettings.InstallationDirectory);
+
+                Process createServiceProcess = new Process();
+                createServiceProcess.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = "sc.exe",
+                    Arguments = installArgs
+                };
+
+                createServiceProcess.Start();
+                createServiceProcess.WaitForExit();
+
+                if (createServiceProcess.ExitCode == 0)
+                {
+                    Logger.WriteConsole("Successfully created the windows service.");
+                }
+                else
+                {
+                    throw new Exception("Failed to create the windows service. Sc.exe returned an error code: " + createServiceProcess.ExitCode);
+                }
+
+                var setDescriptionArgs = string.Format(
+                    "description \"OzetteCloudBackup\" \"Ozette Cloud Backup is a data backup client service that copies data to cloud providers like Azure and AWS.\"",
+                    CoreSettings.InstallationDirectory);
+
+                Process setServiceDescriptionProcess = new Process();
+                setServiceDescriptionProcess.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = "sc.exe",
+                    Arguments = setDescriptionArgs
+                };
+
+                setServiceDescriptionProcess.Start();
+                setServiceDescriptionProcess.WaitForExit();
+
+                if (setServiceDescriptionProcess.ExitCode == 0)
+                {
+                    Logger.WriteConsole("Successfully set the windows service description.");
+                }
+                else
+                {
+                    throw new Exception("Failed to set the windows service description. Sc.exe returned an error code: " + setServiceDescriptionProcess.ExitCode);
+                }
+            }
+            else
+            {
+                Logger.WriteConsole("Windows service already exists, skipping step.");
+            }
         }
     }
 }
