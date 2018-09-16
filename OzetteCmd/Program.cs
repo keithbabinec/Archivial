@@ -14,7 +14,7 @@ namespace OzetteCmd
         /// Main entrypoint.
         /// </summary>
         /// <param name="args"></param>
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             var parser = new Parser();
             Arguments parsed;
@@ -23,7 +23,14 @@ namespace OzetteCmd
             {
                 if (parsed is InstallationArguments)
                 {
-                    Install.Run(parsed as InstallationArguments);
+                    if (Install.Run(parsed as InstallationArguments))
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        return 2;
+                    }
                 }
                 else
                 {
@@ -33,6 +40,7 @@ namespace OzetteCmd
             else
             {
                 DisplayHelp();
+                return 1;
             }
         }
 

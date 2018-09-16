@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 
@@ -20,30 +22,42 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Runs the installation command.
         /// </summary>
         /// <param name="arguments"></param>
-        public static void Run(InstallationArguments arguments)
+        /// <returns>True if successful, otherwise false.</returns>
+        public static bool Run(InstallationArguments arguments)
         {
-            Logger.WriteConsole("--- Starting Ozette Cloud Backup installation");
+            try
+            {
+                Logger.WriteConsole("--- Starting Ozette Cloud Backup installation");
 
-            Logger.WriteConsole("--- Step 1: Applying core settings.");
-            CreateCoreSettings(arguments);
+                Logger.WriteConsole("--- Step 1: Applying core settings.");
+                CreateCoreSettings(arguments);
 
-            Logger.WriteConsole("--- Step 2: Creating custom event log source.");
-            CreateEventLogSource();
+                Logger.WriteConsole("--- Step 2: Creating custom event log source.");
+                CreateEventLogSource();
 
-            Logger.WriteConsole("--- Step 3: Setting up installation directories.");
-            CreateInstallationDirectories();
+                Logger.WriteConsole("--- Step 3: Setting up installation directories.");
+                CreateInstallationDirectories();
 
-            Logger.WriteConsole("--- Step 4: Copying installation files.");
-            CopyProgramFiles();
+                Logger.WriteConsole("--- Step 4: Copying installation files.");
+                CopyProgramFiles();
 
-            Logger.WriteConsole("--- Step 5: Creating initial database.");
-            CreateInitialDatabase();
+                Logger.WriteConsole("--- Step 5: Creating initial database.");
+                CreateInitialDatabase();
 
-            Logger.WriteConsole("--- Step 6: Creating Ozette Client Service.");
-            CreateClientService();
+                Logger.WriteConsole("--- Step 6: Creating Ozette Client Service.");
+                CreateClientService();
 
-            Logger.WriteConsole("--- Step 7: Starting Ozette Client Service.");
-            StartClientService();
+                Logger.WriteConsole("--- Step 7: Starting Ozette Client Service.");
+                StartClientService();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteConsole("--- Ozette Cloud Backup installation failed", EventLogEntryType.Error);
+                Logger.WriteConsole(ex.ToString(), EventLogEntryType.Error);
+                return false;
+            }
         }
 
         /// <summary>
@@ -130,7 +144,44 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         private static void CopyProgramFiles()
         {
-            throw new NotImplementedException();
+            Logger.WriteConsole("Detecting application source location.");
+            var sourcePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Logger.WriteConsole("Detected application source directory: " + sourcePath);
+
+            // expected file manifest
+            var fileManifest = new List<string>()
+            {
+                "LiteDB.dll",
+                "LiteDB.xml",
+                "Microsoft.Azure.KeyVault.Core.dll",
+                "Microsoft.Azure.KeyVault.Core.xml",
+                "Microsoft.WindowsAzure.Storage.dll",
+                "Microsoft.WindowsAzure.Storage.xml",
+                "Newtonsoft.Json.dll",
+                "Newtonsoft.Json.xml",
+                "OzetteClientAgent.exe",
+                "OzetteClientAgent.exe.config",
+                "OzetteLibrary.dll",
+                "OzetteCmd.exe",
+                "OzetteCmd.exe.config"
+            };
+
+            foreach (var file in fileManifest)
+            {
+                Logger.WriteConsole("Copying file: " + file);
+
+                var sourceFileFullPath = Path.Combine(sourcePath, file);
+                var destFileFullPath = Path.Combine(CoreSettings.InstallationDirectory, file);
+
+                if (File.Exists(sourceFileFullPath) == false)
+                {
+                    throw new FileNotFoundException("A required setup file was missing: " + sourceFileFullPath);
+                }
+
+                File.Copy(sourceFileFullPath, destFileFullPath, true);
+            }
+
+            Logger.WriteConsole("Successfully copied files.");
         }
 
         /// <summary>
