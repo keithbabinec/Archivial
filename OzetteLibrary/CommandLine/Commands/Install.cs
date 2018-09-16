@@ -51,6 +51,9 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Step 6: Creating Ozette Client Service.");
                 CreateClientService();
 
+                Logger.WriteConsole("--- Step 7: Add installation directory to system path variable.");
+                AddSystemPath();
+
                 Logger.WriteConsole("--- Installation completed successfully.");
 
                 return true;
@@ -270,6 +273,30 @@ namespace OzetteLibrary.CommandLine.Commands
             else
             {
                 Logger.WriteConsole("Windows service already exists, skipping step.");
+            }
+        }
+
+        /// <summary>
+        /// Adds the installation directory to the system's path variable.
+        /// </summary>
+        private static void AddSystemPath()
+        {
+            Logger.WriteConsole("Querying for the existing system path variable.");
+
+            var pathVar = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Machine);
+
+            if (pathVar.ToLower().Contains(CoreSettings.InstallationDirectory.ToLower()) == false)
+            {
+                Logger.WriteConsole("System path variable does not have the installation path. Adding it now.");
+
+                var newVar = pathVar.TrimEnd(';') + ";" + CoreSettings.InstallationDirectory;
+                Environment.SetEnvironmentVariable("Path", newVar, EnvironmentVariableTarget.Machine);
+
+                Logger.WriteConsole("Successfully added the installation path to the system path variable.");
+            }
+            else
+            {
+                Logger.WriteConsole("System path variable is already configured with the installation path.");
             }
         }
     }
