@@ -133,45 +133,5 @@ namespace OzetteLibraryTests.CommandLine
             Assert.IsFalse(parser.Parse(arguments, out parsed));
             Assert.IsNull(parsed);
         }
-
-        [TestMethod]
-        public void ParserCanParseConfigureEncryptionCommandWithValidArgs()
-        {
-            string[] arguments = { "configure-encryption", "--protectioniv", "mykey" };
-            Arguments parsed;
-
-            var parser = new Parser();
-
-            Assert.IsTrue(parser.Parse(arguments, out parsed));
-            Assert.IsInstanceOfType(parsed, typeof(ConfigureEncryptionArguments));
-
-            var installArgs = parsed as ConfigureEncryptionArguments;
-
-            Assert.AreEqual("mykey", installArgs.ProtectionIv);
-        }
-
-        [TestMethod]
-        public void ParserReturnsFalseWhenConfigureEncryptionHasNoArgsPassed()
-        {
-            string[] arguments = { "configure-encryption" };
-            Arguments parsed;
-
-            var parser = new Parser();
-
-            Assert.IsFalse(parser.Parse(arguments, out parsed));
-            Assert.IsNull(parsed);
-        }
-
-        [TestMethod]
-        public void ParserReturnsFalseWhenConfigureEncryptionWhenWrongOptionProvided()
-        {
-            string[] arguments = { "configure-encryption", "--wrongoption", "mykey" };
-            Arguments parsed;
-
-            var parser = new Parser();
-
-            Assert.IsFalse(parser.Parse(arguments, out parsed));
-            Assert.IsNull(parsed);
-        }
     }
 }

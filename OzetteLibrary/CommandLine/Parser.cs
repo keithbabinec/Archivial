@@ -34,10 +34,6 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseInstallArgs(args, out parsed);
             }
-            else if (baseCommand == "configure-encryption")
-            {
-                return ParseConfigureEncryptionArgs(args, out parsed);
-            }
             else if (baseCommand == "configure-azure")
             {
                 return ParseConfigureAzureArgs(args, out parsed);
@@ -73,33 +69,6 @@ namespace OzetteLibrary.CommandLine
             }
 
             parsed = installArgs;
-            return true;
-        }
-
-        /// <summary>
-        /// Parses the provided arguments into an <c>ConfigureEncryptionArguments</c> object.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="parsed"></param>
-        /// <returns></returns>
-        private bool ParseConfigureEncryptionArgs(string[] args, out Arguments parsed)
-        {
-            // initialize args object with default
-            var configArgs = new ConfigureEncryptionArguments();
-            var map = ExtractArguments(args);
-
-            if (map.ContainsKey("protectioniv"))
-            {
-                configArgs.ProtectionIv = map["protectioniv"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            parsed = configArgs;
             return true;
         }
 

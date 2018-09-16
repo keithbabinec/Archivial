@@ -26,9 +26,9 @@
         public const string CoreServiceComponentName = "ServiceCore";
 
         /// <summary>
-        /// A string constant for the installer component name.
+        /// A string constant for the command line component name.
         /// </summary>
-        public const string InstallationComponentName = "Installer";
+        public const string CommandLineComponentName = "CommandLine";
 
         /// <summary>
         /// A string constant for the standard date format to use on files.

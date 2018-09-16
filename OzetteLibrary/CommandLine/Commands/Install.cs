@@ -19,7 +19,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// A logging helper instance.
         /// </summary>
-        private static Logger Logger = new Logger(Constants.Logging.InstallationComponentName);
+        private static Logger Logger = new Logger(Constants.Logging.CommandLineComponentName);
 
         /// <summary>
         /// Runs the installation command.

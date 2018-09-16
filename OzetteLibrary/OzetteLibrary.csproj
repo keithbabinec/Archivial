@@ -61,7 +61,6 @@
     <Compile Include="Client\Transfer\FileSender.cs" />
     <Compile Include="CommandLine\Commands\Install.cs" />
     <Compile Include="CommandLine\ConfigureAzureArguments.cs" />
-    <Compile Include="CommandLine\ConfigureEncryptionArguments.cs" />
     <Compile Include="CommandLine\InstallationArguments.cs" />
     <Compile Include="CommandLine\Parser.cs" />
     <Compile Include="CommandLine\Arguments.cs" />
