@@ -8,16 +8,16 @@
         /// <summary>
         /// Microsoft Azure cloud storage.
         /// </summary>
-        Azure = 0,
+        Azure = 1,
 
         /// <summary>
         /// Amazon Web Services cloud storage.
         /// </summary>
-        AWS = 1,
+        AWS = 2,
 
         /// <summary>
         /// Google cloud storage provider.
         /// </summary>
-        Google = 2
+        Google = 3
     }
 }

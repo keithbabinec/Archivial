@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Client\BackupEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
+    <Compile Include="CommandLine\Commands\ConfigureAzure.cs" />
     <Compile Include="CommandLine\Commands\Install.cs" />
     <Compile Include="CommandLine\ConfigureAzureArguments.cs" />
     <Compile Include="CommandLine\InstallationArguments.cs" />

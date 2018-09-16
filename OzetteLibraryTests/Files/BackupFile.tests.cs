@@ -283,8 +283,8 @@ namespace OzetteLibraryTests.Files
                 });
 
             Assert.AreEqual(1, file.CopyState.Count);
-            Assert.AreEqual(provider2, file.CopyState[0].Provider);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.CopyState[0].SyncStatus);
+            Assert.AreEqual(provider2, file.CopyState[OzetteLibrary.Providers.ProviderTypes.Azure].Provider);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.CopyState[OzetteLibrary.Providers.ProviderTypes.Azure].SyncStatus);
         }
 
         [TestMethod]
