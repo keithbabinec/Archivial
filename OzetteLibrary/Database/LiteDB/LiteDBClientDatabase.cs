@@ -23,39 +23,28 @@ namespace OzetteLibrary.Database.LiteDB
         /// </remarks>
         /// <param name="databaseStream"></param>
         /// <param name="logger"></param>
-        public LiteDBClientDatabase(MemoryStream databaseStream, ILogger logger)
+        public LiteDBClientDatabase(MemoryStream databaseStream)
         {
             if (databaseStream == null)
             {
                 throw new ArgumentNullException(nameof(databaseStream));
             }
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
 
             DatabaseMemoryStream = databaseStream;
-            Logger = logger;
         }
 
         /// <summary>
         /// Instantiates a client DB from database connection string.
         /// </summary>
         /// <param name="connectionString"></param>
-        /// <param name="logger"></param>
-        public LiteDBClientDatabase(string connectionString, ILogger logger)
+        public LiteDBClientDatabase(string connectionString)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new ArgumentException(nameof(connectionString));
             }
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
 
             DatabaseConnectionString = connectionString;
-            Logger = logger;
         }
 
         /// <summary>
@@ -222,11 +211,6 @@ namespace OzetteLibrary.Database.LiteDB
                 throw new InvalidOperationException("Unable to return a LiteDB instance. No memory stream or connection string was provided.");
             }
         }
-
-        /// <summary>
-        /// A reference to the logger.
-        /// </summary>
-        private ILogger Logger;
 
         /// <summary>
         /// The database connection string.

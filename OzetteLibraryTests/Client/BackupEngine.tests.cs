@@ -33,7 +33,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void BackupEngineConstructorThrowsExceptionWhenNullProvidersAreProvided()
         {
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             OzetteLibrary.Client.BackupEngine engine =
                 new OzetteLibrary.Client.BackupEngine(inMemoryDB, new MockLogger(), null);
@@ -43,7 +43,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentException))]
         public void BackupEngineConstructorThrowsExceptionWhenNoProvidersAreProvided()
         {
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             var providers = GenerateMockProviders();
             providers.Clear(); // a valid collection, but empty
@@ -56,7 +56,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void BackupEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             OzetteLibrary.Client.BackupEngine engine =
                 new OzetteLibrary.Client.BackupEngine(inMemoryDB, null, GenerateMockProviders());
@@ -66,7 +66,7 @@ namespace OzetteLibraryTests.Client
         public void BackupEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             OzetteLibrary.Client.BackupEngine engine =
                 new OzetteLibrary.Client.BackupEngine(inMemoryDB, logger, GenerateMockProviders());
@@ -78,7 +78,7 @@ namespace OzetteLibraryTests.Client
         public void BackupEngineCanStartAndStop()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             inMemoryDB.PrepareDatabase();
 
@@ -93,7 +93,7 @@ namespace OzetteLibraryTests.Client
         public void BackupEngineTriggersStoppedEventWhenEngineHasStopped()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             inMemoryDB.PrepareDatabase();
 
@@ -116,7 +116,7 @@ namespace OzetteLibraryTests.Client
         public void BackupEngineThrowsExceptionWhenEngineIsStartedTwice()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             inMemoryDB.PrepareDatabase();
 

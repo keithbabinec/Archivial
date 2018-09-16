@@ -23,7 +23,7 @@ namespace OzetteLibraryTests.Client.Sources
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScannerConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), new MockLogger());
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, null);
@@ -33,7 +33,7 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
@@ -46,7 +46,7 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerThrowsWhenBeginScanIsCalledAfterScanHasAlreadyStarted()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             inMemoryDB.PrepareDatabase();
 
@@ -69,7 +69,7 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerSignalsCompleteAfterScanHasCompleted()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             inMemoryDB.PrepareDatabase();
 
@@ -96,7 +96,7 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerCanScanSuccessfullyAfterCompletingAnEarlierScan()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             inMemoryDB.PrepareDatabase();
 
@@ -130,7 +130,7 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerCanAddClientFilesToDatabaseWithCorrectMetadata()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             inMemoryDB.PrepareDatabase();
 
@@ -175,7 +175,7 @@ namespace OzetteLibraryTests.Client.Sources
         public void TraceMessagesAreWrittenToTheTraceLogDuringScanning()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream(), logger);
+            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
 
             inMemoryDB.PrepareDatabase();
 

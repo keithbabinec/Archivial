@@ -27,8 +27,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreConstructorThrowsOnNoEntropy()
         {
             var ms = new MemoryStream();
-            var logger = new MockLogger();
-            var db = new LiteDBClientDatabase(ms, logger);
+            var db = new LiteDBClientDatabase(ms);
             db.PrepareDatabase();
             var entropy = new byte[] { };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
@@ -41,8 +40,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreGetApplicationSecretThrowsWhenSecretIsNotFound()
         {
             var ms = new MemoryStream();
-            var logger = new MockLogger();
-            var db = new LiteDBClientDatabase(ms, logger);
+            var db = new LiteDBClientDatabase(ms);
             db.PrepareDatabase();
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
@@ -57,8 +55,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionIsProvided()
         {
             var ms = new MemoryStream();
-            var logger = new MockLogger();
-            var db = new LiteDBClientDatabase(ms, logger);
+            var db = new LiteDBClientDatabase(ms);
             db.PrepareDatabase();
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
@@ -73,8 +70,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionIdIsProvided()
         {
             var ms = new MemoryStream();
-            var logger = new MockLogger();
-            var db = new LiteDBClientDatabase(ms, logger);
+            var db = new LiteDBClientDatabase(ms);
             db.PrepareDatabase();
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
@@ -95,8 +91,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionNameIsProvided()
         {
             var ms = new MemoryStream();
-            var logger = new MockLogger();
-            var db = new LiteDBClientDatabase(ms, logger);
+            var db = new LiteDBClientDatabase(ms);
             db.PrepareDatabase();
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
@@ -117,8 +112,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionValueIsProvided()
         {
             var ms = new MemoryStream();
-            var logger = new MockLogger();
-            var db = new LiteDBClientDatabase(ms, logger);
+            var db = new LiteDBClientDatabase(ms);
             db.PrepareDatabase();
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
@@ -138,8 +132,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreSetApplicationSecretShouldSaveEncryptedSecretUserScope()
         {
             var ms = new MemoryStream();
-            var logger = new MockLogger();
-            var db = new LiteDBClientDatabase(ms, logger);
+            var db = new LiteDBClientDatabase(ms);
             db.PrepareDatabase();
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
@@ -172,8 +165,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreGetApplicationSecretShouldReturnDecryptedSecretUserScope()
         {
             var ms = new MemoryStream();
-            var logger = new MockLogger();
-            var db = new LiteDBClientDatabase(ms, logger);
+            var db = new LiteDBClientDatabase(ms);
             db.PrepareDatabase();
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
@@ -195,8 +187,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreSetApplicationSecretShouldSaveEncryptedSecretMachineScope()
         {
             var ms = new MemoryStream();
-            var logger = new MockLogger();
-            var db = new LiteDBClientDatabase(ms, logger);
+            var db = new LiteDBClientDatabase(ms);
             db.PrepareDatabase();
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
@@ -229,8 +220,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreGetApplicationSecretShouldReturnDecryptedSecretMachineScope()
         {
             var ms = new MemoryStream();
-            var logger = new MockLogger();
-            var db = new LiteDBClientDatabase(ms, logger);
+            var db = new LiteDBClientDatabase(ms);
             db.PrepareDatabase();
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;

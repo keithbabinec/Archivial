@@ -149,7 +149,7 @@ namespace OzetteClientAgent
             {
                 // establish the database and protected store.
 
-                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString, CoreLog);
+                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                 db.PrepareDatabase();
 
                 var ivEncodedString = CoreSettings.ProtectionIv;
@@ -245,7 +245,7 @@ namespace OzetteClientAgent
                     CoreSettings.EventlogName,
                     CoreSettings.LogFilesDirectory);
 
-                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString, log);
+                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                 db.PrepareDatabase();
 
                 Scan = new ScanEngine(db, log, ProviderConnections);
@@ -312,7 +312,7 @@ namespace OzetteClientAgent
                     CoreSettings.EventlogName,
                     CoreSettings.LogFilesDirectory);
 
-                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString, log);
+                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                 db.PrepareDatabase();
 
                 Backup = new BackupEngine(db, log, ProviderConnections);

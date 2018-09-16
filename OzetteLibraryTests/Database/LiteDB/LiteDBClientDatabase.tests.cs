@@ -12,44 +12,31 @@ namespace OzetteLibraryTests.Database.LiteDB
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void LiteDBClientDatabaseConstructorThrowsWhenNoLoggerIsProvided()
-        {
-            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db = 
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(new MemoryStream(), null);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void LiteDBClientDatabaseConstructorThrowsWhenNoDatabaseStreamIsProvided()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             MemoryStream ms = null;
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void LiteDBClientDatabaseConstructorThrowsWhenNoDatabaseConnectionStringIsProvided()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             string dbConString = null;
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(dbConString, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(dbConString);
         }
 
         [TestMethod]
         public void LiteDBClientDatabaseCanBeInstantiatedWithMemoryStream()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
             var mem = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db = 
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(mem, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(mem);
 
             Assert.IsNotNull(db);
         }
@@ -57,11 +44,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseCanBeInstantiatedWithConnectionString()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
             var dbConString = "fake-connection-string";
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(dbConString, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(dbConString);
 
             Assert.IsNotNull(db);
         }
@@ -69,12 +55,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseCanRunPrepareDatabaseWithoutExceptions()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
         }
@@ -82,12 +66,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseCanRunPrepareDatabaseMultipleTimesWithoutExceptions()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
             db.PrepareDatabase();
@@ -98,12 +80,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseGetBackupFileThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.GetBackupFile(null, null, null);
         }
@@ -112,12 +92,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseGetNextFileToBackupThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.GetNextFileToBackup();
         }
@@ -126,12 +104,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseGetAllBackupFilesThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.GetAllBackupFiles();
         }
@@ -140,12 +116,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseAddBackupFileThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.AddBackupFile(null);
         }
@@ -154,12 +128,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseUpdateBackupFileThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.UpdateBackupFile(null);
         }
@@ -168,12 +140,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseGetAllSourceLocationsThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.GetAllSourceLocations();
         }
@@ -182,12 +152,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseSetSourceLocationsThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.SetSourceLocations(null);
         }
@@ -196,12 +164,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseUpdateSourceLocationThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.UpdateSourceLocation(null);
         }
@@ -210,12 +176,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseGetDirectoryMapItemThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.GetDirectoryMapItem(null);
         }
@@ -224,12 +188,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseSetProvidersThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.SetProviders(null);
         }
@@ -238,12 +200,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(InvalidOperationException))]
         public void LiteDBClientDatabaseGetProvidersListThrowsIfPrepareDatabaseHasNotBeenCalled()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.GetProvidersList();
         }
@@ -252,12 +212,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(ArgumentException))]
         public void LiteDBClientDatabaseGetDirectoryMapItemThrowsIfNullDirectoryIsPassed()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -268,12 +226,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(ArgumentException))]
         public void LiteDBClientDatabaseGetDirectoryMapItemThrowsIfEmptyDirectoryIsPassed()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -283,12 +239,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseGetDirectoryMapItemCorrectlyReturnsNewDirectory()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -301,12 +255,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseGetDirectoryMapItemCorrectlyReturnsExistingDirectory()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -324,12 +276,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseGetDirectoryMapItemCorrectlyReturnsExistingDirectoryWhenCaseDoesntMatch()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -347,12 +297,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseGetAllBackupFilesReturnsEmptyCollectionInsteadOfNull()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -365,15 +313,13 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseReturnFilesFromGetAllBackupFiles()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             // add a target using API AddBackupFile()
             // then manually check the stream
 
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -399,15 +345,13 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseCanAddBackupFileSuccessfully()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             // add a target using API AddBackupFile()
             // then manually check the stream
 
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -435,15 +379,13 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseCanUpdateBackupFileSuccessfully()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             // add a target using API AddBackupFile()
             // then manually check the stream
 
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -483,7 +425,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -512,7 +454,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -542,7 +484,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -574,12 +516,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [ExpectedException(typeof(ArgumentNullException))]
         public void LiteDBClientDatabaseSetProvidersThrowsOnNullInput()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -589,12 +529,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseSetProvidersDoesNotThrowOnEmptyCollection()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -604,12 +542,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseSetProvidersCorrectlySavesProvidersList()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -633,12 +569,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseGetProvidersListReturnsEmptyCollectionWhenNoProvidersPresent()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -651,12 +585,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseGetProvidersListCorrectlyReturnsProvidersCollection()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -679,12 +611,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseGetAllSourceLocationsReturnsEmptyCollectionInsteadOfNull()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -697,12 +627,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseReturnSourcesFromGetAllSourceLocations()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -733,12 +661,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseCanUpdateSourceLocationSuccessfully()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -771,12 +697,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseCanSetSourceLocationsSuccessfullyExample1()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -810,12 +734,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseCanSetSourceLocationsSuccessfullyExample2()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -856,12 +778,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         [TestMethod]
         public void LiteDBClientDatabaseCanSetSourceLocationsSuccessfullyExample3()
         {
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -908,12 +828,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         {
             // no files in the database.
 
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -925,12 +843,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         {
             // single file (unsynced). needs backup.
 
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -953,12 +869,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         {
             // single file (outdated). needs backup.
 
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -982,12 +896,10 @@ namespace OzetteLibraryTests.Database.LiteDB
             // if multiple files can be synced, return the more urgent one (unsynced over out-of-date).
             // assuming same file priority.
 
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -1018,12 +930,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         {
             // multiple files. all need backup- (out of date), but have different priority
 
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -1062,12 +972,10 @@ namespace OzetteLibraryTests.Database.LiteDB
         {
             // multiple files. only one needs backup
 
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -1107,12 +1015,10 @@ namespace OzetteLibraryTests.Database.LiteDB
             // if multiple files can be synced, return the more urgent one (priority ordering).
             // example: an high pri out-of-date takes priority over medium unsynced file.
 
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
@@ -1144,12 +1050,10 @@ namespace OzetteLibraryTests.Database.LiteDB
             // if multiple files can be synced, return the more urgent one (priority ordering).
             // example: an med pri out-of-date takes priority over low unsynced file.
 
-            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
-
             var ms = new MemoryStream();
 
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
-                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms, logger);
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
             db.PrepareDatabase();
 
