@@ -114,5 +114,10 @@
         /// Event ID: Failed to configure cloud provider connections due to no (enabled) providers being listed in the database.
         /// </summary>
         public const int FailedToConfigureProvidersNoFoundOrEnabled = 2010;
+
+        /// <summary>
+        /// Event ID: A core application setting is missing. 
+        /// </summary>
+        public const int CoreSettingMissing = 2011;
     }
 }

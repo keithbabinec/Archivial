@@ -204,9 +204,16 @@ namespace OzetteClientAgent
                 CoreLog.WriteSystemEvent("Successfully configured cloud storage provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguredCloudProviderConnections, true);
                 return true;
             }
+            catch (ApplicationCoreSettingMissingException ex)
+            {
+                CoreLog.WriteSystemEvent("A core application setting has not been configured yet: " + ex.Message,
+                    EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.CoreSettingMissing, true);
+
+                return false;
+            }
             catch (ApplicationSecretMissingException)
             {
-                CoreLog.WriteSystemEvent("Failed to configure cloud storage provider connections: A cloud storage provider is missing required connection settings.", 
+                CoreLog.WriteSystemEvent("Failed to configure cloud storage provider connections: A cloud storage provider is missing required connection settings.",
                     EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.FailedToConfigureProvidersMissingSettings, true);
 
                 return false;
