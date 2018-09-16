@@ -58,8 +58,8 @@ namespace OzetteLibrary.CommandLine.Commands
             CoreSettings.LogFilesDirectory = Path.Combine(arguments.InstallDirectory, "Logs");
             CoreSettings.EventlogName = "OzetteCloudBackup";
 
-            CoreSettings.DatabaseConnectionString =
-                string.Format("Filename={0};Journal=true;Mode=Shared", arguments.DatabasePath);
+            var dbPath = Path.Combine(arguments.InstallDirectory, "Database\\OzetteCloudBackup.db");
+            CoreSettings.DatabaseConnectionString = string.Format("Filename={0};Journal=true;Mode=Shared", dbPath);
 
             Logger.WriteConsole("Core settings successfully applied.");
             Logger.WriteConsole("InstallationDirectory=" + CoreSettings.InstallationDirectory);
@@ -99,6 +99,18 @@ namespace OzetteLibrary.CommandLine.Commands
             else
             {
                 Logger.WriteConsole("Target installation directory already exists, skipping step.");
+            }
+
+            var dbDirectory = Path.Combine(CoreSettings.InstallationDirectory, "Database");
+            if (Directory.Exists(dbDirectory) == false)
+            {
+                Logger.WriteConsole("Target database directory was not found, creating it now.");
+                Directory.CreateDirectory(dbDirectory);
+                Logger.WriteConsole("Successfully created target database directory.");
+            }
+            else
+            {
+                Logger.WriteConsole("Target database directory already exists, skipping step.");
             }
 
             if (Directory.Exists(CoreSettings.LogFilesDirectory) == false)

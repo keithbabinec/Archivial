@@ -31,7 +31,6 @@ namespace OzetteLibraryTests.CommandLine
             var installArgs = parsed as InstallationArguments;
 
             Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultInstallLocation, installArgs.InstallDirectory);
-            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultDatabaseFilePath, installArgs.DatabasePath);
         }
 
         [TestMethod]
@@ -48,7 +47,6 @@ namespace OzetteLibraryTests.CommandLine
             var installArgs = parsed as InstallationArguments;
 
             Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultInstallLocation, installArgs.InstallDirectory);
-            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultDatabaseFilePath, installArgs.DatabasePath);
         }
 
         [TestMethod]
@@ -65,7 +63,6 @@ namespace OzetteLibraryTests.CommandLine
             var installArgs = parsed as InstallationArguments;
 
             Assert.AreEqual("C:\\path", installArgs.InstallDirectory);
-            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultDatabaseFilePath, installArgs.DatabasePath);
         }
 
         [TestMethod]
@@ -82,41 +79,6 @@ namespace OzetteLibraryTests.CommandLine
             var installArgs = parsed as InstallationArguments;
 
             Assert.AreEqual("C:\\path", installArgs.InstallDirectory);
-            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultDatabaseFilePath, installArgs.DatabasePath);
-        }
-
-        [TestMethod]
-        public void ParserCanParseInstallCommandWithCustomDbFilepath()
-        {
-            string[] arguments = { "install", "--databasepath", "C:\\path\\to\\my.db" };
-            Arguments parsed;
-
-            var parser = new Parser();
-
-            Assert.IsTrue(parser.Parse(arguments, out parsed));
-            Assert.IsInstanceOfType(parsed, typeof(InstallationArguments));
-
-            var installArgs = parsed as InstallationArguments;
-
-            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultInstallLocation, installArgs.InstallDirectory);
-            Assert.AreEqual("C:\\path\\to\\my.db", installArgs.DatabasePath);
-        }
-
-        [TestMethod]
-        public void ParserCanParseInstallCommandWithBothCustomArgs()
-        {
-            string[] arguments = { "install", "--databasepath", "C:\\path\\to\\my.db", "--installdirectory", "C:\\path" };
-            Arguments parsed;
-
-            var parser = new Parser();
-
-            Assert.IsTrue(parser.Parse(arguments, out parsed));
-            Assert.IsInstanceOfType(parsed, typeof(InstallationArguments));
-
-            var installArgs = parsed as InstallationArguments;
-
-            Assert.AreEqual("C:\\path", installArgs.InstallDirectory);
-            Assert.AreEqual("C:\\path\\to\\my.db", installArgs.DatabasePath);
         }
 
         [TestMethod]

@@ -13,7 +13,7 @@ namespace OzetteLibrary.CommandLine
         /// <example>
         /// A few examples:
         /// ozettecmd.exe install
-        /// ozettecmd.exe install --installdirectory "C:\path" --databasepath "C:\path\file.db" 
+        /// ozettecmd.exe install --installdirectory "C:\path"
         /// ozettecmd.exe configure-encryption --protectioniv "passphrase"
         /// </example>
         /// <param name="args">The raw arguments from the commandline.</param>
@@ -70,16 +70,6 @@ namespace OzetteLibrary.CommandLine
             {
                 // apply default
                 installArgs.InstallDirectory = Constants.CommandLine.DefaultInstallLocation;
-            }
-
-            if (map.ContainsKey("databasepath"))
-            {
-                installArgs.DatabasePath = map["databasepath"];
-            }
-            else
-            {
-                // apply default
-                installArgs.DatabasePath = Constants.CommandLine.DefaultDatabaseFilePath;
             }
 
             parsed = installArgs;

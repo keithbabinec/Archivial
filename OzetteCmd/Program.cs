@@ -52,7 +52,6 @@ namespace OzetteCmd
             help.AppendLine();
             help.AppendLine("\tinstall");
             help.AppendLine("\t\t[--installdirectory]\tAn optional value to specify the installation folder.");
-            help.AppendLine("\t\t[--databasepath]\tAn optional value to specify the database file path.");
             help.AppendLine();
             help.AppendLine("\tconfigure-encryption");
             help.AppendLine("\t\t--protectioniv\tA passphrase to customize the encryption.");
