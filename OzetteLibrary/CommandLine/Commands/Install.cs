@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 
@@ -10,30 +11,34 @@ namespace OzetteLibrary.CommandLine.Commands
     public static class Install
     {
         /// <summary>
+        /// A logging helper instance.
+        /// </summary>
+        private static Logger Logger = new Logger(Constants.Logging.InstallationComponentName);
+
+        /// <summary>
         /// Runs the installation command.
         /// </summary>
         /// <param name="arguments"></param>
         public static void Run(InstallationArguments arguments)
         {
-            var logger = new Logger(Constants.Logging.InstallationComponentName);
-            logger.WriteConsole("Starting Ozette Cloud Backup installation");
+            Logger.WriteConsole("Step 1: Starting Ozette Cloud Backup installation");
 
-            logger.WriteConsole("Applying core settings.");
+            Logger.WriteConsole("Step 2: Applying core settings.");
             CreateCoreSettings(arguments);
 
-            logger.WriteConsole("Setting up installation directories.");
+            Logger.WriteConsole("Step 3: Setting up installation directories.");
             CreateInstallationDirectories();
 
-            logger.WriteConsole("Copying installation files.");
+            Logger.WriteConsole("Step 4: Copying installation files.");
             CopyProgramFiles();
 
-            logger.WriteConsole("Creating initial database.");
+            Logger.WriteConsole("Step 5: Creating initial database.");
             CreateInitialDatabase();
 
-            logger.WriteConsole("Creating Ozette Client Service.");
+            Logger.WriteConsole("Step 6: Creating Ozette Client Service.");
             CreateClientService();
 
-            logger.WriteConsole("Starting Ozette Client Service.");
+            Logger.WriteConsole("Step 7: Starting Ozette Client Service.");
             StartClientService();
         }
 
@@ -42,7 +47,10 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         private static void CreateInstallationDirectories()
         {
-            throw new NotImplementedException();
+            if (Directory.Exists(CoreSettings.InstallationDirectory) == false)
+            {
+                Directory.CreateDirectory(CoreSettings.InstallationDirectory);
+            }
         }
 
         /// <summary>
