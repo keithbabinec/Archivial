@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.ServiceProcess;
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
@@ -76,6 +77,14 @@ namespace OzetteLibrary.CommandLine.Commands
 
             var dbPath = Path.Combine(arguments.InstallDirectory, "Database\\OzetteCloudBackup.db");
             CoreSettings.DatabaseConnectionString = string.Format("Filename={0};Journal=true;Mode=Shared", dbPath);
+
+            // this entropy/iv key is used only for saving/retrieving app secrets (like storage config tokens).
+            // it is not used for encrypting files in the cloud.
+            // the iv key must be 16 bytes.
+            var encryptionIvBytes = new byte[16];
+            new RNGCryptoServiceProvider().GetBytes(encryptionIvBytes);
+            var encryptionIvString = Convert.ToBase64String(encryptionIvBytes);
+            CoreSettings.ProtectionIv = encryptionIvString;
 
             Logger.WriteConsole("Core settings successfully applied.");
             Logger.WriteConsole("InstallationDirectory=" + CoreSettings.InstallationDirectory);
