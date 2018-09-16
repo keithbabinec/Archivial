@@ -70,7 +70,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             CoreSettings.InstallationDirectory = arguments.InstallDirectory;
             CoreSettings.LogFilesDirectory = Path.Combine(arguments.InstallDirectory, "Logs");
-            CoreSettings.EventlogName = "OzetteCloudBackup";
+            CoreSettings.EventlogName = "Ozette";
 
             var dbPath = Path.Combine(arguments.InstallDirectory, "Database\\OzetteCloudBackup.db");
             CoreSettings.DatabaseConnectionString = string.Format("Filename={0};Journal=true;Mode=Shared", dbPath);
