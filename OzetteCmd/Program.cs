@@ -43,6 +43,17 @@ namespace OzetteCmd
                         return 2;
                     }
                 }
+                if (parsed is AddSourceArguments)
+                {
+                    if (AddSource.Run(parsed as AddSourceArguments))
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        return 2;
+                    }
+                }
                 else
                 {
                     throw new NotImplementedException("Args type not implemented: " + parsed.GetType().FullName);

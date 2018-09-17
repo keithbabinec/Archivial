@@ -23,7 +23,7 @@ namespace OzetteLibrary.CommandLine.Commands
         private static Logger Logger = new Logger(Constants.Logging.CommandLineComponentName);
 
         /// <summary>
-        /// Runs the installation command.
+        /// Runs the install command.
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
