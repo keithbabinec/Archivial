@@ -303,7 +303,7 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile();
 
             // no logger
-            using (var filestream = new FileStream(".\\TestFiles\\SourceLocation\\EmptySourcesFile.json", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 file.GenerateNextTransferPayload(filestream, null);
             }
@@ -316,7 +316,7 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile();
 
             // file is already synced
-            using (var filestream = new FileStream(".\\TestFiles\\SourceLocation\\EmptySourcesFile.json", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 file.OverallState = OzetteLibrary.Files.FileStatus.Synced;
                 file.GenerateNextTransferPayload(filestream, new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger()));
@@ -330,7 +330,7 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile();
 
             // file priority is not set
-            using (var filestream = new FileStream(".\\TestFiles\\SourceLocation\\EmptySourcesFile.json", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 file.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
                 file.Priority = OzetteLibrary.Files.FileBackupPriority.Unset;
@@ -345,7 +345,7 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile();
 
             // copystate is not set
-            using (var filestream = new FileStream(".\\TestFiles\\SourceLocation\\EmptySourcesFile.json", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 file.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
                 file.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
@@ -371,7 +371,7 @@ namespace OzetteLibraryTests.Files
             file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.Synced;
             file.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
 
-            using (var filestream = new FileStream(".\\TestFiles\\SourceLocation\\EmptySourcesFile.json", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 file.GenerateNextTransferPayload(filestream, new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger()));
             }

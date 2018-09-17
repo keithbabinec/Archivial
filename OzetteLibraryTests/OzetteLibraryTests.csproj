@@ -77,7 +77,6 @@
     <Compile Include="Folders\DirectoryMapItem.tests.cs" />
     <Compile Include="Folders\SourceLocation.tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Client\Sources\Loader.tests.cs" />
     <Compile Include="Providers\Azure\AzureProviderFileOperations.tests.cs" />
     <Compile Include="Providers\Azure\AzureProviderUtilities.tests.cs" />
     <Compile Include="Providers\ProviderFileStatus.tests.cs" />
@@ -99,24 +98,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles\SourceLocation\SourcesExample1.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="TestFiles\SourceLocation\EmptySourcesFile.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="ozette.runsettings" />
     <None Include="packages.config" />
-    <Content Include="TestFiles\SourceLocation\SourcesExample2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestFiles\SourceLocation\SourcesExample3.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

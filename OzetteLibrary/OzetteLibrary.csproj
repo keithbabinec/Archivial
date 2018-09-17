@@ -75,7 +75,6 @@
     <Compile Include="Events\AsyncResult.cs" />
     <Compile Include="Events\EngineStoppedEventArgs.cs" />
     <Compile Include="Client\ScanEngine.cs" />
-    <Compile Include="Client\Sources\Loader.cs" />
     <Compile Include="Client\Sources\SourceScanner.cs" />
     <Compile Include="Constants\Database.cs" />
     <Compile Include="Constants\Logging.cs" />

@@ -77,7 +77,7 @@ namespace OzetteLibrary.Client
                     // second: check to see if we have any valid sources defined.
                     // the sources found are returned in the order they should be scanned.
 
-                    var sources = SafeImportSources(sourcesFilePath);
+                    var sources = SafeImportSources();
 
                     if (sources != null)
                     {
@@ -165,45 +165,25 @@ namespace OzetteLibrary.Client
         /// <remarks>
         /// This function is marked as safe and should not throw exceptions.
         /// </remarks>
-        /// <param name="sourceFile"></param>
         /// <returns></returns>
-        private SourceLocations SafeImportSources(string sourceFile)
+        private SourceLocations SafeImportSources()
         {
             try
             {
-                Logger.WriteTraceMessage("Importing scan sources from: " + sourceFile);
+                Logger.WriteTraceMessage("Loading scan sources from the client database.");
 
-                Loader loader = new Loader();
-                SourceLocations result = loader.LoadSourcesFile(sourceFile);
+                // grab the current copy from DB (this includes last scanned timestamp)
+                var dbSources = GetSourceLocationsFromDatabase();
 
                 Logger.WriteTraceMessage("Successfully loaded scan source file.");
 
-                if (result == null || result.Count == 0)
+                if (dbSources == null || dbSources.Count == 0)
                 {
-                    Logger.WriteTraceMessage("No sources defined in the scan source file.");
-                }
-
-                if (ValidateSources(result) == true)
-                {
-                    // have the source locations changed from what we have in the client DB?
-                    // if yes, then refresh/update them.
-                    RefreshDatabaseSourcesIfChanged(result);
-
-                    // grab the current copy from DB (this includes last scanned timestamp)
-                    var dbSources = GetSourceLocationsFromDatabase();
-
-                    // return sorted sources.
-                    return loader.SortSources(dbSources);
-                }
-                else
-                {
+                    Logger.WriteTraceMessage("No scan sources are defined. No files will be backed up until scan sources have been added.");
                     return null;
                 }
-            }
-            catch (FileNotFoundException)
-            {
-                Logger.WriteSystemEvent("We expected a backup sources file at the following path, but it wasn't found: " + sourceFile, System.Diagnostics.EventLogEntryType.Error, Constants.EventIDs.FailedToLoadScanSources, true);
-                return null;
+
+                return dbSources;
             }
             catch (Exception ex)
             {
@@ -231,26 +211,6 @@ namespace OzetteLibrary.Client
             {
                 Logger.WriteTraceMessage("This source location does not need to be scanned at this time.");
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// Updates the source locations in the database, if changed.
-        /// </summary>
-        /// <param name="sources"></param>
-        private void RefreshDatabaseSourcesIfChanged(SourceLocations sources)
-        {
-            // get existing sources.
-
-            var dbSources = GetSourceLocationsFromDatabase();
-
-            if (dbSources.CollectionHasSameContent(sources) == false)
-            {
-                // delete all sources
-                // re-save sources to db
-
-                var clientDB = Database as IClientDatabase;
-                clientDB.SetSourceLocations(sources);
             }
         }
 
