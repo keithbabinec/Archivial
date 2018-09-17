@@ -126,30 +126,6 @@ namespace OzetteLibrary.Database.LiteDB
             {
                 var optionsCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
 
-                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.SourcesFilePath) == null)
-                {
-                    optionsCol.Insert(
-                        new ServiceOption()
-                        {
-                            ID = Constants.OptionIDs.SourcesFilePath,
-                            Name = nameof(Constants.OptionIDs.SourcesFilePath),
-                            IsEncryptedOption = false,
-                            Value = "C:\\Program Files\\Ozette\\Client\\BackupSources.json"
-                        });
-                }
-
-                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.ProvidersFilePath) == null)
-                {
-                    optionsCol.Insert(
-                        new ServiceOption()
-                        {
-                            ID = Constants.OptionIDs.ProvidersFilePath,
-                            Name = nameof(Constants.OptionIDs.ProvidersFilePath),
-                            IsEncryptedOption = false,
-                            Value = "C:\\Program Files\\Ozette\\Client\\ProviderOptions.json"
-                        });
-                }
-
                 if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.LowPriorityScanFrequencyInHours) == null)
                 {
                     optionsCol.Insert(
