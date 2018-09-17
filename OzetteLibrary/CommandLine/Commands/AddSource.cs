@@ -28,7 +28,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             try
             {
-                Logger.WriteConsole("--- Starting Ozette Cloud Backup configuration: Add a source");
+                Logger.WriteConsole("--- Starting Ozette Cloud Backup source configuration");
 
                 Logger.WriteConsole("--- Step 1: Validate the source and save it to the database.");
                 ValidateSource(arguments);
@@ -39,7 +39,7 @@ namespace OzetteLibrary.CommandLine.Commands
             }
             catch (Exception ex)
             {
-                Logger.WriteConsole("--- Ozette Cloud Backup Azure configuration failed", EventLogEntryType.Error);
+                Logger.WriteConsole("--- Ozette Cloud Backup source configuration failed", EventLogEntryType.Error);
                 Logger.WriteConsole(ex.ToString(), EventLogEntryType.Error);
                 return false;
             }
