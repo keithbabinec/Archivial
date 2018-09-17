@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using OzetteLibrary.Exceptions;
+using OzetteLibrary.Files;
+using System;
+using System.Collections.Generic;
 
 namespace OzetteLibrary.CommandLine
 {
@@ -37,6 +40,10 @@ namespace OzetteLibrary.CommandLine
             else if (baseCommand == "configure-azure")
             {
                 return ParseConfigureAzureArgs(args, out parsed);
+            }
+            else if (baseCommand == "add-source")
+            {
+                return ParseAddSourceArgs(args, out parsed);
             }
             else
             {
@@ -107,6 +114,85 @@ namespace OzetteLibrary.CommandLine
             }
 
             parsed = configArgs;
+            return true;
+        }
+
+        /// <summary>
+        /// Parses the provided arguments into an <c>InstallationArguments</c> object.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="parsed"></param>
+        /// <returns></returns>
+        private bool ParseAddSourceArgs(string[] args, out Arguments parsed)
+        {
+            // initialize args object with default
+            var sourceArgs = new AddSourceArguments();
+            var map = ExtractArguments(args);
+
+            if (map.ContainsKey("folderpath"))
+            {
+                sourceArgs.FolderPath = map["folderpath"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            if (map.ContainsKey("priority"))
+            {
+                var priority = map["priority"];
+                FileBackupPriority parsedPriority;
+
+                if (Enum.TryParse(priority, out parsedPriority))
+                {
+                    sourceArgs.Priority = parsedPriority;
+                }
+                else
+                {
+                    // an optional argument was specified, but was not given a valid value.
+                    throw new SourceLocationInvalidFileBackupPriorityException();
+                }
+            }
+            else
+            {
+                // apply default
+                sourceArgs.Priority = Constants.CommandLine.DefaultPriority;
+            }
+
+            if (map.ContainsKey("revisions"))
+            {
+                var revisions = map["revisions"];
+                int parsedRevisions;
+
+                if (int.TryParse(revisions, out parsedRevisions))
+                {
+                    sourceArgs.Revisions = parsedRevisions;
+                }
+                else
+                {
+                    // an optional argument was specified, but was not given a valid value.
+                    throw new SourceLocationInvalidRevisionCountException();
+                }
+            }
+            else
+            {
+                // apply default
+                sourceArgs.Revisions = Constants.CommandLine.DefaultRevisionCount;
+            }
+
+            if (map.ContainsKey("matchfilter"))
+            {
+                sourceArgs.Matchfilter = map["matchfilter"];
+            }
+            else
+            {
+                // apply default
+                sourceArgs.Matchfilter = Constants.CommandLine.DefaultMatchFilter;
+            }
+
+            parsed = sourceArgs;
             return true;
         }
 

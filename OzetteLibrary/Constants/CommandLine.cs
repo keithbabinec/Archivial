@@ -1,4 +1,6 @@
-﻿namespace OzetteLibrary.Constants
+﻿using OzetteLibrary.Files;
+
+namespace OzetteLibrary.Constants
 {
     /// <summary>
     /// Constants for the command line tooling.
@@ -9,5 +11,20 @@
         /// The default application installation folder.
         /// </summary>
         public const string DefaultInstallLocation = "C:\\Program Files\\Ozette Cloud Backup\\Client";
+
+        /// <summary>
+        /// The default scan source priority.
+        /// </summary>
+        public const FileBackupPriority DefaultPriority = FileBackupPriority.Medium;
+
+        /// <summary>
+        /// The default scan source revision count.
+        /// </summary>
+        public const int DefaultRevisionCount = 1;
+
+        /// <summary>
+        /// The default scan source match filter.
+        /// </summary>
+        public const string DefaultMatchFilter = "*";
     }
 }

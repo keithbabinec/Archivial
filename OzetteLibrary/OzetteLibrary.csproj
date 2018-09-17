@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Client\BackupEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
+    <Compile Include="CommandLine\AddSourceArguments.cs" />
     <Compile Include="CommandLine\Commands\ConfigureAzure.cs" />
     <Compile Include="CommandLine\Commands\Install.cs" />
     <Compile Include="CommandLine\ConfigureAzureArguments.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Exceptions\ApplicationSecretMissingException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMalformedException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMissingException.cs" />
+    <Compile Include="Exceptions\SourceLocationInvalidFileBackupPriorityException.cs" />
     <Compile Include="Files\TransferPayload.cs" />
     <Compile Include="Folders\ScanFrequencies.cs" />
     <Compile Include="Logging\Default\Logger.cs" />

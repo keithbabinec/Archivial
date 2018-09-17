@@ -75,6 +75,12 @@ namespace OzetteCmd
             help.AppendLine("\tconfigure-azure");
             help.AppendLine("\t\t--azurestorageaccountname\tThe name of the Azure storage account to backup files to.");
             help.AppendLine("\t\t--azurestorageaccounttoken\tThe access token for the Azure storage account.");
+            help.AppendLine();
+            help.AppendLine("\tadd-source");
+            help.AppendLine("\t\t--folderpath\tThe full folder path that should be backed up.");
+            help.AppendLine("\t\t[--priority]\tThe backup priority (specify \"Low\", \"Medium\", or \"High\"). Defaults to Medium if omitted.");
+            help.AppendLine("\t\t[--revisions]\tThe number of revisions to store (specify a number, such as 1, 2, 3, etc). Defaults to 1 if omitted.");
+            help.AppendLine("\t\t[--matchfilter]\tAn optional wildcard match filter that scopes this source to only certain files.");
 
             Console.WriteLine(help.ToString());
         }
