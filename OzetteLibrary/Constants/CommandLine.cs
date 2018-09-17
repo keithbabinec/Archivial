@@ -15,16 +15,16 @@ namespace OzetteLibrary.Constants
         /// <summary>
         /// The default scan source priority.
         /// </summary>
-        public const FileBackupPriority DefaultPriority = FileBackupPriority.Medium;
+        public const FileBackupPriority DefaultSourcePriority = FileBackupPriority.Medium;
 
         /// <summary>
         /// The default scan source revision count.
         /// </summary>
-        public const int DefaultRevisionCount = 1;
+        public const int DefaultSourceRevisionCount = 1;
 
         /// <summary>
         /// The default scan source match filter.
         /// </summary>
-        public const string DefaultMatchFilter = "*";
+        public const string DefaultSourceMatchFilter = "*";
     }
 }

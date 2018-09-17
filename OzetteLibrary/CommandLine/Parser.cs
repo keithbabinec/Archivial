@@ -145,7 +145,7 @@ namespace OzetteLibrary.CommandLine
                 var priority = map["priority"];
                 FileBackupPriority parsedPriority;
 
-                if (Enum.TryParse(priority, out parsedPriority))
+                if (Enum.TryParse(priority, true, out parsedPriority))
                 {
                     sourceArgs.Priority = parsedPriority;
                 }
@@ -158,7 +158,7 @@ namespace OzetteLibrary.CommandLine
             else
             {
                 // apply default
-                sourceArgs.Priority = Constants.CommandLine.DefaultPriority;
+                sourceArgs.Priority = Constants.CommandLine.DefaultSourcePriority;
             }
 
             if (map.ContainsKey("revisions"))
@@ -179,7 +179,7 @@ namespace OzetteLibrary.CommandLine
             else
             {
                 // apply default
-                sourceArgs.Revisions = Constants.CommandLine.DefaultRevisionCount;
+                sourceArgs.Revisions = Constants.CommandLine.DefaultSourceRevisionCount;
             }
 
             if (map.ContainsKey("matchfilter"))
@@ -189,7 +189,7 @@ namespace OzetteLibrary.CommandLine
             else
             {
                 // apply default
-                sourceArgs.Matchfilter = Constants.CommandLine.DefaultMatchFilter;
+                sourceArgs.Matchfilter = Constants.CommandLine.DefaultSourceMatchFilter;
             }
 
             parsed = sourceArgs;
