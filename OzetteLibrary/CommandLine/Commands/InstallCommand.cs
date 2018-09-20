@@ -15,26 +15,47 @@ namespace OzetteLibrary.CommandLine.Commands
     /// <summary>
     /// A command for installing the program.
     /// </summary>
-    public static class Install
+    public class InstallCommand : ICommand
     {
         /// <summary>
         /// A logging helper instance.
         /// </summary>
-        private static Logger Logger = new Logger(Constants.Logging.CommandLineComponentName);
+        private Logger Logger;
+
+        /// <summary>
+        /// Constructor that requires a logging instance.
+        /// </summary>
+        /// <param name="logger"></param>
+        public InstallCommand(Logger logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            Logger = logger;
+        }
 
         /// <summary>
         /// Runs the install command.
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public static bool Run(InstallationArguments arguments)
+        public bool Run(Arguments arguments)
         {
+            var installArgs = arguments as InstallationArguments;
+
+            if (installArgs == null)
+            {
+                throw new ArgumentNullException(nameof(arguments));
+            }
+
             try
             {
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup installation");
 
                 Logger.WriteConsole("--- Step 1: Applying core settings.");
-                CreateCoreSettings(arguments);
+                CreateCoreSettings(installArgs);
 
                 Logger.WriteConsole("--- Step 2: Creating custom event log source.");
                 CreateEventLogSource();
@@ -70,7 +91,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Sets the core application settings.
         /// </summary>
         /// <param name="arguments"></param>
-        private static void CreateCoreSettings(InstallationArguments arguments)
+        private void CreateCoreSettings(InstallationArguments arguments)
         {
             // set the core settings.
 
@@ -99,7 +120,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Creates a custom event log and event source.
         /// </summary>
-        private static void CreateEventLogSource()
+        private void CreateEventLogSource()
         {
             if (EventLog.Exists(CoreSettings.EventlogName) == false)
             {
@@ -116,7 +137,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Creates the installation directories.
         /// </summary>
-        private static void CreateInstallationDirectories()
+        private void CreateInstallationDirectories()
         {
             if (Directory.Exists(CoreSettings.InstallationDirectory) == false)
             {
@@ -156,7 +177,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Copies the program files to the installation directory.
         /// </summary>
-        private static void CopyProgramFiles()
+        private void CopyProgramFiles()
         {
             Logger.WriteConsole("Detecting application source location.");
             var sourcePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -201,7 +222,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Creates the initial database.
         /// </summary>
-        private static void CreateInitialDatabase()
+        private void CreateInitialDatabase()
         {
             Logger.WriteConsole("Preparing database now.");
 
@@ -214,7 +235,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Creates the client windows service.
         /// </summary>
-        private static void CreateClientService()
+        private void CreateClientService()
         {
             Logger.WriteConsole("Checking to see if OzetteCloudBackup windows service already exists.");
 
@@ -279,7 +300,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Adds the installation directory to the system's path variable.
         /// </summary>
-        private static void AddSystemPath()
+        private void AddSystemPath()
         {
             Logger.WriteConsole("Querying for the existing system path variable.");
 

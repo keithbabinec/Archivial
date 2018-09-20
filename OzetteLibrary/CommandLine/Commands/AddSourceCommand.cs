@@ -12,26 +12,47 @@ namespace OzetteLibrary.CommandLine.Commands
     /// <summary>
     /// A command for adding backup sources to the active configuration.
     /// </summary>
-    public static class AddSource
+    public class AddSourceCommand : ICommand
     {
         /// <summary>
         /// A logging helper instance.
         /// </summary>
-        private static Logger Logger = new Logger(Constants.Logging.CommandLineComponentName);
+        private Logger Logger;
+
+        /// <summary>
+        /// Constructor that requires a logging instance.
+        /// </summary>
+        /// <param name="logger"></param>
+        public AddSourceCommand(Logger logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            Logger = logger;
+        }
 
         /// <summary>
         /// Runs the add-source command.
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public static bool Run(AddSourceArguments arguments)
+        public bool Run(Arguments arguments)
         {
+            var addSrcArgs = arguments as AddSourceArguments;
+
+            if (addSrcArgs == null)
+            {
+                throw new ArgumentNullException(nameof(arguments));
+            }
+
             try
             {
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup source configuration");
 
                 Logger.WriteConsole("--- Step 1: Validate the source and save it to the database.");
-                ValidateSource(arguments);
+                ValidateSource(addSrcArgs);
 
                 Logger.WriteConsole("--- Source configuration completed successfully.");
 
@@ -49,7 +70,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Validates the provided source is usable.
         /// </summary>
         /// <param name="arguments"></param>
-        private static void ValidateSource(AddSourceArguments arguments)
+        private void ValidateSource(AddSourceArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 

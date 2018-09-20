@@ -12,26 +12,47 @@ namespace OzetteLibrary.CommandLine.Commands
     /// <summary>
     /// A command for configuring azure provider settings.
     /// </summary>
-    public static class ConfigureAzure
+    public class ConfigureAzureCommand : ICommand
     {
         /// <summary>
         /// A logging helper instance.
         /// </summary>
-        private static Logger Logger = new Logger(Constants.Logging.CommandLineComponentName);
+        private Logger Logger;
+
+        /// <summary>
+        /// Constructor that requires a logging instance.
+        /// </summary>
+        /// <param name="logger"></param>
+        public ConfigureAzureCommand(Logger logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            Logger = logger;
+        }
 
         /// <summary>
         /// Runs the configure-azure command.
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public static bool Run(ConfigureAzureArguments arguments)
+        public bool Run(Arguments arguments)
         {
+            var configAzArgs = arguments as ConfigureAzureArguments;
+
+            if (configAzArgs == null)
+            {
+                throw new ArgumentNullException(nameof(arguments));
+            }
+
             try
             {
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup Azure configuration");
 
                 Logger.WriteConsole("--- Step 1: Encrypt and save Azure settings.");
-                EncryptAndSave(arguments);
+                EncryptAndSave(configAzArgs);
 
                 Logger.WriteConsole("--- Step 2: Configure providers list.");
                 ConfigureProviders();
@@ -51,7 +72,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Configures the providers in the client database.
         /// </summary>
-        private static void ConfigureProviders()
+        private void ConfigureProviders()
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -88,7 +109,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Encrypts and saves the Azure configuration settings.
         /// </summary>
         /// <param name="arguments"></param>
-        private static void EncryptAndSave(ConfigureAzureArguments arguments)
+        private void EncryptAndSave(ConfigureAzureArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 

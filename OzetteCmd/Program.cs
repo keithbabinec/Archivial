@@ -21,43 +21,7 @@ namespace OzetteCmd
 
             if (parser.Parse(args, out parsed))
             {
-                if (parsed is InstallationArguments)
-                {
-                    if (Install.Run(parsed as InstallationArguments))
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        return 2;
-                    }
-                }
-                if (parsed is ConfigureAzureArguments)
-                {
-                    if (ConfigureAzure.Run(parsed as ConfigureAzureArguments))
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        return 2;
-                    }
-                }
-                if (parsed is AddSourceArguments)
-                {
-                    if (AddSource.Run(parsed as AddSourceArguments))
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        return 2;
-                    }
-                }
-                else
-                {
-                    throw new NotImplementedException("Args type not implemented: " + parsed.GetType().FullName);
-                }
+                throw new NotImplementedException();
             }
             else
             {
