@@ -15,6 +15,7 @@ namespace OzetteLibrary.CommandLine.Commands
     /// <summary>
     /// A command for installing the program.
     /// </summary>
+    [RequiresElevation]
     public class InstallCommand : ICommand
     {
         /// <summary>
