@@ -2,6 +2,7 @@
 using OzetteLibrary.CommandLine.Commands;
 using OzetteLibrary.Logging.Default;
 using System;
+using System.Security.Principal;
 using System.Text;
 
 namespace OzetteCmd
@@ -24,6 +25,12 @@ namespace OzetteCmd
             {
                 var command = GetCommandFromArguments(argumentObj);
 
+                if (RequiresRelaunchWithElevation(command.GetType()))
+                {
+                    Console.WriteLine("The requested command requires elevated (administrator) permissions to execute. Please re-launch the program with Run-As Administrator permissions.");
+                    return 2;
+                }
+
                 if (command.Run(argumentObj))
                 {
                     // command completed successfully
@@ -32,7 +39,7 @@ namespace OzetteCmd
                 else
                 {
                     // command failed.
-                    return 2;
+                    return 3;
                 }
             }
             else
@@ -101,6 +108,46 @@ namespace OzetteCmd
             }
 
             return command;
+        }
+
+        /// <summary>
+        /// Checks if the program should exit and re-launch with elevation.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        static bool RequiresRelaunchWithElevation(Type type)
+        {
+            Attribute[] attributes = Attribute.GetCustomAttributes(type);
+
+            foreach (var attribute in attributes)
+            {
+                if (attribute is RequiresElevation)
+                {
+                    // this type requires elevation
+                    // check if we are elevated or not.
+
+                    WindowsIdentity identity = WindowsIdentity.GetCurrent();
+                    WindowsPrincipal principal = new WindowsPrincipal(identity);
+                    var isAdministrator = principal.IsInRole(WindowsBuiltInRole.Administrator);
+
+                    if (isAdministrator)
+                    {
+                        // we are already elevated.
+                        // no need to re-launch with elevation.
+                        return false;
+                    }
+                    else
+                    {
+                        // we are not elevated, and this command requires it.
+                        // request re-launch with elevation.
+                        return true;
+                    }
+                }
+            }
+
+            // No RequiresElevation attribute was found on the type.
+            // we can run this command regardless of current elevation state- no requirement to relaunch.
+            return false;
         }
     }
 }
