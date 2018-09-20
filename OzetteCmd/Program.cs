@@ -27,7 +27,7 @@ namespace OzetteCmd
 
                 if (RequiresRelaunchWithElevation(command.GetType()))
                 {
-                    Console.WriteLine("The requested command requires elevated (administrator) permissions to execute. Please re-launch the program with Run-As Administrator permissions.");
+                    Console.Error.WriteLine("The requested command requires elevated (administrator) permissions to execute. Please re-launch the program with Run-As Administrator permissions.");
                     return 2;
                 }
 
