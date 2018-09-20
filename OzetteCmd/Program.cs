@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.CommandLine;
 using OzetteLibrary.CommandLine.Commands;
+using OzetteLibrary.Logging.Default;
 using System;
 using System.Text;
 
@@ -17,14 +18,26 @@ namespace OzetteCmd
         static int Main(string[] args)
         {
             var parser = new Parser();
-            Arguments parsed;
+            Arguments argumentObj;
 
-            if (parser.Parse(args, out parsed))
+            if (parser.Parse(args, out argumentObj))
             {
-                throw new NotImplementedException();
+                var command = GetCommandFromArguments(argumentObj);
+
+                if (command.Run(argumentObj))
+                {
+                    // command completed successfully
+                    return 0;
+                }
+                else
+                {
+                    // command failed.
+                    return 2;
+                }
             }
             else
             {
+                // arguments error
                 DisplayHelp();
                 return 1;
             }
@@ -58,6 +71,36 @@ namespace OzetteCmd
             help.AppendLine("\t\t[--matchfilter]\tAn optional wildcard match filter that scopes this source to only certain files.");
 
             Console.WriteLine(help.ToString());
+        }
+
+        /// <summary>
+        /// Returns the matching command object for the specified arguments.
+        /// </summary>
+        /// <param name="arguments"><c>Arguments</c></param>
+        /// <returns><c>ICommand</c></returns>
+        static ICommand GetCommandFromArguments(Arguments arguments)
+        {
+            Logger logger = new Logger(OzetteLibrary.Constants.Logging.CommandLineComponentName);
+            ICommand command = null;
+
+            if (arguments is InstallationArguments)
+            {
+                command = new InstallCommand(logger);
+            }
+            else if (arguments is AddSourceArguments)
+            {
+                command = new AddSourceCommand(logger);
+            }
+            else if (arguments is ConfigureAzureArguments)
+            {
+                command = new ConfigureAzureCommand(logger);
+            }
+            else
+            {
+                throw new NotImplementedException(arguments.GetType().FullName);
+            }
+
+            return command;
         }
     }
 }
