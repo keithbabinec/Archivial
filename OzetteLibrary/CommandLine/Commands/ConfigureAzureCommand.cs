@@ -12,6 +12,10 @@ namespace OzetteLibrary.CommandLine.Commands
     /// <summary>
     /// A command for configuring azure provider settings.
     /// </summary>
+    /// <remarks>
+    /// The reason for elevation requirement: This command uses encryption at the Machine-key scope. We cannot correctly save the encrypted secrets at this level without elevation.
+    /// </remarks>
+    [RequiresElevation]
     public class ConfigureAzureCommand : ICommand
     {
         /// <summary>

@@ -17,6 +17,9 @@ namespace OzetteLibrary.CommandLine.Commands
     /// <summary>
     /// A command for installing the program.
     /// </summary>
+    /// <remarks>
+    /// The reason for elevation requirement: This command must have admin permissions to create the service, write program files, configure event sources, etc.
+    /// </remarks>
     [RequiresElevation]
     public class InstallCommand : ICommand
     {
