@@ -99,7 +99,7 @@ namespace OzetteLibrary.Folders
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("ID='{0}', Path='{1}', Filter='{2}', Priority='{3}', RevisionCount='{4}'",
+            return string.Format("ID={0}, Path='{1}', Filter='{2}', Priority={3}, RevisionCount={4}",
                 ID,
                 FolderPath,
                 FileMatchFilter == null ? "(none)" : FileMatchFilter,

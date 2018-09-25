@@ -47,8 +47,6 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Step 1: Query database for the list of configured providers.");
                 PrintProviderNames();
 
-                Logger.WriteConsole("--- Configuration check completed successfully.");
-
                 return true;
             }
             catch (Exception ex)
@@ -75,9 +73,11 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Number of configured providers: " + allProviders.Count);
 
+            Logger.WriteConsole("--- Results:");
+
             foreach (var provider in allProviders)
             {
-                Logger.WriteConsole(string.Format("Provider: ID={0}: Type={1}", provider.ID, provider.Type));
+                Logger.WriteConsole(string.Format("Provider: ID={0}, Type={1}", provider.ID, provider.Type));
             }
         }
     }

@@ -47,8 +47,6 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Step 1: Query database for the list of configured backup sources.");
                 PrintBackupSources();
 
-                Logger.WriteConsole("--- Configuration check completed successfully.");
-
                 return true;
             }
             catch (Exception ex)
@@ -74,6 +72,8 @@ namespace OzetteLibrary.CommandLine.Commands
             var allSources = db.GetAllSourceLocations();
 
             Logger.WriteConsole("Number of configured backup sources: " + allSources.Count);
+
+            Logger.WriteConsole("--- Results:");
 
             foreach (var source in allSources)
             {

@@ -64,19 +64,41 @@ namespace OzetteCmd
             help.AppendLine();
             help.AppendLine("Commands:");
             help.AppendLine();
-            help.AppendLine("\tinstall");
-            help.AppendLine("\t\t[--installdirectory]\tAn optional value to specify the installation folder.");
+            help.AppendLine("OzetteCmd.exe install");
             help.AppendLine();
-            help.AppendLine("\tconfigure-azure");
-            help.AppendLine("\t\t--azurestorageaccountname\tThe name of the Azure storage account to backup files to.");
-            help.AppendLine("\t\t--azurestorageaccounttoken\tThe access token for the Azure storage account.");
+            help.AppendLine("  Description:");
+            help.AppendLine("\tInstalls the Ozette Cloud Backup software on this computer.");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t[--installdirectory]\tAn optional value to specify the installation folder.");
             help.AppendLine();
-            help.AppendLine("\tadd-source");
-            help.AppendLine("\t\t--folderpath\tThe full folder path that should be backed up.");
-            help.AppendLine("\t\t[--priority]\tThe backup priority (specify \"Low\", \"Medium\", or \"High\"). Defaults to Medium if omitted.");
-            help.AppendLine("\t\t[--revisions]\tThe number of revisions to store (specify a number, such as 1, 2, 3, etc). Defaults to 1 if omitted.");
-            help.AppendLine("\t\t[--matchfilter]\tAn optional wildcard match filter that scopes this source to only certain files.");
-
+            help.AppendLine("OzetteCmd.exe list-providers");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tLists the currently configured cloud backup providers (Azure, AWS, etc).");
+            help.AppendLine();
+            help.AppendLine("OzetteCmd.exe configure-azure");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tConfigures Azure as a cloud backup provider for this computer.");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t--azurestorageaccountname\tThe name of the Azure storage account to backup files to.");
+            help.AppendLine("\t--azurestorageaccounttoken\tThe access token for the Azure storage account.");
+            help.AppendLine();
+            help.AppendLine("OzetteCmd.exe list-sources");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tLists the currently configured backup source directories (folders to backup).");
+            help.AppendLine();
+            help.AppendLine("OzetteCmd.exe add-source");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tAdds a directory to the list of backup sources (folders to backup).");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t--folderpath\tThe full folder path that should be backed up.");
+            help.AppendLine("\t[--priority]\tThe backup priority (specify \"Low\", \"Medium\", or \"High\"). Defaults to Medium if omitted.");
+            help.AppendLine("\t[--revisions]\tThe number of revisions to store (specify a number, such as 1, 2, 3, etc). Defaults to 1 if omitted.");
+            help.AppendLine("\t[--matchfilter]\tAn optional wildcard match filter that scopes this source to only certain files.");
+            
             Console.WriteLine(help.ToString());
         }
 
