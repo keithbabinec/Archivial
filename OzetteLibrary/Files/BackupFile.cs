@@ -100,7 +100,7 @@ namespace OzetteLibrary.Files
         /// <summary>
         /// The type of hash algorithm.
         /// </summary>
-        public HashAlgorithmName HashAlgorithmType { get; set; }
+        public string HashAlgorithmType { get; set; }
 
         /// <summary>
         /// The last time this file was scanned in the backup source.
@@ -531,7 +531,7 @@ namespace OzetteLibrary.Files
 
             FileHash = filehash;
             FileHashString = string.Join("-", FileHash);
-            HashAlgorithmType = algorithm;
+            HashAlgorithmType = algorithm.Name;
         }
 
         /// <summary>
@@ -558,7 +558,7 @@ namespace OzetteLibrary.Files
         /// <returns>HashAlgorithmName</returns>
         public HashAlgorithmName GetFileHashAlgorithm()
         {
-            return HashAlgorithmType;
+            return new HashAlgorithmName(this.HashAlgorithmType);
         }
 
         /// <summary>

@@ -199,10 +199,7 @@ namespace OzetteLibrary.Client.Transfer
             // > just double check that we haven't already transferred this whole file.
             // > to avoid resending if for some reason had lost local client DB state.
 
-            foreach (var provider in file.CopyState)
-            {
-                
-            }
+            throw new NotImplementedException();
         }
 
         /// <summary>
