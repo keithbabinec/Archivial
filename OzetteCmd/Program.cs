@@ -102,6 +102,14 @@ namespace OzetteCmd
             {
                 command = new ConfigureAzureCommand(logger);
             }
+            else if (arguments is ListSourcesArguments)
+            {
+                command = new ListSourcesCommand(logger);
+            }
+            else if (arguments is ListProvidersArguments)
+            {
+                command = new ListProvidersCommand(logger);
+            }
             else
             {
                 throw new NotImplementedException(arguments.GetType().FullName);
