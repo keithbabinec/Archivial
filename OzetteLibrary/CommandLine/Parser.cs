@@ -45,6 +45,18 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseAddSourceArgs(args, out parsed);
             }
+            else if (baseCommand == "list-sources")
+            {
+                // command has no additional arguments
+                parsed = new ListSourcesArguments();
+                return true;
+            }
+            else if (baseCommand == "list-providers")
+            {
+                // command has no additional arguments
+                parsed = new ListProvidersArguments();
+                return true;
+            }
             else
             {
                 // unexpected/no base command provided.
