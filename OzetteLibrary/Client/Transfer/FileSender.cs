@@ -161,6 +161,8 @@ namespace OzetteLibrary.Client.Transfer
             {
                 // TODO: handle this
                 // will need logging and retry functionality, since I/O errors are common.
+
+                Logger.WriteTraceError("An error occurred during the file transfer.", ex, Logger.GenerateFullContextStackTrace());
             }
 
             TransferInProgress = false;
