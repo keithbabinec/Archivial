@@ -67,6 +67,8 @@
     <Compile Include="CommandLine\Commands\RequiresElevation.cs" />
     <Compile Include="CommandLine\ConfigureAzureArguments.cs" />
     <Compile Include="CommandLine\InstallationArguments.cs" />
+    <Compile Include="CommandLine\ListProvidersArguments.cs" />
+    <Compile Include="CommandLine\ListSourcesArguments.cs" />
     <Compile Include="CommandLine\Parser.cs" />
     <Compile Include="CommandLine\Arguments.cs" />
     <Compile Include="Constants\CommandLine.cs" />
