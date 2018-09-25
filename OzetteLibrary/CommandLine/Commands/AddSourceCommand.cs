@@ -52,7 +52,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup source configuration");
 
                 Logger.WriteConsole("--- Step 1: Validate the source and save it to the database.");
-                ValidateSource(addSrcArgs);
+                ValidateAndSaveSource(addSrcArgs);
 
                 Logger.WriteConsole("--- Source configuration completed successfully.");
 
@@ -70,7 +70,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Validates the provided source is usable.
         /// </summary>
         /// <param name="arguments"></param>
-        private void ValidateSource(AddSourceArguments arguments)
+        private void ValidateAndSaveSource(AddSourceArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 
