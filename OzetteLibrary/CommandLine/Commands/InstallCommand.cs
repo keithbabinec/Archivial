@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.ServiceProcess;
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
@@ -75,6 +77,9 @@ namespace OzetteLibrary.CommandLine.Commands
 
                 Logger.WriteConsole("--- Step 7: Add installation directory to system path variable.");
                 AddSystemPath();
+
+                Logger.WriteConsole("--- Step 8: Set database file permissions.");
+                SetDbFilePermissions();
 
                 Logger.WriteConsole("--- Installation completed successfully.");
 
@@ -319,6 +324,49 @@ namespace OzetteLibrary.CommandLine.Commands
             else
             {
                 Logger.WriteConsole("System path variable is already configured with the installation path.");
+            }
+        }
+
+        /// <summary>
+        /// Sets the database file permissions.
+        /// </summary>
+        private void SetDbFilePermissions()
+        {
+            Logger.WriteConsole("Querying for existing database file permissions.");
+
+            var dbPath = Path.Combine(CoreSettings.InstallationDirectory, "Database\\OzetteCloudBackup.db");
+
+            var dbfileInfo = new FileInfo(dbPath);
+            var securityInfo = dbfileInfo.GetAccessControl();
+            var accessRules = securityInfo.GetAccessRules(true, true, typeof(SecurityIdentifier));
+            var builtInUsersIdentity = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+
+            // find out if rule already exists
+
+            bool permissionHasBeenSet = false;
+
+            foreach (FileSystemAccessRule rule in accessRules)
+            {
+                if (rule.IdentityReference == builtInUsersIdentity 
+                    && rule.FileSystemRights.HasFlag(FileSystemRights.Modify)
+                    && rule.AccessControlType.HasFlag(AccessControlType.Allow))
+                {
+                    permissionHasBeenSet = true;
+                }
+            }
+
+            if (permissionHasBeenSet)
+            {
+                Logger.WriteConsole("Database file permissions are already set correctly.");
+            }
+            else
+            {
+                Logger.WriteConsole("Database file permissions are not set. Setting them now.");
+
+                securityInfo.AddAccessRule(new FileSystemAccessRule(builtInUsersIdentity, FileSystemRights.Modify, AccessControlType.Allow));
+                File.SetAccessControl(dbPath, securityInfo);
+
+                Logger.WriteConsole("Successfully set the database file permissions.");
             }
         }
     }
