@@ -211,5 +211,81 @@ namespace OzetteLibraryTests.CommandLine
             var parser = new Parser();
             parser.Parse(arguments, out parsed); // should throw due to 'critical' file backup priority (not a valid value).
         }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenRemoveProviderHasNoArgsPassed()
+        {
+            string[] arguments = { "remove-provider" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenRemoveSourceHasNoArgsPassed()
+        {
+            string[] arguments = { "remove-source" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenRemoveProviderWhenInvalidIdPassed()
+        {
+            string[] arguments = { "remove-provider", "--providerid", "nope" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenRemoveSourceWhenInvalidIdPassed()
+        {
+            string[] arguments = { "remove-source", "--sourceid", "nope" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserCanParseRemoveProviderCommandWithExpectedArgs()
+        {
+            string[] arguments = { "remove-provider", "--providerid", "1" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsNotNull(parsed);
+            Assert.IsInstanceOfType(parsed, typeof(RemoveProviderArguments));
+            Assert.AreEqual(1, (parsed as RemoveProviderArguments).ProviderID);
+        }
+
+        [TestMethod]
+        public void ParserCanParseRemoveSourceCommandWithExpectedArgs()
+        {
+            string[] arguments = { "remove-source", "--sourceid", "3" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsNotNull(parsed);
+            Assert.IsInstanceOfType(parsed, typeof(RemoveSourceArguments));
+            Assert.AreEqual(3, (parsed as RemoveSourceArguments).SourceID);
+        }
     }
 }
