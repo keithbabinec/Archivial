@@ -84,6 +84,13 @@ namespace OzetteCmd
             help.AppendLine("\t--azurestorageaccountname\tThe name of the Azure storage account to backup files to.");
             help.AppendLine("\t--azurestorageaccounttoken\tThe access token for the Azure storage account.");
             help.AppendLine();
+            help.AppendLine("OzetteCmd.exe remove-provider");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tRemoves a cloud backup provider (Azure, AWS, etc) with specified ID. Run list-providers to see the current providers with IDs.");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t--providerid\tThe ID of the provider to remove.");
+            help.AppendLine();
             help.AppendLine("OzetteCmd.exe list-sources");
             help.AppendLine();
             help.AppendLine("  Description:");
@@ -98,7 +105,14 @@ namespace OzetteCmd
             help.AppendLine("\t[--priority]\tThe backup priority (specify \"Low\", \"Medium\", or \"High\"). Defaults to Medium if omitted.");
             help.AppendLine("\t[--revisions]\tThe number of revisions to store (specify a number, such as 1, 2, 3, etc). Defaults to 1 if omitted.");
             help.AppendLine("\t[--matchfilter]\tAn optional wildcard match filter that scopes this source to only certain files.");
-            
+            help.AppendLine();
+            help.AppendLine("OzetteCmd.exe remove-source");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tRemoves a backup source with specified ID. Run list-sources to see the current sources with IDs.");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t--sourceid\tThe ID of the backup source to remove.");
+
             Console.WriteLine(help.ToString());
         }
 
@@ -131,6 +145,14 @@ namespace OzetteCmd
             else if (arguments is ListProvidersArguments)
             {
                 command = new ListProvidersCommand(logger);
+            }
+            else if (arguments is RemoveSourceArguments)
+            {
+                command = new RemoveSourceCommand(logger);
+            }
+            else if (arguments is RemoveProviderArguments)
+            {
+                command = new RemoveProviderCommand(logger);
             }
             else
             {
