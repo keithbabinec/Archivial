@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.Database.LiteDB;
+﻿using OzetteLibrary.CommandLine.Arguments;
+using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Providers;
 using OzetteLibrary.Secrets;
@@ -42,7 +43,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(Arguments arguments)
+        public bool Run(ArgumentBase arguments)
         {
             var configAzArgs = arguments as ConfigureAzureArguments;
 

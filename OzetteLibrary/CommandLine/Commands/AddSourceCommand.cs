@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.Database.LiteDB;
+﻿using OzetteLibrary.CommandLine.Arguments;
+using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging.Default;
@@ -38,7 +39,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(Arguments arguments)
+        public bool Run(ArgumentBase arguments)
         {
             var addSrcArgs = arguments as AddSourceArguments;
 

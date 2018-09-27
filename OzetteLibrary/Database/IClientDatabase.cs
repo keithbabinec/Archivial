@@ -2,7 +2,6 @@
 using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
 using OzetteLibrary.ServiceCore;
-using System.Collections.Generic;
 
 namespace OzetteLibrary.Database
 {
@@ -26,6 +25,12 @@ namespace OzetteLibrary.Database
         /// <param name="SettingID">The setting ID number.</param>
         /// <returns>The setting value.</returns>
         string GetApplicationOption(int SettingID);
+
+        /// <summary>
+        /// Removes an application setting value from the database.
+        /// </summary>
+        /// <param name="SettingID">The setting ID number.</param>
+        void RemoveApplicationOption(int SettingID);
 
         /// <summary>
         /// Commits the providers collection to the database.

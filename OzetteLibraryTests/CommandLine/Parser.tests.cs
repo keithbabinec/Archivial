@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OzetteLibrary.CommandLine;
+using OzetteLibrary.CommandLine.Arguments;
 using OzetteLibrary.Exceptions;
 
 namespace OzetteLibraryTests.CommandLine
@@ -11,7 +12,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserReturnsFalseWhenNoArgsProvided()
         {
             string[] arguments = { };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -22,7 +23,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserCanParseInstallCommandWithDefaults()
         {
             string[] arguments = { "install" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -38,7 +39,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserCanParseInstallCommandWithUppercaseAndDefaults()
         {
             string[] arguments = { "INSTALL" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -54,7 +55,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserCanParseInstallCommandWithCustomInstallDir()
         {
             string[] arguments = { "install", "--installdirectory", "C:\\path" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -70,7 +71,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserCanParseInstallCommandWithCustomInstallDirUppercaseArgname()
         {
             string[] arguments = { "install", "--INSTALLDIRECTORY", "C:\\path" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -86,7 +87,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserCanParseConfigureAzureCommandWithBothArgs()
         {
             string[] arguments = { "configure-azure", "--azurestorageaccountname", "myaccount", "--azurestorageaccounttoken", "mytoken" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -103,7 +104,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserReturnsFalseWhenConfigureAzureHasNoArgsPassed()
         {
             string[] arguments = { "configure-azure" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -115,7 +116,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserReturnsFalseWhenConfigureAzureIsMissingStorageAccount()
         {
             string[] arguments = { "configure-azure", "--azurestorageaccounttoken", "mytoken" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -127,7 +128,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserReturnsFalseWhenConfigureAzureIsMissingStorageToken()
         {
             string[] arguments = { "configure-azure", "--azurestorageaccountname", "myaccount" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -139,7 +140,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserReturnsFalseWhenAddSourceHasNoArgsPassed()
         {
             string[] arguments = { "add-source" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -151,7 +152,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserCanParseAddSourceCommandWithOnlyRequiredArgs()
         {
             string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -173,7 +174,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserCanParseAddSourceCommandWithOptionalArgs()
         {
             string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder", "--priority", "high", "--revisions", "3", "--matchfilter", "*.mp3" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
 
@@ -194,7 +195,7 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserShouldThrowExceptionWhenAddSourceHasInvalidRevision()
         {
             string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder", "--priority", "low", "--revisions", "not a number", "--matchfilter", "*.mp3" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
             parser.Parse(arguments, out parsed); // should throw due to invalid revision number (must be a number).
@@ -205,10 +206,86 @@ namespace OzetteLibraryTests.CommandLine
         public void ParserShouldThrowExceptionWhenAddSourceHasInvalidPriority()
         {
             string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder", "--priority", "critical", "--revisions", "3", "--matchfilter", "*.mp3" };
-            Arguments parsed;
+            ArgumentBase parsed;
 
             var parser = new Parser();
             parser.Parse(arguments, out parsed); // should throw due to 'critical' file backup priority (not a valid value).
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenRemoveProviderHasNoArgsPassed()
+        {
+            string[] arguments = { "remove-provider" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenRemoveSourceHasNoArgsPassed()
+        {
+            string[] arguments = { "remove-source" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenRemoveProviderWhenInvalidIdPassed()
+        {
+            string[] arguments = { "remove-provider", "--providerid", "nope" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenRemoveSourceWhenInvalidIdPassed()
+        {
+            string[] arguments = { "remove-source", "--sourceid", "nope" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserCanParseRemoveProviderCommandWithExpectedArgs()
+        {
+            string[] arguments = { "remove-provider", "--providerid", "1" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsNotNull(parsed);
+            Assert.IsInstanceOfType(parsed, typeof(RemoveProviderArguments));
+            Assert.AreEqual(1, (parsed as RemoveProviderArguments).ProviderID);
+        }
+
+        [TestMethod]
+        public void ParserCanParseRemoveSourceCommandWithExpectedArgs()
+        {
+            string[] arguments = { "remove-source", "--sourceid", "3" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsNotNull(parsed);
+            Assert.IsInstanceOfType(parsed, typeof(RemoveSourceArguments));
+            Assert.AreEqual(3, (parsed as RemoveSourceArguments).SourceID);
         }
     }
 }

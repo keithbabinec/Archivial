@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.Exceptions;
+﻿using OzetteLibrary.CommandLine.Arguments;
+using OzetteLibrary.Exceptions;
 using OzetteLibrary.Files;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace OzetteLibrary.CommandLine
         /// <param name="args">The raw arguments from the commandline.</param>
         /// <param name="parsed">An output parameter for the parsed object.</param>
         /// <returns>True if successfully parsed, otherwise false.</returns>
-        public bool Parse(string[] args, out Arguments parsed)
+        public bool Parse(string[] args, out ArgumentBase parsed)
         {
             if (args.Length == 0)
             {
@@ -57,6 +58,14 @@ namespace OzetteLibrary.CommandLine
                 parsed = new ListProvidersArguments();
                 return true;
             }
+            else if (baseCommand == "remove-source")
+            {
+                return ParseRemoveSourceArgs(args, out parsed);
+            }
+            else if (baseCommand == "remove-provider")
+            {
+                return ParseRemoveProviderArgs(args, out parsed);
+            }
             else
             {
                 // unexpected/no base command provided.
@@ -71,7 +80,7 @@ namespace OzetteLibrary.CommandLine
         /// <param name="args"></param>
         /// <param name="parsed"></param>
         /// <returns></returns>
-        private bool ParseInstallArgs(string[] args, out Arguments parsed)
+        private bool ParseInstallArgs(string[] args, out ArgumentBase parsed)
         {
             // initialize args object with default
             var installArgs = new InstallationArguments();
@@ -97,7 +106,7 @@ namespace OzetteLibrary.CommandLine
         /// <param name="args"></param>
         /// <param name="parsed"></param>
         /// <returns></returns>
-        private bool ParseConfigureAzureArgs(string[] args, out Arguments parsed)
+        private bool ParseConfigureAzureArgs(string[] args, out ArgumentBase parsed)
         {
             // initialize args object with default
             var configArgs = new ConfigureAzureArguments();
@@ -135,7 +144,7 @@ namespace OzetteLibrary.CommandLine
         /// <param name="args"></param>
         /// <param name="parsed"></param>
         /// <returns></returns>
-        private bool ParseAddSourceArgs(string[] args, out Arguments parsed)
+        private bool ParseAddSourceArgs(string[] args, out ArgumentBase parsed)
         {
             // initialize args object with default
             var sourceArgs = new AddSourceArguments();
@@ -205,6 +214,84 @@ namespace OzetteLibrary.CommandLine
             }
 
             parsed = sourceArgs;
+            return true;
+        }
+
+        /// <summary>
+        /// Parses the provided arguments into an <c>RemoveSourceArguments</c> object.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="parsed"></param>
+        /// <returns></returns>
+        private bool ParseRemoveSourceArgs(string[] args, out ArgumentBase parsed)
+        {
+            // initialize args object with default
+            var remSrcArgs = new RemoveSourceArguments();
+            var map = ExtractArguments(args);
+
+            if (map.ContainsKey("sourceid"))
+            {
+                var sourceId = map["sourceid"];
+                int parsedId;
+
+                if (int.TryParse(sourceId, out parsedId))
+                {
+                    remSrcArgs.SourceID = parsedId;
+                }
+                else
+                {
+                    // required argument was not valid.
+                    parsed = null;
+                    return false;
+                }
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            parsed = remSrcArgs;
+            return true;
+        }
+
+        /// <summary>
+        /// Parses the provided arguments into an <c>RemoveProviderArguments</c> object.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="parsed"></param>
+        /// <returns></returns>
+        private bool ParseRemoveProviderArgs(string[] args, out ArgumentBase parsed)
+        {
+            // initialize args object with default
+            var remSrcArgs = new RemoveProviderArguments();
+            var map = ExtractArguments(args);
+
+            if (map.ContainsKey("providerid"))
+            {
+                var providerId = map["providerid"];
+                int parsedId;
+
+                if (int.TryParse(providerId, out parsedId))
+                {
+                    remSrcArgs.ProviderID = parsedId;
+                }
+                else
+                {
+                    // required argument was not valid.
+                    parsed = null;
+                    return false;
+                }
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            parsed = remSrcArgs;
             return true;
         }
 
