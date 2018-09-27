@@ -277,6 +277,25 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
+        /// Removes an application setting value from the database.
+        /// </summary>
+        /// <param name="SettingID">The setting ID number.</param>
+        public void RemoveApplicationOption(int SettingID)
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var providersCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
+
+                var setting = providersCol.Delete(x => x.ID == SettingID);
+            }
+        }
+
+        /// <summary>
         /// Commits the providers collection to the database.
         /// </summary>
         /// <param name="Providers">A collection of providers.</param>
