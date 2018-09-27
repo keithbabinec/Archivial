@@ -1,9 +1,9 @@
-﻿namespace OzetteLibrary.CommandLine
+﻿namespace OzetteLibrary.CommandLine.Arguments
 {
     /// <summary>
     /// A set of Ozette provider removal arguments.
     /// </summary>
-    public class RemoveProviderArguments : Arguments
+    public class RemoveProviderArguments : ArgumentBase
     {
         /// <summary>
         /// The ID of the provider to remove.

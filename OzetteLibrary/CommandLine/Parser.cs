@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.Exceptions;
+﻿using OzetteLibrary.CommandLine.Arguments;
+using OzetteLibrary.Exceptions;
 using OzetteLibrary.Files;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace OzetteLibrary.CommandLine
         /// <param name="args">The raw arguments from the commandline.</param>
         /// <param name="parsed">An output parameter for the parsed object.</param>
         /// <returns>True if successfully parsed, otherwise false.</returns>
-        public bool Parse(string[] args, out Arguments parsed)
+        public bool Parse(string[] args, out ArgumentBase parsed)
         {
             if (args.Length == 0)
             {
@@ -71,7 +72,7 @@ namespace OzetteLibrary.CommandLine
         /// <param name="args"></param>
         /// <param name="parsed"></param>
         /// <returns></returns>
-        private bool ParseInstallArgs(string[] args, out Arguments parsed)
+        private bool ParseInstallArgs(string[] args, out ArgumentBase parsed)
         {
             // initialize args object with default
             var installArgs = new InstallationArguments();
@@ -97,7 +98,7 @@ namespace OzetteLibrary.CommandLine
         /// <param name="args"></param>
         /// <param name="parsed"></param>
         /// <returns></returns>
-        private bool ParseConfigureAzureArgs(string[] args, out Arguments parsed)
+        private bool ParseConfigureAzureArgs(string[] args, out ArgumentBase parsed)
         {
             // initialize args object with default
             var configArgs = new ConfigureAzureArguments();
@@ -135,7 +136,7 @@ namespace OzetteLibrary.CommandLine
         /// <param name="args"></param>
         /// <param name="parsed"></param>
         /// <returns></returns>
-        private bool ParseAddSourceArgs(string[] args, out Arguments parsed)
+        private bool ParseAddSourceArgs(string[] args, out ArgumentBase parsed)
         {
             // initialize args object with default
             var sourceArgs = new AddSourceArguments();

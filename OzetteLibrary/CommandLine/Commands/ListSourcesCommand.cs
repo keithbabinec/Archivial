@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.Database.LiteDB;
+﻿using OzetteLibrary.CommandLine.Arguments;
+using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 using System;
@@ -35,7 +36,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(Arguments arguments)
+        public bool Run(ArgumentBase arguments)
         {
             // arguments is required from the interface definition, but there are no additional parameter arguments for this command.
             // so just ignore it, no validation required here.

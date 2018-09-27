@@ -8,6 +8,7 @@ using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.ServiceProcess;
+using OzetteLibrary.CommandLine.Arguments;
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
@@ -47,7 +48,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(Arguments arguments)
+        public bool Run(ArgumentBase arguments)
         {
             var installArgs = arguments as InstallationArguments;
 

@@ -59,7 +59,7 @@
   <ItemGroup>
     <Compile Include="Client\BackupEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
-    <Compile Include="CommandLine\AddSourceArguments.cs" />
+    <Compile Include="CommandLine\Arguments\AddSourceArguments.cs" />
     <Compile Include="CommandLine\Commands\AddSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\ConfigureAzureCommand.cs" />
     <Compile Include="CommandLine\Commands\ICommand.cs" />
@@ -69,14 +69,14 @@
     <Compile Include="CommandLine\Commands\RemoveProviderCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\RequiresElevation.cs" />
-    <Compile Include="CommandLine\ConfigureAzureArguments.cs" />
-    <Compile Include="CommandLine\InstallationArguments.cs" />
-    <Compile Include="CommandLine\ListProvidersArguments.cs" />
-    <Compile Include="CommandLine\ListSourcesArguments.cs" />
+    <Compile Include="CommandLine\Arguments\ConfigureAzureArguments.cs" />
+    <Compile Include="CommandLine\Arguments\InstallationArguments.cs" />
+    <Compile Include="CommandLine\Arguments\ListProvidersArguments.cs" />
+    <Compile Include="CommandLine\Arguments\ListSourcesArguments.cs" />
     <Compile Include="CommandLine\Parser.cs" />
-    <Compile Include="CommandLine\Arguments.cs" />
-    <Compile Include="CommandLine\RemoveProviderArguments.cs" />
-    <Compile Include="CommandLine\RemoveSourceArguments.cs" />
+    <Compile Include="CommandLine\Arguments\ArgumentBase.cs" />
+    <Compile Include="CommandLine\Arguments\RemoveProviderArguments.cs" />
+    <Compile Include="CommandLine\Arguments\RemoveSourceArguments.cs" />
     <Compile Include="Constants\CommandLine.cs" />
     <Compile Include="Constants\CoreSettingNames.cs" />
     <Compile Include="Constants\EventIDs.cs" />

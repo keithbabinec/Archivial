@@ -1,4 +1,5 @@
-﻿using OzetteLibrary.Logging.Default;
+﻿using OzetteLibrary.CommandLine.Arguments;
+using OzetteLibrary.Logging.Default;
 using System;
 using System.Diagnostics;
 
@@ -30,7 +31,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(Arguments arguments)
+        public bool Run(ArgumentBase arguments)
         {
             var removeSrcArgs = arguments as RemoveSourceArguments;
 

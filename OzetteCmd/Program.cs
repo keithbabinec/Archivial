@@ -1,4 +1,5 @@
 ﻿using OzetteLibrary.CommandLine;
+using OzetteLibrary.CommandLine.Arguments;
 using OzetteLibrary.CommandLine.Commands;
 using OzetteLibrary.Logging.Default;
 using System;
@@ -19,7 +20,7 @@ namespace OzetteCmd
         static int Main(string[] args)
         {
             var parser = new Parser();
-            Arguments argumentObj;
+            ArgumentBase argumentObj;
 
             if (parser.Parse(args, out argumentObj))
             {
@@ -121,7 +122,7 @@ namespace OzetteCmd
         /// </summary>
         /// <param name="arguments"><c>Arguments</c></param>
         /// <returns><c>ICommand</c></returns>
-        static ICommand GetCommandFromArguments(Arguments arguments)
+        static ICommand GetCommandFromArguments(ArgumentBase arguments)
         {
             Logger logger = new Logger(OzetteLibrary.Constants.Logging.CommandLineComponentName);
             ICommand command = null;

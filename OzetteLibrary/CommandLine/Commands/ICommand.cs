@@ -1,4 +1,6 @@
-﻿namespace OzetteLibrary.CommandLine.Commands
+﻿using OzetteLibrary.CommandLine.Arguments;
+
+namespace OzetteLibrary.CommandLine.Commands
 {
     /// <summary>
     /// Describes an interface for a command-line command.
@@ -10,6 +12,6 @@
         /// </summary>
         /// <param name="arguments">An arguments object.</param>
         /// <returns>True if successful, otherwise false.</returns>
-        bool Run(Arguments arguments);
+        bool Run(ArgumentBase arguments);
     }
 }
