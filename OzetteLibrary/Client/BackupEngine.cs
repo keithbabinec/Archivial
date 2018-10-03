@@ -37,6 +37,8 @@ namespace OzetteLibrary.Client
             Running = true;
             Sender = new FileSender(Database as IClientDatabase, Logger, Providers);
 
+            Logger.WriteTraceMessage("BackupEngine is starting up.");
+
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();
         }
@@ -48,6 +50,7 @@ namespace OzetteLibrary.Client
         {
             if (Running == true)
             {
+                Logger.WriteTraceMessage("BackupEngine is shutting down.");
                 Running = false;
             }
         }
