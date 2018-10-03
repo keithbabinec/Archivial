@@ -19,5 +19,15 @@
         /// The name of the metadata key for the file's source path.
         /// </summary>
         public const string FullSourcePathKeyName = "FileSourcePath";
+
+        /// <summary>
+        /// The name of the metadata key for the file's computed hash.
+        /// </summary>
+        public const string FileHash = "FileHash";
+
+        /// <summary>
+        /// The name of the metadata key for the file's hash algorithm.
+        /// </summary>
+        public const string FileHashAlgorithm = "FileHashAlgorithm";
     }
 }

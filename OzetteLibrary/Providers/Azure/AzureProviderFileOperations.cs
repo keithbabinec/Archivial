@@ -88,11 +88,13 @@ namespace OzetteLibrary.Providers.Azure
                     file.GetRemoteFileName(ProviderTypes.Azure)
             );
 
-            // does the file exist at the specified uri?
+            // the default state for a freshly initialized file status object is unsynced.
+            // if the blob doesn't exist, the file is unsynced.
 
             CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri));
-
             var fileStatus = new ProviderFileStatus(ProviderTypes.Azure);
+
+            // does the file exist at the specified uri?
 
             if (await blob.ExistsAsync().ConfigureAwait(false))
             {
@@ -102,16 +104,10 @@ namespace OzetteLibrary.Providers.Azure
                 await blob.FetchAttributesAsync().ConfigureAwait(false);
 
                 fileStatus.ApplyMetadataToState(blob.Metadata);
-
-                return fileStatus;
             }
-            else
-            {
-                // the default state for a freshly initialized file status object is unsynced.
-                // since the blob doesn't exist, the file is unsynced.
-
-                return fileStatus;
-            }
+            
+            Logger.WriteTraceMessage("File sync status: " + fileStatus.SyncStatus);
+            return fileStatus;
         }
 
         /// <summary>
@@ -171,6 +167,8 @@ namespace OzetteLibrary.Providers.Azure
 
             blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlock.ToString();
             blob.Metadata[ProviderMetadata.FullSourcePathKeyName] = file.FullSourcePath;
+            blob.Metadata[ProviderMetadata.FileHash] = file.FileHashString;
+            blob.Metadata[ProviderMetadata.FileHashAlgorithm] = file.HashAlgorithmType;
 
             await blob.SetMetadataAsync();
 
