@@ -8,6 +8,8 @@ using System.IO;
 using OzetteLibrary.Files;
 using OzetteLibrary.Providers;
 using System.Threading.Tasks;
+using OzetteLibrary.Folders;
+using OzetteLibrary.Constants;
 
 namespace OzetteLibrary.Client.Transfer
 {
@@ -143,8 +145,23 @@ namespace OzetteLibrary.Client.Transfer
 
             Logger.WriteTraceMessage("Checking the status of this file on supported providers.");
 
-            foreach (var provider in Providers.Values)
+            foreach (var provider in Providers)
             {
+                var directory = Database.GetDirectoryMapItem(file.Directory);
+                var providerState = await provider.Value.GetFileStatusAsync(file, directory);
+
+                // mismatch: the provider file is synced, but our local state does not reflect this.
+
+                if (file.CopyState.ContainsKey(provider.Key) 
+                    && file.CopyState[provider.Key].SyncStatus == FileStatus.Unsynced 
+                    && providerState.SyncStatus == FileStatus.Synced
+                    && providerState.Metadata[ProviderMetadata.FileHash] == file.FileHashString)
+                {
+                    Logger.WriteTraceMessage(string.Format("Found a sync mismatch: this file is already synced at the provider [{0}]. Updating our local status.", provider.Key));
+
+                    file.SetProviderToCompleted(provider.Key, FileStatus.Synced);
+                    Database.UpdateBackupFile(file);
+                }
             }
         }
 
