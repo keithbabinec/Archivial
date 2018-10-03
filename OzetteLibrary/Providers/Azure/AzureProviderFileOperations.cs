@@ -75,7 +75,7 @@ namespace OzetteLibrary.Providers.Azure
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <returns><c>ProviderFileStatus</c></returns>
-        public async Task<ProviderFileStatus> GetFileStatus(BackupFile file, DirectoryMapItem directory)
+        public async Task<ProviderFileStatus> GetFileStatusAsync(BackupFile file, DirectoryMapItem directory)
         {
             Logger.WriteTraceMessage("Checking the Azure provider status for file: " + file.FullSourcePath);
             
@@ -125,7 +125,7 @@ namespace OzetteLibrary.Providers.Azure
         /// <param name="data">A byte array stream of file contents/data.</param>
         /// <param name="currentBlock">The block number associated with the specified data.</param>
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
-        public async Task UploadFileBlock(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlock, int totalBlocks)
+        public async Task UploadFileBlockAsync(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlock, int totalBlocks)
         {
             Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) for file ({2}) to Azure storage.", currentBlock, totalBlocks, file.FullSourcePath));
 
