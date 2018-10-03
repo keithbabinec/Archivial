@@ -1,6 +1,5 @@
 ﻿using System;
 using OzetteLibrary.Database;
-using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using System.Collections.Generic;
 using System.Threading;
@@ -8,6 +7,7 @@ using OzetteLibrary.Crypto;
 using System.IO;
 using OzetteLibrary.Files;
 using OzetteLibrary.Providers;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Client.Transfer
 {
@@ -65,65 +65,18 @@ namespace OzetteLibrary.Client.Transfer
         private Dictionary<ProviderTypes, IProviderFileOperations> Providers { get; set; }
 
         /// <summary>
-        /// Flag to indicate if the transfer operation is currently in progress.
-        /// </summary>
-        private volatile bool TransferInProgress = false;
-
-        /// <summary>
-        /// Flag to indicate if the transfer operation stop has been requested.
-        /// </summary>
-        private volatile bool TransferStopRequested = false;
-
-        /// <summary>
-        /// Begins a file transfer operation.
+        /// Performs a transfer of the specified file to the target providers.
         /// </summary>
         /// <param name="File"></param>
-        /// <returns></returns>
-        public AsyncResult BeginTransfer(BackupFile File)
+        /// <param name="CancelToken"></param>
+        public async Task TransferAsync(BackupFile File, CancellationToken CancelToken)
         {
             if (File == null)
             {
                 throw new ArgumentNullException(nameof(File));
             }
-            if (TransferInProgress)
-            {
-                throw new InvalidOperationException("Cannot start the transfer operation. It is already in progress.");
-            }
-
-            TransferInProgress = true;
-            TransferStopRequested = false;
 
             Logger.WriteTraceMessage(string.Format("Starting transfer operation for file: {0}", File.ToString()));
-
-            AsyncResult resultState = new AsyncResult();
-
-            Thread transferThread = new Thread(() => Transfer(File, resultState));
-            transferThread.Start();
-
-            return resultState;
-        }
-
-        /// <summary>
-        /// Stops the in-progress file transfer operation.
-        /// </summary>
-        public void StopTransfer()
-        {
-            Logger.WriteTraceMessage("Stopping the in-progress transfer operation by request.");
-
-            if (TransferInProgress)
-            {
-                TransferStopRequested = true;
-            }
-        }
-
-        /// <summary>
-        /// Performs a transfer of the specified file to the target providers.
-        /// </summary>
-        /// <param name="File"></param>
-        /// <param name="AsyncState"></param>
-        private void Transfer(BackupFile File, AsyncResult AsyncState)
-        {
-            bool canceled = false;
 
             try
             {
@@ -142,7 +95,7 @@ namespace OzetteLibrary.Client.Transfer
                     // step 3: see if this file is already on the destination target(s).
                     // this avoids resending the file if for some reason the client DB/states got wiped out.
 
-                    UpdateFileCopyStateIfFileAlreadyExistsOnTargets(File, fs);
+                    await UpdateFileCopyStateIfFileAlreadyExistsAtProvidersAsync(File, fs).ConfigureAwait(false);
 
                     // step 4: while the file has data that needs to be transferred- transfer it.
                     // this includes transferring to each potential target that needs this same file block.
@@ -164,18 +117,6 @@ namespace OzetteLibrary.Client.Transfer
 
                 Logger.WriteTraceError("An error occurred during the file transfer.", ex, Logger.GenerateFullContextStackTrace());
             }
-
-            TransferInProgress = false;
-            TransferStopRequested = false;
-
-            if (canceled)
-            {
-                AsyncState.Cancel();
-            }
-            else
-            {
-                AsyncState.Complete();
-            }
         }
 
         /// <summary>
@@ -194,14 +135,17 @@ namespace OzetteLibrary.Client.Transfer
         /// </summary>
         /// <param name="file"></param>
         /// <param name="fs"></param>
-        private void UpdateFileCopyStateIfFileAlreadyExistsOnTargets(BackupFile file, FileStream fs)
+        private async Task UpdateFileCopyStateIfFileAlreadyExistsAtProvidersAsync(BackupFile file, FileStream fs)
         {
-            // TODO:
-            // for each target that needs this file:
-            // > just double check that we haven't already transferred this whole file.
-            // > to avoid resending if for some reason had lost local client DB state.
+            // for each provider that needs this file:
+            // > double check that we haven't already transferred this whole file.
+            // > this avoids a full upload if for some reason we have lost our client database state.
 
-            throw new NotImplementedException();
+            Logger.WriteTraceMessage("Checking the status of this file on supported providers.");
+
+            foreach (var provider in Providers.Values)
+            {
+            }
         }
 
         /// <summary>
