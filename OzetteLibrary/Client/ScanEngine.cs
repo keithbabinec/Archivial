@@ -38,6 +38,8 @@ namespace OzetteLibrary.Client
             Running = true;
             Scanner = new SourceScanner(Database as IClientDatabase, Logger);
 
+            Logger.WriteTraceMessage("ScanEngine is starting up.");
+
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();
         }
@@ -49,6 +51,7 @@ namespace OzetteLibrary.Client
         {
             if (Running == true)
             {
+                Logger.WriteTraceMessage("ScanEngine is shutting down.");
                 Running = false;
             }
         }

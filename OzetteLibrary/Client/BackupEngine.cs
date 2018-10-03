@@ -8,6 +8,7 @@ using OzetteLibrary.Providers;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Client
 {
@@ -37,6 +38,8 @@ namespace OzetteLibrary.Client
             Running = true;
             Sender = new FileSender(Database as IClientDatabase, Logger, Providers);
 
+            Logger.WriteTraceMessage("BackupEngine is starting up.");
+
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();
         }
@@ -48,6 +51,7 @@ namespace OzetteLibrary.Client
         {
             if (Running == true)
             {
+                Logger.WriteTraceMessage("BackupEngine is shutting down.");
                 Running = false;
             }
         }
@@ -75,18 +79,38 @@ namespace OzetteLibrary.Client
                     {
                         // initiate the file-send operation.
 
-                        AsyncResult state = Sender.BeginTransfer(nextFileToBackup);
+                        var cancel = new CancellationTokenSource();
+                        var transferFinished = false;
+                        var transferTask = Sender.TransferAsync(nextFileToBackup, cancel.Token);
 
-                        while (state.IsCompleted == false)
+                        while (!transferFinished)
                         {
                             ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(2));
+
+                            switch (transferTask.Status)
+                            {
+                                case TaskStatus.RanToCompletion:
+                                case TaskStatus.Faulted:
+                                case TaskStatus.Canceled:
+                                    {
+                                        // task has completed, failed, or canceled.
+                                        // quit the status loop.
+                                        transferFinished = true;
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        // task is still starting or running.
+                                        // do nothing here.
+                                        break;
+                                    }
+                            }
+
                             if (Running == false)
                             {
                                 // stop was requested.
                                 // stop the currently in-progress file send operation.
-
-                                Sender.StopTransfer();
-                                break;
+                                cancel.Cancel();
                             }
                         }
 

@@ -425,6 +425,23 @@ namespace OzetteLibrary.Files
         }
 
         /// <summary>
+        /// Sets the provider status to completed.
+        /// </summary>
+        /// <param name="Provider"></param>
+        /// <param name="Status"></param>
+        public void SetProviderToCompleted(ProviderTypes Provider, FileStatus Status)
+        {
+            if (!CopyState.ContainsKey(Provider))
+            {
+                CopyState.Add(Provider, new ProviderFileStatus(Provider));
+            }
+
+            var state = CopyState[Provider];
+            state.LastCompletedFileBlockIndex = TotalFileBlocks;
+            state.SyncStatus = FileStatus.Synced;
+        }
+
+        /// <summary>
         /// Flags a particular block as sent for the specified provider.
         /// </summary>
         /// <param name="BlockNumber"></param>

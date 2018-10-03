@@ -75,7 +75,7 @@ namespace OzetteLibrary.Providers.Azure
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <returns><c>ProviderFileStatus</c></returns>
-        public async Task<ProviderFileStatus> GetFileStatus(BackupFile file, DirectoryMapItem directory)
+        public async Task<ProviderFileStatus> GetFileStatusAsync(BackupFile file, DirectoryMapItem directory)
         {
             Logger.WriteTraceMessage("Checking the Azure provider status for file: " + file.FullSourcePath);
             
@@ -88,11 +88,13 @@ namespace OzetteLibrary.Providers.Azure
                     file.GetRemoteFileName(ProviderTypes.Azure)
             );
 
-            // does the file exist at the specified uri?
+            // the default state for a freshly initialized file status object is unsynced.
+            // if the blob doesn't exist, the file is unsynced.
 
             CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri));
-
             var fileStatus = new ProviderFileStatus(ProviderTypes.Azure);
+
+            // does the file exist at the specified uri?
 
             if (await blob.ExistsAsync().ConfigureAwait(false))
             {
@@ -102,16 +104,10 @@ namespace OzetteLibrary.Providers.Azure
                 await blob.FetchAttributesAsync().ConfigureAwait(false);
 
                 fileStatus.ApplyMetadataToState(blob.Metadata);
-
-                return fileStatus;
             }
-            else
-            {
-                // the default state for a freshly initialized file status object is unsynced.
-                // since the blob doesn't exist, the file is unsynced.
-
-                return fileStatus;
-            }
+            
+            Logger.WriteTraceMessage("File sync status: " + fileStatus.SyncStatus);
+            return fileStatus;
         }
 
         /// <summary>
@@ -125,7 +121,7 @@ namespace OzetteLibrary.Providers.Azure
         /// <param name="data">A byte array stream of file contents/data.</param>
         /// <param name="currentBlock">The block number associated with the specified data.</param>
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
-        public async Task UploadFileBlock(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlock, int totalBlocks)
+        public async Task UploadFileBlockAsync(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlock, int totalBlocks)
         {
             Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) for file ({2}) to Azure storage.", currentBlock, totalBlocks, file.FullSourcePath));
 
@@ -171,6 +167,8 @@ namespace OzetteLibrary.Providers.Azure
 
             blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlock.ToString();
             blob.Metadata[ProviderMetadata.FullSourcePathKeyName] = file.FullSourcePath;
+            blob.Metadata[ProviderMetadata.FileHash] = file.FileHashString;
+            blob.Metadata[ProviderMetadata.FileHashAlgorithm] = file.HashAlgorithmType;
 
             await blob.SetMetadataAsync();
 
