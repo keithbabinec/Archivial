@@ -94,7 +94,7 @@ namespace OzetteLibrary.Client.Transfer
 
                     UpdateHashIfFileHasChangedRecently(File, fs);
 
-                    // step 3: see if this file is already on the destination target(s).
+                    // step 3: see if this file is already on the destination target provider(s).
                     // this avoids resending the file if for some reason the client DB/states got wiped out.
 
                     await UpdateFileCopyStateIfFileAlreadyExistsAtProvidersAsync(File, fs).ConfigureAwait(false);
@@ -105,10 +105,10 @@ namespace OzetteLibrary.Client.Transfer
                     while (File.HasDataToTransfer())
                     {
                         // step 4A: generate the next transfer data block.
-                        // var payload = GenerateNextTransferPayload(File, fs);
+                        var payload = File.GenerateNextTransferPayload(fs, Hasher);
 
                         // step 4B: send the transfer payload.
-                        // SendTransferPayloadToFileTargets(File, payload);
+                        await SendTransferPayloadToFileTargetsAsync(File, payload).ConfigureAwait(false);
                     }
                 }
             }
@@ -122,14 +122,22 @@ namespace OzetteLibrary.Client.Transfer
         }
 
         /// <summary>
-        /// Generates the next transfer block payload.
+        /// Sends the transfer payload to the target providers.
         /// </summary>
         /// <param name="file"></param>
-        /// <param name="fs"></param>
+        /// <param name="payload"></param>
         /// <returns></returns>
-        private TransferPayload GenerateNextTransferPayload(BackupFile File, FileStream Stream)
+        private async Task SendTransferPayloadToFileTargetsAsync(BackupFile file, TransferPayload payload)
         {
-            return File.GenerateNextTransferPayload(Stream, Hasher);
+            var directory = Database.GetDirectoryMapItem(file.Directory);
+
+            foreach (var providerName in payload.DestinationProviders)
+            {
+                var destination = Providers[providerName];
+
+                await destination.UploadFileBlockAsync(file, directory,
+                    payload.Data, (int)payload.CurrentBlockNumber, (int)payload.TotalBlocks).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
