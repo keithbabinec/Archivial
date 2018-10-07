@@ -131,7 +131,7 @@ namespace OzetteLibrary.Providers.Azure
 
             // calculate my uri
 
-            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, directory.GetRemoteContainerName(ProviderTypes.Azure), file.GetRemoteFileName(ProviderTypes.Azure));
+            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, containerName, file.GetRemoteFileName(ProviderTypes.Azure));
 
             // hash the block. Azure has an integrity check on the server side if we supply the expected md5 hash.
 
@@ -147,14 +147,14 @@ namespace OzetteLibrary.Providers.Azure
             using (var stream = new MemoryStream(data))
             {
                 var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlock);
-                await blob.PutBlockAsync(encodedBlockIdString, stream, blockMd5Hash);
+                await blob.PutBlockAsync(encodedBlockIdString, stream, blockMd5Hash).ConfigureAwait(false);
             }
 
             // after the block has been uploaded it is in an uncommitted state.
             // commit this block (plus any previously committed blocks).
 
             var blockListToCommit = ProviderUtilities.GenerateListOfBlocksToCommit(file.FileID, currentBlock);
-            await blob.PutBlockListAsync(blockListToCommit);
+            await blob.PutBlockListAsync(blockListToCommit).ConfigureAwait(false);
 
             // update metadata/status
 
@@ -168,7 +168,7 @@ namespace OzetteLibrary.Providers.Azure
             blob.Metadata[ProviderMetadata.FileHash] = file.FileHashString;
             blob.Metadata[ProviderMetadata.FileHashAlgorithm] = file.HashAlgorithmType;
 
-            await blob.SetMetadataAsync();
+            await blob.SetMetadataAsync().ConfigureAwait(false);
 
             Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0} for file: {1}", currentBlock, file.FullSourcePath));
         }
