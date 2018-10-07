@@ -169,12 +169,19 @@ namespace OzetteLibrary.Providers.Azure
             blob.Metadata[ProviderMetadata.FileHash] = file.FileHashString;
             blob.Metadata[ProviderMetadata.FileHashAlgorithm] = file.HashAlgorithmType;
 
+            // set metadata.
             await blob.SetMetadataAsync().ConfigureAwait(false);
-
-            Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0}.", currentBlockNumber));
 
             if (currentBlockNumber == totalBlocks)
             {
+                if (!blob.Properties.StandardBlobTier.HasValue
+                    || blob.Properties.StandardBlobTier.Value != StandardBlobTier.Archive)
+                {
+                    // set blob tier access.
+                    // we only need to set this one time, at the time the upload is completed.
+                    await blob.SetStandardBlobTierAsync(StandardBlobTier.Archive);
+                }
+
                 Logger.WriteTraceMessage("File upload completed successfully.");
             }
         }
