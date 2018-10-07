@@ -48,6 +48,16 @@ namespace OzetteClientAgent
         private ILogger CoreLog { get; set; }
 
         /// <summary>
+        /// A reference to the backup engine log.
+        /// </summary>
+        private ILogger BackupEngineLog { get; set; }
+
+        /// <summary>
+        /// A reference to the backup engine log.
+        /// </summary>
+        private ILogger ScanEngineLog { get; set; }
+
+        /// <summary>
         /// A reference to the scanning engine instance.
         /// </summary>
         private ScanEngine Scan { get; set; }
@@ -72,12 +82,7 @@ namespace OzetteClientAgent
             // each one lives under it's own long-running thread and class.
             // prepare the database and then start both engines.
 
-            CoreLog = new Logger(OzetteLibrary.Constants.Logging.CoreServiceComponentName);
-
-            CoreLog.Start(
-                CoreSettings.EventlogName,
-                CoreSettings.EventlogName,
-                CoreSettings.LogFilesDirectory);
+            StartLoggers();
 
             CoreLog.WriteSystemEvent(
                 string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName),
@@ -136,6 +141,30 @@ namespace OzetteClientAgent
         }
 
         /// <summary>
+        /// Starts the shared logging instances.
+        /// </summary>
+        private void StartLoggers()
+        {
+            CoreLog = new Logger(OzetteLibrary.Constants.Logging.CoreServiceComponentName);
+            CoreLog.Start(
+                CoreSettings.EventlogName,
+                CoreSettings.EventlogName,
+                CoreSettings.LogFilesDirectory);
+
+            BackupEngineLog = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
+            BackupEngineLog.Start(
+                CoreSettings.EventlogName,
+                CoreSettings.EventlogName,
+                CoreSettings.LogFilesDirectory);
+
+            ScanEngineLog = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
+            ScanEngineLog.Start(
+                CoreSettings.EventlogName,
+                CoreSettings.EventlogName,
+                CoreSettings.LogFilesDirectory);
+        }
+
+        /// <summary>
         /// Configures the cloud storage provider connections.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
@@ -179,7 +208,7 @@ namespace OzetteClientAgent
                                     string storageAccountToken = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountToken);
 
                                     CoreLog.WriteTraceMessage("Initializing Azure cloud storage provider.");
-                                    AzureProviderFileOperations azureConnection = new AzureProviderFileOperations(CoreLog, storageAccountName, storageAccountToken);
+                                    AzureProviderFileOperations azureConnection = new AzureProviderFileOperations(BackupEngineLog, storageAccountName, storageAccountToken);
                                     ProviderConnections.Add(ProviderTypes.Azure, azureConnection);
                                     CoreLog.WriteTraceMessage("Successfully initialized the cloud storage provider.");
 
@@ -238,17 +267,10 @@ namespace OzetteClientAgent
 
             try
             {
-                var log = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
-
-                log.Start(
-                    CoreSettings.EventlogName,
-                    CoreSettings.EventlogName,
-                    CoreSettings.LogFilesDirectory);
-
                 var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                 db.PrepareDatabase();
 
-                Scan = new ScanEngine(db, log, ProviderConnections);
+                Scan = new ScanEngine(db, ScanEngineLog, ProviderConnections);
                 Scan.Stopped += Scan_Stopped;
                 Scan.BeginStart();
 
@@ -305,17 +327,10 @@ namespace OzetteClientAgent
 
             try
             {
-                var log = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
-
-                log.Start(
-                    CoreSettings.EventlogName,
-                    CoreSettings.EventlogName,
-                    CoreSettings.LogFilesDirectory);
-
                 var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                 db.PrepareDatabase();
 
-                Backup = new BackupEngine(db, log, ProviderConnections);
+                Backup = new BackupEngine(db, BackupEngineLog, ProviderConnections);
                 Backup.Stopped += Backup_Stopped;
                 Backup.BeginStart();
 

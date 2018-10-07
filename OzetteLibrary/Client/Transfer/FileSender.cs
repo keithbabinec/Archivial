@@ -8,7 +8,6 @@ using System.IO;
 using OzetteLibrary.Files;
 using OzetteLibrary.Providers;
 using System.Threading.Tasks;
-using OzetteLibrary.Folders;
 using OzetteLibrary.Constants;
 
 namespace OzetteLibrary.Client.Transfer
