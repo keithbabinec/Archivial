@@ -134,10 +134,15 @@ namespace OzetteLibrary.Client.Transfer
             {
                 var destination = Providers[providerName];
 
+                // upload this chunk to the destination cloud provider.
                 await destination.UploadFileBlockAsync(file, directory,
                     payload.Data, (int)payload.CurrentBlockNumber, (int)payload.TotalBlocks).ConfigureAwait(false);
 
+                // flag the chunk as sent in the file status.
                 file.SetBlockAsSent((int)payload.CurrentBlockNumber, providerName);
+
+                // commit the status changes to the local state database.
+                Database.UpdateBackupFile(file);
             }
         }
 
