@@ -29,5 +29,10 @@
         /// The name of the metadata key for the file's hash algorithm.
         /// </summary>
         public const string FileHashAlgorithm = "OzetteFileHashAlgorithm";
+
+        /// <summary>
+        /// The name of the metadata key for the folder's local path.
+        /// </summary>
+        public const string ContainerLocalFolderPath = "OzetteFolderLocalPath";
     }
 }
