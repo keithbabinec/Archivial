@@ -34,5 +34,10 @@
         /// The name of the metadata key for the folder's local path.
         /// </summary>
         public const string ContainerLocalFolderPath = "OzetteFolderLocalPath";
+
+        /// <summary>
+        /// The name of the metadata key for the backup host computer.
+        /// </summary>
+        public const string LocalHostName = "OzetteBackupHost";
     }
 }

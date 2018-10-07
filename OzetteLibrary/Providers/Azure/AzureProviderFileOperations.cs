@@ -128,6 +128,7 @@ namespace OzetteLibrary.Providers.Azure
                 await container.CreateAsync().ConfigureAwait(false);
 
                 container.Metadata[ProviderMetadata.ContainerLocalFolderPath] = directory.LocalPath;
+                container.Metadata[ProviderMetadata.LocalHostName] = Environment.MachineName;
                 await container.SetMetadataAsync();
             }
 
