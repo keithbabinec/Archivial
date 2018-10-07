@@ -126,6 +126,10 @@ namespace OzetteLibrary.Providers.Azure
             {
                 Logger.WriteTraceMessage(string.Format("Azure container [{0}] does not exist. Creating it now.", containerName));
                 await container.CreateAsync().ConfigureAwait(false);
+
+                container.Metadata[ProviderMetadata.ContainerLocalFolderPath] = directory.LocalPath;
+                container.Metadata[ProviderMetadata.LocalHostName] = Environment.MachineName;
+                await container.SetMetadataAsync();
             }
 
             Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) to Azure storage.", currentBlockNumber, totalBlocks));
