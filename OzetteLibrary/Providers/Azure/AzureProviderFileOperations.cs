@@ -118,6 +118,7 @@ namespace OzetteLibrary.Providers.Azure
         {
             var containerName = directory.GetRemoteContainerName(ProviderTypes.Azure);
             var containerUri = ProviderUtilities.GetContainerUri(AzureStorage.Credentials.AccountName, containerName);
+            var currentBlockNumber = currentBlockIndex + 1;
 
             CloudBlobContainer container = new CloudBlobContainer(new Uri(containerUri), AzureStorage.Credentials);
 
@@ -127,7 +128,7 @@ namespace OzetteLibrary.Providers.Azure
                 await container.CreateAsync().ConfigureAwait(false);
             }
 
-            Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) for file ({2}) to Azure storage.", currentBlockIndex + 1, totalBlocks, file.FullSourcePath));
+            Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) for file ({2}) to Azure storage.", currentBlockNumber, totalBlocks, file.FullSourcePath));
 
             // calculate my uri
 
@@ -159,7 +160,7 @@ namespace OzetteLibrary.Providers.Azure
             // update metadata/status
 
             blob.Metadata[ProviderMetadata.ProviderSyncStatusKeyName] = 
-                (currentBlockIndex == totalBlocks ? 
+                (currentBlockNumber == totalBlocks ? 
                     FileStatus.Synced.ToString() :
                     FileStatus.InProgress.ToString());
 
@@ -170,7 +171,7 @@ namespace OzetteLibrary.Providers.Azure
 
             await blob.SetMetadataAsync().ConfigureAwait(false);
 
-            Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0} for file: {1}", currentBlockIndex, file.FullSourcePath));
+            Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0} for file: {1}", currentBlockNumber, file.FullSourcePath));
         }
     }
 }
