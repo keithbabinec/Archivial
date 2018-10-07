@@ -862,7 +862,7 @@ namespace OzetteLibraryTests.Files
 
             // this example file has 9 total blocks
 
-            file.SetBlockAsSent(8, OzetteLibrary.Providers.ProviderTypes.AWS);
+            file.SetBlockAsSent(7, OzetteLibrary.Providers.ProviderTypes.AWS);
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus);
@@ -883,7 +883,7 @@ namespace OzetteLibraryTests.Files
 
             // this example file has 9 total blocks
 
-            file.SetBlockAsSent(9, OzetteLibrary.Providers.ProviderTypes.AWS);
+            file.SetBlockAsSent(8, OzetteLibrary.Providers.ProviderTypes.AWS);
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.OverallState);
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus);
@@ -898,7 +898,7 @@ namespace OzetteLibraryTests.Files
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
 
             var remoteName = file.GetRemoteFileName(OzetteLibrary.Providers.ProviderTypes.Azure);
-            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258";
+            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258.mp3";
 
             Assert.IsNotNull(remoteName);
             Assert.AreEqual(expected, remoteName);

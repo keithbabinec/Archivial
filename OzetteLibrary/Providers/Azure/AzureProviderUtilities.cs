@@ -18,22 +18,22 @@ namespace OzetteLibrary.Providers.Azure
         /// Generate the list of block IDs up to the current block.
         /// </remarks>
         /// <param name="fileID"></param>
-        /// <param name="currentBlock"></param>
+        /// <param name="currentBlockIndex"></param>
         /// <returns></returns>
-        public List<string> GenerateListOfBlocksToCommit(Guid fileID, int currentBlock)
+        public List<string> GenerateListOfBlocksToCommit(Guid fileID, int currentBlockIndex)
         {
             if (fileID == Guid.Empty)
             {
                 throw new ArgumentException(nameof(fileID) + " must be provided.");
             }
-            if (currentBlock <= 0)
+            if (currentBlockIndex < 0)
             {
-                throw new ArgumentException(nameof(currentBlock) + " must be provided and be greater than zero.");
+                throw new ArgumentException(nameof(currentBlockIndex) + " cannot be negative.");
             }
 
             List<string> blockIDs = new List<string>();
 
-            for (int i = 1; i <= currentBlock; i++)
+            for (int i = 0; i <= currentBlockIndex; i++)
             {
                 blockIDs.Add(GenerateBlockIdentifierBase64String(fileID, i));
             }
@@ -57,9 +57,9 @@ namespace OzetteLibrary.Providers.Azure
             {
                 throw new ArgumentException(nameof(fileID) + " must be provided.");
             }
-            if (blockNumber <= 0)
+            if (blockNumber < 0)
             {
-                throw new ArgumentException(nameof(blockNumber) + " must be provided and be greater than zero.");
+                throw new ArgumentException(nameof(blockNumber) + " cannot be negative.");
             }
 
             return Convert.ToBase64String(
@@ -70,22 +70,17 @@ namespace OzetteLibrary.Providers.Azure
         }
 
         /// <summary>
-        /// Returns the Azure resource URI.
+        /// Returns the Azure blob resource URI.
         /// </summary>
         /// <param name="storageAccountName">The Azure storage account name.</param>
-        /// <param name="storageAccountSASToken">The Azure storage account SAS token.</param>
         /// <param name="containerName">The Azure storage container name.</param>
         /// <param name="blobName">The Azure storage blob name.</param>
         /// <returns>A string formatted as a URI</returns>
-        public string GetFileUri(string storageAccountName, string storageAccountSASToken, string containerName, string blobName)
+        public string GetFileUri(string storageAccountName, string containerName, string blobName)
         {
             if (string.IsNullOrWhiteSpace(storageAccountName))
             {
                 throw new ArgumentException(nameof(storageAccountName) + " must be provided.");
-            }
-            if (string.IsNullOrWhiteSpace(storageAccountSASToken))
-            {
-                throw new ArgumentException(nameof(storageAccountSASToken) + " must be provided.");
             }
             if (string.IsNullOrWhiteSpace(containerName))
             {
@@ -99,7 +94,30 @@ namespace OzetteLibrary.Providers.Azure
             // example uri:
             // https://myaccount.blob.core.windows.net/mycontainer/myblob 
 
-            return string.Format("https://{0}.blob.core.windows.net/{1}/{2}?{3}", storageAccountName, containerName, blobName, storageAccountSASToken);
+            return string.Format("https://{0}.blob.core.windows.net/{1}/{2}", storageAccountName, containerName, blobName);
+        }
+
+        /// <summary>
+        /// Returns the Azure container resource URI.
+        /// </summary>
+        /// <param name="storageAccountName">The Azure storage account name.</param>
+        /// <param name="containerName">The Azure storage container name.</param>
+        /// <returns>A string formatted as a URI</returns>
+        public string GetContainerUri(string storageAccountName, string containerName)
+        {
+            if (string.IsNullOrWhiteSpace(storageAccountName))
+            {
+                throw new ArgumentException(nameof(storageAccountName) + " must be provided.");
+            }
+            if (string.IsNullOrWhiteSpace(containerName))
+            {
+                throw new ArgumentException(nameof(containerName) + " must be provided.");
+            }
+
+            // example uri:
+            // https://myaccount.blob.core.windows.net/mycontainer/myblob 
+
+            return string.Format("https://{0}.blob.core.windows.net/{1}", storageAccountName, containerName);
         }
     }
 }

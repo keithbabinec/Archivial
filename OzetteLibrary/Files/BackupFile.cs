@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace OzetteLibrary.Files
 {
@@ -138,6 +139,23 @@ namespace OzetteLibrary.Files
 
             if (provider == ProviderTypes.Azure)
             {
+                if (Filename.Contains("."))
+                {
+                    // file with an extension.
+                    var split = Filename.Split('.');
+                    var extension = split[split.Length - 1];
+
+                    // we only want alphanumeric characters in the uri
+                    // if for some reason windows allows special characters in the extension, dont use the extension in the uri then.
+                    var reg = new Regex("^[a-zA-Z0-9]*$");
+
+                    if (extension.Length > 0 && reg.IsMatch(extension))
+                    {
+                        return string.Format("{0}-file-{1}.{2}", Constants.Logging.AppName, FileID.ToString(), extension).ToLower();
+                    }
+                }
+
+                // extensionless (or problematic extension) file.
                 return string.Format("{0}-file-{1}", Constants.Logging.AppName, FileID.ToString()).ToLower();
             }
             else
@@ -442,15 +460,15 @@ namespace OzetteLibrary.Files
         }
 
         /// <summary>
-        /// Flags a particular block as sent for the specified provider.
+        /// Flags a particular block index as sent for the specified provider.
         /// </summary>
-        /// <param name="BlockNumber"></param>
+        /// <param name="BlockIndex"></param>
         /// <param name="Providers"></param>
-        public void SetBlockAsSent(int BlockNumber, ProviderTypes Provider)
+        public void SetBlockAsSent(int BlockIndex, ProviderTypes Provider)
         {
-            if (BlockNumber < 0)
+            if (BlockIndex < 0)
             {
-                throw new ArgumentException(nameof(BlockNumber) + " argument must be provided with a positive number.");
+                throw new ArgumentException(nameof(BlockIndex) + " argument must be provided with a positive number.");
             }
             if (OverallState == FileStatus.Synced)
             {
@@ -464,9 +482,9 @@ namespace OzetteLibrary.Files
             if (CopyState.ContainsKey(Provider))
             {
                 var state = CopyState[Provider];
-                state.LastCompletedFileBlockIndex = BlockNumber;
+                state.LastCompletedFileBlockIndex = BlockIndex;
 
-                if (state.LastCompletedFileBlockIndex == TotalFileBlocks)
+                if (state.LastCompletedFileBlockIndex + 1 == TotalFileBlocks)
                 {
                     // flag this particular destination as completed.
                     state.SyncStatus = FileStatus.Synced;

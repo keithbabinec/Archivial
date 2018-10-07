@@ -1,4 +1,6 @@
-﻿using Microsoft.WindowsAzure.Storage.Blob;
+﻿using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 using OzetteLibrary.Constants;
 using OzetteLibrary.Crypto;
 using OzetteLibrary.Files;
@@ -17,16 +19,6 @@ namespace OzetteLibrary.Providers.Azure
     public class AzureProviderFileOperations : IProviderFileOperations
     {
         /// <summary>
-        /// A reference to the storage account name.
-        /// </summary>
-        private string StorageAccountName;
-
-        /// <summary>
-        /// A reference to the SAS token.
-        /// </summary>
-        private string StorageAccountSASToken;
-
-        /// <summary>
         /// A reference to the logging utility.
         /// </summary>
         private ILogger Logger;
@@ -40,6 +32,11 @@ namespace OzetteLibrary.Providers.Azure
         /// A reference to the provider utilities helper instance.
         /// </summary>
         private AzureProviderUtilities ProviderUtilities;
+
+        /// <summary>
+        /// A reference to the authenticated Azure Storage account.
+        /// </summary>
+        private CloudStorageAccount AzureStorage;
 
         /// <summary>
         /// Constructor that accepts a storage account name and storage account SAS token.
@@ -65,8 +62,9 @@ namespace OzetteLibrary.Providers.Azure
             Logger = logger;
             Hasher = new Hasher(logger);
             ProviderUtilities = new AzureProviderUtilities();
-            StorageAccountName = storageAccountName;
-            StorageAccountSASToken = storageAccountSASToken;
+
+            var storageCredentials = new StorageCredentials(storageAccountName, storageAccountSASToken);
+            AzureStorage = new CloudStorageAccount(storageCredentials, true);
         }
 
         /// <summary>
@@ -77,21 +75,16 @@ namespace OzetteLibrary.Providers.Azure
         /// <returns><c>ProviderFileStatus</c></returns>
         public async Task<ProviderFileStatus> GetFileStatusAsync(BackupFile file, DirectoryMapItem directory)
         {
-            Logger.WriteTraceMessage("Checking the Azure provider status for file: " + file.FullSourcePath);
+            Logger.WriteTraceMessage("Checking the Azure provider status.");
             
             // calculate my uri
 
-            var sasBlobUri = ProviderUtilities.GetFileUri(
-                    StorageAccountName,
-                    StorageAccountSASToken,
-                    directory.GetRemoteContainerName(ProviderTypes.Azure), 
-                    file.GetRemoteFileName(ProviderTypes.Azure)
-            );
+            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, directory.GetRemoteContainerName(ProviderTypes.Azure), file.GetRemoteFileName(ProviderTypes.Azure));
 
             // the default state for a freshly initialized file status object is unsynced.
             // if the blob doesn't exist, the file is unsynced.
 
-            CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri));
+            CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri), AzureStorage.Credentials);
             var fileStatus = new ProviderFileStatus(ProviderTypes.Azure);
 
             // does the file exist at the specified uri?
@@ -106,7 +99,7 @@ namespace OzetteLibrary.Providers.Azure
                 fileStatus.ApplyMetadataToState(blob.Metadata);
             }
             
-            Logger.WriteTraceMessage("File sync status: " + fileStatus.SyncStatus);
+            Logger.WriteTraceMessage("File sync status in Azure: " + fileStatus.SyncStatus);
             return fileStatus;
         }
 
@@ -119,20 +112,27 @@ namespace OzetteLibrary.Providers.Azure
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <param name="data">A byte array stream of file contents/data.</param>
-        /// <param name="currentBlock">The block number associated with the specified data.</param>
+        /// <param name="currentBlockIndex">The block number associated with the specified data.</param>
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
-        public async Task UploadFileBlockAsync(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlock, int totalBlocks)
+        public async Task UploadFileBlockAsync(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks)
         {
-            Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) for file ({2}) to Azure storage.", currentBlock, totalBlocks, file.FullSourcePath));
+            var containerName = directory.GetRemoteContainerName(ProviderTypes.Azure);
+            var containerUri = ProviderUtilities.GetContainerUri(AzureStorage.Credentials.AccountName, containerName);
+            var currentBlockNumber = currentBlockIndex + 1;
+
+            CloudBlobContainer container = new CloudBlobContainer(new Uri(containerUri), AzureStorage.Credentials);
+
+            if (!await container.ExistsAsync().ConfigureAwait(false))
+            {
+                Logger.WriteTraceMessage(string.Format("Azure container [{0}] does not exist. Creating it now.", containerName));
+                await container.CreateAsync().ConfigureAwait(false);
+            }
+
+            Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) to Azure storage.", currentBlockNumber, totalBlocks));
 
             // calculate my uri
 
-            var sasBlobUri = ProviderUtilities.GetFileUri(
-                    StorageAccountName,
-                    StorageAccountSASToken,
-                    directory.GetRemoteContainerName(ProviderTypes.Azure),
-                    file.GetRemoteFileName(ProviderTypes.Azure)
-            );
+            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, containerName, file.GetRemoteFileName(ProviderTypes.Azure));
 
             // hash the block. Azure has an integrity check on the server side if we supply the expected md5 hash.
 
@@ -143,36 +143,40 @@ namespace OzetteLibrary.Providers.Azure
             // get a current reference to the blob and it's attributes.
             // upload the block and expected hash.
 
-            CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri));
-            await blob.FetchAttributesAsync();
+            CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri), AzureStorage.Credentials);
 
             using (var stream = new MemoryStream(data))
             {
-                var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlock);
-                await blob.PutBlockAsync(encodedBlockIdString, stream, blockMd5Hash);
+                var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlockIndex);
+                await blob.PutBlockAsync(encodedBlockIdString, stream, blockMd5Hash).ConfigureAwait(false);
             }
 
             // after the block has been uploaded it is in an uncommitted state.
             // commit this block (plus any previously committed blocks).
 
-            var blockListToCommit = ProviderUtilities.GenerateListOfBlocksToCommit(file.FileID, currentBlock);
-            await blob.PutBlockListAsync(blockListToCommit);
+            var blockListToCommit = ProviderUtilities.GenerateListOfBlocksToCommit(file.FileID, currentBlockIndex);
+            await blob.PutBlockListAsync(blockListToCommit).ConfigureAwait(false);
 
             // update metadata/status
 
             blob.Metadata[ProviderMetadata.ProviderSyncStatusKeyName] = 
-                (currentBlock == totalBlocks ? 
+                (currentBlockNumber == totalBlocks ? 
                     FileStatus.Synced.ToString() :
                     FileStatus.InProgress.ToString());
 
-            blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlock.ToString();
+            blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlockIndex.ToString();
             blob.Metadata[ProviderMetadata.FullSourcePathKeyName] = file.FullSourcePath;
             blob.Metadata[ProviderMetadata.FileHash] = file.FileHashString;
             blob.Metadata[ProviderMetadata.FileHashAlgorithm] = file.HashAlgorithmType;
 
-            await blob.SetMetadataAsync();
+            await blob.SetMetadataAsync().ConfigureAwait(false);
 
-            Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0} for file: {1}", currentBlock, file.FullSourcePath));
+            Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0}.", currentBlockNumber));
+
+            if (currentBlockNumber == totalBlocks)
+            {
+                Logger.WriteTraceMessage("File upload completed successfully.");
+            }
         }
     }
 }
