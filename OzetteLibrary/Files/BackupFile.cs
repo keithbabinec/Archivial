@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace OzetteLibrary.Files
 {
@@ -138,6 +139,23 @@ namespace OzetteLibrary.Files
 
             if (provider == ProviderTypes.Azure)
             {
+                if (Filename.Contains("."))
+                {
+                    // file with an extension.
+                    var split = Filename.Split('.');
+                    var extension = split[split.Length - 1];
+
+                    // we only want alphanumeric characters in the uri
+                    // if for some reason windows allows special characters in the extension, dont use the extension in the uri then.
+                    var reg = new Regex("^[a-zA-Z0-9]*$");
+
+                    if (extension.Length > 0 && reg.IsMatch(extension))
+                    {
+                        return string.Format("{0}-file-{1}.{2}", Constants.Logging.AppName, FileID.ToString(), extension).ToLower();
+                    }
+                }
+
+                // extensionless (or problematic extension) file.
                 return string.Format("{0}-file-{1}", Constants.Logging.AppName, FileID.ToString()).ToLower();
             }
             else

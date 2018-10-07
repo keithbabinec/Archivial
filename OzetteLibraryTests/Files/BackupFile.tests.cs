@@ -898,7 +898,7 @@ namespace OzetteLibraryTests.Files
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
 
             var remoteName = file.GetRemoteFileName(OzetteLibrary.Providers.ProviderTypes.Azure);
-            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258";
+            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258.mp3";
 
             Assert.IsNotNull(remoteName);
             Assert.AreEqual(expected, remoteName);
