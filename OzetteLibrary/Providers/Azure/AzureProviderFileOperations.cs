@@ -75,7 +75,7 @@ namespace OzetteLibrary.Providers.Azure
         /// <returns><c>ProviderFileStatus</c></returns>
         public async Task<ProviderFileStatus> GetFileStatusAsync(BackupFile file, DirectoryMapItem directory)
         {
-            Logger.WriteTraceMessage("Checking the Azure provider status for file: " + file.FullSourcePath);
+            Logger.WriteTraceMessage("Checking the Azure provider status.");
             
             // calculate my uri
 
@@ -99,7 +99,7 @@ namespace OzetteLibrary.Providers.Azure
                 fileStatus.ApplyMetadataToState(blob.Metadata);
             }
             
-            Logger.WriteTraceMessage("File sync status: " + fileStatus.SyncStatus);
+            Logger.WriteTraceMessage("File sync status in Azure: " + fileStatus.SyncStatus);
             return fileStatus;
         }
 
@@ -128,7 +128,7 @@ namespace OzetteLibrary.Providers.Azure
                 await container.CreateAsync().ConfigureAwait(false);
             }
 
-            Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) for file ({2}) to Azure storage.", currentBlockNumber, totalBlocks, file.FullSourcePath));
+            Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) to Azure storage.", currentBlockNumber, totalBlocks));
 
             // calculate my uri
 
@@ -171,7 +171,12 @@ namespace OzetteLibrary.Providers.Azure
 
             await blob.SetMetadataAsync().ConfigureAwait(false);
 
-            Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0} for file: {1}", currentBlockNumber, file.FullSourcePath));
+            Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0}.", currentBlockNumber));
+
+            if (currentBlockNumber == totalBlocks)
+            {
+                Logger.WriteTraceMessage("File upload completed successfully.");
+            }
         }
     }
 }

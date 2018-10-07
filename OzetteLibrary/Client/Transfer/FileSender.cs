@@ -136,6 +136,8 @@ namespace OzetteLibrary.Client.Transfer
 
                 await destination.UploadFileBlockAsync(file, directory,
                     payload.Data, (int)payload.CurrentBlockNumber, (int)payload.TotalBlocks).ConfigureAwait(false);
+
+                file.SetBlockAsSent((int)payload.CurrentBlockNumber, providerName);
             }
         }
 
