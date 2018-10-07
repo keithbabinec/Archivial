@@ -174,12 +174,12 @@ namespace OzetteLibraryTests.Providers.Azure
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void AzureProviderUtilitiesGenerateBlockIdentifierBase64StringThrowsOnMissingBlockNumber()
+        public void AzureProviderUtilitiesGenerateBlockIdentifierBase64StringThrowsOnNegativeBlockNumber()
         {
             var provider = new OzetteLibrary.Providers.Azure.AzureProviderUtilities();
 
             Guid fileID = new Guid("51690d6e-f42a-4581-8e45-660b859bb432");
-            int blockID = 0; // should throw
+            int blockID = -1; // should throw
 
             var result = provider.GenerateBlockIdentifierBase64String(fileID, blockID);
         }
@@ -190,13 +190,13 @@ namespace OzetteLibraryTests.Providers.Azure
             var provider = new OzetteLibrary.Providers.Azure.AzureProviderUtilities();
 
             Guid fileID = new Guid("51690d6e-f42a-4581-8e45-660b859bb432");
-            int blockID = 1;
+            int blockID = 0;
 
             var result = provider.GenerateListOfBlocksToCommit(fileID, blockID);
 
             var expected = new List<string>()
             {
-                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTE="
+                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTA="
             };
 
             Assert.IsNotNull(result);
@@ -216,6 +216,7 @@ namespace OzetteLibraryTests.Providers.Azure
 
             var expected = new List<string>()
             {
+                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTA=",
                 "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTE=",
                 "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTI=",
                 "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTM=",

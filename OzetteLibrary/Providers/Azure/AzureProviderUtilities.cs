@@ -18,22 +18,22 @@ namespace OzetteLibrary.Providers.Azure
         /// Generate the list of block IDs up to the current block.
         /// </remarks>
         /// <param name="fileID"></param>
-        /// <param name="currentBlock"></param>
+        /// <param name="currentBlockIndex"></param>
         /// <returns></returns>
-        public List<string> GenerateListOfBlocksToCommit(Guid fileID, int currentBlock)
+        public List<string> GenerateListOfBlocksToCommit(Guid fileID, int currentBlockIndex)
         {
             if (fileID == Guid.Empty)
             {
                 throw new ArgumentException(nameof(fileID) + " must be provided.");
             }
-            if (currentBlock <= 0)
+            if (currentBlockIndex < 0)
             {
-                throw new ArgumentException(nameof(currentBlock) + " must be provided and be greater than zero.");
+                throw new ArgumentException(nameof(currentBlockIndex) + " cannot be negative.");
             }
 
             List<string> blockIDs = new List<string>();
 
-            for (int i = 1; i <= currentBlock; i++)
+            for (int i = 0; i <= currentBlockIndex; i++)
             {
                 blockIDs.Add(GenerateBlockIdentifierBase64String(fileID, i));
             }
@@ -57,9 +57,9 @@ namespace OzetteLibrary.Providers.Azure
             {
                 throw new ArgumentException(nameof(fileID) + " must be provided.");
             }
-            if (blockNumber <= 0)
+            if (blockNumber < 0)
             {
-                throw new ArgumentException(nameof(blockNumber) + " must be provided and be greater than zero.");
+                throw new ArgumentException(nameof(blockNumber) + " cannot be negative.");
             }
 
             return Convert.ToBase64String(
