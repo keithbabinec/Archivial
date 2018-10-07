@@ -162,28 +162,6 @@ namespace OzetteLibraryTests.Secrets
         }
 
         [TestMethod]
-        public void ProtectedDataStoreGetApplicationSecretShouldReturnDecryptedSecretUserScope()
-        {
-            var ms = new MemoryStream();
-            var db = new LiteDBClientDatabase(ms);
-            db.PrepareDatabase();
-            var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
-            var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
-
-            ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
-
-            var option = new ServiceOption();
-            option.ID = OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName;
-            option.IsEncryptedOption = true;
-            option.Name = nameof(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
-            option.Value = "test-account";
-
-            pds.SetApplicationSecret(option);
-
-            Assert.AreEqual("test-account", pds.GetApplicationSecret(option.ID));
-        }
-
-        [TestMethod]
         public void ProtectedDataStoreSetApplicationSecretShouldSaveEncryptedSecretMachineScope()
         {
             var ms = new MemoryStream();
@@ -214,28 +192,6 @@ namespace OzetteLibraryTests.Secrets
             Assert.AreNotEqual("test-account", optionValue);
             Assert.IsFalse(optionValue.Contains("test-account"));
             Assert.IsTrue(optionValue.Length > "test-account".Length);
-        }
-
-        [TestMethod]
-        public void ProtectedDataStoreGetApplicationSecretShouldReturnDecryptedSecretMachineScope()
-        {
-            var ms = new MemoryStream();
-            var db = new LiteDBClientDatabase(ms);
-            db.PrepareDatabase();
-            var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
-            var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
-
-            ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
-
-            var option = new ServiceOption();
-            option.ID = OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName;
-            option.IsEncryptedOption = true;
-            option.Name = nameof(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
-            option.Value = "test-account";
-
-            pds.SetApplicationSecret(option);
-
-            Assert.AreEqual("test-account", pds.GetApplicationSecret(option.ID));
         }
     }
 }
