@@ -112,9 +112,9 @@ namespace OzetteLibrary.Providers.Azure
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <param name="data">A byte array stream of file contents/data.</param>
-        /// <param name="currentBlock">The block number associated with the specified data.</param>
+        /// <param name="currentBlockIndex">The block number associated with the specified data.</param>
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
-        public async Task UploadFileBlockAsync(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlock, int totalBlocks)
+        public async Task UploadFileBlockAsync(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks)
         {
             var containerName = directory.GetRemoteContainerName(ProviderTypes.Azure);
             var containerUri = ProviderUtilities.GetContainerUri(AzureStorage.Credentials.AccountName, containerName);
@@ -127,7 +127,7 @@ namespace OzetteLibrary.Providers.Azure
                 await container.CreateAsync().ConfigureAwait(false);
             }
 
-            Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) for file ({2}) to Azure storage.", currentBlock, totalBlocks, file.FullSourcePath));
+            Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) for file ({2}) to Azure storage.", currentBlockIndex + 1, totalBlocks, file.FullSourcePath));
 
             // calculate my uri
 
@@ -146,31 +146,31 @@ namespace OzetteLibrary.Providers.Azure
 
             using (var stream = new MemoryStream(data))
             {
-                var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlock);
+                var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlockIndex);
                 await blob.PutBlockAsync(encodedBlockIdString, stream, blockMd5Hash).ConfigureAwait(false);
             }
 
             // after the block has been uploaded it is in an uncommitted state.
             // commit this block (plus any previously committed blocks).
 
-            var blockListToCommit = ProviderUtilities.GenerateListOfBlocksToCommit(file.FileID, currentBlock);
+            var blockListToCommit = ProviderUtilities.GenerateListOfBlocksToCommit(file.FileID, currentBlockIndex);
             await blob.PutBlockListAsync(blockListToCommit).ConfigureAwait(false);
 
             // update metadata/status
 
             blob.Metadata[ProviderMetadata.ProviderSyncStatusKeyName] = 
-                (currentBlock == totalBlocks ? 
+                (currentBlockIndex == totalBlocks ? 
                     FileStatus.Synced.ToString() :
                     FileStatus.InProgress.ToString());
 
-            blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlock.ToString();
+            blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlockIndex.ToString();
             blob.Metadata[ProviderMetadata.FullSourcePathKeyName] = file.FullSourcePath;
             blob.Metadata[ProviderMetadata.FileHash] = file.FileHashString;
             blob.Metadata[ProviderMetadata.FileHashAlgorithm] = file.HashAlgorithmType;
 
             await blob.SetMetadataAsync().ConfigureAwait(false);
 
-            Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0} for file: {1}", currentBlock, file.FullSourcePath));
+            Logger.WriteTraceMessage(string.Format("Successfully uploaded file block {0} for file: {1}", currentBlockIndex, file.FullSourcePath));
         }
     }
 }

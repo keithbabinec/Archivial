@@ -26,8 +26,8 @@ namespace OzetteLibrary.Providers
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <param name="data">A byte array stream of file contents/data.</param>
-        /// <param name="currentBlock">The block number associated with the specified data.</param>
+        /// <param name="currentBlockIndex">The block number associated with the specified data.</param>
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
-        Task UploadFileBlockAsync(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlock, int totalBlocks);
+        Task UploadFileBlockAsync(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks);
     }
 }
