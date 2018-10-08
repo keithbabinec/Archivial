@@ -41,3 +41,58 @@ cd $home\downloads\OzetteBin
 cd $home
 Remove-Item -Force -Recurse $home\downloads\OzetteBin*
 ```
+
+# Configuration
+
+OzetteCmd.exe is used to configure the Ozette installation. The commands below can be used to add, remove, or list sources (folders you want to backup) and providers (cloud destinations) for an existing Ozette installation.
+
+Note: Once Ozette is installed, OzetteCmd.exe should be available in your system path. This means you can run these configuration commands from any command prompt path location.
+
+Usage: OzetteCmd.exe <command> --Option1Name Option1Value --Option2Name Option2Value
+
+## Providers
+
+**Example: Set Microsoft Azure as one of your cloud storage providers.**
+
+Note: These secrets will be saved as encrypted values in the local database.
+```
+OzetteCmd.exe configure-azure --azurestorageaccountname "myaccount" --azurestorageaccounttoken "mytoken"
+```
+
+**Example: List the existing cloud storage providers you have configured**
+```
+OzetteCmd.exe list-providers
+```
+
+**Example: Remove one of the configured cloud providers by ID**
+
+Note: see *list-providers* to view the existing cloud providers with IDs.
+```
+OzetteCmd.exe remove-provider --providerid 1
+```
+
+## Sources
+
+**Example: Add a source folder to backup.**
+```
+OzetteCmd.exe add-source --folderpath "C:\users\me\downloads"
+```
+
+**Example: Add a source folder to backup, using all of the optional arguments.**
+
+Note: --Priority accepts values 'Low', 'Medium', or 'High'. --MatchFilter accepts Windows file matching wildcards.
+```
+OzetteCmd.exe add-source --folderpath "C:\users\me\documents" --priority High --revisions 3 --matchfilter "*.docx"
+```
+
+**Example: List the source folders you have configured**
+```
+OzetteCmd.exe list-sources
+```
+
+**Example: Remove one of the source folders by ID**
+
+Note: see *list-sources* to view the existing sources with IDs.
+```
+OzetteCmd.exe remove-source --sourceid 1
+```
