@@ -15,15 +15,29 @@ This project is under active development and not fully usuable yet. This grid sh
 
 # Installation
 
-1. Download and unzip the latest release archive from [Releases](https://github.com/keithbabinec/Ozette/releases).
+1. Open an elevated (Run-As Administrator) PowerShell prompt.
+2. Download latest binaries from [Releases](https://github.com/keithbabinec/Ozette/releases).
 ```
--- code to download
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$latestUri = 'https://api.github.com/repos/keithbabinec/Ozette/releases/latest'
+$latestDownloadUri = (Invoke-RestMethod -Method Get -Uri $latestUri).assets[0].browser_download_url
+Invoke-RestMethod -Method Get -Uri $latestDownloadUri -OutFile $home\downloads\OzetteBin.zip
 ```
-2. Open an elevated PowerShell prompt and navigate to the unzipped release folder.
+3. Unblock/extract the archive.
 ```
-cd $home\downloads\OzetteInstallation
+Unblock-File -Path $home\downloads\OzetteBin.zip
+Expand-Archive $home\downloads\OzetteBin.zip -DestinationPath $home\downloads\OzetteBin
 ```
-3. Run the install command:
+4. Open an elevated PowerShell prompt and navigate to the unzipped release folder.
+```
+cd $home\downloads\OzetteBin
+```
+5. Run the install command:
 ```
 .\OzetteCmd.exe install
+```
+6. Cleanup
+```
+cd $home
+Remove-Item -Force -Recurse $home\downloads\OzetteBin*
 ```
