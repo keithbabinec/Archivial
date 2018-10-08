@@ -16,19 +16,19 @@ This project is under active development and not fully usuable yet. This grid sh
 # Installation
 
 1. Open an elevated (Run-As Administrator) PowerShell prompt.
-2. Download latest binaries from [Releases](https://github.com/keithbabinec/Ozette/releases).
+2. Download latest binaries from [Releases](https://github.com/keithbabinec/Ozette/releases):
 ```
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $latestUri = 'https://api.github.com/repos/keithbabinec/Ozette/releases/latest'
 $latestDownloadUri = (Invoke-RestMethod -Method Get -Uri $latestUri).assets[0].browser_download_url
 Invoke-RestMethod -Method Get -Uri $latestDownloadUri -OutFile $home\downloads\OzetteBin.zip
 ```
-3. Unblock/extract the archive.
+3. Unblock/extract the archive:
 ```
 Unblock-File -Path $home\downloads\OzetteBin.zip
 Expand-Archive $home\downloads\OzetteBin.zip -DestinationPath $home\downloads\OzetteBin
 ```
-4. Open an elevated PowerShell prompt and navigate to the unzipped release folder.
+4. Navigate to the unzipped release folder:
 ```
 cd $home\downloads\OzetteBin
 ```
@@ -36,7 +36,7 @@ cd $home\downloads\OzetteBin
 ```
 .\OzetteCmd.exe install
 ```
-6. Cleanup
+6. Cleanup:
 ```
 cd $home
 Remove-Item -Force -Recurse $home\downloads\OzetteBin*
@@ -48,7 +48,7 @@ OzetteCmd.exe is used to configure the Ozette installation. The commands below c
 
 Note: Once Ozette is installed, OzetteCmd.exe should be available in your system path. This means you can run these configuration commands from any command prompt path location.
 
-Usage: OzetteCmd.exe <command> --Option1Name Option1Value --Option2Name Option2Value
+Usage: OzetteCmd.exe &lt;command&gt; --Option1Name Option1Value --Option2Name Option2Value
 
 ## Providers
 
