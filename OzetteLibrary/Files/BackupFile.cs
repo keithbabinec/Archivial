@@ -413,6 +413,10 @@ namespace OzetteLibrary.Files
                     {
                         // disregard. file is already synced to this particular provider.
                     }
+                    else if (providerState == FileStatus.ProviderError)
+                    {
+                        // disregard. file is in provider timeout. will try again later soon.
+                    }
                     else
                     {
                         throw new InvalidOperationException("Unexpected provider state: " + providerState.ToString());
@@ -449,6 +453,10 @@ namespace OzetteLibrary.Files
                     else if (providerState == FileStatus.Synced)
                     {
                         // disregard. file is already synced to this particular provider.
+                    }
+                    else if (providerState == FileStatus.ProviderError)
+                    {
+                        // disregard. file is in provider timeout. will try again later soon.
                     }
                     else
                     {
