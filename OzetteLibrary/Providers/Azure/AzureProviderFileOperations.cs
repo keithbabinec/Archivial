@@ -1,6 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using OzetteLibrary.Constants;
 using OzetteLibrary.Crypto;
 using OzetteLibrary.Files;
@@ -39,6 +40,11 @@ namespace OzetteLibrary.Providers.Azure
         private CloudStorageAccount AzureStorage;
 
         /// <summary>
+        /// A reference to the request options we should use on blob operations, which includes the retry policy.
+        /// </summary>
+        private BlobRequestOptions RequestOptions;
+
+        /// <summary>
         /// Constructor that accepts a storage account name and storage account SAS token.
         /// </summary>
         /// <param name="logger">A logging utility instance.</param>
@@ -65,6 +71,11 @@ namespace OzetteLibrary.Providers.Azure
 
             var storageCredentials = new StorageCredentials(storageAccountName, storageAccountSASToken);
             AzureStorage = new CloudStorageAccount(storageCredentials, true);
+
+            RequestOptions = new BlobRequestOptions()
+            {
+                RetryPolicy = new ExponentialRetry(TimeSpan.FromSeconds(1), 3)
+            };
         }
 
         /// <summary>
@@ -89,12 +100,12 @@ namespace OzetteLibrary.Providers.Azure
 
             // does the file exist at the specified uri?
 
-            if (await blob.ExistsAsync().ConfigureAwait(false))
+            if (await blob.ExistsAsync(RequestOptions, null).ConfigureAwait(false))
             {
                 // -- query metadata
                 // -- determine state from metadata
                 
-                await blob.FetchAttributesAsync().ConfigureAwait(false);
+                await blob.FetchAttributesAsync(null, RequestOptions, null).ConfigureAwait(false);
 
                 fileStatus.ApplyMetadataToState(blob.Metadata);
             }
@@ -122,14 +133,15 @@ namespace OzetteLibrary.Providers.Azure
 
             CloudBlobContainer container = new CloudBlobContainer(new Uri(containerUri), AzureStorage.Credentials);
 
-            if (!await container.ExistsAsync().ConfigureAwait(false))
+            if (!await container.ExistsAsync(RequestOptions, null).ConfigureAwait(false))
             {
                 Logger.WriteTraceMessage(string.Format("Azure container [{0}] does not exist. Creating it now.", containerName));
-                await container.CreateAsync().ConfigureAwait(false);
+
+                await container.CreateAsync(BlobContainerPublicAccessType.Off, RequestOptions, null).ConfigureAwait(false);
 
                 container.Metadata[ProviderMetadata.ContainerLocalFolderPath] = directory.LocalPath;
                 container.Metadata[ProviderMetadata.LocalHostName] = Environment.MachineName;
-                await container.SetMetadataAsync();
+                await container.SetMetadataAsync(null, RequestOptions, null);
             }
 
             Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) to Azure storage.", currentBlockNumber, totalBlocks));
@@ -152,14 +164,14 @@ namespace OzetteLibrary.Providers.Azure
             using (var stream = new MemoryStream(data))
             {
                 var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlockIndex);
-                await blob.PutBlockAsync(encodedBlockIdString, stream, blockMd5Hash).ConfigureAwait(false);
+                await blob.PutBlockAsync(encodedBlockIdString, stream, blockMd5Hash, null, RequestOptions, null).ConfigureAwait(false);
             }
 
             // after the block has been uploaded it is in an uncommitted state.
             // commit this block (plus any previously committed blocks).
 
             var blockListToCommit = ProviderUtilities.GenerateListOfBlocksToCommit(file.FileID, currentBlockIndex);
-            await blob.PutBlockListAsync(blockListToCommit).ConfigureAwait(false);
+            await blob.PutBlockListAsync(blockListToCommit, null, RequestOptions, null).ConfigureAwait(false);
 
             // update metadata/status
 
@@ -174,7 +186,7 @@ namespace OzetteLibrary.Providers.Azure
             blob.Metadata[ProviderMetadata.FileHashAlgorithm] = file.HashAlgorithmType;
 
             // set metadata.
-            await blob.SetMetadataAsync().ConfigureAwait(false);
+            await blob.SetMetadataAsync(null, RequestOptions, null).ConfigureAwait(false);
 
             if (currentBlockNumber == totalBlocks)
             {
@@ -183,7 +195,7 @@ namespace OzetteLibrary.Providers.Azure
                 {
                     // set blob tier access.
                     // we only need to set this one time, at the time the upload is completed.
-                    await blob.SetStandardBlobTierAsync(StandardBlobTier.Archive);
+                    await blob.SetStandardBlobTierAsync(StandardBlobTier.Archive, null, RequestOptions, null);
                 }
 
                 Logger.WriteTraceMessage("File upload completed successfully.");
