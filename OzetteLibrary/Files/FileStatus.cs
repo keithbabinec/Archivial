@@ -23,6 +23,11 @@
         /// <summary>
         /// The file has been synced.
         /// </summary>
-        Synced = 3
+        Synced = 3,
+
+        /// <summary>
+        /// The file has encountered an error at the provider.
+        /// </summary>
+        ProviderError = 4
     }
 }

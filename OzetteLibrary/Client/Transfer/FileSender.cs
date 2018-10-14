@@ -113,10 +113,7 @@ namespace OzetteLibrary.Client.Transfer
             }
             catch (Exception ex)
             {
-                // TODO: handle this
-                // will need logging and retry functionality, since I/O errors are common.
-
-                Logger.WriteTraceError("An error occurred during the file transfer.", ex, Logger.GenerateFullContextStackTrace());
+                Logger.WriteTraceError("An error occurred while preparing to transfer a file.", ex, Logger.GenerateFullContextStackTrace());
             }
         }
 
@@ -134,15 +131,26 @@ namespace OzetteLibrary.Client.Transfer
             {
                 var destination = Providers[providerName];
 
-                // upload this chunk to the destination cloud provider.
-                await destination.UploadFileBlockAsync(file, directory,
-                    payload.Data, (int)payload.CurrentBlockNumber, (int)payload.TotalBlocks).ConfigureAwait(false);
+                try
+                {
+                    // upload this chunk to the destination cloud provider.
+                    // note: the provider implementation will automatically handle retries of transient issues.
+                    await destination.UploadFileBlockAsync(file, directory,
+                        payload.Data, (int)payload.CurrentBlockNumber, (int)payload.TotalBlocks).ConfigureAwait(false);
 
-                // flag the chunk as sent in the file status.
-                file.SetBlockAsSent((int)payload.CurrentBlockNumber, providerName);
-
-                // commit the status changes to the local state database.
-                Database.UpdateBackupFile(file);
+                    // flag the chunk as sent in the file status.
+                    file.SetBlockAsSent((int)payload.CurrentBlockNumber, providerName);
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteTraceError("An error occurred during a file transfer.", ex, Logger.GenerateFullContextStackTrace());
+                    file.SetProviderToFailed(providerName);
+                }
+                finally
+                {
+                    // commit the status changes to the local state database.
+                    Database.UpdateBackupFile(file);
+                }
             }
         }
 
@@ -173,7 +181,7 @@ namespace OzetteLibrary.Client.Transfer
                 {
                     Logger.WriteTraceMessage(string.Format("Found a sync mismatch: this file is already synced at the provider [{0}]. Updating our local status.", provider.Key));
 
-                    file.SetProviderToCompleted(provider.Key, FileStatus.Synced);
+                    file.SetProviderToCompleted(provider.Key);
                     Database.UpdateBackupFile(file);
                 }
             }

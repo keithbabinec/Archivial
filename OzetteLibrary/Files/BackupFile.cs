@@ -194,6 +194,7 @@ namespace OzetteLibrary.Files
                 int outofdateCount = 0;
                 int inprogressCount = 0;
                 int syncedCount = 0;
+                int providerErrorCount = 0;
                 int providersCount = CopyState.Count;
 
                 foreach (var provider in CopyState)
@@ -213,6 +214,10 @@ namespace OzetteLibrary.Files
                     else if (provider.Value.SyncStatus == FileStatus.Synced)
                     {
                         syncedCount++;
+                    }
+                    else if (provider.Value.SyncStatus == FileStatus.ProviderError)
+                    {
+                        providerErrorCount++;
                     }
                 }
 
@@ -247,6 +252,14 @@ namespace OzetteLibrary.Files
                 if (unsyncedCount > 0)
                 {
                     OverallState = FileStatus.Unsynced;
+                    return;
+                }
+
+                // condition 5: something is provider-failed
+
+                if (inprogressCount > 0)
+                {
+                    OverallState = FileStatus.ProviderError;
                     return;
                 }
             }
@@ -446,8 +459,7 @@ namespace OzetteLibrary.Files
         /// Sets the provider status to completed.
         /// </summary>
         /// <param name="Provider"></param>
-        /// <param name="Status"></param>
-        public void SetProviderToCompleted(ProviderTypes Provider, FileStatus Status)
+        public void SetProviderToCompleted(ProviderTypes Provider)
         {
             if (!CopyState.ContainsKey(Provider))
             {
@@ -457,6 +469,21 @@ namespace OzetteLibrary.Files
             var state = CopyState[Provider];
             state.LastCompletedFileBlockIndex = TotalFileBlocks;
             state.SyncStatus = FileStatus.Synced;
+        }
+
+        /// <summary>
+        /// Sets the provider status to failed.
+        /// </summary>
+        /// <param name="Provider"></param>
+        public void SetProviderToFailed(ProviderTypes Provider)
+        {
+            if (!CopyState.ContainsKey(Provider))
+            {
+                CopyState.Add(Provider, new ProviderFileStatus(Provider));
+            }
+
+            var state = CopyState[Provider];
+            state.SyncStatus = FileStatus.ProviderError;
         }
 
         /// <summary>
