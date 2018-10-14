@@ -637,6 +637,9 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
+                // set the updated timestamp.
+                File.LastUpdated = DateTime.Now;
+
                 var targetCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
                 targetCol.Update(File);
             }

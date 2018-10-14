@@ -109,6 +109,11 @@ namespace OzetteLibrary.Files
         public DateTime? LastChecked { get; set; }
 
         /// <summary>
+        /// The last time this file was updated in the database.
+        /// </summary>
+        public DateTime? LastUpdated { get; set; }
+
+        /// <summary>
         /// The state of this file across one or more providers.
         /// </summary>
         /// <remarks>
