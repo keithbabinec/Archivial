@@ -474,6 +474,8 @@ namespace OzetteLibrary.Files
             var state = CopyState[Provider];
             state.LastCompletedFileBlockIndex = TotalFileBlocks;
             state.SyncStatus = FileStatus.Synced;
+
+            SetOverallStateFromCopyState();
         }
 
         /// <summary>
@@ -489,6 +491,8 @@ namespace OzetteLibrary.Files
 
             var state = CopyState[Provider];
             state.SyncStatus = FileStatus.ProviderError;
+
+            SetOverallStateFromCopyState();
         }
 
         /// <summary>
