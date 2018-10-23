@@ -8,7 +8,6 @@ using OzetteLibrary.Providers;
 using System;
 using System.Threading;
 using OzetteLibrary.Folders;
-using System.IO;
 
 namespace OzetteLibrary.Client
 {
@@ -38,10 +37,12 @@ namespace OzetteLibrary.Client
             Running = true;
             Scanner = new SourceScanner(Database as IClientDatabase, Logger);
 
-            Logger.WriteTraceMessage("ScanEngine is starting up.");
+            Logger.WriteTraceMessage("Scan engine is starting up.");
 
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();
+
+            Logger.WriteTraceMessage("Scan engine is now running.");
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace OzetteLibrary.Client
         {
             if (Running == true)
             {
-                Logger.WriteTraceMessage("ScanEngine is shutting down.");
+                Logger.WriteTraceMessage("Scan engine is shutting down.");
                 Running = false;
             }
         }
@@ -60,6 +61,11 @@ namespace OzetteLibrary.Client
         /// The source scanning instance.
         /// </summary>
         private SourceScanner Scanner { get; set; }
+
+        /// <summary>
+        /// The last time a heartbeat message or scan of a folder was completed.
+        /// </summary>
+        private DateTime? LastHeartbeatOrScanCompleted { get; set; }
 
         /// <summary>
         /// Core processing loop.
@@ -88,9 +94,8 @@ namespace OzetteLibrary.Client
                         {
                             // should we actually scan this source?
                             // checks the DB to see if it has been scanned recently.
-                            WriteLastScannedInfoToTraceLog(source);
 
-                            if (ShouldScanSource(source, scanOptions))
+                            if (source.ShouldScan(scanOptions))
                             {
                                 // begin-invoke the asynchronous scan operation.
                                 // watch the IAsyncResult status object to check for status updates
@@ -108,6 +113,8 @@ namespace OzetteLibrary.Client
                                         break;
                                     }
                                 }
+
+                                LastHeartbeatOrScanCompleted = DateTime.Now;
 
                                 if (state.IsCanceled == false)
                                 {
@@ -127,6 +134,12 @@ namespace OzetteLibrary.Client
                     }
 
                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
+
+                    if (LastHeartbeatOrScanCompleted.HasValue == false || LastHeartbeatOrScanCompleted.Value < DateTime.Now.Add(TimeSpan.FromMinutes(-1)))
+                    {
+                        LastHeartbeatOrScanCompleted = DateTime.Now;
+                        Logger.WriteTraceMessage("Scan engine heartbeat: no recent activity.");
+                    }
 
                     if (Running == false)
                     {
@@ -173,12 +186,8 @@ namespace OzetteLibrary.Client
         {
             try
             {
-                Logger.WriteTraceMessage("Loading scan sources from the client database.");
-
                 // grab the current copy from DB (this includes last scanned timestamp)
                 var dbSources = GetSourceLocationsFromDatabase();
-
-                Logger.WriteTraceMessage("Successfully loaded scan source file.");
 
                 if (dbSources == null || dbSources.Count == 0)
                 {
@@ -194,46 +203,6 @@ namespace OzetteLibrary.Client
                 Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToLoadScanSources, true);
 
                 return null;
-            }
-        }
-
-        /// <summary>
-        /// Detects if we should scan the current source.
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        private bool ShouldScanSource(SourceLocation source, ScanFrequencies options)
-        {
-            if (source.ShouldScan(options))
-            {
-                Logger.WriteTraceMessage("This source needs to be scanned. Preparing scan operation now.");
-                return true;
-            }
-            else
-            {
-                Logger.WriteTraceMessage("This source location does not need to be scanned at this time.");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Writes source location last-scanned date info to tracelog.
-        /// </summary>
-        /// <param name="source"></param>
-        private void WriteLastScannedInfoToTraceLog(SourceLocation source)
-        {
-            Logger.WriteTraceMessage("Checking source location: " + source.ToString());
-
-            if (source.LastCompletedScan.HasValue)
-            {
-                Logger.WriteTraceMessage(
-                    string.Format("The last completed scan for this source location was on: {0}.",
-                    source.LastCompletedScan.Value.ToString(Constants.Logging.SortableDateTimeFormat)));
-            }
-            else
-            {
-                Logger.WriteTraceMessage("This source location hasn't been scanned before, or source location definitions have recently been updated.");
             }
         }
 

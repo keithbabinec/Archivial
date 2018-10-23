@@ -6,7 +6,6 @@ using OzetteLibrary.Files;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Providers;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,10 +37,12 @@ namespace OzetteLibrary.Client
             Running = true;
             Sender = new FileSender(Database as IClientDatabase, Logger, Providers);
 
-            Logger.WriteTraceMessage("BackupEngine is starting up.");
+            Logger.WriteTraceMessage(string.Format("Backup engine is starting up."));
 
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();
+
+            Logger.WriteTraceMessage(string.Format("Backup engine is now running."));
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace OzetteLibrary.Client
         {
             if (Running == true)
             {
-                Logger.WriteTraceMessage("BackupEngine is shutting down.");
+                Logger.WriteTraceMessage("Backup engine is shutting down.");
                 Running = false;
             }
         }
@@ -60,6 +61,11 @@ namespace OzetteLibrary.Client
         /// The file copy/transfer utility.
         /// </summary>
         private FileSender Sender { get; set; }
+
+        /// <summary>
+        /// The last time a heartbeat message or file backup was completed.
+        /// </summary>
+        private DateTime? LastHeartbeatOrBackupCompleted { get; set; }
 
         /// <summary>
         /// Core processing loop.
@@ -96,6 +102,7 @@ namespace OzetteLibrary.Client
                                         // task has completed, failed, or canceled.
                                         // quit the status loop.
                                         transferFinished = true;
+                                        LastHeartbeatOrBackupCompleted = DateTime.Now;
                                         break;
                                     }
                                 default:
@@ -120,6 +127,12 @@ namespace OzetteLibrary.Client
                     else
                     {
                         ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
+
+                        if (LastHeartbeatOrBackupCompleted.HasValue == false || LastHeartbeatOrBackupCompleted.Value < DateTime.Now.Add(TimeSpan.FromMinutes(-1)))
+                        {
+                            LastHeartbeatOrBackupCompleted = DateTime.Now;
+                            Logger.WriteTraceMessage("Backup engine heartbeat: no recent activity.");
+                        }
                     }
 
                     if (Running == false)
