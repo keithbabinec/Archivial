@@ -165,8 +165,6 @@ namespace OzetteLibrary.Client.Transfer
             // > double check that we haven't already transferred this whole file.
             // > this avoids a full upload if for some reason we have lost our client database state.
 
-            Logger.WriteTraceMessage("Checking the status of this file on supported providers.");
-
             foreach (var provider in Providers)
             {
                 var directory = Database.GetDirectoryMapItem(file.Directory);

@@ -86,8 +86,6 @@ namespace OzetteLibrary.Providers.Azure
         /// <returns><c>ProviderFileStatus</c></returns>
         public async Task<ProviderFileStatus> GetFileStatusAsync(BackupFile file, DirectoryMapItem directory)
         {
-            Logger.WriteTraceMessage("Checking the Azure provider status.");
-            
             // calculate my uri
 
             var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, directory.GetRemoteContainerName(ProviderTypes.Azure), file.GetRemoteFileName(ProviderTypes.Azure));
@@ -110,7 +108,6 @@ namespace OzetteLibrary.Providers.Azure
                 fileStatus.ApplyMetadataToState(blob.Metadata);
             }
             
-            Logger.WriteTraceMessage("File sync status in Azure: " + fileStatus.SyncStatus);
             return fileStatus;
         }
 

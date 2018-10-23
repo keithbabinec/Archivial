@@ -269,8 +269,6 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="source">The source definition</param>
         private void ScanFile(ScanResults results, FileInfo fileInfo, SourceLocation source)
         {
-            Logger.WriteTraceMessage(string.Format("Scanning file: {0}", fileInfo.FullName));
-
             var hashType = Hasher.GetDefaultHashAlgorithm(source.Priority);
             var hash = Hasher.GenerateDefaultHash(fileInfo.FullName, source.Priority);
 
@@ -319,7 +317,7 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="priority">The source priority</param>
         private void ProcessNewFile(FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm, FileBackupPriority priority)
         {
-            Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is new.", fileInfo.Name));
+            Logger.WriteTraceMessage(string.Format("New File: {0}", fileInfo.FullName));
 
             // brand new file
             var backupFile = new BackupFile(fileInfo, priority);
@@ -339,7 +337,7 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="algorithm">Hash algorithm used to compute the hash</param>
         private void ProcessUpdatedFile(BackupFileLookup fileLookup, FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
         {
-            Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is updated.", fileInfo.Name));
+            Logger.WriteTraceMessage(string.Format("Updated File: {0}", fileInfo.FullName));
 
             // updated file
             fileLookup.File.SetFileHashWithAlgorithm(fileHash, algorithm);
@@ -356,7 +354,7 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="fileInfo">FileInfo details</param>
         private void ProcessExistingFile(BackupFileLookup fileLookup, FileInfo fileInfo)
         {
-            Logger.WriteTraceMessage(string.Format("Scanned file ({0}) is unchanged.", fileInfo.Name));
+            Logger.WriteTraceMessage(string.Format("Unchanged File: {0}", fileInfo.FullName));
 
             // existing file
             // should update the last checked flag
