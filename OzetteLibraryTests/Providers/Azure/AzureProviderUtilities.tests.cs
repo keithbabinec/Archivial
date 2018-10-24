@@ -220,6 +220,7 @@ namespace OzetteLibraryTests.Providers.Azure
                 "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTAwMDAwMDAx",
                 "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTAwMDAwMDAy",
                 "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTAwMDAwMDAz",
+                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTAwMDAwMDA0"
             };
 
             Assert.IsNotNull(result);
@@ -228,6 +229,7 @@ namespace OzetteLibraryTests.Providers.Azure
             Assert.AreEqual(expected[1], result[1]);
             Assert.AreEqual(expected[2], result[2]);
             Assert.AreEqual(expected[3], result[3]);
+            Assert.AreEqual(expected[4], result[4]);
         }
 
         [TestMethod]
