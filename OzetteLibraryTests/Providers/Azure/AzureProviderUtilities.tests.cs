@@ -155,7 +155,7 @@ namespace OzetteLibraryTests.Providers.Azure
             int blockID = 1;
 
             var result = provider.GenerateBlockIdentifierBase64String(fileID, blockID);
-            var expected = "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTE=";
+            var expected = "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTAwMDAwMDAx";
 
             Assert.AreEqual(expected, result);
         }
@@ -196,7 +196,7 @@ namespace OzetteLibraryTests.Providers.Azure
 
             var expected = new List<string>()
             {
-                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTA="
+                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTAwMDAwMDAw"
             };
 
             Assert.IsNotNull(result);
@@ -216,11 +216,10 @@ namespace OzetteLibraryTests.Providers.Azure
 
             var expected = new List<string>()
             {
-                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTA=",
-                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTE=",
-                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTI=",
-                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTM=",
-                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTQ="
+                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTAwMDAwMDAw",
+                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTAwMDAwMDAx",
+                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTAwMDAwMDAy",
+                "NTE2OTBkNmUtZjQyYS00NTgxLThlNDUtNjYwYjg1OWJiNDMyLTAwMDAwMDAz",
             };
 
             Assert.IsNotNull(result);
