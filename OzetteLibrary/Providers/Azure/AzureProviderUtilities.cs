@@ -64,7 +64,7 @@ namespace OzetteLibrary.Providers.Azure
 
             return Convert.ToBase64String(
                 Encoding.UTF8.GetBytes(
-                    string.Format("{0}-{1}", fileID.ToString(), blockNumber)
+                    string.Format("{0}-{1}", fileID.ToString(), blockNumber.ToString("D8"))
                 )
             );
         }

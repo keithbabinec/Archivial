@@ -128,18 +128,10 @@ namespace OzetteLibrary.Providers.Azure
             var containerUri = ProviderUtilities.GetContainerUri(AzureStorage.Credentials.AccountName, containerName);
             var currentBlockNumber = currentBlockIndex + 1;
 
-            CloudBlobContainer container = new CloudBlobContainer(new Uri(containerUri), AzureStorage.Credentials);
+            var isFirstBlock = (currentBlockNumber == 1);
+            var isLastBlock = (currentBlockNumber == totalBlocks);
 
-            if (!await container.ExistsAsync(RequestOptions, null).ConfigureAwait(false))
-            {
-                Logger.WriteTraceMessage(string.Format("Azure container [{0}] does not exist. Creating it now.", containerName));
-
-                await container.CreateAsync(BlobContainerPublicAccessType.Off, RequestOptions, null).ConfigureAwait(false);
-
-                container.Metadata[ProviderMetadata.ContainerLocalFolderPath] = directory.LocalPath;
-                container.Metadata[ProviderMetadata.LocalHostName] = Environment.MachineName;
-                await container.SetMetadataAsync(null, RequestOptions, null);
-            }
+            await CreateBlobContainerIfMissingAsync(containerName, containerUri, directory).ConfigureAwait(false);
 
             Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) to Azure storage.", currentBlockNumber, totalBlocks));
 
@@ -164,28 +156,20 @@ namespace OzetteLibrary.Providers.Azure
                 await blob.PutBlockAsync(encodedBlockIdString, stream, blockMd5Hash, null, RequestOptions, null).ConfigureAwait(false);
             }
 
-            // after the block has been uploaded it is in an uncommitted state.
-            // commit this block (plus any previously committed blocks).
+            // is this the first block or the last block? then run the block commit.
+            // >> we need to commit once at the beginning to create the blob, which allows us to set metadata.
+            // >> we need to commit at the end/final block as well to commit the complete block list.
 
-            var blockListToCommit = ProviderUtilities.GenerateListOfBlocksToCommit(file.FileID, currentBlockIndex);
-            await blob.PutBlockListAsync(blockListToCommit, null, RequestOptions, null).ConfigureAwait(false);
+            if (isFirstBlock || isLastBlock)
+            {
+                await CommitBlocksAsync(file, currentBlockIndex, blob).ConfigureAwait(false);
+            }
 
-            // update metadata/status
+            // set the metadata (all situations).
 
-            blob.Metadata[ProviderMetadata.ProviderSyncStatusKeyName] = 
-                (currentBlockNumber == totalBlocks ? 
-                    FileStatus.Synced.ToString() :
-                    FileStatus.InProgress.ToString());
+            await SetBlobMetadataAsync(file, currentBlockIndex, totalBlocks, blob).ConfigureAwait(false);
 
-            blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlockIndex.ToString();
-            blob.Metadata[ProviderMetadata.FullSourcePathKeyName] = file.FullSourcePath;
-            blob.Metadata[ProviderMetadata.FileHash] = file.FileHashString;
-            blob.Metadata[ProviderMetadata.FileHashAlgorithm] = file.HashAlgorithmType;
-
-            // set metadata.
-            await blob.SetMetadataAsync(null, RequestOptions, null).ConfigureAwait(false);
-
-            if (currentBlockNumber == totalBlocks)
+            if (isLastBlock)
             {
                 if (!blob.Properties.StandardBlobTier.HasValue
                     || blob.Properties.StandardBlobTier.Value != StandardBlobTier.Archive)
@@ -197,6 +181,70 @@ namespace OzetteLibrary.Providers.Azure
 
                 Logger.WriteTraceMessage("File upload completed successfully.");
             }
+        }
+
+        /// <summary>
+        /// Creates the blob container if it is missing.
+        /// </summary>
+        /// <param name="containerName"></param>
+        /// <param name="containerUri"></param>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        private async Task CreateBlobContainerIfMissingAsync(string containerName, string containerUri, DirectoryMapItem directory)
+        {
+            CloudBlobContainer container = new CloudBlobContainer(new Uri(containerUri), AzureStorage.Credentials);
+
+            if (!await container.ExistsAsync(RequestOptions, null).ConfigureAwait(false))
+            {
+                Logger.WriteTraceMessage(string.Format("Azure container [{0}] does not exist. Creating it now.", containerName));
+
+                await container.CreateAsync(BlobContainerPublicAccessType.Off, RequestOptions, null).ConfigureAwait(false);
+
+                container.Metadata[ProviderMetadata.ContainerLocalFolderPath] = directory.LocalPath;
+                container.Metadata[ProviderMetadata.LocalHostName] = Environment.MachineName;
+                await container.SetMetadataAsync(null, RequestOptions, null);
+            }
+        }
+
+        /// <summary>
+        /// Commits a list of committed and uncommitted blocks to a block blob.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="currentBlockIndex"></param>
+        /// <param name="blob"></param>
+        /// <returns></returns>
+        private async Task CommitBlocksAsync(BackupFile file, int currentBlockIndex, CloudBlockBlob blob)
+        {
+            // after the block has been uploaded it is in an uncommitted state.
+            // commit this block (plus any previously committed blocks).
+
+            var blockListToCommit = ProviderUtilities.GenerateListOfBlocksToCommit(file.FileID, currentBlockIndex);
+            await blob.PutBlockListAsync(blockListToCommit, null, RequestOptions, null).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sets a blob's metadata properties.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="currentBlockIndex"></param>
+        /// <param name="totalBlocks"></param>
+        /// <param name="blob"></param>
+        /// <returns></returns>
+        private async Task SetBlobMetadataAsync(BackupFile file, int currentBlockIndex, int totalBlocks, CloudBlockBlob blob)
+        {
+            // set the metadata properties.
+            blob.Metadata[ProviderMetadata.ProviderSyncStatusKeyName] =
+                ((currentBlockIndex + 1) == totalBlocks ?
+                    FileStatus.Synced.ToString() :
+                    FileStatus.InProgress.ToString());
+
+            blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlockIndex.ToString();
+            blob.Metadata[ProviderMetadata.FullSourcePathKeyName] = file.FullSourcePath;
+            blob.Metadata[ProviderMetadata.FileHash] = file.FileHashString;
+            blob.Metadata[ProviderMetadata.FileHashAlgorithm] = file.HashAlgorithmType;
+
+            // commit the metadata changes to Azure.
+            await blob.SetMetadataAsync(null, RequestOptions, null).ConfigureAwait(false);
         }
     }
 }
