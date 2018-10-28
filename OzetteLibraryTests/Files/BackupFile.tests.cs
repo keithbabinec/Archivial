@@ -8,14 +8,12 @@ namespace OzetteLibraryTests.Files
     [TestClass]
     public class BackupFileTests
     {
-        private const int DefaultBlockSizeBytes = 1024;
-
         [TestMethod]
         public void BackupFileGetTotalFileBlocksHandlesZeroFileLength()
         {
             var file = new OzetteLibrary.Files.BackupFile();
             file.FileSizeBytes = 0;
-            Assert.AreEqual(0, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
+            Assert.AreEqual(0, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
@@ -23,7 +21,7 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGetTotalFileBlocksThrowsWhenProvidedZeroBlockSize()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 1024;
+            file.FileSizeBytes = 1048576; // 1 MB
             file.CalculateTotalFileBlocks(0);
         }
 
@@ -31,112 +29,104 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks1()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 1024;
-            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
+            file.FileSizeBytes = 2097152; // 2 MB
+            Assert.AreEqual(1, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks2()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 2048;
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
+            file.FileSizeBytes = 4194304; // 4 MB
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks3()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 4096;
-            Assert.AreEqual(4, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
+            file.FileSizeBytes = 8388608; // 8 MB
+            Assert.AreEqual(4, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks4()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 598016;
-            Assert.AreEqual(584, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
+            file.FileSizeBytes = 310378496; // 310 MB
+            Assert.AreEqual(148, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks5()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 1023;
-            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
-        }
-
-        [TestMethod]
-        public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks6()
-        {
-            var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 1;
-            Assert.AreEqual(1, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
+            file.FileSizeBytes = 2097151; // just under 2 MB
+            Assert.AreEqual(1, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks7()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 1025;
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
+            file.FileSizeBytes = 2097153; // just over 2 MB
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks8()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 1500;
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
+            file.FileSizeBytes = 2619922; // over 2 MB, with a halfway populated 2nd block.
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks9()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 2046;
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
+            file.FileSizeBytes = 4194301; // just under 4 MB
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks10()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 2050;
-            Assert.AreEqual(3, file.CalculateTotalFileBlocks(DefaultBlockSizeBytes));
+            file.FileSizeBytes = 4194308; // just over 4 MB
+            Assert.AreEqual(3, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks11()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 189643547895;
-            Assert.AreEqual(18519878, file.CalculateTotalFileBlocks(10240));
+            file.FileSizeBytes = 189643547895; // very large file size
+            Assert.AreEqual(90430, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks12()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 43414941001;
-            Assert.AreEqual(4239741, file.CalculateTotalFileBlocks(10240));
+            file.FileSizeBytes = 43414941001; // very large file size
+            Assert.AreEqual(20702, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks13()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 7744931200569;
-            Assert.AreEqual(167955484, file.CalculateTotalFileBlocks(46113));
+            file.FileSizeBytes = 7744931200569; // very large file size
+            Assert.AreEqual(167955484, file.CalculateTotalFileBlocks(46113)); // unusual block size
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks14()
         {
             var file = new OzetteLibrary.Files.BackupFile();
-            file.FileSizeBytes = 1647999899992;
-            Assert.AreEqual(228539718, file.CalculateTotalFileBlocks(7211));
+            file.FileSizeBytes = 1647999899992; // very large file size
+            Assert.AreEqual(228539718, file.CalculateTotalFileBlocks(7211)); // unusual block size
         }
 
         [TestMethod]
@@ -395,7 +385,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload);
 
-                Assert.AreEqual(9, payload.TotalBlocks);
+                Assert.AreEqual(5, payload.TotalBlocks);
                 Assert.AreEqual(0, payload.CurrentBlockNumber);
 
                 Assert.IsNotNull(payload.DestinationProviders);
@@ -406,7 +396,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
                 {
-                    181, 214, 35, 173, 93, 152, 78, 193, 4, 144, 156, 99, 85, 215, 93, 93, 98, 85, 204, 128
+                    104,190,157,129,20,64,203,47,12,223,69,124,46,207,146,245,145,182,132,186
                 }));
             }
         }
@@ -429,7 +419,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload);
 
-                Assert.AreEqual(9, payload.TotalBlocks);
+                Assert.AreEqual(5, payload.TotalBlocks);
                 Assert.AreEqual(0, payload.CurrentBlockNumber);
 
                 Assert.IsNotNull(payload.DestinationProviders);
@@ -440,8 +430,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
                 {
-                    188, 2, 134, 85, 252, 193, 68, 239, 20, 109, 45, 159, 115, 190, 66, 79, 237, 85,
-                    152, 169, 42, 111, 116, 189, 159, 41, 135, 185, 178, 53, 162, 26,
+                    87,42,186,67,68,10,37,216,48,58,2,219,171,171,115,137,238,242,144,168,93,135,96,249,169,49,17,123,22,30,252,81
                 }));
             }
         }
@@ -469,7 +458,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload);
 
-                Assert.AreEqual(9, payload.TotalBlocks);
+                Assert.AreEqual(5, payload.TotalBlocks);
                 Assert.AreEqual(1, payload.CurrentBlockNumber);
 
                 Assert.IsNotNull(payload.DestinationProviders);
@@ -480,7 +469,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
                 {
-                    195, 216, 15, 17, 146, 78, 106, 226, 24, 67, 148, 215, 196, 100, 62, 114, 94, 174, 244, 112
+                    219,24,62,65,143,24,145,76,71,142,207,220,183,68,220,193,27,199,6,90
                 }));
             }
         }
@@ -491,7 +480,7 @@ namespace OzetteLibraryTests.Files
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
-            // generate a payload for a block in the middle (index 5)
+            // generate a payload for a block in the middle (index 3)
 
             file.ResetCopyState(
                 new OzetteLibrary.Providers.ProvidersCollection()
@@ -499,7 +488,7 @@ namespace OzetteLibraryTests.Files
                     new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
                 });
 
-            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].LastCompletedFileBlockIndex = 4;
+            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].LastCompletedFileBlockIndex = 2;
             file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -508,8 +497,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload);
 
-                Assert.AreEqual(9, payload.TotalBlocks);
-                Assert.AreEqual(5, payload.CurrentBlockNumber);
+                Assert.AreEqual(5, payload.TotalBlocks);
+                Assert.AreEqual(3, payload.CurrentBlockNumber);
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
@@ -519,7 +508,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
                 {
-                    87, 235, 10, 73, 101, 181, 223, 125, 207, 62, 245, 133, 49, 181, 131, 199, 111, 104, 153, 89
+                    62,53,249,165,158,29,2,214,101,66,11,113,2,175,24,160,31,144,25,105
                 }));
             }
         }
@@ -530,7 +519,7 @@ namespace OzetteLibraryTests.Files
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
-            // generate a payload for the final block (index 8)
+            // generate a payload for the final block (index 4)
 
             file.ResetCopyState(
                 new OzetteLibrary.Providers.ProvidersCollection()
@@ -538,7 +527,7 @@ namespace OzetteLibraryTests.Files
                     new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
                 });
 
-            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].LastCompletedFileBlockIndex = 7;
+            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].LastCompletedFileBlockIndex = 3;
             file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -547,8 +536,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload);
 
-                Assert.AreEqual(9, payload.TotalBlocks);
-                Assert.AreEqual(8, payload.CurrentBlockNumber);
+                Assert.AreEqual(5, payload.TotalBlocks);
+                Assert.AreEqual(4, payload.CurrentBlockNumber);
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
@@ -571,7 +560,7 @@ namespace OzetteLibraryTests.Files
 
             var providers = new OzetteLibrary.Providers.ProviderTypes[] { OzetteLibrary.Providers.ProviderTypes.AWS, OzetteLibrary.Providers.ProviderTypes.Azure };
 
-            // generate a payload for the final block (index 8)
+            // generate a payload for the final block (index 4) for multiple providers
 
             file.ResetCopyState(
                 new OzetteLibrary.Providers.ProvidersCollection()
@@ -580,10 +569,10 @@ namespace OzetteLibraryTests.Files
                     new OzetteLibrary.Providers.Provider() { Type = providers[1], Enabled = true }
                 });
 
-            file.CopyState[providers[0]].LastCompletedFileBlockIndex = 7;
+            file.CopyState[providers[0]].LastCompletedFileBlockIndex = 3;
             file.CopyState[providers[0]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
-            file.CopyState[providers[1]].LastCompletedFileBlockIndex = 7;
+            file.CopyState[providers[1]].LastCompletedFileBlockIndex = 3;
             file.CopyState[providers[1]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -592,8 +581,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload);
 
-                Assert.AreEqual(9, payload.TotalBlocks);
-                Assert.AreEqual(8, payload.CurrentBlockNumber);
+                Assert.AreEqual(5, payload.TotalBlocks);
+                Assert.AreEqual(4, payload.CurrentBlockNumber);
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(2, payload.DestinationProviders.Count);
@@ -621,7 +610,7 @@ namespace OzetteLibraryTests.Files
                 OzetteLibrary.Providers.ProviderTypes.Google
             };
 
-            // generate a payload for a block in the middle (index 5)
+            // generate a payload for a block in the middle (index 3) for multiple providers.
 
             file.ResetCopyState(
                 new OzetteLibrary.Providers.ProvidersCollection()
@@ -631,13 +620,13 @@ namespace OzetteLibraryTests.Files
                     new OzetteLibrary.Providers.Provider() { Type = providers[2], Enabled = true }
                 });
 
-            file.CopyState[providers[0]].LastCompletedFileBlockIndex = 4;
+            file.CopyState[providers[0]].LastCompletedFileBlockIndex = 2;
             file.CopyState[providers[0]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
-            file.CopyState[providers[1]].LastCompletedFileBlockIndex = 4;
+            file.CopyState[providers[1]].LastCompletedFileBlockIndex = 2;
             file.CopyState[providers[1]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
-            file.CopyState[providers[2]].LastCompletedFileBlockIndex = 4;
+            file.CopyState[providers[2]].LastCompletedFileBlockIndex = 2;
             file.CopyState[providers[2]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -646,8 +635,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload);
 
-                Assert.AreEqual(9, payload.TotalBlocks);
-                Assert.AreEqual(5, payload.CurrentBlockNumber);
+                Assert.AreEqual(5, payload.TotalBlocks);
+                Assert.AreEqual(3, payload.CurrentBlockNumber);
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(3, payload.DestinationProviders.Count);
@@ -659,7 +648,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
                 {
-                    87, 235, 10, 73, 101, 181, 223, 125, 207, 62, 245, 133, 49, 181, 131, 199, 111, 104, 153, 89
+                    62,53,249,165,158,29,2,214,101,66,11,113,2,175,24,160,31,144,25,105
                 }));
             }
         }
@@ -676,7 +665,7 @@ namespace OzetteLibraryTests.Files
                 OzetteLibrary.Providers.ProviderTypes.Google
             };
 
-            // generate a payload for a block in the middle (index 5)
+            // generate a payload for a block in the middle (index 3)
             // this file is already synced in the first provider, so only two destination providers should be returned.
 
             file.ResetCopyState(
@@ -687,13 +676,13 @@ namespace OzetteLibraryTests.Files
                     new OzetteLibrary.Providers.Provider() { Type = providers[2], Enabled = true }
                 });
 
-            file.CopyState[providers[0]].LastCompletedFileBlockIndex = 8;
+            file.CopyState[providers[0]].LastCompletedFileBlockIndex = 4;
             file.CopyState[providers[0]].SyncStatus = OzetteLibrary.Files.FileStatus.Synced;
 
-            file.CopyState[providers[1]].LastCompletedFileBlockIndex = 4;
+            file.CopyState[providers[1]].LastCompletedFileBlockIndex = 2;
             file.CopyState[providers[1]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
-            file.CopyState[providers[2]].LastCompletedFileBlockIndex = 4;
+            file.CopyState[providers[2]].LastCompletedFileBlockIndex = 2;
             file.CopyState[providers[2]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -702,8 +691,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload);
 
-                Assert.AreEqual(9, payload.TotalBlocks);
-                Assert.AreEqual(5, payload.CurrentBlockNumber);
+                Assert.AreEqual(5, payload.TotalBlocks);
+                Assert.AreEqual(3, payload.CurrentBlockNumber);
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(2, payload.DestinationProviders.Count);
@@ -714,7 +703,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
                 {
-                    87, 235, 10, 73, 101, 181, 223, 125, 207, 62, 245, 133, 49, 181, 131, 199, 111, 104, 153, 89
+                    62,53,249,165,158,29,2,214,101,66,11,113,2,175,24,160,31,144,25,105
                 }));
             }
         }
@@ -731,7 +720,7 @@ namespace OzetteLibraryTests.Files
                 OzetteLibrary.Providers.ProviderTypes.Google
             };
 
-            // generate a payload for a block in the middle (index 5)
+            // generate a payload for a block in the middle (index 2)
             // this file is already synced in the first provider, and the second provider is further along.
             // thus only the third provider should be returned, as that is the next available block to send.
 
@@ -743,13 +732,13 @@ namespace OzetteLibraryTests.Files
                     new OzetteLibrary.Providers.Provider() { Type = providers[2], Enabled = true }
                 });
 
-            file.CopyState[providers[0]].LastCompletedFileBlockIndex = 8;
+            file.CopyState[providers[0]].LastCompletedFileBlockIndex = 4;
             file.CopyState[providers[0]].SyncStatus = OzetteLibrary.Files.FileStatus.Synced;
 
-            file.CopyState[providers[1]].LastCompletedFileBlockIndex = 6;
+            file.CopyState[providers[1]].LastCompletedFileBlockIndex = 2;
             file.CopyState[providers[1]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
-            file.CopyState[providers[2]].LastCompletedFileBlockIndex = 4;
+            file.CopyState[providers[2]].LastCompletedFileBlockIndex = 1;
             file.CopyState[providers[2]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -758,8 +747,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload);
 
-                Assert.AreEqual(9, payload.TotalBlocks);
-                Assert.AreEqual(5, payload.CurrentBlockNumber);
+                Assert.AreEqual(5, payload.TotalBlocks);
+                Assert.AreEqual(2, payload.CurrentBlockNumber);
 
                 // ensure we are taking the minimum block number that could be sent.
 
@@ -771,7 +760,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
                 {
-                    87, 235, 10, 73, 101, 181, 223, 125, 207, 62, 245, 133, 49, 181, 131, 199, 111, 104, 153, 89
+                    111,40,74,161,120,65,67,23,252,204,239,135,18,152,53,141,219,111,38,180
                 }));
             }
         }
@@ -818,7 +807,7 @@ namespace OzetteLibraryTests.Files
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
-            // this example file has 9 total blocks
+            // this example file has 5 total blocks
 
             file.SetBlockAsSent(0, OzetteLibrary.Providers.ProviderTypes.AWS);
 
@@ -839,9 +828,9 @@ namespace OzetteLibraryTests.Files
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
-            // this example file has 9 total blocks
+            // this example file has 5 total blocks
 
-            file.SetBlockAsSent(4, OzetteLibrary.Providers.ProviderTypes.AWS);
+            file.SetBlockAsSent(1, OzetteLibrary.Providers.ProviderTypes.AWS);
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus);
@@ -860,9 +849,9 @@ namespace OzetteLibraryTests.Files
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
-            // this example file has 9 total blocks
+            // this example file has 5 total blocks
 
-            file.SetBlockAsSent(7, OzetteLibrary.Providers.ProviderTypes.AWS);
+            file.SetBlockAsSent(3, OzetteLibrary.Providers.ProviderTypes.AWS);
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus);
@@ -881,9 +870,9 @@ namespace OzetteLibraryTests.Files
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
-            // this example file has 9 total blocks
+            // this example file has 5 total blocks
 
-            file.SetBlockAsSent(8, OzetteLibrary.Providers.ProviderTypes.AWS);
+            file.SetBlockAsSent(4, OzetteLibrary.Providers.ProviderTypes.AWS);
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.OverallState);
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus);

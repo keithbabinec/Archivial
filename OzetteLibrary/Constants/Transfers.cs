@@ -8,6 +8,6 @@
         /// <summary>
         /// The transfer block size.
         /// </summary>
-        public const int TransferBlockSizeBytes = 1048576; // 1MB
+        public const int TransferBlockSizeBytes = 2097152; // 2MB
     }
 }
