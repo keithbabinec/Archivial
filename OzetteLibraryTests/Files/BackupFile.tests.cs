@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OzetteLibrary.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -924,6 +925,47 @@ namespace OzetteLibraryTests.Files
 
             Assert.IsNotNull(remoteName);
             Assert.AreEqual(expected, remoteName);
+        }
+
+        [TestMethod]
+        public void BackupFileIncrementFileRevisionWillIncrementTheRevisionExample1()
+        {
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+
+            // file should automatically have revision 1 (set by constructor)
+            // calling increment should land us at 2.
+
+            file.IncrementFileRevision();
+
+            Assert.IsNotNull(file);
+            Assert.AreEqual(2, file.FileRevisionNumber);
+        }
+
+        [TestMethod]
+        public void BackupFileIncrementFileRevisionWillIncrementTheRevisionExample2()
+        {
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+
+            // force set the file revision number to 4.
+            // calling increment should land us at 5.
+
+            file.FileRevisionNumber = 4;
+            file.IncrementFileRevision();
+
+            Assert.IsNotNull(file);
+            Assert.AreEqual(5, file.FileRevisionNumber);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(MaximumFileRevisionsExceededException))]
+        public void BackupFileIncrementFileRevisionThrowsExceptionOnIntegerOverflow()
+        {
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+
+            // exceeding revisions past int.MaxValue is expected to throw
+
+            file.FileRevisionNumber = int.MaxValue;
+            file.IncrementFileRevision();
         }
     }
 }

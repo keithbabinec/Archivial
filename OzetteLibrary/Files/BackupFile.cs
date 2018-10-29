@@ -1,4 +1,5 @@
 ﻿using OzetteLibrary.Crypto;
+using OzetteLibrary.Exceptions;
 using OzetteLibrary.Providers;
 using System;
 using System.Collections.Generic;
@@ -177,6 +178,24 @@ namespace OzetteLibrary.Files
             {
                 throw new NotImplementedException("unexpected provider type: " + provider.ToString());
             }
+        }
+
+        /// <summary>
+        /// Increments the file revision number by 1.
+        /// </summary>
+        /// <remarks>
+        /// For use when an updated file revision is detected.
+        /// </remarks>
+        public void IncrementFileRevision()
+        {
+            if (FileRevisionNumber == int.MaxValue)
+            {
+                // if we exceed the maximum value of an integer, this is likely a bug or a bad situation.
+                // throw an error because undesirable things may happen on int overflow of the revision number.
+                throw new MaximumFileRevisionsExceededException(FullSourcePath);
+            }
+
+            FileRevisionNumber++;
         }
 
         /// <summary>
