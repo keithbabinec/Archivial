@@ -57,11 +57,6 @@ namespace OzetteLibrary.Providers
         public int LastCompletedFileBlockIndex { get; set; }
 
         /// <summary>
-        /// A revision tag value (number or string).
-        /// </summary>
-        public string RevisionTag { get; set; }
-
-        /// <summary>
         /// Resets copy state back to unsynced.
         /// </summary>
         public void ResetState()
@@ -92,10 +87,6 @@ namespace OzetteLibrary.Providers
                 {
                     throw new ProviderMetadataMissingException(ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName);
                 }
-                if (!providerMetadata.ContainsKey(ProviderMetadata.RevisionTagKeyName))
-                {
-                    throw new ProviderMetadataMissingException(ProviderMetadata.RevisionTagKeyName);
-                }
                 if (!providerMetadata.ContainsKey(ProviderMetadata.HydrationStateKeyName))
                 {
                     throw new ProviderMetadataMissingException(ProviderMetadata.HydrationStateKeyName);
@@ -123,7 +114,6 @@ namespace OzetteLibrary.Providers
                 LastCompletedFileBlockIndex = parsedLastBlock;
                 Metadata = providerMetadata;
                 HydrationStatus = parsedHydrationStatus;
-                RevisionTag = providerMetadata[ProviderMetadata.RevisionTagKeyName];
             }
             else
             {

@@ -108,7 +108,6 @@ namespace OzetteLibrary.Providers.Azure
 
                 var allPropsAndMetadata = new Dictionary<string, string>(blob.Metadata);
                 allPropsAndMetadata.Add(ProviderMetadata.HydrationStateKeyName, ProviderUtilities.GetHydrationStatusFromAzureState(blob.Properties.RehydrationStatus));
-                allPropsAndMetadata.Add(ProviderMetadata.RevisionTagKeyName, blob.Properties.ETag);
 
                 fileStatus.ApplyMetadataToState(allPropsAndMetadata);
             }

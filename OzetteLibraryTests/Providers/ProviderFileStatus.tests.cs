@@ -89,7 +89,6 @@ namespace OzetteLibraryTests.Providers
             var metadata = new Dictionary<string, string>();
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName, "4");
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.RevisionTagKeyName, "some revision value");
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.HydrationStateKeyName, OzetteLibrary.Providers.ProviderHydrationStatus.MovingToActiveTier.ToString());
 
             copyState.ApplyMetadataToState(metadata);
@@ -98,7 +97,6 @@ namespace OzetteLibraryTests.Providers
             Assert.AreEqual(metadata.Count, copyState.Metadata.Count);
             Assert.AreEqual(4, copyState.LastCompletedFileBlockIndex);
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, copyState.SyncStatus);
-            Assert.AreEqual("some revision value", copyState.RevisionTag);
             Assert.AreEqual(OzetteLibrary.Providers.ProviderHydrationStatus.MovingToActiveTier, copyState.HydrationStatus);
         }
 
@@ -138,22 +136,6 @@ namespace OzetteLibraryTests.Providers
             var metadata = new Dictionary<string, string>();
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName, "4");
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.RevisionTagKeyName, "some revision value");
-
-            copyState.ApplyMetadataToState(metadata);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(OzetteLibrary.Exceptions.ProviderMetadataMissingException))]
-        public void ProviderFileStatusApplyAzureMetadataToStateThrowsOnMissingRevisionTag()
-        {
-            var copyState = new OzetteLibrary.Providers.ProviderFileStatus(OzetteLibrary.Providers.ProviderTypes.Azure);
-            copyState.ResetState();
-
-            var metadata = new Dictionary<string, string>();
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName, "4");
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.HydrationStateKeyName, OzetteLibrary.Providers.ProviderHydrationStatus.None.ToString());
 
             copyState.ApplyMetadataToState(metadata);
         }
@@ -168,7 +150,6 @@ namespace OzetteLibraryTests.Providers
             var metadata = new Dictionary<string, string>();
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderSyncStatusKeyName, "InPogress"); // misspelled, should not parse
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName, "4");
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.RevisionTagKeyName, "some revision value");
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.HydrationStateKeyName, OzetteLibrary.Providers.ProviderHydrationStatus.None.ToString());
 
             copyState.ApplyMetadataToState(metadata);
@@ -184,7 +165,6 @@ namespace OzetteLibraryTests.Providers
             var metadata = new Dictionary<string, string>();
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderSyncStatusKeyName, OzetteLibrary.Files.FileStatus.InProgress.ToString());
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName, "what?"); // not a number, should not parse.
-            metadata.Add(OzetteLibrary.Constants.ProviderMetadata.RevisionTagKeyName, "some revision value");
             metadata.Add(OzetteLibrary.Constants.ProviderMetadata.HydrationStateKeyName, OzetteLibrary.Providers.ProviderHydrationStatus.None.ToString());
 
             copyState.ApplyMetadataToState(metadata);
