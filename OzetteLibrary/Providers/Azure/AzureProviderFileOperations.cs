@@ -108,7 +108,6 @@ namespace OzetteLibrary.Providers.Azure
 
                 var allPropsAndMetadata = new Dictionary<string, string>(blob.Metadata);
                 allPropsAndMetadata.Add(ProviderMetadata.HydrationStateKeyName, ProviderUtilities.GetHydrationStatusFromAzureState(blob.Properties.RehydrationStatus));
-                allPropsAndMetadata.Add(ProviderMetadata.RevisionTagKeyName, blob.Properties.ETag);
 
                 fileStatus.ApplyMetadataToState(allPropsAndMetadata);
             }
@@ -138,13 +137,19 @@ namespace OzetteLibrary.Providers.Azure
 
             await CreateBlobContainerIfMissingAsync(containerName, containerUri, directory).ConfigureAwait(false);
 
-            Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) to Azure storage.", currentBlockNumber, totalBlocks));
-
             // calculate my uri
 
-            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, containerName, file.GetRemoteFileName(ProviderTypes.Azure));
+            var blobName = file.GetRemoteFileName(ProviderTypes.Azure);
+            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, containerName, blobName);
+
+            if (isFirstBlock)
+            {
+                Logger.WriteTraceMessage(string.Format("Azure destination: {0}/{1}", containerName, blobName));
+            }
 
             // hash the block. Azure has an integrity check on the server side if we supply the expected md5 hash.
+
+            Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) to Azure storage.", currentBlockNumber, totalBlocks));
 
             string blockMd5Hash = Hasher.ConvertHashByteArrayToBase64EncodedString(
                 Hasher.HashFileBlockFromByteArray(HashAlgorithmName.MD5, data)
@@ -184,7 +189,7 @@ namespace OzetteLibrary.Providers.Azure
                     await blob.SetStandardBlobTierAsync(StandardBlobTier.Archive, null, RequestOptions, null);
                 }
 
-                Logger.WriteTraceMessage("File upload completed successfully.");
+                Logger.WriteTraceMessage("File successfully uploaded to Azure storage: " + file.FullSourcePath);
             }
         }
 

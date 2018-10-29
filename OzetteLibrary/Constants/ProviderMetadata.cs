@@ -44,10 +44,5 @@
         /// The name of the properties key for file hydration state.
         /// </summary>
         public const string HydrationStateKeyName = "HydrationState";
-
-        /// <summary>
-        /// The name of the properties key for file revision.
-        /// </summary>
-        public const string RevisionTagKeyName = "RevisionTag";
     }
 }

@@ -95,6 +95,7 @@
     <Compile Include="Events\EngineStoppedReason.cs" />
     <Compile Include="Exceptions\ApplicationCoreSettingMissingException.cs" />
     <Compile Include="Exceptions\ApplicationSecretMissingException.cs" />
+    <Compile Include="Exceptions\MaximumFileRevisionsExceededException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMalformedException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMissingException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidFileBackupPriorityException.cs" />

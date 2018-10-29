@@ -343,6 +343,7 @@ namespace OzetteLibrary.Client.Sources
             fileLookup.File.SetFileHashWithAlgorithm(fileHash, algorithm);
             fileLookup.File.ResetCopyState(Database.GetProvidersList());
             fileLookup.File.SetLastCheckedTimeStamp();
+            fileLookup.File.IncrementFileRevision();
 
             Database.UpdateBackupFile(fileLookup.File);
         }

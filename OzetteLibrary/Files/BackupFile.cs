@@ -1,4 +1,5 @@
 ﻿using OzetteLibrary.Crypto;
+using OzetteLibrary.Exceptions;
 using OzetteLibrary.Providers;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace OzetteLibrary.Files
             FileSizeBytes = fileInfo.Length;
             TotalFileBlocks = CalculateTotalFileBlocks(Constants.Transfers.TransferBlockSizeBytes);
             Priority = priority;
+            FileRevisionNumber = 1;
         }
 
         /// <summary>
@@ -97,6 +99,15 @@ namespace OzetteLibrary.Files
         /// The file backup priority of this file.
         /// </summary>
         public FileBackupPriority Priority { get; set; }
+
+        /// <summary>
+        /// The number of the latest version of this file.
+        /// </summary>
+        /// <remarks>
+        /// Revision 1 means the first (only) version of the file.
+        /// Revision 4 means this is the 4th revision/copy of the file (as known to our versioning history).
+        /// </remarks>
+        public int FileRevisionNumber { get; set; }
 
         /// <summary>
         /// The type of hash algorithm.
@@ -156,17 +167,35 @@ namespace OzetteLibrary.Files
 
                     if (extension.Length > 0 && reg.IsMatch(extension))
                     {
-                        return string.Format("{0}-file-{1}.{2}", Constants.Logging.AppName, FileID.ToString(), extension).ToLower();
+                        return string.Format("{0}-file-{1}-v{2}.{3}", Constants.Logging.AppName, FileID.ToString(), FileRevisionNumber, extension).ToLower();
                     }
                 }
 
                 // extensionless (or problematic extension) file.
-                return string.Format("{0}-file-{1}", Constants.Logging.AppName, FileID.ToString()).ToLower();
+                return string.Format("{0}-file-{1}-v{2}", Constants.Logging.AppName, FileID.ToString(), FileRevisionNumber).ToLower();
             }
             else
             {
                 throw new NotImplementedException("unexpected provider type: " + provider.ToString());
             }
+        }
+
+        /// <summary>
+        /// Increments the file revision number by 1.
+        /// </summary>
+        /// <remarks>
+        /// For use when an updated file revision is detected.
+        /// </remarks>
+        public void IncrementFileRevision()
+        {
+            if (FileRevisionNumber == int.MaxValue)
+            {
+                // if we exceed the maximum value of an integer, this is likely a bug or a bad situation.
+                // throw an error because undesirable things may happen on int overflow of the revision number.
+                throw new MaximumFileRevisionsExceededException(FullSourcePath);
+            }
+
+            FileRevisionNumber++;
         }
 
         /// <summary>
