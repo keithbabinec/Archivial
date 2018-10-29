@@ -262,7 +262,7 @@ namespace OzetteLibrary.Files
 
                 // condition 5: something is provider-failed
 
-                if (inprogressCount > 0)
+                if (providerErrorCount > 0)
                 {
                     OverallState = FileStatus.ProviderError;
                     return;
@@ -586,7 +586,7 @@ namespace OzetteLibrary.Files
         /// <returns></returns>
         public bool HasDataToTransfer()
         {
-            if (OverallState == FileStatus.Synced)
+            if (OverallState == FileStatus.Synced || OverallState == FileStatus.ProviderError)
             {
                 return false;
             }
