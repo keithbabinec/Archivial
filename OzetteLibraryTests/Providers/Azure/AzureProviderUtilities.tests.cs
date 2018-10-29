@@ -255,5 +255,58 @@ namespace OzetteLibraryTests.Providers.Azure
 
             var result = provider.GenerateListOfBlocksToCommit(fileID, blockID);
         }
+
+        [TestMethod]
+        public void AzureProviderUtilitiesGetHydrationStatusFromAzureStateCorrectlyParsesNull()
+        {
+            var provider = new OzetteLibrary.Providers.Azure.AzureProviderUtilities();
+
+            var result = provider.GetHydrationStatusFromAzureState(null);
+            var expected = OzetteLibrary.Providers.ProviderHydrationStatus.None.ToString();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void AzureProviderUtilitiesGetHydrationStatusFromAzureStateCorrectlyParsesUnknown()
+        {
+            var provider = new OzetteLibrary.Providers.Azure.AzureProviderUtilities();
+
+            var result = provider.GetHydrationStatusFromAzureState(Microsoft.WindowsAzure.Storage.Blob.RehydrationStatus.Unknown);
+            var expected = OzetteLibrary.Providers.ProviderHydrationStatus.None.ToString();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void AzureProviderUtilitiesGetHydrationStatusFromAzureStateCorrectlyParsesPendingHot()
+        {
+            var provider = new OzetteLibrary.Providers.Azure.AzureProviderUtilities();
+
+            var result = provider.GetHydrationStatusFromAzureState(Microsoft.WindowsAzure.Storage.Blob.RehydrationStatus.PendingToHot);
+            var expected = OzetteLibrary.Providers.ProviderHydrationStatus.MovingToActiveTier.ToString();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void AzureProviderUtilitiesGetHydrationStatusFromAzureStateCorrectlyParsesPendingCool()
+        {
+            var provider = new OzetteLibrary.Providers.Azure.AzureProviderUtilities();
+
+            var result = provider.GetHydrationStatusFromAzureState(Microsoft.WindowsAzure.Storage.Blob.RehydrationStatus.PendingToCool);
+            var expected = OzetteLibrary.Providers.ProviderHydrationStatus.MovingToActiveTier.ToString();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void AzureProviderUtilitiesGetHydrationStatusFromAzureStateCorrectlyThrowsOnUnexpectedValue()
+        {
+            var provider = new OzetteLibrary.Providers.Azure.AzureProviderUtilities();
+
+            var result = provider.GetHydrationStatusFromAzureState((Microsoft.WindowsAzure.Storage.Blob.RehydrationStatus)500); // not a real enum value
+        }
     }
 }

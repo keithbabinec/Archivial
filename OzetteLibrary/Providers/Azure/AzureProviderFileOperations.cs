@@ -8,6 +8,7 @@ using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -105,7 +106,11 @@ namespace OzetteLibrary.Providers.Azure
                 
                 await blob.FetchAttributesAsync(null, RequestOptions, null).ConfigureAwait(false);
 
-                fileStatus.ApplyMetadataToState(blob.Metadata);
+                var allPropsAndMetadata = new Dictionary<string, string>(blob.Metadata);
+                allPropsAndMetadata.Add(ProviderMetadata.HydrationStateKeyName, ProviderUtilities.GetHydrationStatusFromAzureState(blob.Properties.RehydrationStatus));
+                allPropsAndMetadata.Add(ProviderMetadata.RevisionTagKeyName, blob.Properties.ETag);
+
+                fileStatus.ApplyMetadataToState(allPropsAndMetadata);
             }
             
             return fileStatus;
@@ -200,8 +205,8 @@ namespace OzetteLibrary.Providers.Azure
 
                 await container.CreateAsync(BlobContainerPublicAccessType.Off, RequestOptions, null).ConfigureAwait(false);
 
-                container.Metadata[ProviderMetadata.ContainerLocalFolderPath] = directory.LocalPath;
-                container.Metadata[ProviderMetadata.LocalHostName] = Environment.MachineName;
+                container.Metadata[ProviderMetadata.ContainerLocalFolderPathKeyName] = directory.LocalPath;
+                container.Metadata[ProviderMetadata.LocalHostNameKeyName] = Environment.MachineName;
                 await container.SetMetadataAsync(null, RequestOptions, null);
             }
         }
@@ -240,8 +245,8 @@ namespace OzetteLibrary.Providers.Azure
 
             blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlockIndex.ToString();
             blob.Metadata[ProviderMetadata.FullSourcePathKeyName] = file.FullSourcePath;
-            blob.Metadata[ProviderMetadata.FileHash] = file.FileHashString;
-            blob.Metadata[ProviderMetadata.FileHashAlgorithm] = file.HashAlgorithmType;
+            blob.Metadata[ProviderMetadata.FileHashKeyName] = file.FileHashString;
+            blob.Metadata[ProviderMetadata.FileHashAlgorithmKeyName] = file.HashAlgorithmType;
 
             // commit the metadata changes to Azure.
             await blob.SetMetadataAsync(null, RequestOptions, null).ConfigureAwait(false);

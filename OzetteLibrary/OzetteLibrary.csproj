@@ -115,6 +115,7 @@
     <Compile Include="Providers\Azure\AzureProviderUtilities.cs" />
     <Compile Include="Providers\Provider.cs" />
     <Compile Include="Providers\ProviderConnectionsCollection.cs" />
+    <Compile Include="Providers\ProviderHydrationStatus.cs" />
     <Compile Include="Providers\ProvidersCollection.cs" />
     <Compile Include="Providers\ProviderTypes.cs" />
     <Compile Include="Secrets\ISecretStore.cs" />

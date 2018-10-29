@@ -44,12 +44,22 @@ namespace OzetteLibrary.Providers
         public FileStatus SyncStatus { get; set; }
 
         /// <summary>
+        /// Stores the hydration status value (transitioning, stable, etc).
+        /// </summary>
+        public ProviderHydrationStatus HydrationStatus { get; set; }
+
+        /// <summary>
         /// The last completed file transfer block, if multiple blocks are required.
         /// </summary>
         /// <remarks>
         /// This index starts at 0, not 1.
         /// </remarks>
         public int LastCompletedFileBlockIndex { get; set; }
+
+        /// <summary>
+        /// A revision tag value (number or string).
+        /// </summary>
+        public string RevisionTag { get; set; }
 
         /// <summary>
         /// Resets copy state back to unsynced.
@@ -82,11 +92,25 @@ namespace OzetteLibrary.Providers
                 {
                     throw new ProviderMetadataMissingException(ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName);
                 }
+                if (!providerMetadata.ContainsKey(ProviderMetadata.RevisionTagKeyName))
+                {
+                    throw new ProviderMetadataMissingException(ProviderMetadata.RevisionTagKeyName);
+                }
+                if (!providerMetadata.ContainsKey(ProviderMetadata.HydrationStateKeyName))
+                {
+                    throw new ProviderMetadataMissingException(ProviderMetadata.HydrationStateKeyName);
+                }
 
                 FileStatus parsedStatus;
                 if (!Enum.TryParse(providerMetadata[ProviderMetadata.ProviderSyncStatusKeyName], out parsedStatus))
                 {
                     throw new ProviderMetadataMalformedException(ProviderMetadata.ProviderSyncStatusKeyName);
+                }
+
+                ProviderHydrationStatus parsedHydrationStatus;
+                if (!Enum.TryParse(providerMetadata[ProviderMetadata.HydrationStateKeyName], out parsedHydrationStatus))
+                {
+                    throw new ProviderMetadataMalformedException(ProviderMetadata.HydrationStateKeyName);
                 }
 
                 int parsedLastBlock;
@@ -98,6 +122,8 @@ namespace OzetteLibrary.Providers
                 SyncStatus = parsedStatus;
                 LastCompletedFileBlockIndex = parsedLastBlock;
                 Metadata = providerMetadata;
+                HydrationStatus = parsedHydrationStatus;
+                RevisionTag = providerMetadata[ProviderMetadata.RevisionTagKeyName];
             }
             else
             {

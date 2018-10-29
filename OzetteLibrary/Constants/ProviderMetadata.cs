@@ -23,21 +23,31 @@
         /// <summary>
         /// The name of the metadata key for the file's computed hash.
         /// </summary>
-        public const string FileHash = "OzetteFileHash";
+        public const string FileHashKeyName = "OzetteFileHash";
 
         /// <summary>
         /// The name of the metadata key for the file's hash algorithm.
         /// </summary>
-        public const string FileHashAlgorithm = "OzetteFileHashAlgorithm";
+        public const string FileHashAlgorithmKeyName = "OzetteFileHashAlgorithm";
 
         /// <summary>
         /// The name of the metadata key for the folder's local path.
         /// </summary>
-        public const string ContainerLocalFolderPath = "OzetteFolderLocalPath";
+        public const string ContainerLocalFolderPathKeyName = "OzetteFolderLocalPath";
 
         /// <summary>
         /// The name of the metadata key for the backup host computer.
         /// </summary>
-        public const string LocalHostName = "OzetteBackupHost";
+        public const string LocalHostNameKeyName = "OzetteBackupHost";
+
+        /// <summary>
+        /// The name of the properties key for file hydration state.
+        /// </summary>
+        public const string HydrationStateKeyName = "HydrationState";
+
+        /// <summary>
+        /// The name of the properties key for file revision.
+        /// </summary>
+        public const string RevisionTagKeyName = "RevisionTag";
     }
 }

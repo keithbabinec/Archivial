@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage.Blob;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -118,6 +119,30 @@ namespace OzetteLibrary.Providers.Azure
             // https://myaccount.blob.core.windows.net/mycontainer/myblob 
 
             return string.Format("https://{0}.blob.core.windows.net/{1}", storageAccountName, containerName);
+        }
+
+        /// <summary>
+        /// Converts the Azure file rehydration state to a common version usable across all providers.
+        /// </summary>
+        /// <param name="rehydrationStatus"></param>
+        /// <returns></returns>
+        public string GetHydrationStatusFromAzureState(RehydrationStatus? rehydrationStatus)
+        {
+            // note that moving back to archive tier is an instantaneous operation.
+            // hence the missing case of 'moving to archive'
+
+            if (rehydrationStatus.HasValue == false || rehydrationStatus.Value == RehydrationStatus.Unknown)
+            {
+                return ProviderHydrationStatus.None.ToString();
+            }
+            else if (rehydrationStatus.Value == RehydrationStatus.PendingToCool || rehydrationStatus.Value == RehydrationStatus.PendingToHot)
+            {
+                return ProviderHydrationStatus.MovingToActiveTier.ToString();
+            }
+            else
+            {
+                throw new NotImplementedException("Unexpected RehydrationStatus provided by Azure: " + rehydrationStatus.Value.ToString());
+            }
         }
     }
 }

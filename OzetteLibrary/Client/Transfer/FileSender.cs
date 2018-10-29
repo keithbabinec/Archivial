@@ -175,7 +175,7 @@ namespace OzetteLibrary.Client.Transfer
                 if (file.CopyState.ContainsKey(provider.Key) 
                     && file.CopyState[provider.Key].SyncStatus == FileStatus.Unsynced 
                     && providerState.SyncStatus == FileStatus.Synced
-                    && providerState.Metadata[ProviderMetadata.FileHash] == file.FileHashString)
+                    && providerState.Metadata[ProviderMetadata.FileHashKeyName] == file.FileHashString)
                 {
                     Logger.WriteTraceMessage(string.Format("Found a sync mismatch: this file is already synced at the provider [{0}]. Updating our local status.", provider.Key));
 
