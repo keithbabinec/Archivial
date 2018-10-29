@@ -887,7 +887,40 @@ namespace OzetteLibraryTests.Files
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
 
             var remoteName = file.GetRemoteFileName(OzetteLibrary.Providers.ProviderTypes.Azure);
-            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258.mp3";
+            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v1.mp3";
+
+            Assert.IsNotNull(remoteName);
+            Assert.AreEqual(expected, remoteName);
+        }
+
+        [TestMethod]
+        public void BackupFileGetRemoteFileNameReturnsCorrectlyFormattedExtensionlessNameForAzureProvider()
+        {
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\AnExtensionlessFile"), OzetteLibrary.Files.FileBackupPriority.Low);
+
+            // reset auto-generated id for stable test result.
+            file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
+
+            var remoteName = file.GetRemoteFileName(OzetteLibrary.Providers.ProviderTypes.Azure);
+            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v1";
+
+            Assert.IsNotNull(remoteName);
+            Assert.AreEqual(expected, remoteName);
+        }
+
+        [TestMethod]
+        public void BackupFileGetRemoteFileNameWithLaterRevisionReturnsCorrectlyFormattedNameForAzureProvider()
+        {
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+
+            // reset auto-generated id for stable test result.
+            file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
+
+            // force set the version
+            file.FileRevisionNumber = 4;
+
+            var remoteName = file.GetRemoteFileName(OzetteLibrary.Providers.ProviderTypes.Azure);
+            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v4.mp3";
 
             Assert.IsNotNull(remoteName);
             Assert.AreEqual(expected, remoteName);
