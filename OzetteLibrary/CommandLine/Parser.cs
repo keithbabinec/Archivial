@@ -14,12 +14,6 @@ namespace OzetteLibrary.CommandLine
         /// <summary>
         /// Parses the provided arguments into an <c>Arguments</c> object.
         /// </summary>
-        /// <example>
-        /// A few examples:
-        /// ozettecmd.exe install
-        /// ozettecmd.exe install --installdirectory "C:\path"
-        /// ozettecmd.exe configure-encryption --protectioniv "passphrase"
-        /// </example>
         /// <param name="args">The raw arguments from the commandline.</param>
         /// <param name="parsed">An output parameter for the parsed object.</param>
         /// <returns>True if successfully parsed, otherwise false.</returns>
@@ -50,10 +44,20 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseAddNetSourceArgs(args, out parsed);
             }
+            else if (baseCommand == "add-netcredential")
+            {
+                return ParseAddNetCredentialArgs(args, out parsed);
+            }
             else if (baseCommand == "list-sources")
             {
                 // command has no additional arguments
                 parsed = new ListSourcesArguments();
+                return true;
+            }
+            else if (baseCommand == "list-netcredentials")
+            {
+                // command has no additional arguments
+                parsed = new ListNetCredentialArguments();
                 return true;
             }
             else if (baseCommand == "list-providers")
@@ -69,6 +73,10 @@ namespace OzetteLibrary.CommandLine
             else if (baseCommand == "remove-provider")
             {
                 return ParseRemoveProviderArgs(args, out parsed);
+            }
+            else if (baseCommand == "remove-netcredential")
+            {
+                return ParseRemoveNetCredentialArgs(args, out parsed);
             }
             else
             {
@@ -130,6 +138,82 @@ namespace OzetteLibrary.CommandLine
             if (map.ContainsKey("azurestorageaccounttoken"))
             {
                 configArgs.AzureStorageAccountToken = map["azurestorageaccounttoken"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            parsed = configArgs;
+            return true;
+        }
+
+        /// <summary>
+        /// Parses the provided arguments into an <c>AddNetCredentialArguments</c> object.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="parsed"></param>
+        /// <returns></returns>
+        private bool ParseAddNetCredentialArgs(string[] args, out ArgumentBase parsed)
+        {
+            // initialize args object with default
+            var configArgs = new AddNetCredentialArguments();
+            var map = ExtractArguments(args);
+
+            if (map.ContainsKey("credentialname"))
+            {
+                configArgs.CredentialName = map["credentialname"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            if (map.ContainsKey("username"))
+            {
+                configArgs.ShareUser = map["username"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            if (map.ContainsKey("password"))
+            {
+                configArgs.SharePassword = map["password"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            parsed = configArgs;
+            return true;
+        }
+
+        /// <summary>
+        /// Parses the provided arguments into an <c>RemoveNetCredentialArguments</c> object.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="parsed"></param>
+        /// <returns></returns>
+        private bool ParseRemoveNetCredentialArgs(string[] args, out ArgumentBase parsed)
+        {
+            // initialize args object with default
+            var configArgs = new RemoveNetCredentialArguments();
+            var map = ExtractArguments(args);
+
+            if (map.ContainsKey("credentialname"))
+            {
+                configArgs.CredentialName = map["credentialname"];
             }
             else
             {

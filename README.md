@@ -90,9 +90,9 @@ OzetteCmd.exe add-localsource --folderpath "C:\users\me\documents" --priority Hi
 OzetteCmd.exe add-netsource --uncpath "\\networkshare\public\media\playlists"
 ```
 
-**Example: Add an authenticated network/UNC source folder to backup, using all of the optional arguments.**
+**Example: Add a network credential, then add an authenticated network/UNC source folder to backup, using all of the optional arguments.**
 
-Note: The credential must be stored/saved using the add-netcredential command prior to saving the source.
+Note: The credential must be stored using the add-netcredential command prior to saving an authenticated netsource.
 ```
 OzetteCmd.exe add-netcredential --credentialname 'Drobo-NAS-Device' --username 'drobo_read_only_user' --password '******'
 OzetteCmd.exe add-netsource --uncpath "\\networkshare\private\docs\taxes" --credentialname 'Drobo-NAS-Device' --priority High --revisions 3 --matchfilter "*.pdf"
@@ -108,4 +108,16 @@ OzetteCmd.exe list-sources
 Note: see *list-sources* to view the existing sources with IDs.
 ```
 OzetteCmd.exe remove-source --sourceid 1
+```
+
+**Example: List the stored network credentials you have configured**
+```
+OzetteCmd.exe list-netcredentials
+```
+
+**Example: Remove one of the stored network credentials by name**
+
+Note: see *list-netcredentials* to view the existing credentials.
+```
+OzetteCmd.exe remove-netcredential --credentialname 'Drobo-NAS-Device'
 ```

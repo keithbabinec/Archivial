@@ -364,5 +364,95 @@ namespace OzetteLibraryTests.CommandLine
             Assert.IsInstanceOfType(parsed, typeof(RemoveSourceArguments));
             Assert.AreEqual(3, (parsed as RemoveSourceArguments).SourceID);
         }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenRemoveNetCredentialHasNoArgs()
+        {
+            string[] arguments = { "remove-netcredential" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsTrueWhenRemoveNetCredentialHasValidArgs()
+        {
+            string[] arguments = { "remove-netcredential", "--credentialname", "test" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsNotNull(parsed);
+            Assert.IsInstanceOfType(parsed, typeof(RemoveNetCredentialArguments));
+            Assert.AreEqual("test", (parsed as RemoveNetCredentialArguments).CredentialName);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenAddNetCredentialHasNoArgs()
+        {
+            string[] arguments = { "add-netcredential" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsTrueWhenAddNetCredentialHasValidArgs()
+        {
+            string[] arguments = { "add-netcredential", "--credentialname", "cred-name", "--username", "read_only_user", "--password", "fakepw" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsNotNull(parsed);
+            Assert.IsInstanceOfType(parsed, typeof(AddNetCredentialArguments));
+            Assert.AreEqual("cred-name", (parsed as AddNetCredentialArguments).CredentialName);
+            Assert.AreEqual("read_only_user", (parsed as AddNetCredentialArguments).ShareUser);
+            Assert.AreEqual("fakepw", (parsed as AddNetCredentialArguments).SharePassword);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenAddNetCredentialIsMissingCredName()
+        {
+            string[] arguments = { "add-netcredential", "--username", "read_only_user", "--password", "fakepw" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenAddNetCredentialIsMissingUserName()
+        {
+            string[] arguments = { "add-netcredential", "--credentialname", "cred-name", "--password", "fakepw" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenAddNetCredentialIsMissingPassword()
+        {
+            string[] arguments = { "add-netcredential", "--credentialname", "cred-name", "--username", "read_only_user" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
     }
 }
