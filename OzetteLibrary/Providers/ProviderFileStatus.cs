@@ -110,6 +110,12 @@ namespace OzetteLibrary.Providers
                     throw new ProviderMetadataMalformedException(ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName);
                 }
 
+                // decode any URL escaped properties
+                if (providerMetadata.ContainsKey(ProviderMetadata.FullSourcePathKeyName))
+                {
+                    providerMetadata[ProviderMetadata.FullSourcePathKeyName] = System.Web.HttpUtility.UrlDecode(providerMetadata[ProviderMetadata.FullSourcePathKeyName]);
+                }
+
                 SyncStatus = parsedStatus;
                 LastCompletedFileBlockIndex = parsedLastBlock;
                 Metadata = providerMetadata;
