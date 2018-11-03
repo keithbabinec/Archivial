@@ -73,7 +73,7 @@ OzetteCmd.exe remove-provider --providerid 1
 
 ## Sources
 
-**Example: Add a local source folder to backup.**
+**Example: Add a local source folder to backup, using default options.**
 ```
 OzetteCmd.exe add-localsource --folderpath "C:\users\me\downloads"
 ```
@@ -83,6 +83,19 @@ OzetteCmd.exe add-localsource --folderpath "C:\users\me\downloads"
 Note: --Priority accepts values 'Low', 'Medium', or 'High'. --MatchFilter accepts Windows file matching wildcards.
 ```
 OzetteCmd.exe add-localsource --folderpath "C:\users\me\documents" --priority High --revisions 3 --matchfilter "*.docx"
+```
+
+**Example: Add an unauthenticated network/UNC source folder to backup, using default options.**
+```
+OzetteCmd.exe add-netsource --uncpath "\\networkshare\public\media\playlists"
+```
+
+**Example: Add an authenticated network/UNC source folder to backup, using all of the optional arguments.**
+
+Note: The credential must be stored/saved using the add-netcredential command prior to saving the source.
+```
+OzetteCmd.exe add-netcredential --credentialname 'Drobo-NAS-Device' --username 'drobo_read_only_user' --password '******'
+OzetteCmd.exe add-netsource --uncpath "\\networkshare\private\docs\taxes" --credentialname 'Drobo-NAS-Device' --priority High --revisions 3 --matchfilter "*.pdf"
 ```
 
 **Example: List the source folders you have configured**

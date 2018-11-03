@@ -213,6 +213,83 @@ namespace OzetteLibraryTests.CommandLine
         }
 
         [TestMethod]
+        public void ParserReturnsFalseWhenAddNetSourceHasNoArgsPassed()
+        {
+            string[] arguments = { "add-netsource" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserCanParseAddNetSourceCommandWithOnlyRequiredArgs()
+        {
+            string[] arguments = { "add-netsource", "--uncpath", "\\\\networkshare\\public\\media\\playlists" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsInstanceOfType(parsed, typeof(AddNetSourceArguments));
+
+            var sourceArgs = parsed as AddNetSourceArguments;
+
+            // pass through
+            Assert.AreEqual("\\\\networkshare\\public\\media\\playlists", sourceArgs.UncPath);
+
+            // defaults
+            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultSourceMatchFilter, sourceArgs.Matchfilter);
+            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultSourcePriority, sourceArgs.Priority);
+            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultSourceRevisionCount, sourceArgs.Revisions);
+        }
+
+        [TestMethod]
+        public void ParserCanParseAddNetSourceCommandWithOptionalArgs()
+        {
+            string[] arguments = { "add-netsource", "--uncpath", "\\\\networkshare\\public\\media\\playlists", "--credentialname", "network-device-name", "--priority", "high", "--revisions", "3", "--matchfilter", "*.m3u" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsInstanceOfType(parsed, typeof(AddNetSourceArguments));
+
+            var sourceArgs = parsed as AddNetSourceArguments;
+
+            // pass through
+            Assert.AreEqual("\\\\networkshare\\public\\media\\playlists", sourceArgs.UncPath);
+            Assert.AreEqual("network-device-name", sourceArgs.CredentialName);
+            Assert.AreEqual("*.m3u", sourceArgs.Matchfilter);
+            Assert.AreEqual(OzetteLibrary.Files.FileBackupPriority.High, sourceArgs.Priority);
+            Assert.AreEqual(3, sourceArgs.Revisions);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(SourceLocationInvalidRevisionCountException))]
+        public void ParserShouldThrowExceptionWhenAddNetSourceHasInvalidRevision()
+        {
+            string[] arguments = { "add-netsource", "--uncpath", "\\\\networkshare\\public\\media\\playlists", "--credentialname", "network-device-name", "--priority", "low", "--revisions", "not a number", "--matchfilter", "*.m3u" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+            parser.Parse(arguments, out parsed); // should throw due to invalid revision number (must be a number).
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(SourceLocationInvalidFileBackupPriorityException))]
+        public void ParserShouldThrowExceptionWhenAddNetSourceHasInvalidPriority()
+        {
+            string[] arguments = { "add-netsource", "--uncpath", "\\\\networkshare\\public\\media\\playlists", "--credentialname", "network-device-name", "--priority", "critical", "--revisions", "3", "--matchfilter", "*.m3u" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+            parser.Parse(arguments, out parsed); // should throw due to 'critical' file backup priority (not a valid value).
+        }
+
+        [TestMethod]
         public void ParserReturnsFalseWhenRemoveProviderHasNoArgsPassed()
         {
             string[] arguments = { "remove-provider" };

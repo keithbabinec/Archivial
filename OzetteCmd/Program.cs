@@ -107,6 +107,17 @@ namespace OzetteCmd
             help.AppendLine("\t[--revisions]\tThe number of revisions to store (specify a number, such as 1, 2, 3, etc). Defaults to 1 if omitted.");
             help.AppendLine("\t[--matchfilter]\tAn optional wildcard match filter that scopes this source to only certain files.");
             help.AppendLine();
+            help.AppendLine("OzetteCmd.exe add-netsource");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tAdds a remote/UNC directory to the list of backup sources (folders to backup).");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t--uncpath\tThe full UNC folder path that should be backed up.");
+            help.AppendLine("\t[--credentialname]\tThe name of the network credential to lookup (if authentication is required).");
+            help.AppendLine("\t[--priority]\tThe backup priority (specify \"Low\", \"Medium\", or \"High\"). Defaults to Medium if omitted.");
+            help.AppendLine("\t[--revisions]\tThe number of revisions to store (specify a number, such as 1, 2, 3, etc). Defaults to 1 if omitted.");
+            help.AppendLine("\t[--matchfilter]\tAn optional wildcard match filter that scopes this source to only certain files.");
+            help.AppendLine();
             help.AppendLine("OzetteCmd.exe remove-source");
             help.AppendLine();
             help.AppendLine("  Description:");
@@ -134,6 +145,10 @@ namespace OzetteCmd
             else if (arguments is AddLocalSourceArguments)
             {
                 command = new AddLocalSourceCommand(logger);
+            }
+            else if (arguments is AddNetSourceArguments)
+            {
+                command = new AddNetSourceCommand(logger);
             }
             else if (arguments is ConfigureAzureArguments)
             {

@@ -59,8 +59,10 @@
   <ItemGroup>
     <Compile Include="Client\BackupEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
-    <Compile Include="CommandLine\Arguments\AddSourceArguments.cs" />
+    <Compile Include="CommandLine\Arguments\AddNetSourceArguments.cs" />
+    <Compile Include="CommandLine\Arguments\AddLocalSourceArguments.cs" />
     <Compile Include="CommandLine\Commands\AddLocalSourceCommand.cs" />
+    <Compile Include="CommandLine\Commands\AddNetSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\ConfigureAzureCommand.cs" />
     <Compile Include="CommandLine\Commands\ICommand.cs" />
     <Compile Include="CommandLine\Commands\InstallCommand.cs" />
