@@ -60,7 +60,7 @@
     <Compile Include="Client\BackupEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
     <Compile Include="CommandLine\Arguments\AddSourceArguments.cs" />
-    <Compile Include="CommandLine\Commands\AddSourceCommand.cs" />
+    <Compile Include="CommandLine\Commands\AddLocalSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\ConfigureAzureCommand.cs" />
     <Compile Include="CommandLine\Commands\ICommand.cs" />
     <Compile Include="CommandLine\Commands\InstallCommand.cs" />
@@ -101,6 +101,8 @@
     <Compile Include="Exceptions\ProviderMetadataMissingException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidFileBackupPriorityException.cs" />
     <Compile Include="Files\TransferPayload.cs" />
+    <Compile Include="Folders\LocalSourceLocation.cs" />
+    <Compile Include="Folders\NetworkSourceLocation.cs" />
     <Compile Include="Folders\ScanFrequencies.cs" />
     <Compile Include="Logging\Default\Logger.cs" />
     <Compile Include="Logging\ILogger.cs" />

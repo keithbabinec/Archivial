@@ -97,10 +97,10 @@ namespace OzetteCmd
             help.AppendLine("  Description:");
             help.AppendLine("\tLists the currently configured backup source directories (folders to backup).");
             help.AppendLine();
-            help.AppendLine("OzetteCmd.exe add-source");
+            help.AppendLine("OzetteCmd.exe add-localsource");
             help.AppendLine();
             help.AppendLine("  Description:");
-            help.AppendLine("\tAdds a directory to the list of backup sources (folders to backup).");
+            help.AppendLine("\tAdds a local directory to the list of backup sources (folders to backup).");
             help.AppendLine("  Arguments:");
             help.AppendLine("\t--folderpath\tThe full folder path that should be backed up.");
             help.AppendLine("\t[--priority]\tThe backup priority (specify \"Low\", \"Medium\", or \"High\"). Defaults to Medium if omitted.");
@@ -131,9 +131,9 @@ namespace OzetteCmd
             {
                 command = new InstallCommand(logger);
             }
-            else if (arguments is AddSourceArguments)
+            else if (arguments is AddLocalSourceArguments)
             {
-                command = new AddSourceCommand(logger);
+                command = new AddLocalSourceCommand(logger);
             }
             else if (arguments is ConfigureAzureArguments)
             {

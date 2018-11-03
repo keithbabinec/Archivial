@@ -53,7 +53,7 @@ namespace OzetteLibraryTests.Client.Sources
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
-            var source = new OzetteLibrary.Folders.SourceLocation()
+            var source = new LocalSourceLocation()
             {
                 FolderPath = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",
@@ -76,7 +76,7 @@ namespace OzetteLibraryTests.Client.Sources
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
-            var source = new SourceLocation()
+            var source = new LocalSourceLocation()
             {
                 FolderPath = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",
@@ -103,7 +103,7 @@ namespace OzetteLibraryTests.Client.Sources
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
-            var source = new SourceLocation()
+            var source = new LocalSourceLocation()
             {
                 FolderPath = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",
@@ -137,7 +137,7 @@ namespace OzetteLibraryTests.Client.Sources
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
-            var source = new SourceLocation()
+            var source = new LocalSourceLocation()
             {
                 FolderPath = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",
@@ -182,7 +182,7 @@ namespace OzetteLibraryTests.Client.Sources
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
 
-            var source = new SourceLocation()
+            var source = new LocalSourceLocation()
             {
                 FolderPath = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",

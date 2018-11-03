@@ -139,7 +139,7 @@ namespace OzetteLibraryTests.CommandLine
         [TestMethod]
         public void ParserReturnsFalseWhenAddSourceHasNoArgsPassed()
         {
-            string[] arguments = { "add-source" };
+            string[] arguments = { "add-localsource" };
             ArgumentBase parsed;
 
             var parser = new Parser();
@@ -151,15 +151,15 @@ namespace OzetteLibraryTests.CommandLine
         [TestMethod]
         public void ParserCanParseAddSourceCommandWithOnlyRequiredArgs()
         {
-            string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder" };
+            string[] arguments = { "add-localsource", "--folderpath", "C:\\test\\folder" };
             ArgumentBase parsed;
 
             var parser = new Parser();
 
             Assert.IsTrue(parser.Parse(arguments, out parsed));
-            Assert.IsInstanceOfType(parsed, typeof(AddSourceArguments));
+            Assert.IsInstanceOfType(parsed, typeof(AddLocalSourceArguments));
 
-            var sourceArgs = parsed as AddSourceArguments;
+            var sourceArgs = parsed as AddLocalSourceArguments;
 
             // pass through
             Assert.AreEqual("C:\\test\\folder", sourceArgs.FolderPath);
@@ -173,15 +173,15 @@ namespace OzetteLibraryTests.CommandLine
         [TestMethod]
         public void ParserCanParseAddSourceCommandWithOptionalArgs()
         {
-            string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder", "--priority", "high", "--revisions", "3", "--matchfilter", "*.mp3" };
+            string[] arguments = { "add-localsource", "--folderpath", "C:\\test\\folder", "--priority", "high", "--revisions", "3", "--matchfilter", "*.mp3" };
             ArgumentBase parsed;
 
             var parser = new Parser();
 
             Assert.IsTrue(parser.Parse(arguments, out parsed));
-            Assert.IsInstanceOfType(parsed, typeof(AddSourceArguments));
+            Assert.IsInstanceOfType(parsed, typeof(AddLocalSourceArguments));
 
-            var sourceArgs = parsed as AddSourceArguments;
+            var sourceArgs = parsed as AddLocalSourceArguments;
 
             // pass through
             Assert.AreEqual("C:\\test\\folder", sourceArgs.FolderPath);
@@ -194,7 +194,7 @@ namespace OzetteLibraryTests.CommandLine
         [ExpectedException(typeof(SourceLocationInvalidRevisionCountException))]
         public void ParserShouldThrowExceptionWhenAddSourceHasInvalidRevision()
         {
-            string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder", "--priority", "low", "--revisions", "not a number", "--matchfilter", "*.mp3" };
+            string[] arguments = { "add-localsource", "--folderpath", "C:\\test\\folder", "--priority", "low", "--revisions", "not a number", "--matchfilter", "*.mp3" };
             ArgumentBase parsed;
 
             var parser = new Parser();
@@ -205,7 +205,7 @@ namespace OzetteLibraryTests.CommandLine
         [ExpectedException(typeof(SourceLocationInvalidFileBackupPriorityException))]
         public void ParserShouldThrowExceptionWhenAddSourceHasInvalidPriority()
         {
-            string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder", "--priority", "critical", "--revisions", "3", "--matchfilter", "*.mp3" };
+            string[] arguments = { "add-localsource", "--folderpath", "C:\\test\\folder", "--priority", "critical", "--revisions", "3", "--matchfilter", "*.mp3" };
             ArgumentBase parsed;
 
             var parser = new Parser();

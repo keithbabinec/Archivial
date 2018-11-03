@@ -73,16 +73,16 @@ OzetteCmd.exe remove-provider --providerid 1
 
 ## Sources
 
-**Example: Add a source folder to backup.**
+**Example: Add a local source folder to backup.**
 ```
-OzetteCmd.exe add-source --folderpath "C:\users\me\downloads"
+OzetteCmd.exe add-localsource --folderpath "C:\users\me\downloads"
 ```
 
-**Example: Add a source folder to backup, using all of the optional arguments.**
+**Example: Add a local source folder to backup, using all of the optional arguments.**
 
 Note: --Priority accepts values 'Low', 'Medium', or 'High'. --MatchFilter accepts Windows file matching wildcards.
 ```
-OzetteCmd.exe add-source --folderpath "C:\users\me\documents" --priority High --revisions 3 --matchfilter "*.docx"
+OzetteCmd.exe add-localsource --folderpath "C:\users\me\documents" --priority High --revisions 3 --matchfilter "*.docx"
 ```
 
 **Example: List the source folders you have configured**

@@ -42,9 +42,9 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseConfigureAzureArgs(args, out parsed);
             }
-            else if (baseCommand == "add-source")
+            else if (baseCommand == "add-localsource")
             {
-                return ParseAddSourceArgs(args, out parsed);
+                return ParseAddLocalSourceArgs(args, out parsed);
             }
             else if (baseCommand == "list-sources")
             {
@@ -144,10 +144,10 @@ namespace OzetteLibrary.CommandLine
         /// <param name="args"></param>
         /// <param name="parsed"></param>
         /// <returns></returns>
-        private bool ParseAddSourceArgs(string[] args, out ArgumentBase parsed)
+        private bool ParseAddLocalSourceArgs(string[] args, out ArgumentBase parsed)
         {
             // initialize args object with default
-            var sourceArgs = new AddSourceArguments();
+            var sourceArgs = new AddLocalSourceArguments();
             var map = ExtractArguments(args);
 
             if (map.ContainsKey("folderpath"))
