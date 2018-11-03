@@ -1,12 +1,10 @@
 ﻿using LiteDB;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
-using OzetteLibrary.Logging;
 using OzetteLibrary.Providers;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.IO;
-using System.Linq;
 
 namespace OzetteLibrary.Database.LiteDB
 {
