@@ -1,6 +1,4 @@
-﻿using OzetteLibrary.ServiceCore;
-
-namespace OzetteLibrary.Secrets
+﻿namespace OzetteLibrary.Secrets
 {
     /// <summary>
     /// A generic interface for interacting with application secrets.
@@ -12,12 +10,13 @@ namespace OzetteLibrary.Secrets
         /// </summary>
         /// <param name="SecretID">ID of the secret</param>
         /// <returns>The secret value</returns>
-        string GetApplicationSecret(int SecretID);
+        string GetApplicationSecret(string SecretName);
 
         /// <summary>
-        /// Sets the specified application option into the secret store.
+        /// Sets the specified secret into the secret store.
         /// </summary>
-        /// <param name="Option">Application option to save</param>
-        void SetApplicationSecret(ServiceOption Option);
+        /// <param name="SecretName"></param>
+        /// <param name="SecretValue"></param>
+        void SetApplicationSecret(string SecretName, string SecretValue);
     }
 }

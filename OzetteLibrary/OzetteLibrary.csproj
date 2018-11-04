@@ -88,7 +88,7 @@
     <Compile Include="Constants\CommandLine.cs" />
     <Compile Include="Constants\CoreSettingNames.cs" />
     <Compile Include="Constants\EventIDs.cs" />
-    <Compile Include="Constants\OptionIDs.cs" />
+    <Compile Include="Constants\OptionNames.cs" />
     <Compile Include="Constants\ProviderMetadata.cs" />
     <Compile Include="Constants\Transfers.cs" />
     <Compile Include="Engine\BaseEngine.cs" />
@@ -132,7 +132,7 @@
     <Compile Include="Secrets\ISecretStore.cs" />
     <Compile Include="Secrets\ProtectedDataStore.cs" />
     <Compile Include="ServiceCore\CoreSettings.cs" />
-    <Compile Include="ServiceCore\ServiceOption.cs" />
+    <Compile Include="ServiceCore\ApplicationOption.cs" />
     <Compile Include="ServiceCore\StartupResults.cs" />
     <Compile Include="Files\FileBackupPriority.cs" />
     <Compile Include="Folders\ScanResults.cs" />

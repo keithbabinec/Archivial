@@ -1,43 +1,43 @@
 ﻿namespace OzetteLibrary.Constants
 {
     /// <summary>
-    /// A constants class that contains application option names and IDs.
+    /// A enum that describes known option names.
     /// </summary>
-    public static class OptionIDs
+    public static class OptionNames
     {
         /// <summary>
         /// Option: LowPriorityScanFrequencyInHours.
         /// </summary>
-        public const int LowPriorityScanFrequencyInHours = 1;
+        public const string LowPriorityScanFrequencyInHours = "LowPriorityScanFrequencyInHours";
 
         /// <summary>
         /// Option: MedPriorityScanFrequencyInHours.
         /// </summary>
-        public const int MedPriorityScanFrequencyInHours = 2;
+        public const string MedPriorityScanFrequencyInHours = "MedPriorityScanFrequencyInHours";
 
         /// <summary>
         /// Option: HighPriorityScanFrequencyInHours.
         /// </summary>
-        public const int HighPriorityScanFrequencyInHours = 3;
+        public const string HighPriorityScanFrequencyInHours = "HighPriorityScanFrequencyInHours";
 
         /// <summary>
         /// Option: SourcesFilePath.
         /// </summary>
-        public const int SourcesFilePath = 4;
+        public const string SourcesFilePath = "SourcesFilePath";
 
         /// <summary>
         /// Option: ProvidersFilePath.
         /// </summary>
-        public const int ProvidersFilePath = 5;
+        public const string ProvidersFilePath = "ProvidersFilePath";
 
         /// <summary>
         /// Option: AzureStorageAccountName.
         /// </summary>
-        public const int AzureStorageAccountName = 6;
+        public const string AzureStorageAccountName = "AzureStorageAccountName";
 
         /// <summary>
         /// Option: AzureStorageAccountToken.
         /// </summary>
-        public const int AzureStorageAccountToken = 7;
+        public const string AzureStorageAccountToken = "AzureStorageAccountToken";
     }
 }

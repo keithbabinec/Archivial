@@ -28,6 +28,6 @@
         /// <summary>
         /// A string constant for the service options table name.
         /// </summary>
-        public const string ServiceOptionsTableName = "ServiceOptions";
+        public const string ApplicationOptionsTableName = "ApplicationOptions";
     }
 }

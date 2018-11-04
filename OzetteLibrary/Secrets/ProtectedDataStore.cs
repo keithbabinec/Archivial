@@ -1,6 +1,5 @@
 ﻿using OzetteLibrary.Database;
 using OzetteLibrary.Exceptions;
-using OzetteLibrary.ServiceCore;
 using System;
 using System.Security.Cryptography;
 using System.Text;
@@ -54,15 +53,15 @@ namespace OzetteLibrary.Secrets
         /// </summary>
         /// <param name="SecretID">ID of the secret</param>
         /// <returns>The secret value</returns>
-        public string GetApplicationSecret(int SecretID)
+        public string GetApplicationSecret(string SecretName)
         {
             // pull encrypted secret from the database.
 
-            var settingValue = Database.GetApplicationOption(SecretID);
+            var settingValue = Database.GetApplicationOption(SecretName);
 
             if (string.IsNullOrWhiteSpace(settingValue))
             {
-                throw new ApplicationSecretMissingException("Secret ID not found in application store: " + SecretID);
+                throw new ApplicationSecretMissingException("Secret not found in application store: " + SecretName);
             }
 
             var settingBytes = Encoding.Default.GetBytes(settingValue);
@@ -75,37 +74,30 @@ namespace OzetteLibrary.Secrets
         }
 
         /// <summary>
-        /// Sets the specified secret name/value pair into the secret store.
+        /// Sets the specified secret into the secret store.
         /// </summary>
-        /// <param name="Option">Application option to save</param>
-        public void SetApplicationSecret(ServiceOption Option)
+        /// <param name="SecretName"></param>
+        /// <param name="SecretValue"></param>
+        public void SetApplicationSecret(string SecretName, string SecretValue)
         {
-            if (Option == null)
+            if (string.IsNullOrWhiteSpace(SecretName))
             {
-                throw new ArgumentNullException(nameof(Option));
+                throw new ArgumentException(nameof(SecretName) + " must be provided.");
             }
-            if (Option.ID <= 0)
+            if (string.IsNullOrWhiteSpace(SecretValue))
             {
-                throw new ArgumentException(nameof(Option.ID) + " must be provided.");
-            }
-            if (string.IsNullOrWhiteSpace(Option.Name))
-            {
-                throw new ArgumentException(nameof(Option.Name) + " must be provided.");
-            }
-            if (string.IsNullOrWhiteSpace(Option.Value))
-            {
-                throw new ArgumentException(nameof(Option.Value) + " must be provided.");
+                throw new ArgumentException(nameof(SecretValue) + " must be provided.");
             }
 
             // encrypt secret value
 
-            var unencryptedBytes = Encoding.Default.GetBytes(Option.Value);
+            var unencryptedBytes = Encoding.Default.GetBytes(SecretValue);
             var encryptedBytes = ProtectedData.Protect(unencryptedBytes, Entropy, Scope);
-            Option.Value = Encoding.Default.GetString(encryptedBytes);
+            var encryptedString = Encoding.Default.GetString(encryptedBytes);
 
             // store secret in configuration
 
-            Database.SetApplicationOption(Option);
+            Database.SetApplicationOption(SecretName, encryptedString);
         }
     }
 }

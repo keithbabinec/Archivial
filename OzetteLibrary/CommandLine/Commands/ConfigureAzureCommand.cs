@@ -129,25 +129,11 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Saving encrypted Azure configuration setting: AzureStorageAccountName.");
 
-            var account = new ServiceOption()
-            {
-                ID = Constants.OptionIDs.AzureStorageAccountName,
-                Name = nameof(Constants.OptionIDs.AzureStorageAccountName),
-                Value = arguments.AzureStorageAccountName,
-                IsEncryptedOption = true
-            };
-            pds.SetApplicationSecret(account);
+            pds.SetApplicationSecret(Constants.OptionNames.AzureStorageAccountName, arguments.AzureStorageAccountName);
 
             Logger.WriteConsole("Saving encrypted Azure configuration setting: AzureStorageAccountToken.");
 
-            var token = new ServiceOption()
-            {
-                ID = Constants.OptionIDs.AzureStorageAccountToken,
-                Name = nameof(Constants.OptionIDs.AzureStorageAccountToken),
-                Value = arguments.AzureStorageAccountToken,
-                IsEncryptedOption = true
-            };
-            pds.SetApplicationSecret(token);
+            pds.SetApplicationSecret(Constants.OptionNames.AzureStorageAccountToken, arguments.AzureStorageAccountToken);
         }
     }
 }

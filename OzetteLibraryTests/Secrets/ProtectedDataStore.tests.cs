@@ -1,9 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Exceptions;
-using OzetteLibrary.Logging.Mock;
 using OzetteLibrary.Secrets;
-using OzetteLibrary.ServiceCore;
 using System;
 using System.IO;
 
@@ -47,43 +45,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            pds.GetApplicationSecret(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionIsProvided()
-        {
-            var ms = new MemoryStream();
-            var db = new LiteDBClientDatabase(ms);
-            db.PrepareDatabase();
-            var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
-            var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
-
-            ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
-
-            pds.SetApplicationSecret(null);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionIdIsProvided()
-        {
-            var ms = new MemoryStream();
-            var db = new LiteDBClientDatabase(ms);
-            db.PrepareDatabase();
-            var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
-            var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
-
-            ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
-
-            var option = new ServiceOption();
-            option.ID = 0; // should throw
-            option.IsEncryptedOption = true;
-            option.Name = nameof(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
-            option.Value = "test-account";
-
-            pds.SetApplicationSecret(option);
+            pds.GetApplicationSecret(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName);
         }
 
         [TestMethod]
@@ -98,13 +60,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            var option = new ServiceOption();
-            option.ID = OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName;
-            option.IsEncryptedOption = true;
-            option.Name = ""; // should throw
-            option.Value = "test-account";
-
-            pds.SetApplicationSecret(option);
+            pds.SetApplicationSecret("", "test-account");
         }
 
         [TestMethod]
@@ -119,13 +75,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            var option = new ServiceOption();
-            option.ID = OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName;
-            option.IsEncryptedOption = true;
-            option.Name = nameof(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
-            option.Value = ""; // should throw
-
-            pds.SetApplicationSecret(option);
+            pds.SetApplicationSecret(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName, "");
         }
 
         [TestMethod]
@@ -139,18 +89,12 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            var option = new ServiceOption();
-            option.ID = OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName;
-            option.IsEncryptedOption = true;
-            option.Name = nameof(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
-            option.Value = "test-account";
-
-            pds.SetApplicationSecret(option);
+            pds.SetApplicationSecret(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName, "test-account");
 
             // check the underlying database entry
             // it should be encrypted.
 
-            var optionValue = db.GetApplicationOption(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
+            var optionValue = db.GetApplicationOption(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName);
 
             // the actual value of the encrypted string is going to vary by machine scope
             // for consistency in testing just verify the string has been transformed.
@@ -172,18 +116,12 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            var option = new ServiceOption();
-            option.ID = OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName;
-            option.IsEncryptedOption = true;
-            option.Name = nameof(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
-            option.Value = "test-account";
-
-            pds.SetApplicationSecret(option);
+            pds.SetApplicationSecret(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName, "test-account");
 
             // check the underlying database entry
             // it should be encrypted.
 
-            var optionValue = db.GetApplicationOption(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
+            var optionValue = db.GetApplicationOption(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName);
 
             // the actual value of the encrypted string is going to vary by machine scope
             // for consistency in testing just verify the string has been transformed.

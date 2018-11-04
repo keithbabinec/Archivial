@@ -1,7 +1,6 @@
 ﻿using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
-using OzetteLibrary.ServiceCore;
 
 namespace OzetteLibrary.Database
 {
@@ -13,8 +12,9 @@ namespace OzetteLibrary.Database
         /// <summary>
         /// Saves an application setting to the database.
         /// </summary>
-        /// <param name="option">ServiceOption</param>
-        void SetApplicationOption(ServiceOption option);
+        /// <param name="OptionName">Option name</param>
+        /// <param name="OptionValue">Option value</param>
+        void SetApplicationOption(string OptionName, string OptionValue);
 
         /// <summary>
         /// Retrieves an application setting value from the database.
@@ -22,15 +22,15 @@ namespace OzetteLibrary.Database
         /// <remarks>
         /// Returns null if the setting is not found.
         /// </remarks>
-        /// <param name="SettingID">The setting ID number.</param>
+        /// <param name="OptionName">Option name</param>
         /// <returns>The setting value.</returns>
-        string GetApplicationOption(int SettingID);
+        string GetApplicationOption(string OptionName);
 
         /// <summary>
         /// Removes an application setting value from the database.
         /// </summary>
-        /// <param name="SettingID">The setting ID number.</param>
-        void RemoveApplicationOption(int SettingID);
+        /// <param name="OptionName">Option name</param>
+        void RemoveApplicationOption(string OptionName);
 
         /// <summary>
         /// Commits the providers collection to the database.

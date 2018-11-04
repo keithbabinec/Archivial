@@ -73,7 +73,7 @@ namespace OzetteLibrary.Database.LiteDB
         {
             var map = BsonMapper.Global;
 
-            map.Entity<ServiceOption>().Id(x => x.ID);
+            map.Entity<ApplicationOption>().Id(x => x.ID);
             map.Entity<BackupFile>().Id(x => x.FileID);
             map.Entity<DirectoryMapItem>().Id(x => x.ID);
             map.Entity<SourceLocation>().Id(x => x.ID);
@@ -93,8 +93,7 @@ namespace OzetteLibrary.Database.LiteDB
                 // the action of 'getting' the collection will create it if missing.
                 // EnsureIndex() will also only create the indexes if they are missing.
 
-                var optionsCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
-                optionsCol.EnsureIndex(x => x.ID);
+                var optionsCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
                 optionsCol.EnsureIndex(x => x.Name);
 
                 var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
@@ -122,40 +121,34 @@ namespace OzetteLibrary.Database.LiteDB
         {
             using (var db = GetLiteDBInstance())
             {
-                var optionsCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
+                var optionsCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
 
-                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.LowPriorityScanFrequencyInHours) == null)
+                if (optionsCol.FindOne(x => x.Name == Constants.OptionNames.LowPriorityScanFrequencyInHours) == null)
                 {
                     optionsCol.Insert(
-                        new ServiceOption()
+                        new ApplicationOption()
                         {
-                            ID = Constants.OptionIDs.LowPriorityScanFrequencyInHours,
-                            Name = nameof(Constants.OptionIDs.LowPriorityScanFrequencyInHours),
-                            IsEncryptedOption = false,
+                            Name = Constants.OptionNames.LowPriorityScanFrequencyInHours,
                             Value = "72"
                         });
                 }
 
-                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.MedPriorityScanFrequencyInHours) == null)
+                if (optionsCol.FindOne(x => x.Name == Constants.OptionNames.MedPriorityScanFrequencyInHours) == null)
                 {
                     optionsCol.Insert(
-                        new ServiceOption()
+                        new ApplicationOption()
                         {
-                            ID = Constants.OptionIDs.MedPriorityScanFrequencyInHours,
-                            Name = nameof(Constants.OptionIDs.MedPriorityScanFrequencyInHours),
-                            IsEncryptedOption = false,
+                            Name = Constants.OptionNames.MedPriorityScanFrequencyInHours,
                             Value = "24"
                         });
                 }
 
-                if (optionsCol.FindOne(x => x.ID == Constants.OptionIDs.HighPriorityScanFrequencyInHours) == null)
+                if (optionsCol.FindOne(x => x.Name == Constants.OptionNames.HighPriorityScanFrequencyInHours) == null)
                 {
                     optionsCol.Insert(
-                        new ServiceOption()
+                        new ApplicationOption()
                         {
-                            ID = Constants.OptionIDs.HighPriorityScanFrequencyInHours,
-                            Name = nameof(Constants.OptionIDs.HighPriorityScanFrequencyInHours),
-                            IsEncryptedOption = false,
+                            Name = Constants.OptionNames.HighPriorityScanFrequencyInHours,
                             Value = "1"
                         });
                 }
@@ -210,35 +203,28 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// Saves an application setting to the database.
         /// </summary>
-        /// <param name="option">ServiceOption</param>
-        public void SetApplicationOption(ServiceOption option)
+        /// <param name="OptionName">Option name</param>
+        /// <param name="OptionValue">Option value</param>
+        public void SetApplicationOption(string OptionName, string OptionValue)
         {
             if (DatabaseHasBeenPrepared == false)
             {
                 throw new InvalidOperationException("Database has not been prepared.");
             }
-            if (option == null)
+            if (string.IsNullOrWhiteSpace(OptionName))
             {
-                throw new ArgumentNullException(nameof(option));
+                throw new ArgumentException(nameof(OptionName) + " must be provided.");
             }
-            if (option.ID <= 0)
+            if (string.IsNullOrWhiteSpace(OptionValue))
             {
-                throw new ArgumentException(nameof(option.ID) + " must be provided.");
-            }
-            if (string.IsNullOrWhiteSpace(option.Name))
-            {
-                throw new ArgumentException(nameof(option.Name) + " must be provided.");
-            }
-            if (string.IsNullOrWhiteSpace(option.Value))
-            {
-                throw new ArgumentException(nameof(option.Value) + " must be provided.");
+                throw new ArgumentException(nameof(OptionValue) + " must be provided.");
             }
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
+                var providersCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
 
-                providersCol.Upsert(option);
+                providersCol.Upsert(new ApplicationOption(OptionName, OptionValue));
             }
         }
 
@@ -248,9 +234,9 @@ namespace OzetteLibrary.Database.LiteDB
         /// <remarks>
         /// Returns null if the setting is not found.
         /// </remarks>
-        /// <param name="SettingID">The setting ID number.</param>
+        /// <param name="OptionName">Option name</param>
         /// <returns>The setting value.</returns>
-        public string GetApplicationOption(int SettingID)
+        public string GetApplicationOption(string OptionName)
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -259,9 +245,9 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
+                var providersCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
 
-                var setting = providersCol.FindOne(x => x.ID == SettingID);
+                var setting = providersCol.FindOne(x => x.Name == OptionName);
 
                 if (setting != null)
                 {
@@ -277,8 +263,8 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// Removes an application setting value from the database.
         /// </summary>
-        /// <param name="SettingID">The setting ID number.</param>
-        public void RemoveApplicationOption(int SettingID)
+        /// <param name="OptionName">Option name</param>
+        public void RemoveApplicationOption(string OptionName)
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -287,9 +273,9 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<ServiceOption>(Constants.Database.ServiceOptionsTableName);
+                var providersCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
 
-                var setting = providersCol.Delete(x => x.ID == SettingID);
+                var setting = providersCol.Delete(x => x.Name == OptionName);
             }
         }
 
