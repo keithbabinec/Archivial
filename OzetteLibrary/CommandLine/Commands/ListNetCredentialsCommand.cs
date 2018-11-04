@@ -1,5 +1,7 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
+using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
+using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
 
@@ -65,7 +67,23 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <param name="arguments"></param>
         private void ListNetCreds(ListNetCredentialArguments arguments)
         {
-            throw new NotImplementedException();
+            Logger.WriteConsole("Initializing a database connection.");
+
+            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
+            db.PrepareDatabase();
+
+            Logger.WriteConsole("Querying for existing network credentials.");
+
+            var allNetCreds = db.GetNetCredentialsList();
+
+            Logger.WriteConsole("Number of configured providers: " + allNetCreds.Count);
+
+            Logger.WriteConsole("--- Results:");
+
+            foreach (var provider in allNetCreds)
+            {
+                Logger.WriteConsole(string.Format("Credential: ID={0}, Type={1}", provider.ID, provider.CredentialName));
+            }
         }
     }
 }
