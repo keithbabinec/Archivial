@@ -130,6 +130,8 @@
     <Compile Include="Providers\ProvidersCollection.cs" />
     <Compile Include="Providers\ProviderTypes.cs" />
     <Compile Include="Secrets\ISecretStore.cs" />
+    <Compile Include="Secrets\NetCredential.cs" />
+    <Compile Include="Secrets\NetCredentialsCollection.cs" />
     <Compile Include="Secrets\ProtectedDataStore.cs" />
     <Compile Include="ServiceCore\CoreSettings.cs" />
     <Compile Include="ServiceCore\ApplicationOption.cs" />

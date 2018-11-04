@@ -1,6 +1,7 @@
 ﻿using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
+using OzetteLibrary.Secrets;
 
 namespace OzetteLibrary.Database
 {
@@ -43,6 +44,18 @@ namespace OzetteLibrary.Database
         /// </summary>
         /// <returns>A collection of providers.</returns>
         ProvidersCollection GetProvidersList();
+
+        /// <summary>
+        /// Commits the net credentials collection to the database.
+        /// </summary>
+        /// <param name="Credentials">A collection of net credentials.</param>
+        void SetNetCredentialsList(NetCredentialsCollection Credentials);
+
+        /// <summary>
+        /// Returns all of the net credentials defined in the database.
+        /// </summary>
+        /// <returns>A collection of net credentials.</returns>
+        NetCredentialsCollection GetNetCredentialsList();
 
         /// <summary>
         /// Checks the index for a file matching the provided name, path, and hash.

@@ -2,6 +2,7 @@
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
+using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.IO;
@@ -78,6 +79,7 @@ namespace OzetteLibrary.Database.LiteDB
             map.Entity<DirectoryMapItem>().Id(x => x.ID);
             map.Entity<SourceLocation>().Id(x => x.ID);
             map.Entity<Provider>().Id(x => x.ID);
+            map.Entity<NetCredential>().Id(x => x.ID);
         }
 
         /// <summary>
@@ -111,6 +113,9 @@ namespace OzetteLibrary.Database.LiteDB
 
                 var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
                 providersCol.EnsureIndex(x => x.ID);
+
+                var credentialsCol = db.GetCollection<NetCredential>(Constants.Database.NetCredentialsTableName);
+                credentialsCol.EnsureIndex(x => x.CredentialName);
             }
         }
 
@@ -332,6 +337,63 @@ namespace OzetteLibrary.Database.LiteDB
                 else
                 {
                     return new ProvidersCollection();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Commits the net credentials collection to the database.
+        /// </summary>
+        /// <param name="Credentials">A collection of net credentials.</param>
+        public void SetNetCredentialsList(NetCredentialsCollection Credentials)
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+            if (Credentials == null)
+            {
+                throw new ArgumentNullException(nameof(Credentials));
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var credentialsCol = db.GetCollection<NetCredential>(Constants.Database.NetCredentialsTableName);
+
+                // remove all documents in this collection
+                credentialsCol.Delete(x => 1 == 1);
+
+                // insert credentials (if any)
+                // note: empty (0 count) is valid input.
+                foreach (var provider in Credentials)
+                {
+                    credentialsCol.Insert(provider);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns all of the net credentials defined in the database.
+        /// </summary>
+        /// <returns>A collection of net credentials.</returns>
+        public NetCredentialsCollection GetNetCredentialsList()
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var credentialsCol = db.GetCollection<NetCredential>(Constants.Database.NetCredentialsTableName);
+
+                if (credentialsCol.Count() > 0)
+                {
+                    return new NetCredentialsCollection(credentialsCol.FindAll());
+                }
+                else
+                {
+                    return new NetCredentialsCollection();
                 }
             }
         }

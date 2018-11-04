@@ -29,5 +29,10 @@
         /// A string constant for the service options table name.
         /// </summary>
         public const string ApplicationOptionsTableName = "ApplicationOptions";
+
+        /// <summary>
+        /// A string constant for the net credentials table name.
+        /// </summary>
+        public const string NetCredentialsTableName = "NetCredentials";
     }
 }
