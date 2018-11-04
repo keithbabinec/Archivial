@@ -73,16 +73,29 @@ OzetteCmd.exe remove-provider --providerid 1
 
 ## Sources
 
-**Example: Add a source folder to backup.**
+**Example: Add a local source folder to backup, using default options.**
 ```
-OzetteCmd.exe add-source --folderpath "C:\users\me\downloads"
+OzetteCmd.exe add-localsource --folderpath "C:\users\me\downloads"
 ```
 
-**Example: Add a source folder to backup, using all of the optional arguments.**
+**Example: Add a local source folder to backup, using all of the optional arguments.**
 
 Note: --Priority accepts values 'Low', 'Medium', or 'High'. --MatchFilter accepts Windows file matching wildcards.
 ```
-OzetteCmd.exe add-source --folderpath "C:\users\me\documents" --priority High --revisions 3 --matchfilter "*.docx"
+OzetteCmd.exe add-localsource --folderpath "C:\users\me\documents" --priority High --revisions 3 --matchfilter "*.docx"
+```
+
+**Example: Add an unauthenticated network/UNC source folder to backup, using default options.**
+```
+OzetteCmd.exe add-netsource --uncpath "\\networkshare\public\media\playlists"
+```
+
+**Example: Add a network credential, then add an authenticated network/UNC source folder to backup, using all of the optional arguments.**
+
+Note: The credential must be stored using the add-netcredential command prior to saving an authenticated netsource.
+```
+OzetteCmd.exe add-netcredential --credentialname 'Drobo-NAS-Device' --username 'drobo_read_only_user' --password '******'
+OzetteCmd.exe add-netsource --uncpath "\\networkshare\private\docs\taxes" --credentialname 'Drobo-NAS-Device' --priority High --revisions 3 --matchfilter "*.pdf"
 ```
 
 **Example: List the source folders you have configured**
@@ -95,4 +108,16 @@ OzetteCmd.exe list-sources
 Note: see *list-sources* to view the existing sources with IDs.
 ```
 OzetteCmd.exe remove-source --sourceid 1
+```
+
+**Example: List the stored network credentials you have configured**
+```
+OzetteCmd.exe list-netcredentials
+```
+
+**Example: Remove one of the stored network credentials by name**
+
+Note: see *list-netcredentials* to view the existing credentials.
+```
+OzetteCmd.exe remove-netcredential --credentialname 'Drobo-NAS-Device'
 ```

@@ -11,9 +11,9 @@ using System.Linq;
 namespace OzetteLibrary.CommandLine.Commands
 {
     /// <summary>
-    /// A command for adding backup sources to the active configuration.
+    /// A command for adding network backup sources to the active configuration.
     /// </summary>
-    public class AddSourceCommand : ICommand
+    public class AddNetSourceCommand : ICommand
     {
         /// <summary>
         /// A logging helper instance.
@@ -24,7 +24,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Constructor that requires a logging instance.
         /// </summary>
         /// <param name="logger"></param>
-        public AddSourceCommand(Logger logger)
+        public AddNetSourceCommand(Logger logger)
         {
             if (logger == null)
             {
@@ -35,13 +35,13 @@ namespace OzetteLibrary.CommandLine.Commands
         }
 
         /// <summary>
-        /// Runs the add-source command.
+        /// Runs the add-netsource command.
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
         public bool Run(ArgumentBase arguments)
         {
-            var addSrcArgs = arguments as AddSourceArguments;
+            var addSrcArgs = arguments as AddNetSourceArguments;
 
             if (addSrcArgs == null)
             {
@@ -71,7 +71,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Validates the provided source is usable.
         /// </summary>
         /// <param name="arguments"></param>
-        private void ValidateAndSaveSource(AddSourceArguments arguments)
+        private void ValidateAndSaveSource(AddNetSourceArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -81,8 +81,9 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("Querying for existing scan sources to check for duplicates.");
 
             var allSources = db.GetAllSourceLocations();
+            var allLocalSources = allSources.Where(x => x is NetworkSourceLocation).ToList();
 
-            if (allSources.Any(x => x.FolderPath.ToLower() == arguments.FolderPath.ToLower() && x.FileMatchFilter == arguments.Matchfilter))
+            if (allLocalSources.Any(x => (x as NetworkSourceLocation).UncPath.ToLower() == arguments.UncPath.ToLower() && x.FileMatchFilter == arguments.Matchfilter))
             {
                 // there already exists a source with this folder location and match filter.
                 throw new SourceLocationException("Unable to add source: the specified folder and match filter combination is already listed as a source.");
@@ -92,8 +93,9 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("No duplicate sources found.");
             }
 
-            var newSource = new SourceLocation();
-            newSource.FolderPath = arguments.FolderPath;
+            var newSource = new NetworkSourceLocation();
+            newSource.UncPath = arguments.UncPath;
+            newSource.CredentialName = arguments.CredentialName;
             newSource.FileMatchFilter = arguments.Matchfilter;
             newSource.RevisionCount = arguments.Revisions;
             newSource.Priority = arguments.Priority;

@@ -5,7 +5,7 @@ namespace OzetteLibrary.CommandLine.Arguments
     /// <summary>
     /// A set of Ozette Azure configuration arguments.
     /// </summary>
-    public class AddSourceArguments : ArgumentBase
+    public class AddLocalSourceArguments : ArgumentBase
     {
         /// <summary>
         /// The Azure cloud storage account name.

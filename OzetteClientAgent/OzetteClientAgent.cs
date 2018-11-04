@@ -204,8 +204,8 @@ namespace OzetteClientAgent
                             case ProviderTypes.Azure:
                                 {
                                     CoreLog.WriteTraceMessage("Checking for Azure cloud storage provider connection settings.");
-                                    string storageAccountName = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountName);
-                                    string storageAccountToken = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.OptionIDs.AzureStorageAccountToken);
+                                    string storageAccountName = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName);
+                                    string storageAccountToken = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.OptionNames.AzureStorageAccountToken);
 
                                     CoreLog.WriteTraceMessage("Initializing Azure cloud storage provider.");
                                     AzureProviderFileOperations azureConnection = new AzureProviderFileOperations(BackupEngineLog, storageAccountName, storageAccountToken);

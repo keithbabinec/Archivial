@@ -59,8 +59,21 @@ namespace OzetteLibrary.Client.Sources
             Logger.WriteTraceMessage(string.Format("Starting scan for source: {0}", source.ToString()));
 
             AsyncResult resultState = new AsyncResult();
+            Thread scanThread;
+
+            if (source is LocalSourceLocation)
+            {
+                scanThread = new Thread(() => Scan(source as LocalSourceLocation, resultState));
+            }
+            else if (source is NetworkSourceLocation)
+            {
+                scanThread = new Thread(() => Scan(source as NetworkSourceLocation, resultState));
+            }
+            else
+            {
+                throw new NotImplementedException("Unexpected location type: " + source.GetType().FullName);
+            }
             
-            Thread scanThread = new Thread(() => Scan(source, resultState));
             scanThread.Start();
 
             return resultState;
@@ -105,11 +118,11 @@ namespace OzetteLibrary.Client.Sources
         private volatile bool ScanStopRequested = false;
 
         /// <summary>
-        /// Performs a scan of the source location.
+        /// Performs a scan of a local source location.
         /// </summary>
-        /// <param name="source">The source definition</param>
+        /// <param name="source">The local source definition</param>
         /// <param name="asyncState">The async result state</param>
-        private void Scan(SourceLocation source, AsyncResult asyncState)
+        private void Scan(LocalSourceLocation source, AsyncResult asyncState)
         {
             var results = new ScanResults();
             bool canceled = false;
@@ -181,6 +194,16 @@ namespace OzetteLibrary.Client.Sources
             {
                 asyncState.Complete();
             }
+        }
+
+        /// <summary>
+        /// Performs a scan of a network source location.
+        /// </summary>
+        /// <param name="source">The network source definition</param>
+        /// <param name="asyncState">The async result state</param>
+        private void Scan(NetworkSourceLocation source, AsyncResult asyncState)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

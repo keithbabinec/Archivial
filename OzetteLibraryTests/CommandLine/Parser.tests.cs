@@ -139,7 +139,7 @@ namespace OzetteLibraryTests.CommandLine
         [TestMethod]
         public void ParserReturnsFalseWhenAddSourceHasNoArgsPassed()
         {
-            string[] arguments = { "add-source" };
+            string[] arguments = { "add-localsource" };
             ArgumentBase parsed;
 
             var parser = new Parser();
@@ -151,15 +151,15 @@ namespace OzetteLibraryTests.CommandLine
         [TestMethod]
         public void ParserCanParseAddSourceCommandWithOnlyRequiredArgs()
         {
-            string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder" };
+            string[] arguments = { "add-localsource", "--folderpath", "C:\\test\\folder" };
             ArgumentBase parsed;
 
             var parser = new Parser();
 
             Assert.IsTrue(parser.Parse(arguments, out parsed));
-            Assert.IsInstanceOfType(parsed, typeof(AddSourceArguments));
+            Assert.IsInstanceOfType(parsed, typeof(AddLocalSourceArguments));
 
-            var sourceArgs = parsed as AddSourceArguments;
+            var sourceArgs = parsed as AddLocalSourceArguments;
 
             // pass through
             Assert.AreEqual("C:\\test\\folder", sourceArgs.FolderPath);
@@ -173,15 +173,15 @@ namespace OzetteLibraryTests.CommandLine
         [TestMethod]
         public void ParserCanParseAddSourceCommandWithOptionalArgs()
         {
-            string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder", "--priority", "high", "--revisions", "3", "--matchfilter", "*.mp3" };
+            string[] arguments = { "add-localsource", "--folderpath", "C:\\test\\folder", "--priority", "high", "--revisions", "3", "--matchfilter", "*.mp3" };
             ArgumentBase parsed;
 
             var parser = new Parser();
 
             Assert.IsTrue(parser.Parse(arguments, out parsed));
-            Assert.IsInstanceOfType(parsed, typeof(AddSourceArguments));
+            Assert.IsInstanceOfType(parsed, typeof(AddLocalSourceArguments));
 
-            var sourceArgs = parsed as AddSourceArguments;
+            var sourceArgs = parsed as AddLocalSourceArguments;
 
             // pass through
             Assert.AreEqual("C:\\test\\folder", sourceArgs.FolderPath);
@@ -194,7 +194,7 @@ namespace OzetteLibraryTests.CommandLine
         [ExpectedException(typeof(SourceLocationInvalidRevisionCountException))]
         public void ParserShouldThrowExceptionWhenAddSourceHasInvalidRevision()
         {
-            string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder", "--priority", "low", "--revisions", "not a number", "--matchfilter", "*.mp3" };
+            string[] arguments = { "add-localsource", "--folderpath", "C:\\test\\folder", "--priority", "low", "--revisions", "not a number", "--matchfilter", "*.mp3" };
             ArgumentBase parsed;
 
             var parser = new Parser();
@@ -205,7 +205,84 @@ namespace OzetteLibraryTests.CommandLine
         [ExpectedException(typeof(SourceLocationInvalidFileBackupPriorityException))]
         public void ParserShouldThrowExceptionWhenAddSourceHasInvalidPriority()
         {
-            string[] arguments = { "add-source", "--folderpath", "C:\\test\\folder", "--priority", "critical", "--revisions", "3", "--matchfilter", "*.mp3" };
+            string[] arguments = { "add-localsource", "--folderpath", "C:\\test\\folder", "--priority", "critical", "--revisions", "3", "--matchfilter", "*.mp3" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+            parser.Parse(arguments, out parsed); // should throw due to 'critical' file backup priority (not a valid value).
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenAddNetSourceHasNoArgsPassed()
+        {
+            string[] arguments = { "add-netsource" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserCanParseAddNetSourceCommandWithOnlyRequiredArgs()
+        {
+            string[] arguments = { "add-netsource", "--uncpath", "\\\\networkshare\\public\\media\\playlists" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsInstanceOfType(parsed, typeof(AddNetSourceArguments));
+
+            var sourceArgs = parsed as AddNetSourceArguments;
+
+            // pass through
+            Assert.AreEqual("\\\\networkshare\\public\\media\\playlists", sourceArgs.UncPath);
+
+            // defaults
+            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultSourceMatchFilter, sourceArgs.Matchfilter);
+            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultSourcePriority, sourceArgs.Priority);
+            Assert.AreEqual(OzetteLibrary.Constants.CommandLine.DefaultSourceRevisionCount, sourceArgs.Revisions);
+        }
+
+        [TestMethod]
+        public void ParserCanParseAddNetSourceCommandWithOptionalArgs()
+        {
+            string[] arguments = { "add-netsource", "--uncpath", "\\\\networkshare\\public\\media\\playlists", "--credentialname", "network-device-name", "--priority", "high", "--revisions", "3", "--matchfilter", "*.m3u" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsInstanceOfType(parsed, typeof(AddNetSourceArguments));
+
+            var sourceArgs = parsed as AddNetSourceArguments;
+
+            // pass through
+            Assert.AreEqual("\\\\networkshare\\public\\media\\playlists", sourceArgs.UncPath);
+            Assert.AreEqual("network-device-name", sourceArgs.CredentialName);
+            Assert.AreEqual("*.m3u", sourceArgs.Matchfilter);
+            Assert.AreEqual(OzetteLibrary.Files.FileBackupPriority.High, sourceArgs.Priority);
+            Assert.AreEqual(3, sourceArgs.Revisions);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(SourceLocationInvalidRevisionCountException))]
+        public void ParserShouldThrowExceptionWhenAddNetSourceHasInvalidRevision()
+        {
+            string[] arguments = { "add-netsource", "--uncpath", "\\\\networkshare\\public\\media\\playlists", "--credentialname", "network-device-name", "--priority", "low", "--revisions", "not a number", "--matchfilter", "*.m3u" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+            parser.Parse(arguments, out parsed); // should throw due to invalid revision number (must be a number).
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(SourceLocationInvalidFileBackupPriorityException))]
+        public void ParserShouldThrowExceptionWhenAddNetSourceHasInvalidPriority()
+        {
+            string[] arguments = { "add-netsource", "--uncpath", "\\\\networkshare\\public\\media\\playlists", "--credentialname", "network-device-name", "--priority", "critical", "--revisions", "3", "--matchfilter", "*.m3u" };
             ArgumentBase parsed;
 
             var parser = new Parser();
@@ -286,6 +363,96 @@ namespace OzetteLibraryTests.CommandLine
             Assert.IsNotNull(parsed);
             Assert.IsInstanceOfType(parsed, typeof(RemoveSourceArguments));
             Assert.AreEqual(3, (parsed as RemoveSourceArguments).SourceID);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenRemoveNetCredentialHasNoArgs()
+        {
+            string[] arguments = { "remove-netcredential" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsTrueWhenRemoveNetCredentialHasValidArgs()
+        {
+            string[] arguments = { "remove-netcredential", "--credentialname", "test" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsNotNull(parsed);
+            Assert.IsInstanceOfType(parsed, typeof(RemoveNetCredentialArguments));
+            Assert.AreEqual("test", (parsed as RemoveNetCredentialArguments).CredentialName);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenAddNetCredentialHasNoArgs()
+        {
+            string[] arguments = { "add-netcredential" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsTrueWhenAddNetCredentialHasValidArgs()
+        {
+            string[] arguments = { "add-netcredential", "--credentialname", "cred-name", "--username", "read_only_user", "--password", "fakepw" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsNotNull(parsed);
+            Assert.IsInstanceOfType(parsed, typeof(AddNetCredentialArguments));
+            Assert.AreEqual("cred-name", (parsed as AddNetCredentialArguments).CredentialName);
+            Assert.AreEqual("read_only_user", (parsed as AddNetCredentialArguments).ShareUser);
+            Assert.AreEqual("fakepw", (parsed as AddNetCredentialArguments).SharePassword);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenAddNetCredentialIsMissingCredName()
+        {
+            string[] arguments = { "add-netcredential", "--username", "read_only_user", "--password", "fakepw" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenAddNetCredentialIsMissingUserName()
+        {
+            string[] arguments = { "add-netcredential", "--credentialname", "cred-name", "--password", "fakepw" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
+        public void ParserReturnsFalseWhenAddNetCredentialIsMissingPassword()
+        {
+            string[] arguments = { "add-netcredential", "--credentialname", "cred-name", "--username", "read_only_user" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
         }
     }
 }

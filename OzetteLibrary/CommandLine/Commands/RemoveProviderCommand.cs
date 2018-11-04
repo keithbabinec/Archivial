@@ -93,8 +93,8 @@ namespace OzetteLibrary.CommandLine.Commands
             if (providerToRemove.Type == Providers.ProviderTypes.Azure)
             {
                 // remove provider specific secrets
-                db.RemoveApplicationOption(Constants.OptionIDs.AzureStorageAccountName);
-                db.RemoveApplicationOption(Constants.OptionIDs.AzureStorageAccountToken);
+                db.RemoveApplicationOption(Constants.OptionNames.AzureStorageAccountName);
+                db.RemoveApplicationOption(Constants.OptionNames.AzureStorageAccountToken);
             }
             else
             {

@@ -1,24 +1,18 @@
 ﻿using OzetteLibrary.Exceptions;
 using OzetteLibrary.Files;
-using OzetteLibrary.ServiceCore;
 using System;
 
 namespace OzetteLibrary.Folders
 {
     /// <summary>
-    /// Describes a single requested source backup location.
+    /// Describes an abstract requested source backup location.
     /// </summary>
-    public class SourceLocation
+    public abstract class SourceLocation
     {
         /// <summary>
         /// An identifier for the database.
         /// </summary>
         public int ID { get; set; }
-
-        /// <summary>
-        /// The folder path to backup.
-        /// </summary>
-        public string FolderPath { get; set; }
 
         /// <summary>
         /// The file match filter for this folder.
@@ -97,46 +91,17 @@ namespace OzetteLibrary.Folders
         /// Formats the Source Location string properties.
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
-        {
-            return string.Format("ID={0}, Path='{1}', Filter='{2}', Priority={3}, RevisionCount={4}",
-                ID,
-                FolderPath,
-                FileMatchFilter == null ? "(none)" : FileMatchFilter,
-                Priority,
-                RevisionCount);
-        }
+        public abstract override string ToString();
 
         /// <summary>
         /// Validates that a source configuration is usable.
         /// </summary>
-        public void Validate()
-        {
-            ValidateFolderPath();
-            ValidateFileMatchFilter();
-            ValidateRevisionCount();
-            ValidateID();
-        }
-
-        /// <summary>
-        /// Validates that the folder path is usable.
-        /// </summary>
-        private void ValidateFolderPath()
-        {
-            if (string.IsNullOrWhiteSpace(FolderPath))
-            {
-                throw new SourceLocationInvalidFolderPathException(this.ToString());
-            }
-            if (!System.IO.Directory.Exists(FolderPath))
-            {
-                throw new SourceLocationInvalidFolderPathException(this.ToString());
-            }
-        }
+        public abstract void Validate();
 
         /// <summary>
         /// Validates that a file match filter is usable.
         /// </summary>
-        private void ValidateFileMatchFilter()
+        internal void ValidateFileMatchFilter()
         {
             if (FileMatchFilter != null && FileMatchFilter.Length > 0)
             {
@@ -151,7 +116,7 @@ namespace OzetteLibrary.Folders
         /// <summary>
         /// Validates that a file revision count setting is usable.
         /// </summary>
-        private void ValidateRevisionCount()
+        internal void ValidateRevisionCount()
         {
             if (RevisionCount <= 0)
             {
@@ -162,7 +127,7 @@ namespace OzetteLibrary.Folders
         /// <summary>
         /// Validates that a source location ID is valid/usable.
         /// </summary>
-        private void ValidateID()
+        internal void ValidateID()
         {
             if (ID <= 0)
             {

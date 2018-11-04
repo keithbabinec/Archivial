@@ -59,13 +59,21 @@
   <ItemGroup>
     <Compile Include="Client\BackupEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
-    <Compile Include="CommandLine\Arguments\AddSourceArguments.cs" />
-    <Compile Include="CommandLine\Commands\AddSourceCommand.cs" />
+    <Compile Include="CommandLine\Arguments\AddNetCredentialArguments.cs" />
+    <Compile Include="CommandLine\Arguments\AddNetSourceArguments.cs" />
+    <Compile Include="CommandLine\Arguments\AddLocalSourceArguments.cs" />
+    <Compile Include="CommandLine\Arguments\ListNetCredentialsArguments.cs" />
+    <Compile Include="CommandLine\Arguments\RemoveNetCredentialArguments.cs" />
+    <Compile Include="CommandLine\Commands\AddLocalSourceCommand.cs" />
+    <Compile Include="CommandLine\Commands\AddNetCredentialCommand.cs" />
+    <Compile Include="CommandLine\Commands\AddNetSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\ConfigureAzureCommand.cs" />
     <Compile Include="CommandLine\Commands\ICommand.cs" />
     <Compile Include="CommandLine\Commands\InstallCommand.cs" />
+    <Compile Include="CommandLine\Commands\ListNetCredentialsCommand.cs" />
     <Compile Include="CommandLine\Commands\ListProvidersCommand.cs" />
     <Compile Include="CommandLine\Commands\ListSourcesCommand.cs" />
+    <Compile Include="CommandLine\Commands\RemoveNetCredentialCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveProviderCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\RequiresElevation.cs" />
@@ -80,7 +88,8 @@
     <Compile Include="Constants\CommandLine.cs" />
     <Compile Include="Constants\CoreSettingNames.cs" />
     <Compile Include="Constants\EventIDs.cs" />
-    <Compile Include="Constants\OptionIDs.cs" />
+    <Compile Include="Constants\Formats.cs" />
+    <Compile Include="Constants\OptionNames.cs" />
     <Compile Include="Constants\ProviderMetadata.cs" />
     <Compile Include="Constants\Transfers.cs" />
     <Compile Include="Engine\BaseEngine.cs" />
@@ -101,6 +110,8 @@
     <Compile Include="Exceptions\ProviderMetadataMissingException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidFileBackupPriorityException.cs" />
     <Compile Include="Files\TransferPayload.cs" />
+    <Compile Include="Folders\LocalSourceLocation.cs" />
+    <Compile Include="Folders\NetworkSourceLocation.cs" />
     <Compile Include="Folders\ScanFrequencies.cs" />
     <Compile Include="Logging\Default\Logger.cs" />
     <Compile Include="Logging\ILogger.cs" />
@@ -120,9 +131,11 @@
     <Compile Include="Providers\ProvidersCollection.cs" />
     <Compile Include="Providers\ProviderTypes.cs" />
     <Compile Include="Secrets\ISecretStore.cs" />
+    <Compile Include="Secrets\NetCredential.cs" />
+    <Compile Include="Secrets\NetCredentialsCollection.cs" />
     <Compile Include="Secrets\ProtectedDataStore.cs" />
     <Compile Include="ServiceCore\CoreSettings.cs" />
-    <Compile Include="ServiceCore\ServiceOption.cs" />
+    <Compile Include="ServiceCore\ApplicationOption.cs" />
     <Compile Include="ServiceCore\StartupResults.cs" />
     <Compile Include="Files\FileBackupPriority.cs" />
     <Compile Include="Folders\ScanResults.cs" />

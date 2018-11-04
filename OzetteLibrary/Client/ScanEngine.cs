@@ -79,8 +79,8 @@ namespace OzetteLibrary.Client
                     // first: grab current options from the database
 
                     var db = Database as IClientDatabase;
-                    var sourcesFilePath = db.GetApplicationOption(Constants.OptionIDs.SourcesFilePath);
-                    var providersFilePath = db.GetApplicationOption(Constants.OptionIDs.ProvidersFilePath);
+                    var sourcesFilePath = db.GetApplicationOption(Constants.OptionNames.SourcesFilePath);
+                    var providersFilePath = db.GetApplicationOption(Constants.OptionNames.ProvidersFilePath);
                     var scanOptions = GetScanFrequencies(db);
 
                     // second: check to see if we have any valid sources defined.
@@ -164,13 +164,13 @@ namespace OzetteLibrary.Client
             ScanFrequencies scan = new ScanFrequencies();
 
             scan.LowPriorityScanFrequencyInHours = 
-                Convert.ToInt32(db.GetApplicationOption(Constants.OptionIDs.LowPriorityScanFrequencyInHours));
+                Convert.ToInt32(db.GetApplicationOption(Constants.OptionNames.LowPriorityScanFrequencyInHours));
 
             scan.MedPriorityScanFrequencyInHours =
-                Convert.ToInt32(db.GetApplicationOption(Constants.OptionIDs.MedPriorityScanFrequencyInHours));
+                Convert.ToInt32(db.GetApplicationOption(Constants.OptionNames.MedPriorityScanFrequencyInHours));
 
             scan.HighPriorityScanFrequencyInHours =
-                Convert.ToInt32(db.GetApplicationOption(Constants.OptionIDs.HighPriorityScanFrequencyInHours));
+                Convert.ToInt32(db.GetApplicationOption(Constants.OptionNames.HighPriorityScanFrequencyInHours));
 
             return scan;
         }

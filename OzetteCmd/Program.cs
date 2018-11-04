@@ -97,15 +97,47 @@ namespace OzetteCmd
             help.AppendLine("  Description:");
             help.AppendLine("\tLists the currently configured backup source directories (folders to backup).");
             help.AppendLine();
-            help.AppendLine("OzetteCmd.exe add-source");
+            help.AppendLine("OzetteCmd.exe add-localsource");
             help.AppendLine();
             help.AppendLine("  Description:");
-            help.AppendLine("\tAdds a directory to the list of backup sources (folders to backup).");
+            help.AppendLine("\tAdds a local directory to the list of backup sources (folders to backup).");
             help.AppendLine("  Arguments:");
             help.AppendLine("\t--folderpath\tThe full folder path that should be backed up.");
             help.AppendLine("\t[--priority]\tThe backup priority (specify \"Low\", \"Medium\", or \"High\"). Defaults to Medium if omitted.");
             help.AppendLine("\t[--revisions]\tThe number of revisions to store (specify a number, such as 1, 2, 3, etc). Defaults to 1 if omitted.");
             help.AppendLine("\t[--matchfilter]\tAn optional wildcard match filter that scopes this source to only certain files.");
+            help.AppendLine();
+            help.AppendLine("OzetteCmd.exe add-netsource");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tAdds a remote/UNC directory to the list of backup sources (folders to backup).");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t--uncpath\tThe full UNC folder path that should be backed up.");
+            help.AppendLine("\t[--credentialname]\tThe name of the network credential to lookup (if authentication is required).");
+            help.AppendLine("\t[--priority]\tThe backup priority (specify \"Low\", \"Medium\", or \"High\"). Defaults to Medium if omitted.");
+            help.AppendLine("\t[--revisions]\tThe number of revisions to store (specify a number, such as 1, 2, 3, etc). Defaults to 1 if omitted.");
+            help.AppendLine("\t[--matchfilter]\tAn optional wildcard match filter that scopes this source to only certain files.");
+            help.AppendLine();
+            help.AppendLine("OzetteCmd.exe add-netcredential");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tAdds a network credential to use for remote/UNC sources.");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t--credentialname\tThe friendly name of the network credential.");
+            help.AppendLine("\t--username\tThe network credential username");
+            help.AppendLine("\t--password\tThe network credential password.");
+            help.AppendLine();
+            help.AppendLine("OzetteCmd.exe remove-netcredential");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tRemoves a stored network credential by name. Run list-netcredentials to see the currently stored credentials.");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t--credentialname\tThe friendly name of the credential.");
+            help.AppendLine();
+            help.AppendLine("OzetteCmd.exe list-netcredentials");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tLists the currently configured network credentials.");
             help.AppendLine();
             help.AppendLine("OzetteCmd.exe remove-source");
             help.AppendLine();
@@ -131,9 +163,17 @@ namespace OzetteCmd
             {
                 command = new InstallCommand(logger);
             }
-            else if (arguments is AddSourceArguments)
+            else if (arguments is AddLocalSourceArguments)
             {
-                command = new AddSourceCommand(logger);
+                command = new AddLocalSourceCommand(logger);
+            }
+            else if (arguments is AddNetSourceArguments)
+            {
+                command = new AddNetSourceCommand(logger);
+            }
+            else if (arguments is AddNetCredentialArguments)
+            {
+                command = new AddNetCredentialCommand(logger);
             }
             else if (arguments is ConfigureAzureArguments)
             {
@@ -147,6 +187,10 @@ namespace OzetteCmd
             {
                 command = new ListProvidersCommand(logger);
             }
+            else if (arguments is ListNetCredentialsArguments)
+            {
+                command = new ListNetCredentialsCommand(logger);
+            }
             else if (arguments is RemoveSourceArguments)
             {
                 command = new RemoveSourceCommand(logger);
@@ -154,6 +198,10 @@ namespace OzetteCmd
             else if (arguments is RemoveProviderArguments)
             {
                 command = new RemoveProviderCommand(logger);
+            }
+            else if (arguments is RemoveNetCredentialArguments)
+            {
+                command = new RemoveNetCredentialCommand(logger);
             }
             else
             {
