@@ -82,7 +82,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             foreach (var provider in allNetCreds)
             {
-                Logger.WriteConsole(string.Format("Credential: ID={0}, Type={1}", provider.ID, provider.CredentialName));
+                Logger.WriteConsole(string.Format("Credential: ID={0}, Name={1}", provider.ID, provider.CredentialName));
             }
         }
     }
