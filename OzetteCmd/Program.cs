@@ -134,7 +134,7 @@ namespace OzetteCmd
             help.AppendLine("  Arguments:");
             help.AppendLine("\t--credentialname\tThe friendly name of the credential.");
             help.AppendLine();
-            help.AppendLine("OzetteCmd.exe list-netcredential");
+            help.AppendLine("OzetteCmd.exe list-netcredentials");
             help.AppendLine();
             help.AppendLine("  Description:");
             help.AppendLine("\tLists the currently configured network credentials.");

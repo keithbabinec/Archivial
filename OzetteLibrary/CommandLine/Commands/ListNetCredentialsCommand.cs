@@ -76,7 +76,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             var allNetCreds = db.GetNetCredentialsList();
 
-            Logger.WriteConsole("Number of configured providers: " + allNetCreds.Count);
+            Logger.WriteConsole("Number of configured credentials: " + allNetCreds.Count);
 
             Logger.WriteConsole("--- Results:");
 
