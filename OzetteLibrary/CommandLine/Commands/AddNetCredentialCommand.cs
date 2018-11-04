@@ -1,7 +1,11 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
+using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
+using OzetteLibrary.Secrets;
+using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -44,8 +48,11 @@ namespace OzetteLibrary.CommandLine.Commands
             {
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup credential configuration");
 
-                Logger.WriteConsole("--- Step 1: Adds the network credential to the database.");
+                Logger.WriteConsole("--- Step 1: Adds the network credential name to the database.");
                 AddNetCred(addNetCredArgs);
+
+                Logger.WriteConsole("--- Step 2: Encrypt and save credential username and password settings.");
+                EncryptAndSave(addNetCredArgs);
 
                 Logger.WriteConsole("--- Credential configuration completed successfully.");
 
@@ -65,7 +72,55 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <param name="arguments"></param>
         private void AddNetCred(AddNetCredentialArguments arguments)
         {
-            throw new NotImplementedException();
+            Logger.WriteConsole("Initializing a database connection.");
+
+            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
+            db.PrepareDatabase();
+
+            Logger.WriteConsole("Fetching current network credentials from the database.");
+
+            var existingCredsList = db.GetNetCredentialsList();
+
+            if (existingCredsList.Any(x => x.CredentialName == arguments.CredentialName) == false)
+            {
+                Logger.WriteConsole("The specified credential is not configured in the client database. Adding it now.");
+
+                existingCredsList.Add(new NetCredential() { CredentialName = arguments.CredentialName });
+
+                db.SetNetCredentialsList(existingCredsList);
+
+                Logger.WriteConsole("Successfully added the network credential.");
+            }
+            else
+            {
+                Logger.WriteConsole("The specified network credential is already in the client database. No action required.");
+            }
+        }
+
+        /// <summary>
+        /// Encrypts and saves the net credential settings.
+        /// </summary>
+        /// <param name="arguments"></param>
+        private void EncryptAndSave(AddNetCredentialArguments arguments)
+        {
+            Logger.WriteConsole("Initializing a database connection.");
+
+            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
+            db.PrepareDatabase();
+
+            Logger.WriteConsole("Initializing protected data store.");
+
+            var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
+            var ivkey = Convert.FromBase64String(CoreSettings.ProtectionIv);
+            var pds = new ProtectedDataStore(db, scope, ivkey);
+
+            Logger.WriteConsole("Saving encrypted username setting.");
+
+            pds.SetApplicationSecret(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, arguments.CredentialName), arguments.ShareUser);
+
+            Logger.WriteConsole("Saving encrypted password setting.");
+
+            pds.SetApplicationSecret(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, arguments.CredentialName), arguments.SharePassword);
         }
     }
 }

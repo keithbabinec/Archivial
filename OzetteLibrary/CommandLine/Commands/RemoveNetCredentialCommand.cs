@@ -1,7 +1,10 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
+using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
+using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -65,7 +68,33 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <param name="arguments"></param>
         private void RemoveNetCred(RemoveNetCredentialArguments arguments)
         {
-            throw new NotImplementedException();
+            Logger.WriteConsole("Initializing a database connection.");
+
+            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
+            db.PrepareDatabase();
+
+            Logger.WriteConsole("Querying for existing network credentials to see if the specified credential exists.");
+
+            var allCredentialsList = db.GetNetCredentialsList();
+            var credToRemove = allCredentialsList.FirstOrDefault(x => x.CredentialName == arguments.CredentialName);
+
+            if (credToRemove == null)
+            {
+                // the credential doesn't exist. nothing to do.
+                Logger.WriteConsole("No network credential was found with the specified name. Nothing to remove.");
+                return;
+            }
+
+            Logger.WriteConsole("Found a matching network credential, removing it now.");
+
+            allCredentialsList.Remove(credToRemove);
+            db.SetNetCredentialsList(allCredentialsList);
+
+            // remove provider specific secrets
+            db.RemoveApplicationOption(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, credToRemove.CredentialName));
+            db.RemoveApplicationOption(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, credToRemove.CredentialName));
+
+            Logger.WriteConsole("Successfully removed the cloud provider from the database.");
         }
     }
 }
