@@ -35,7 +35,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <returns>True if successful, otherwise false.</returns>
         public bool Run(ArgumentBase arguments)
         {
-            var listCredsArgs = arguments as ListNetCredentialArguments;
+            var listCredsArgs = arguments as ListNetCredentialsArguments;
 
             if (listCredsArgs == null)
             {
@@ -65,7 +65,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Lists net credentials
         /// </summary>
         /// <param name="arguments"></param>
-        private void ListNetCreds(ListNetCredentialArguments arguments)
+        private void ListNetCreds(ListNetCredentialsArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 

@@ -57,7 +57,7 @@ namespace OzetteLibrary.CommandLine
             else if (baseCommand == "list-netcredentials")
             {
                 // command has no additional arguments
-                parsed = new ListNetCredentialArguments();
+                parsed = new ListNetCredentialsArguments();
                 return true;
             }
             else if (baseCommand == "list-providers")

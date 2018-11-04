@@ -3,7 +3,7 @@
     /// <summary>
     /// An arguments object for listing net credentials
     /// </summary>
-    public class ListNetCredentialArguments : ArgumentBase
+    public class ListNetCredentialsArguments : ArgumentBase
     {
     }
 }

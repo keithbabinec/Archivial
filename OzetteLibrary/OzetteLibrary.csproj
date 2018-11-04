@@ -62,7 +62,7 @@
     <Compile Include="CommandLine\Arguments\AddNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Arguments\AddNetSourceArguments.cs" />
     <Compile Include="CommandLine\Arguments\AddLocalSourceArguments.cs" />
-    <Compile Include="CommandLine\Arguments\ListNetCredentialArguments.cs" />
+    <Compile Include="CommandLine\Arguments\ListNetCredentialsArguments.cs" />
     <Compile Include="CommandLine\Arguments\RemoveNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Commands\AddLocalSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\AddNetCredentialCommand.cs" />

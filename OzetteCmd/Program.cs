@@ -171,6 +171,10 @@ namespace OzetteCmd
             {
                 command = new AddNetSourceCommand(logger);
             }
+            else if (arguments is AddNetCredentialArguments)
+            {
+                command = new AddNetCredentialCommand(logger);
+            }
             else if (arguments is ConfigureAzureArguments)
             {
                 command = new ConfigureAzureCommand(logger);
@@ -183,6 +187,10 @@ namespace OzetteCmd
             {
                 command = new ListProvidersCommand(logger);
             }
+            else if (arguments is ListNetCredentialsArguments)
+            {
+                command = new ListNetCredentialsCommand(logger);
+            }
             else if (arguments is RemoveSourceArguments)
             {
                 command = new RemoveSourceCommand(logger);
@@ -190,6 +198,10 @@ namespace OzetteCmd
             else if (arguments is RemoveProviderArguments)
             {
                 command = new RemoveProviderCommand(logger);
+            }
+            else if (arguments is RemoveNetCredentialArguments)
+            {
+                command = new RemoveNetCredentialCommand(logger);
             }
             else
             {
