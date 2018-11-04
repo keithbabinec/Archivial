@@ -94,7 +94,7 @@ namespace OzetteLibrary.CommandLine.Commands
             db.RemoveApplicationOption(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, credToRemove.CredentialName));
             db.RemoveApplicationOption(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, credToRemove.CredentialName));
 
-            Logger.WriteConsole("Successfully removed the cloud provider from the database.");
+            Logger.WriteConsole("Successfully removed the credential from the database.");
         }
     }
 }
