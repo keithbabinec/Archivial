@@ -44,7 +44,11 @@ namespace OzetteLibrary.Folders
         {
             if (string.IsNullOrWhiteSpace(FolderPath))
             {
-                throw new SourceLocationInvalidFolderPathException(this.ToString());
+                throw new SourceLocationInvalidLocalFolderPathException(this.ToString());
+            }
+            if (FolderPath.StartsWith("\\\\") == true)
+            {
+                throw new SourceLocationInvalidLocalFolderPathException(this.ToString());
             }
         }
     }

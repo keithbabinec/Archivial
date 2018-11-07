@@ -110,6 +110,7 @@
     <Compile Include="Exceptions\ProviderMetadataMissingException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidCredentialNameException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidFileBackupPriorityException.cs" />
+    <Compile Include="Exceptions\SourceLocationInvalidUncFolderPathException.cs" />
     <Compile Include="Files\TransferPayload.cs" />
     <Compile Include="Folders\LocalSourceLocation.cs" />
     <Compile Include="Folders\NetworkSourceLocation.cs" />
@@ -142,7 +143,7 @@
     <Compile Include="Folders\ScanResults.cs" />
     <Compile Include="Folders\SourceLocation.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidFileMatchFilterException.cs" />
-    <Compile Include="Exceptions\SourceLocationInvalidFolderPathException.cs" />
+    <Compile Include="Exceptions\SourceLocationInvalidLocalFolderPathException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidRevisionCountException.cs" />
     <Compile Include="Folders\SourceLocations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

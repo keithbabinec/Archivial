@@ -270,7 +270,7 @@ namespace OzetteLibrary.Client
                     ex.Message
                 );
             }
-            else if (ex is SourceLocationInvalidFolderPathException)
+            else if (ex is SourceLocationInvalidLocalFolderPathException)
             {
                 return string.Format(
                     "Failed to validate scan sources: A source location has an invalid (or missing) folder path. The invalid source was: {0}",

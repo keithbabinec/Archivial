@@ -50,7 +50,11 @@ namespace OzetteLibrary.Folders
         {
             if (string.IsNullOrWhiteSpace(UncPath))
             {
-                throw new SourceLocationInvalidFolderPathException(this.ToString());
+                throw new SourceLocationInvalidUncFolderPathException(this.ToString());
+            }
+            if (UncPath.StartsWith("\\\\") == false)
+            {
+                throw new SourceLocationInvalidUncFolderPathException(this.ToString());
             }
             if (string.IsNullOrWhiteSpace(CredentialName))
             {

@@ -2,7 +2,6 @@
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Folders;
 using System;
-using System.Linq;
 
 namespace OzetteLibraryTests.Folders
 {
@@ -10,7 +9,62 @@ namespace OzetteLibraryTests.Folders
     public class SourceLocationTests
     {
         [TestMethod]
-        [ExpectedException(typeof(SourceLocationInvalidFolderPathException))]
+        [ExpectedException(typeof(SourceLocationInvalidUncFolderPathException))]
+        public void NetworkSourceLocationValidateThrowsWhenInvalidUncPathIsProvided1()
+        {
+            var loc = new NetworkSourceLocation();
+            loc.UncPath = null; // missing path
+            loc.CredentialName = "test-creds";
+            loc.RevisionCount = 1;
+            loc.ID = 1;
+            loc.ValidateParameters();
+
+            Assert.IsTrue(true);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(SourceLocationInvalidUncFolderPathException))]
+        public void NetworkSourceLocationValidateThrowsWhenInvalidUncPathIsProvided2()
+        {
+            var loc = new NetworkSourceLocation();
+            loc.UncPath = "C:\\users\\test"; // not a UNC path
+            loc.CredentialName = "test-creds";
+            loc.RevisionCount = 1;
+            loc.ID = 1;
+            loc.ValidateParameters();
+
+            Assert.IsTrue(true);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(SourceLocationInvalidCredentialNameException))]
+        public void NetworkSourceLocationValidateThrowsWhenInvalidCredentialNameIsProvided()
+        {
+            var loc = new NetworkSourceLocation();
+            loc.UncPath = "\\\\test-computer\\\\uncpath";
+            loc.CredentialName = null; // missing credential name
+            loc.RevisionCount = 1;
+            loc.ID = 1;
+            loc.ValidateParameters();
+
+            Assert.IsTrue(true);
+        }
+
+        [TestMethod]
+        public void NetworkSourceLocationValidatePassesValidExample1()
+        {
+            var loc = new NetworkSourceLocation();
+            loc.UncPath = "\\\\test-computer\\\\uncpath";
+            loc.CredentialName = "test-creds";
+            loc.RevisionCount = 1;
+            loc.ID = 1;
+            loc.ValidateParameters();
+
+            Assert.IsTrue(true);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(SourceLocationInvalidLocalFolderPathException))]
         public void SourceLocationValidateThrowsExceptionWhenInvalidFolderPathIsProvided()
         {
             var loc = new LocalSourceLocation();
