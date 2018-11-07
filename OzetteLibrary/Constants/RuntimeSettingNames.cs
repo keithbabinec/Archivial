@@ -6,7 +6,7 @@
     /// <remarks>
     /// Runtime settings are stored in the client database and are not critical to launching the application.
     /// </remarks>
-    public static class RuntimeSettingNames
+    public class RuntimeSettingNames
     {
         /// <summary>
         /// Option: LowPriorityScanFrequencyInHours.
