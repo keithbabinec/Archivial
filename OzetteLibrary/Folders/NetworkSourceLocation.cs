@@ -1,4 +1,4 @@
-﻿using System;
+﻿using OzetteLibrary.Exceptions;
 
 namespace OzetteLibrary.Folders
 {
@@ -33,9 +33,9 @@ namespace OzetteLibrary.Folders
         }
 
         /// <summary>
-        /// Validates that a source configuration is usable.
+        /// Validates that source configuration parameters are valid, but does not validate if the source exists on disk.
         /// </summary>
-        public override void Validate()
+        public override void ValidateParameters()
         {
             ValidateUncPath();
             ValidateFileMatchFilter();
@@ -48,7 +48,18 @@ namespace OzetteLibrary.Folders
         /// </summary>
         private void ValidateUncPath()
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(UncPath))
+            {
+                throw new SourceLocationInvalidUncFolderPathException(this.ToString());
+            }
+            if (UncPath.StartsWith("\\\\") == false)
+            {
+                throw new SourceLocationInvalidUncFolderPathException(this.ToString());
+            }
+            if (string.IsNullOrWhiteSpace(CredentialName))
+            {
+                throw new SourceLocationInvalidCredentialNameException(this.ToString());
+            }
         }
     }
 }

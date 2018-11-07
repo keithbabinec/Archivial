@@ -45,7 +45,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            pds.GetApplicationSecret(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName);
+            pds.GetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
         }
 
         [TestMethod]
@@ -75,7 +75,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            pds.SetApplicationSecret(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName, "");
+            pds.SetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "");
         }
 
         [TestMethod]
@@ -89,12 +89,12 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            pds.SetApplicationSecret(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName, "test-account");
+            pds.SetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "test-account");
 
             // check the underlying database entry
             // it should be encrypted.
 
-            var optionValue = db.GetApplicationOption(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName);
+            var optionValue = db.GetApplicationOption(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
 
             // the actual value of the encrypted string is going to vary by machine scope
             // for consistency in testing just verify the string has been transformed.
@@ -116,12 +116,12 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            pds.SetApplicationSecret(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName, "test-account");
+            pds.SetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "test-account");
 
             // check the underlying database entry
             // it should be encrypted.
 
-            var optionValue = db.GetApplicationOption(OzetteLibrary.Constants.OptionNames.AzureStorageAccountName);
+            var optionValue = db.GetApplicationOption(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
 
             // the actual value of the encrypted string is going to vary by machine scope
             // for consistency in testing just verify the string has been transformed.

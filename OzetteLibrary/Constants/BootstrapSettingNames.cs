@@ -1,9 +1,12 @@
 ﻿namespace OzetteLibrary.Constants
 {
     /// <summary>
-    /// A constants class for core settings names.
+    /// A constants class for the bootstrap setting names.
     /// </summary>
-    public class CoreSettingNames
+    /// <remarks>
+    /// Bootstrap settings are stored in environment variables and are the minimum settings required to launch the application.
+    /// </remarks>
+    public class BootstrapSettingNames
     {
         /// <summary>
         /// The protection IV setting name.

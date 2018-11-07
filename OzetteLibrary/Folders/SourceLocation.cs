@@ -94,9 +94,9 @@ namespace OzetteLibrary.Folders
         public abstract override string ToString();
 
         /// <summary>
-        /// Validates that a source configuration is usable.
+        /// Validates that source configuration parameters are valid, but does not validate if the source exists on disk.
         /// </summary>
-        public abstract void Validate();
+        public abstract void ValidateParameters();
 
         /// <summary>
         /// Validates that a file match filter is usable.

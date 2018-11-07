@@ -27,9 +27,9 @@ namespace OzetteLibrary.Folders
         }
 
         /// <summary>
-        /// Validates that a source configuration is usable.
+        /// Validates that source configuration parameters are valid, but does not validate if the source exists on disk.
         /// </summary>
-        public override void Validate()
+        public override void ValidateParameters()
         {
             ValidateFolderPath();
             ValidateFileMatchFilter();
@@ -44,11 +44,11 @@ namespace OzetteLibrary.Folders
         {
             if (string.IsNullOrWhiteSpace(FolderPath))
             {
-                throw new SourceLocationInvalidFolderPathException(this.ToString());
+                throw new SourceLocationInvalidLocalFolderPathException(this.ToString());
             }
-            if (!System.IO.Directory.Exists(FolderPath))
+            if (FolderPath.StartsWith("\\\\") == true)
             {
-                throw new SourceLocationInvalidFolderPathException(this.ToString());
+                throw new SourceLocationInvalidLocalFolderPathException(this.ToString());
             }
         }
     }

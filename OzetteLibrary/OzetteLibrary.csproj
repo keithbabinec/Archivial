@@ -86,10 +86,10 @@
     <Compile Include="CommandLine\Arguments\RemoveProviderArguments.cs" />
     <Compile Include="CommandLine\Arguments\RemoveSourceArguments.cs" />
     <Compile Include="Constants\CommandLine.cs" />
-    <Compile Include="Constants\CoreSettingNames.cs" />
+    <Compile Include="Constants\BootstrapSettingNames.cs" />
     <Compile Include="Constants\EventIDs.cs" />
     <Compile Include="Constants\Formats.cs" />
-    <Compile Include="Constants\OptionNames.cs" />
+    <Compile Include="Constants\RuntimeSettingNames.cs" />
     <Compile Include="Constants\ProviderMetadata.cs" />
     <Compile Include="Constants\Transfers.cs" />
     <Compile Include="Engine\BaseEngine.cs" />
@@ -108,7 +108,9 @@
     <Compile Include="Exceptions\MaximumFileRevisionsExceededException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMalformedException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMissingException.cs" />
+    <Compile Include="Exceptions\SourceLocationInvalidCredentialNameException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidFileBackupPriorityException.cs" />
+    <Compile Include="Exceptions\SourceLocationInvalidUncFolderPathException.cs" />
     <Compile Include="Files\TransferPayload.cs" />
     <Compile Include="Folders\LocalSourceLocation.cs" />
     <Compile Include="Folders\NetworkSourceLocation.cs" />
@@ -141,7 +143,7 @@
     <Compile Include="Folders\ScanResults.cs" />
     <Compile Include="Folders\SourceLocation.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidFileMatchFilterException.cs" />
-    <Compile Include="Exceptions\SourceLocationInvalidFolderPathException.cs" />
+    <Compile Include="Exceptions\SourceLocationInvalidLocalFolderPathException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidRevisionCountException.cs" />
     <Compile Include="Folders\SourceLocations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

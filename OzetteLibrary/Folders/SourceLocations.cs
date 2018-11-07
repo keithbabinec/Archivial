@@ -35,7 +35,7 @@ namespace OzetteLibrary.Folders
 
                 foreach (var item in this)
                 {
-                    item.Validate();
+                    item.ValidateParameters();
 
                     if (definedIDs.Contains(item.ID) == false)
                     {

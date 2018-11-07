@@ -129,11 +129,11 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Saving encrypted Azure configuration setting: AzureStorageAccountName.");
 
-            pds.SetApplicationSecret(Constants.OptionNames.AzureStorageAccountName, arguments.AzureStorageAccountName);
+            pds.SetApplicationSecret(Constants.RuntimeSettingNames.AzureStorageAccountName, arguments.AzureStorageAccountName);
 
             Logger.WriteConsole("Saving encrypted Azure configuration setting: AzureStorageAccountToken.");
 
-            pds.SetApplicationSecret(Constants.OptionNames.AzureStorageAccountToken, arguments.AzureStorageAccountToken);
+            pds.SetApplicationSecret(Constants.RuntimeSettingNames.AzureStorageAccountToken, arguments.AzureStorageAccountToken);
         }
     }
 }
