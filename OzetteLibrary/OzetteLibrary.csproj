@@ -108,6 +108,7 @@
     <Compile Include="Exceptions\MaximumFileRevisionsExceededException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMalformedException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMissingException.cs" />
+    <Compile Include="Exceptions\SourceLocationInvalidCredentialNameException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidFileBackupPriorityException.cs" />
     <Compile Include="Files\TransferPayload.cs" />
     <Compile Include="Folders\LocalSourceLocation.cs" />

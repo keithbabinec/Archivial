@@ -111,7 +111,7 @@ namespace OzetteLibrary.CommandLine.Commands
             newSource.ID = highestKnownID + 1;
 
             Logger.WriteConsole("Validating the source is usable.");
-            newSource.Validate();
+            newSource.ValidateParameters();
             Logger.WriteConsole("The specified scan source is valid and can be used.");
 
             Logger.WriteConsole("Saving the source to the database.");

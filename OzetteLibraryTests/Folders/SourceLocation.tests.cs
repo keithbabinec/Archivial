@@ -14,16 +14,8 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidateThrowsExceptionWhenInvalidFolderPathIsProvided()
         {
             var loc = new LocalSourceLocation();
-            loc.Validate();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(SourceLocationInvalidFolderPathException))]
-        public void SourceLocationValidateThrowsExceptionWhenInvalidFolderPathIsProvided2()
-        {
-            var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory + "\\somefolderthatdoesntexist";
-            loc.Validate();
+            loc.FolderPath = null;
+            loc.ValidateParameters();
         }
 
         [TestMethod]
@@ -33,7 +25,7 @@ namespace OzetteLibraryTests.Folders
             var loc = new LocalSourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.FileMatchFilter = "aaaa";
-            loc.Validate();
+            loc.ValidateParameters();
         }
 
         [TestMethod]
@@ -43,7 +35,7 @@ namespace OzetteLibraryTests.Folders
             var loc = new LocalSourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.FileMatchFilter = "test.mp3";
-            loc.Validate();
+            loc.ValidateParameters();
         }
 
         [TestMethod]
@@ -53,7 +45,7 @@ namespace OzetteLibraryTests.Folders
             var loc = new LocalSourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 0;
-            loc.Validate();
+            loc.ValidateParameters();
         }
 
         [TestMethod]
@@ -63,7 +55,7 @@ namespace OzetteLibraryTests.Folders
             var loc = new LocalSourceLocation();
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = -15;
-            loc.Validate();
+            loc.ValidateParameters();
         }
 
         [TestMethod]
@@ -74,7 +66,7 @@ namespace OzetteLibraryTests.Folders
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 0;
-            loc.Validate();
+            loc.ValidateParameters();
         }
 
         [TestMethod]
@@ -85,7 +77,7 @@ namespace OzetteLibraryTests.Folders
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = -10;
-            loc.Validate();
+            loc.ValidateParameters();
         }
 
         [TestMethod]
@@ -95,7 +87,7 @@ namespace OzetteLibraryTests.Folders
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -107,7 +99,7 @@ namespace OzetteLibraryTests.Folders
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 10;
             loc.ID = 1;
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -119,7 +111,7 @@ namespace OzetteLibraryTests.Folders
             loc.FolderPath = Environment.CurrentDirectory;
             loc.RevisionCount = 12345678;
             loc.ID = 1;
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -132,7 +124,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -145,7 +137,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "*";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -158,7 +150,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "*.*";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -171,7 +163,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "test*";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -184,7 +176,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "test*.doc";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -197,7 +189,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "*.doc";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -210,7 +202,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "test.*";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -223,7 +215,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "t?st";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -236,7 +228,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "t?st.doc";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -249,7 +241,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "t?st.*";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -262,7 +254,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.FileMatchFilter = "t?st.do?";
             loc.ID = 1;
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
@@ -275,7 +267,7 @@ namespace OzetteLibraryTests.Folders
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "*.d?";
-            loc.Validate();
+            loc.ValidateParameters();
 
             Assert.IsTrue(true);
         }
