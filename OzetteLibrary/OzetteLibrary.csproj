@@ -86,10 +86,10 @@
     <Compile Include="CommandLine\Arguments\RemoveProviderArguments.cs" />
     <Compile Include="CommandLine\Arguments\RemoveSourceArguments.cs" />
     <Compile Include="Constants\CommandLine.cs" />
-    <Compile Include="Constants\CoreSettingNames.cs" />
+    <Compile Include="Constants\BootstrapSettingNames.cs" />
     <Compile Include="Constants\EventIDs.cs" />
     <Compile Include="Constants\Formats.cs" />
-    <Compile Include="Constants\OptionNames.cs" />
+    <Compile Include="Constants\RuntimeSettingNames.cs" />
     <Compile Include="Constants\ProviderMetadata.cs" />
     <Compile Include="Constants\Transfers.cs" />
     <Compile Include="Engine\BaseEngine.cs" />

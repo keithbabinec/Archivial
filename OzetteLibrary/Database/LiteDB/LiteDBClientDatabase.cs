@@ -128,32 +128,32 @@ namespace OzetteLibrary.Database.LiteDB
             {
                 var optionsCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
 
-                if (optionsCol.FindOne(x => x.Name == Constants.OptionNames.LowPriorityScanFrequencyInHours) == null)
+                if (optionsCol.FindOne(x => x.Name == Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours) == null)
                 {
                     optionsCol.Insert(
                         new ApplicationOption()
                         {
-                            Name = Constants.OptionNames.LowPriorityScanFrequencyInHours,
+                            Name = Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours,
                             Value = "72"
                         });
                 }
 
-                if (optionsCol.FindOne(x => x.Name == Constants.OptionNames.MedPriorityScanFrequencyInHours) == null)
+                if (optionsCol.FindOne(x => x.Name == Constants.RuntimeSettingNames.MedPriorityScanFrequencyInHours) == null)
                 {
                     optionsCol.Insert(
                         new ApplicationOption()
                         {
-                            Name = Constants.OptionNames.MedPriorityScanFrequencyInHours,
+                            Name = Constants.RuntimeSettingNames.MedPriorityScanFrequencyInHours,
                             Value = "24"
                         });
                 }
 
-                if (optionsCol.FindOne(x => x.Name == Constants.OptionNames.HighPriorityScanFrequencyInHours) == null)
+                if (optionsCol.FindOne(x => x.Name == Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours) == null)
                 {
                     optionsCol.Insert(
                         new ApplicationOption()
                         {
-                            Name = Constants.OptionNames.HighPriorityScanFrequencyInHours,
+                            Name = Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours,
                             Value = "1"
                         });
                 }

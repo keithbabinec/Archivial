@@ -1,9 +1,12 @@
 ﻿namespace OzetteLibrary.Constants
 {
     /// <summary>
-    /// A enum that describes known option names.
+    /// A constants class for the runtime setting names.
     /// </summary>
-    public static class OptionNames
+    /// <remarks>
+    /// Runtime settings are stored in the client database and are not critical to launching the application.
+    /// </remarks>
+    public static class RuntimeSettingNames
     {
         /// <summary>
         /// Option: LowPriorityScanFrequencyInHours.

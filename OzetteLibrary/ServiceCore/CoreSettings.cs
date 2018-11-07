@@ -16,11 +16,11 @@ namespace OzetteLibrary.ServiceCore
         {
             get
             {
-                return GetCoreSetting(CoreSettingNames.DatabaseConnectionString);
+                return GetCoreSetting(BootstrapSettingNames.DatabaseConnectionString);
             }
             set
             {
-                SetCoreSetting(CoreSettingNames.DatabaseConnectionString, value);
+                SetCoreSetting(BootstrapSettingNames.DatabaseConnectionString, value);
             }
         }
 
@@ -31,11 +31,11 @@ namespace OzetteLibrary.ServiceCore
         {
             get
             {
-                return GetCoreSetting(CoreSettingNames.EventlogName);
+                return GetCoreSetting(BootstrapSettingNames.EventlogName);
             }
             set
             {
-                SetCoreSetting(CoreSettingNames.EventlogName, value);
+                SetCoreSetting(BootstrapSettingNames.EventlogName, value);
             }
         }
 
@@ -46,11 +46,11 @@ namespace OzetteLibrary.ServiceCore
         {
             get
             {
-                return GetCoreSetting(CoreSettingNames.InstallationDirectory);
+                return GetCoreSetting(BootstrapSettingNames.InstallationDirectory);
             }
             set
             {
-                SetCoreSetting(CoreSettingNames.InstallationDirectory, value);
+                SetCoreSetting(BootstrapSettingNames.InstallationDirectory, value);
             }
         }
 
@@ -61,11 +61,11 @@ namespace OzetteLibrary.ServiceCore
         {
             get
             {
-                return GetCoreSetting(CoreSettingNames.LogFilesDirectory);
+                return GetCoreSetting(BootstrapSettingNames.LogFilesDirectory);
             }
             set
             {
-                SetCoreSetting(CoreSettingNames.LogFilesDirectory, value);
+                SetCoreSetting(BootstrapSettingNames.LogFilesDirectory, value);
             }
         }
 
@@ -76,11 +76,11 @@ namespace OzetteLibrary.ServiceCore
         {
             get
             {
-                return GetCoreSetting(CoreSettingNames.ProtectionIV);
+                return GetCoreSetting(BootstrapSettingNames.ProtectionIV);
             }
             set
             {
-                SetCoreSetting(CoreSettingNames.ProtectionIV, value);
+                SetCoreSetting(BootstrapSettingNames.ProtectionIV, value);
             }
         }
 
