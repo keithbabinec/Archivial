@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.Database;
 using OzetteLibrary.Engine;
+using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Providers;
 using System;
@@ -57,6 +58,39 @@ namespace OzetteLibrary.Client
         /// </summary>
         private void ProcessLoop()
         {
+            try
+            {
+                while (true)
+                {
+                    // query source locations from the database.
+
+                        // NetworkLocation 
+                        //  .IsConnected -- bool property
+                        //  .IsFailed -- bool property
+                        //  .LastConnectionCheck -- datetime property
+
+                    // do we have any network source connections that must be established or re-established?
+                    
+                        // 1. if a connection is not connected, attempt to connect it.
+                        // 2. if a connection is connected, but old, validate it.
+                        //      -- if working, then leave alone.
+                        //      -- if not working, then force disconnect (let it re-connect automatically on next cycle)
+
+                        // 3. take into account the timeout/penalty box for consistently failed connections.
+
+                    ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
+
+                    if (Running == false)
+                    {
+                        OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                OnStopped(new EngineStoppedEventArgs(ex));
+            }
         }
     }
 }
