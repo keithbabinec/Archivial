@@ -8,11 +8,6 @@ namespace OzetteLibrary.Folders
     public class LocalSourceLocation : SourceLocation
     {
         /// <summary>
-        /// The folder path to backup.
-        /// </summary>
-        public string FolderPath { get; set; }
-
-        /// <summary>
         /// Formats the Source Location string properties.
         /// </summary>
         /// <returns></returns>
@@ -20,7 +15,7 @@ namespace OzetteLibrary.Folders
         {
             return string.Format("Type=Local, ID={0}, Path='{1}', Filter='{2}', Priority={3}, RevisionCount={4}",
                 ID,
-                FolderPath,
+                Path,
                 FileMatchFilter == null ? "(none)" : FileMatchFilter,
                 Priority,
                 RevisionCount);
@@ -42,11 +37,11 @@ namespace OzetteLibrary.Folders
         /// </summary>
         private void ValidateFolderPath()
         {
-            if (string.IsNullOrWhiteSpace(FolderPath))
+            if (string.IsNullOrWhiteSpace(Path))
             {
                 throw new SourceLocationInvalidLocalFolderPathException(this.ToString());
             }
-            if (FolderPath.StartsWith("\\\\") == true)
+            if (Path.StartsWith("\\\\") == true)
             {
                 throw new SourceLocationInvalidLocalFolderPathException(this.ToString());
             }

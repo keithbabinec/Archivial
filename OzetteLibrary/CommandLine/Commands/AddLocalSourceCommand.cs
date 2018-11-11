@@ -83,7 +83,7 @@ namespace OzetteLibrary.CommandLine.Commands
             var allSources = db.GetAllSourceLocations();
             var allLocalSources = allSources.Where(x => x is LocalSourceLocation).ToList();
 
-            if (allLocalSources.Any(x => (x as LocalSourceLocation).FolderPath.ToLower() == arguments.FolderPath.ToLower() && x.FileMatchFilter == arguments.Matchfilter))
+            if (allLocalSources.Any(x => x.Path.ToLower() == arguments.FolderPath.ToLower() && x.FileMatchFilter == arguments.Matchfilter))
             {
                 // there already exists a source with this folder location and match filter.
                 throw new SourceLocationException("Unable to add source: the specified folder and match filter combination is already listed as a source.");
@@ -94,7 +94,7 @@ namespace OzetteLibrary.CommandLine.Commands
             }
 
             var newSource = new LocalSourceLocation();
-            newSource.FolderPath = arguments.FolderPath;
+            newSource.Path = arguments.FolderPath;
             newSource.FileMatchFilter = arguments.Matchfilter;
             newSource.RevisionCount = arguments.Revisions;
             newSource.Priority = arguments.Priority;

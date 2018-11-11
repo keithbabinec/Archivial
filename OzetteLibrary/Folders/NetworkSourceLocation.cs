@@ -8,11 +8,6 @@ namespace OzetteLibrary.Folders
     public class NetworkSourceLocation : SourceLocation
     {
         /// <summary>
-        /// The folder path to backup.
-        /// </summary>
-        public string UncPath { get; set; }
-
-        /// <summary>
         /// The name of the credential lookup key.
         /// </summary>
         public string CredentialName { get; set; }
@@ -26,7 +21,7 @@ namespace OzetteLibrary.Folders
             return string.Format("Type=Network, Credential={0}, ID={1}, Path='{2}', Filter='{3}', Priority={4}, RevisionCount={5}",
                 CredentialName,
                 ID,
-                UncPath,
+                Path,
                 FileMatchFilter == null ? "(none)" : FileMatchFilter,
                 Priority,
                 RevisionCount);
@@ -44,15 +39,15 @@ namespace OzetteLibrary.Folders
         }
 
         /// <summary>
-        /// Validates that the folder path is usable.
+        /// Validates that the folder path is usable (is a UNC path).
         /// </summary>
         private void ValidateUncPath()
         {
-            if (string.IsNullOrWhiteSpace(UncPath))
+            if (string.IsNullOrWhiteSpace(Path))
             {
                 throw new SourceLocationInvalidUncFolderPathException(this.ToString());
             }
-            if (UncPath.StartsWith("\\\\") == false)
+            if (Path.StartsWith("\\\\") == false)
             {
                 throw new SourceLocationInvalidUncFolderPathException(this.ToString());
             }

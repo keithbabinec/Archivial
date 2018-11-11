@@ -55,7 +55,7 @@ namespace OzetteLibraryTests.Client.Sources
 
             var source = new LocalSourceLocation()
             {
-                FolderPath = Environment.CurrentDirectory,
+                Path = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",
                 Priority = OzetteLibrary.Files.FileBackupPriority.Low,
                 RevisionCount = 1
@@ -78,7 +78,7 @@ namespace OzetteLibraryTests.Client.Sources
 
             var source = new LocalSourceLocation()
             {
-                FolderPath = Environment.CurrentDirectory,
+                Path = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",
                 Priority = FileBackupPriority.Low,
                 RevisionCount = 1
@@ -105,7 +105,7 @@ namespace OzetteLibraryTests.Client.Sources
 
             var source = new LocalSourceLocation()
             {
-                FolderPath = Environment.CurrentDirectory,
+                Path = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",
                 Priority = FileBackupPriority.Low,
                 RevisionCount = 1
@@ -139,7 +139,7 @@ namespace OzetteLibraryTests.Client.Sources
 
             var source = new LocalSourceLocation()
             {
-                FolderPath = Environment.CurrentDirectory,
+                Path = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",
                 Priority = FileBackupPriority.Low,
                 RevisionCount = 1
@@ -184,7 +184,7 @@ namespace OzetteLibraryTests.Client.Sources
 
             var source = new LocalSourceLocation()
             {
-                FolderPath = Environment.CurrentDirectory,
+                Path = Environment.CurrentDirectory,
                 FileMatchFilter = "*.*",
                 Priority = FileBackupPriority.Low,
                 RevisionCount = 1

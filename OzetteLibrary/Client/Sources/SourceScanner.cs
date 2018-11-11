@@ -118,19 +118,7 @@ namespace OzetteLibrary.Client.Sources
             // however calling EnumerateFiles() or EnumerateDirectories() will throw exceptions, so these are wrapped.
 
             var directoriesToScan = new Queue<DirectoryInfo>();
-
-            if (source is LocalSourceLocation)
-            {
-                directoriesToScan.Enqueue(new DirectoryInfo((source as LocalSourceLocation).FolderPath));
-            }
-            else if (source is NetworkSourceLocation)
-            {
-                directoriesToScan.Enqueue(new DirectoryInfo((source as NetworkSourceLocation).UncPath));
-            }
-            else
-            {
-                throw new NotImplementedException("Unsupported source location type: " + source.GetType().FullName);
-            }
+            directoriesToScan.Enqueue(new DirectoryInfo(source.Path));
 
             while (directoriesToScan.Count > 0)
             {
