@@ -1,4 +1,5 @@
 ﻿using OzetteLibrary.Exceptions;
+using System;
 
 namespace OzetteLibrary.Folders
 {
@@ -11,6 +12,21 @@ namespace OzetteLibrary.Folders
         /// The name of the credential lookup key.
         /// </summary>
         public string CredentialName { get; set; }
+
+        /// <summary>
+        /// A flag to determine if this source is currently connected (usable).
+        /// </summary>
+        public bool IsConnected { get; set; }
+
+        /// <summary>
+        /// A flag to determine if this source is currently in a failed state.
+        /// </summary>
+        public bool IsFailed { get; set; }
+
+        /// <summary>
+        /// A timestamp for when the last time we checked the connection.
+        /// </summary>
+        public DateTime? LastConnectionCheck { get; set; }
 
         /// <summary>
         /// Formats the Source Location string properties.
