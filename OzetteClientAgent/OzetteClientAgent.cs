@@ -58,6 +58,11 @@ namespace OzetteClientAgent
         private ILogger ScanEngineLog { get; set; }
 
         /// <summary>
+        /// A reference to the connection engine instance.
+        /// </summary>
+        private ConnectionEngine Connection { get; set; }
+
+        /// <summary>
         /// A reference to the scanning engine instance.
         /// </summary>
         private ScanEngine Scan { get; set; }
@@ -89,6 +94,12 @@ namespace OzetteClientAgent
                 EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService, true);
 
             if (!ConfigureProviderConnections())
+            {
+                Stop();
+                return;
+            }
+
+            if (!StartConnectionEngine())
             {
                 Stop();
                 return;
@@ -130,6 +141,10 @@ namespace OzetteClientAgent
             if (Backup != null)
             {
                 Backup.BeginStop();
+            }
+            if (Connection != null)
+            {
+                Connection.BeginStop();
             }
 
             if (CoreLog != null)
@@ -253,6 +268,66 @@ namespace OzetteClientAgent
                 var context = CoreLog.GenerateFullContextStackTrace();
                 CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedToConfigureCloudProviderConnections, true);
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Starts the connection engine.
+        /// </summary>
+        /// <returns>True if successful, otherwise false.</returns>
+        private bool StartConnectionEngine()
+        {
+            // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
+            // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
+
+            try
+            {
+                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
+                db.PrepareDatabase();
+
+                Connection = new ConnectionEngine(db, CoreLog, ProviderConnections);
+                Connection.Stopped += Connection_Stopped;
+                Connection.BeginStart();
+
+                CoreLog.WriteSystemEvent(
+                    string.Format("Connection Engine has started."),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedConnectionEngine, true);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var message = "Failed to start the connection engine.";
+                var context = CoreLog.GenerateFullContextStackTrace();
+                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedConnectionEngine, true);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Callback event for when connection engine has stopped.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Connection_Stopped(object sender, OzetteLibrary.Events.EngineStoppedEventArgs e)
+        {
+            if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
+            {
+                CoreLog.WriteSystemEvent(
+                    string.Format("Connection Engine has failed."),
+                    e.Exception,
+                    CoreLog.GenerateFullContextStackTrace(),
+                    OzetteLibrary.Constants.EventIDs.FailedConnectionEngine, true);
+            }
+            else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
+            {
+                CoreLog.WriteSystemEvent(
+                    string.Format("Connection Engine has stopped."),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedConnectionEngine, true);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unexpected EngineStoppedReason: " + e.Reason);
             }
         }
 
