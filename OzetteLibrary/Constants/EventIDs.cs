@@ -61,6 +61,16 @@
         public const int ConfiguredCloudProviderConnections = 1010;
 
         /// <summary>
+        /// Event ID: Started connection engine.
+        /// </summary>
+        public const int StartedConnectionEngine = 1011;
+
+        /// <summary>
+        /// Event ID: Stopped connection engine.
+        /// </summary>
+        public const int StoppedConnectionEngine = 1012;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;
@@ -119,5 +129,10 @@
         /// Event ID: A core application setting is missing. 
         /// </summary>
         public const int CoreSettingMissing = 2011;
+
+        /// <summary>
+        /// Event ID: Failed connection engine.
+        /// </summary>
+        public const int FailedConnectionEngine = 2012;
     }
 }

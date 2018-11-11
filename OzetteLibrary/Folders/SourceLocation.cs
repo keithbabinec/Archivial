@@ -15,6 +15,11 @@ namespace OzetteLibrary.Folders
         public int ID { get; set; }
 
         /// <summary>
+        /// The folder path to backup.
+        /// </summary>
+        public string Path { get; set; }
+
+        /// <summary>
         /// The file match filter for this folder.
         /// </summary>
         /// <remarks>

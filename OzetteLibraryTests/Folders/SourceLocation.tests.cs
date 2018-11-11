@@ -13,7 +13,7 @@ namespace OzetteLibraryTests.Folders
         public void NetworkSourceLocationValidateThrowsWhenInvalidUncPathIsProvided1()
         {
             var loc = new NetworkSourceLocation();
-            loc.UncPath = null; // missing path
+            loc.Path = null; // missing path
             loc.CredentialName = "test-creds";
             loc.RevisionCount = 1;
             loc.ID = 1;
@@ -27,7 +27,7 @@ namespace OzetteLibraryTests.Folders
         public void NetworkSourceLocationValidateThrowsWhenInvalidUncPathIsProvided2()
         {
             var loc = new NetworkSourceLocation();
-            loc.UncPath = "C:\\users\\test"; // not a UNC path
+            loc.Path = "C:\\users\\test"; // not a UNC path
             loc.CredentialName = "test-creds";
             loc.RevisionCount = 1;
             loc.ID = 1;
@@ -41,7 +41,7 @@ namespace OzetteLibraryTests.Folders
         public void NetworkSourceLocationValidateThrowsWhenInvalidCredentialNameIsProvided()
         {
             var loc = new NetworkSourceLocation();
-            loc.UncPath = "\\\\test-computer\\\\uncpath";
+            loc.Path = "\\\\test-computer\\\\uncpath";
             loc.CredentialName = null; // missing credential name
             loc.RevisionCount = 1;
             loc.ID = 1;
@@ -54,7 +54,7 @@ namespace OzetteLibraryTests.Folders
         public void NetworkSourceLocationValidatePassesValidExample1()
         {
             var loc = new NetworkSourceLocation();
-            loc.UncPath = "\\\\test-computer\\\\uncpath";
+            loc.Path = "\\\\test-computer\\\\uncpath";
             loc.CredentialName = "test-creds";
             loc.RevisionCount = 1;
             loc.ID = 1;
@@ -68,7 +68,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidateThrowsExceptionWhenInvalidFolderPathIsProvided()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = null;
+            loc.Path = null;
             loc.ValidateParameters();
         }
 
@@ -77,7 +77,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidateThrowsExceptionWhenInvalidFileMatchPatternIsProvided()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.FileMatchFilter = "aaaa";
             loc.ValidateParameters();
         }
@@ -87,7 +87,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidateThrowsExceptionWhenInvalidFileMatchPatternIsProvided2()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.FileMatchFilter = "test.mp3";
             loc.ValidateParameters();
         }
@@ -97,7 +97,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidateThrowsExceptionWhenInvalidRevisionCountProvided()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 0;
             loc.ValidateParameters();
         }
@@ -107,7 +107,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidateThrowsExceptionWhenInvalidRevisionCountProvided2()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = -15;
             loc.ValidateParameters();
         }
@@ -117,7 +117,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidateThrowsExceptionWhenInvalidIDProvided()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 0;
             loc.ValidateParameters();
@@ -128,7 +128,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidateThrowsExceptionWhenInvalidIDProvided2()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = -10;
             loc.ValidateParameters();
@@ -138,7 +138,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample1()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.ValidateParameters();
@@ -150,7 +150,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample2()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 10;
             loc.ID = 1;
             loc.ValidateParameters();
@@ -162,7 +162,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample3()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 12345678;
             loc.ID = 1;
             loc.ValidateParameters();
@@ -174,7 +174,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample4()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "";
@@ -187,7 +187,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample5()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "*";
@@ -200,7 +200,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample6()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "*.*";
@@ -213,7 +213,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample7()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "test*";
@@ -226,7 +226,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample8()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "test*.doc";
@@ -239,7 +239,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample9()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "*.doc";
@@ -252,7 +252,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample10()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "test.*";
@@ -265,7 +265,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample11()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "t?st";
@@ -278,7 +278,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample12()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "t?st.doc";
@@ -291,7 +291,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample13()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "t?st.*";
@@ -304,7 +304,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample14()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.FileMatchFilter = "t?st.do?";
             loc.ID = 1;
@@ -317,7 +317,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationValidatePassesValidExample15()
         {
             var loc = new LocalSourceLocation();
-            loc.FolderPath = Environment.CurrentDirectory;
+            loc.Path = Environment.CurrentDirectory;
             loc.RevisionCount = 1;
             loc.ID = 1;
             loc.FileMatchFilter = "*.d?";
@@ -511,19 +511,19 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationsValidateThrowsExceptionOnDuplicateIDs()
         {
             var loc1 = new LocalSourceLocation();
-            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.Path = Environment.CurrentDirectory;
             loc1.RevisionCount = 1;
             loc1.ID = 1;
             loc1.FileMatchFilter = "*";
 
             var loc2 = new LocalSourceLocation();
-            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.Path = Environment.CurrentDirectory;
             loc2.RevisionCount = 1;
             loc2.ID = 2;
             loc2.FileMatchFilter = "*";
 
             var loc3 = new LocalSourceLocation();
-            loc3.FolderPath = Environment.CurrentDirectory;
+            loc3.Path = Environment.CurrentDirectory;
             loc3.RevisionCount = 1;
             loc3.ID = 2;
             loc3.FileMatchFilter = "*";
@@ -542,19 +542,19 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationsValidateCallsValidateOnSourcesInsideCollection()
         {
             var loc1 = new LocalSourceLocation();
-            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.Path = Environment.CurrentDirectory;
             loc1.RevisionCount = 1;
             loc1.ID = 1;
             loc1.FileMatchFilter = "*";
 
             var loc2 = new LocalSourceLocation();
-            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.Path = Environment.CurrentDirectory;
             loc2.RevisionCount = 1;
             loc2.ID = 2;
             loc2.FileMatchFilter = "*";
 
             var loc3 = new LocalSourceLocation();
-            loc3.FolderPath = Environment.CurrentDirectory;
+            loc3.Path = Environment.CurrentDirectory;
             loc3.RevisionCount = 0; // this should cause a validation error
             loc3.ID = 3;
             loc3.FileMatchFilter = "*";
@@ -572,19 +572,19 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationsValidateDoesNotThrowOnAllValidSources()
         {
             var loc1 = new LocalSourceLocation();
-            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.Path = Environment.CurrentDirectory;
             loc1.RevisionCount = 1;
             loc1.ID = 1;
             loc1.FileMatchFilter = "*";
 
             var loc2 = new LocalSourceLocation();
-            loc2.FolderPath = Environment.CurrentDirectory;
+            loc2.Path = Environment.CurrentDirectory;
             loc2.RevisionCount = 1;
             loc2.ID = 2;
             loc2.FileMatchFilter = "*";
 
             var loc3 = new LocalSourceLocation();
-            loc3.FolderPath = Environment.CurrentDirectory;
+            loc3.Path = Environment.CurrentDirectory;
             loc3.RevisionCount = 1;
             loc3.ID = 3;
             loc3.FileMatchFilter = "*";
@@ -604,7 +604,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationsValidateDoesNotThrowOnSingleValidSource()
         {
             var loc1 = new LocalSourceLocation();
-            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.Path = Environment.CurrentDirectory;
             loc1.RevisionCount = 1;
             loc1.ID = 1;
             loc1.FileMatchFilter = "*";
@@ -623,7 +623,7 @@ namespace OzetteLibraryTests.Folders
         public void SourceLocationsValidateDoesThrowOnSingleInvalidSource()
         {
             var loc1 = new LocalSourceLocation();
-            loc1.FolderPath = Environment.CurrentDirectory;
+            loc1.Path = Environment.CurrentDirectory;
             loc1.RevisionCount = 1;
             loc1.ID = 0;
             loc1.FileMatchFilter = "*";

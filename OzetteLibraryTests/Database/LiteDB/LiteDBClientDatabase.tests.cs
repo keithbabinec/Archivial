@@ -639,7 +639,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             var source = new LocalSourceLocation();
             source.ID = 1;
-            source.FolderPath = "C:\\test\\folder";
+            source.Path = "C:\\test\\folder";
 
             var sources = new OzetteLibrary.Folders.SourceLocations();
             sources.Add(source);
@@ -652,7 +652,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             foreach (var dbSource in result)
             {
                 Assert.AreEqual(source.ID, dbSource.ID);
-                Assert.AreEqual(source.FolderPath, (dbSource as LocalSourceLocation).FolderPath);
+                Assert.AreEqual(source.Path, dbSource.Path);
                 sourceCount++;
             }
 
@@ -671,7 +671,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             var source = new LocalSourceLocation();
             source.ID = 1;
-            source.FolderPath = "C:\\test\\folder";
+            source.Path = "C:\\test\\folder";
 
             var sources = new OzetteLibrary.Folders.SourceLocations();
             sources.Add(source);
@@ -707,7 +707,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             var source = new LocalSourceLocation();
             source.ID = 1;
-            source.FolderPath = "C:\\test\\folder";
+            source.Path = "C:\\test\\folder";
 
             var sources = new OzetteLibrary.Folders.SourceLocations();
             sources.Add(source);
@@ -724,7 +724,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             foreach (var dbSource in result)
             {
                 Assert.AreEqual(source.ID, dbSource.ID);
-                Assert.AreEqual(source.FolderPath, (dbSource as LocalSourceLocation).FolderPath);
+                Assert.AreEqual(source.Path, dbSource.Path);
 
                 sourcesCount++;
             }
@@ -744,15 +744,15 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             var source1 = new LocalSourceLocation();
             source1.ID = 1;
-            source1.FolderPath = "C:\\test\\folder1";
+            source1.Path = "C:\\test\\folder1";
 
             var source2 = new LocalSourceLocation();
             source2.ID = 2;
-            source2.FolderPath = "C:\\test\\folder2";
+            source2.Path = "C:\\test\\folder2";
 
             var source3 = new LocalSourceLocation();
             source3.ID = 3;
-            source3.FolderPath = "C:\\test\\folder3";
+            source3.Path = "C:\\test\\folder3";
 
             var sources = new OzetteLibrary.Folders.SourceLocations();
             sources.Add(source1);
@@ -772,7 +772,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             for (int i = 0; i < result.Count; i++)
             {
                 Assert.AreEqual(sources[i].ID, result[i].ID);
-                Assert.AreEqual((sources[i] as LocalSourceLocation).FolderPath, (result[i] as LocalSourceLocation).FolderPath);
+                Assert.AreEqual((sources[i] as LocalSourceLocation).Path, result[i].Path);
             }
         }
 
@@ -788,15 +788,15 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             var source1 = new LocalSourceLocation();
             source1.ID = 1;
-            source1.FolderPath = "C:\\test\\folder1";
+            source1.Path = "C:\\test\\folder1";
 
             var source2 = new LocalSourceLocation();
             source2.ID = 2;
-            source2.FolderPath = "C:\\test\\folder2";
+            source2.Path = "C:\\test\\folder2";
 
             var source3 = new LocalSourceLocation();
             source3.ID = 3;
-            source3.FolderPath = "C:\\test\\folder3";
+            source3.Path = "C:\\test\\folder3";
 
             var sources = new OzetteLibrary.Folders.SourceLocations();
             sources.Add(source1);
@@ -820,7 +820,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             for (int i = 0; i < result.Count; i++)
             {
                 Assert.AreEqual(sources[i].ID, result[i].ID);
-                Assert.AreEqual((sources[i] as LocalSourceLocation).FolderPath, (result[i] as LocalSourceLocation).FolderPath);
+                Assert.AreEqual((sources[i] as LocalSourceLocation).Path, result[i].Path);
             }
         }
 

@@ -78,6 +78,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Client\BackupEngine.tests.cs" />
+    <Compile Include="Client\ConnectionEngine.tests.cs" />
     <Compile Include="Client\ScanEngine.tests.cs" />
     <Compile Include="Client\Sources\Scanner.tests.cs" />
     <Compile Include="CommandLine\Parser.tests.cs" />
