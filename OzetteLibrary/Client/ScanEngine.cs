@@ -97,6 +97,14 @@ namespace OzetteLibrary.Client
 
                             if (source.ShouldScan(scanOptions))
                             {
+                                if (source is NetworkSourceLocation && !(source as NetworkSourceLocation).IsConnected)
+                                {
+                                    // this is a network source and in a disconnected or failed state
+                                    // scanning won't be possible at this time.
+                                    Logger.WriteTraceMessage(string.Format("Unable to scan network source: {0}. It is currently disconnected or unreachable.", source.Path));
+                                    continue;
+                                }
+
                                 // begin-invoke the asynchronous scan operation.
                                 // watch the IAsyncResult status object to check for status updates
                                 // and wait until the scan has completed.
