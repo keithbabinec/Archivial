@@ -156,7 +156,12 @@ namespace OzetteLibrary.Client
             }
 
             DisconnectNetUse(netSource);
-            ConnectNetUse(netSource, netUser, netPass);
+
+            if (!TryConnectNetUse(netSource, netUser, netPass))
+            {
+                UpdateNetSourceConnectionState(netSource, false, true);
+                return;
+            }
 
             // validate again: do we have access now after disconnect/reconnect?
             // if we dont have access after running net use, then we can consider this connection failed.
@@ -164,10 +169,12 @@ namespace OzetteLibrary.Client
             var freshDir = new DirectoryInfo(netSource.Path);
             if (freshDir.Exists)
             {
+                Logger.WriteTraceMessage("Successfully connected to network source location: " + netSource.Path);
                 UpdateNetSourceConnectionState(netSource, true, false);
             }
             else
             {
+                Logger.WriteTraceMessage("Failed to connect to network source location. The directory is still not accessible after running NET USE command: " + netSource.Path);
                 UpdateNetSourceConnectionState(netSource, false, true);
             }
         }
@@ -183,8 +190,6 @@ namespace OzetteLibrary.Client
             {
                 FileName = "NET",
                 Arguments = string.Format("USE /DELETE {0}", netSource.Path),
-                RedirectStandardError = true,
-                UseShellExecute = false
             };
 
             process.StartInfo = startInfo;
@@ -192,13 +197,8 @@ namespace OzetteLibrary.Client
             process.Start();
             process.WaitForExit();
 
-            var stdErr = process.StandardError.ReadToEnd();
-
-            if (process.ExitCode != 0 && !string.IsNullOrWhiteSpace(stdErr))
-            {
-                string err = string.Format("Failed to disconnect a network source location: {0}. An error occurred calling NET USE. Error: {1}", netSource.Path, stdErr);
-                Logger.WriteTraceError(err);
-            }
+            // we don't actually care what happens here, in terms of exit code or stderr.
+            // net use will write to stderr if the connection doesn't exist, which is fine/normal for this use case.
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace OzetteLibrary.Client
         /// <param name="netSource"></param>
         /// <param name="netPass"></param>
         /// <param name="netUser"></param>
-        private void ConnectNetUse(NetworkSourceLocation netSource, string netUser, string netPass)
+        private bool TryConnectNetUse(NetworkSourceLocation netSource, string netUser, string netPass)
         {
             bool authenticated = !string.IsNullOrWhiteSpace(netUser) && !string.IsNullOrWhiteSpace(netPass);
 
@@ -233,6 +233,11 @@ namespace OzetteLibrary.Client
             {
                 string err = string.Format("Failed to connect a network source location: {0}. An error occurred calling NET USE. Error: {1}", netSource.Path, stdErr);
                 Logger.WriteTraceError(err);
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
