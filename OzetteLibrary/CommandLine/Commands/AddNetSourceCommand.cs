@@ -83,7 +83,8 @@ namespace OzetteLibrary.CommandLine.Commands
             var allSources = db.GetAllSourceLocations();
             var allNetSources = allSources.Where(x => x is NetworkSourceLocation).ToList();
 
-            if (allNetSources.Any(x => string.Equals(x.Path, arguments.UncPath) && string.Equals(x.FileMatchFilter, arguments.Matchfilter)))
+            if (allNetSources.Any(x => string.Equals(x.Path, arguments.UncPath, StringComparison.CurrentCultureIgnoreCase) 
+                                    && string.Equals(x.FileMatchFilter, arguments.Matchfilter, StringComparison.CurrentCultureIgnoreCase)))
             {
                 // there already exists a source with this folder location and match filter.
                 throw new SourceLocationException("Unable to add source: the specified folder and match filter combination is already listed as a source.");
