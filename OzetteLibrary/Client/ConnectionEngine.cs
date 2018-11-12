@@ -39,12 +39,8 @@ namespace OzetteLibrary.Client
 
             Running = true;
 
-            Logger.WriteTraceMessage("Connection engine is starting up.");
-
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();
-
-            Logger.WriteTraceMessage("Connection engine is now running.");
         }
 
         /// <summary>
@@ -54,7 +50,6 @@ namespace OzetteLibrary.Client
         {
             if (Running == true)
             {
-                Logger.WriteTraceMessage("Connection engine is shutting down.");
                 Running = false;
             }
         }
