@@ -753,7 +753,12 @@ namespace OzetteLibrary.Database.LiteDB
             using (var db = GetLiteDBInstance())
             {
                 var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
-                return backupFilesCol.FindOne(x => x.Priority == Priority && x.OverallState == Status);
+                return backupFilesCol.FindOne(
+                    x => x.Priority == Priority 
+                      && x.OverallState == Status
+                      && x.WasDeleted == null
+                      && x.ErrorDetected == null
+                );
             }
         }
     }
