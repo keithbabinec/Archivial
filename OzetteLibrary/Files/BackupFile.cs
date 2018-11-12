@@ -125,6 +125,16 @@ namespace OzetteLibrary.Files
         public DateTime? LastUpdated { get; set; }
 
         /// <summary>
+        /// The point in time when the file was deleted (or we noticed it was deleted).
+        /// </summary>
+        public DateTime? WasDeleted { get; set; }
+
+        /// <summary>
+        /// The last time a read/backup error was detected in this file.
+        /// </summary>
+        public DateTime? ErrorDetected { get; set; }
+
+        /// <summary>
         /// The state of this file across one or more providers.
         /// </summary>
         /// <remarks>
@@ -574,6 +584,24 @@ namespace OzetteLibrary.Files
             }
 
             SetOverallStateFromCopyState();
+        }
+
+        /// <summary>
+        /// Sets the file read-error state.
+        /// </summary>
+        public void SetFileAsReadOrBackupFailed()
+        {
+            LastChecked = DateTime.Now;
+            ErrorDetected = DateTime.Now;
+        }
+
+        /// <summary>
+        /// Sets the file as deleted.
+        /// </summary>
+        public void SetFileAsDeleted()
+        {
+            LastChecked = DateTime.Now;
+            WasDeleted = DateTime.Now;
         }
 
         /// <summary>

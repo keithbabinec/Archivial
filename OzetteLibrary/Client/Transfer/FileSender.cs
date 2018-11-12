@@ -81,32 +81,52 @@ namespace OzetteLibrary.Client.Transfer
 
             try
             {
-                // step 1: open up a filestream to the specified file.
+                // step 1: safety checks.
+                // bail out if the file is missing or contents are empty.
+
+                var info = new FileInfo(File.FullSourcePath);
+                if (!info.Exists)
+                {
+                    Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It has been deleted or is no longer accessible since it was scanned.", File.FullSourcePath));
+                    File.SetFileAsDeleted();
+                    Database.UpdateBackupFile(File);
+                    return;
+                }
+
+                if (info.Length == 0)
+                {
+                    Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It is empty (has no contents).", File.FullSourcePath));
+                    File.SetFileAsReadOrBackupFailed();
+                    Database.UpdateBackupFile(File);
+                    return;
+                }
+
+                // step 2: open up a filestream to the specified file.
                 // use a read-only lock: this prevents the file from being modified while this lock is open.
                 // but others can still open for read.
 
                 using (FileStream fs = new FileStream(File.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    // step 2: verify/update the hash.
+                    // step 3: verify/update the hash.
                     // if the file contents have changed between the time it was scanned and now, then this would result in a hash mismatch. 
                     // re-verify the hash of this file, and update the database if needed.
 
                     UpdateHashIfFileHasChangedRecently(File, fs);
 
-                    // step 3: see if this file is already on the destination target provider(s).
+                    // step 4: see if this file is already on the destination target provider(s).
                     // this avoids resending the file if for some reason the client DB/states got wiped out.
 
                     await UpdateFileCopyStateIfFileAlreadyExistsAtProvidersAsync(File, fs).ConfigureAwait(false);
 
-                    // step 4: while the file has data that needs to be transferred- transfer it.
+                    // step 5: while the file has data that needs to be transferred- transfer it.
                     // this includes transferring to each potential target that needs this same file block.
 
                     while (File.HasDataToTransfer())
                     {
-                        // step 4A: generate the next transfer data block.
+                        // step 5A: generate the next transfer data block.
                         var payload = File.GenerateNextTransferPayload(fs, Hasher);
 
-                        // step 4B: send the transfer payload.
+                        // step 5B: send the transfer payload.
                         await SendTransferPayloadToFileTargetsAsync(File, payload).ConfigureAwait(false);
                     }
                 }
@@ -114,6 +134,8 @@ namespace OzetteLibrary.Client.Transfer
             catch (Exception ex)
             {
                 Logger.WriteTraceError("An error occurred while preparing to transfer a file.", ex, Logger.GenerateFullContextStackTrace());
+                File.SetFileAsReadOrBackupFailed();
+                Database.UpdateBackupFile(File);
             }
         }
 

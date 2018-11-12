@@ -1079,5 +1079,57 @@ namespace OzetteLibraryTests.Database.LiteDB
             Assert.IsNotNull(nextFile);
             Assert.AreEqual(c2.FileID, nextFile.FileID);
         }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsCorrectFileToBackupExample9()
+        {
+            // exclude deleted files from backup.
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Files.BackupFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
+            c1.WasDeleted = DateTime.Now;
+
+            db.AddBackupFile(c1);
+
+            var nextFile = db.GetNextFileToBackup();
+            Assert.IsNull(nextFile);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetNextFileToBackupReturnsCorrectFileToBackupExample10()
+        {
+            // exclude error-state files from backup.
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            var c1 = new OzetteLibrary.Files.BackupFile();
+            c1.FileID = Guid.NewGuid();
+            c1.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
+            c1.Filename = "test.mp3";
+            c1.Directory = "C:\\music";
+            c1.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
+            c1.ErrorDetected = DateTime.Now;
+
+            db.AddBackupFile(c1);
+
+            var nextFile = db.GetNextFileToBackup();
+            Assert.IsNull(nextFile);
+        }
     }
 }

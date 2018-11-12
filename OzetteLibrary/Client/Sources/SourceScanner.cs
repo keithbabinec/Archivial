@@ -269,6 +269,13 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="source">The source definition</param>
         private void ScanFile(ScanResults results, FileInfo fileInfo, SourceLocation source)
         {
+            if (fileInfo.Length == 0)
+            {
+                // this file is empty (has no contents).
+                // unable to back up empty files.
+                return;
+            }
+
             var hashType = Hasher.GetDefaultHashAlgorithm(source.Priority);
             var hash = Hasher.GenerateDefaultHash(fileInfo.FullName, source.Priority);
 
