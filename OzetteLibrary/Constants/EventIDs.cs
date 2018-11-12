@@ -134,5 +134,10 @@
         /// Event ID: Failed connection engine.
         /// </summary>
         public const int FailedConnectionEngine = 2012;
+
+        /// <summary>
+        /// Event ID: Failed to save scan sources.
+        /// </summary>
+        public const int FailedToSaveScanSources = 2013;
     }
 }
