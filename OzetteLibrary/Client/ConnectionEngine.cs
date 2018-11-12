@@ -183,7 +183,8 @@ namespace OzetteLibrary.Client
             {
                 FileName = "NET",
                 Arguments = string.Format("USE /DELETE {0}", netSource.Path),
-                RedirectStandardError = true
+                RedirectStandardError = true,
+                UseShellExecute = false
             };
 
             process.StartInfo = startInfo;
@@ -217,7 +218,8 @@ namespace OzetteLibrary.Client
                 Arguments = authenticated ? 
                     string.Format("USE {0} /USER:{1} {2}", netSource.Path, netUser, netPass) :
                     string.Format("USE {0}", netSource.Path),
-                RedirectStandardError = true
+                RedirectStandardError = true,
+                UseShellExecute = false
             };
 
             process.StartInfo = startInfo;
