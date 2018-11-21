@@ -137,6 +137,7 @@
     <Compile Include="Secrets\NetCredential.cs" />
     <Compile Include="Secrets\NetCredentialsCollection.cs" />
     <Compile Include="Secrets\ProtectedDataStore.cs" />
+    <Compile Include="ServiceCore\BackupProgress.cs" />
     <Compile Include="ServiceCore\CoreSettings.cs" />
     <Compile Include="ServiceCore\ApplicationOption.cs" />
     <Compile Include="ServiceCore\StartupResults.cs" />

@@ -206,6 +206,15 @@ namespace OzetteLibrary.Database.LiteDB
         private bool DatabaseHasBeenPrepared;
 
         /// <summary>
+        /// Calculates and returns the overall backup progress.
+        /// </summary>
+        /// <returns></returns>
+        public BackupProgress GetBackupProgress()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Saves an application setting to the database.
         /// </summary>
         /// <param name="OptionName">Option name</param>

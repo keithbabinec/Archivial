@@ -2,6 +2,7 @@
 using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
 using OzetteLibrary.Secrets;
+using OzetteLibrary.ServiceCore;
 
 namespace OzetteLibrary.Database
 {
@@ -125,5 +126,11 @@ namespace OzetteLibrary.Database
         /// </remarks>
         /// <returns><c>BackupFile</c></returns>
         BackupFile GetNextFileToBackup();
+
+        /// <summary>
+        /// Calculates and returns the overall backup progress.
+        /// </summary>
+        /// <returns></returns>
+        BackupProgress GetBackupProgress();
     }
 }
