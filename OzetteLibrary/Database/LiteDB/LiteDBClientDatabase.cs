@@ -211,7 +211,21 @@ namespace OzetteLibrary.Database.LiteDB
         /// <returns></returns>
         public BackupProgress GetBackupProgress()
         {
-            throw new NotImplementedException();
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                throw new NotImplementedException();
+
+                // 1024 + 2048 = 3072
+                // 1024 / 3072 = .3333
+                // 
+                // 1024 + 2048 + 2048 = 5120
+                // 1024 / 5120 = .20
+            }
         }
 
         /// <summary>
