@@ -362,7 +362,8 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="fileInfo">FileInfo details</param>
         private void ProcessExistingFile(BackupFileLookup fileLookup, FileInfo fileInfo)
         {
-            Logger.WriteTraceMessage(string.Format("Unchanged File: {0}", fileInfo.FullName));
+            // do not write trace messages for unchanged files
+            // it becomes too noisy in the logs.
 
             // existing file
             // should update the last checked flag
