@@ -1,7 +1,10 @@
 ﻿using LiteDB;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
+using OzetteLibrary.Providers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -1130,6 +1133,715 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             var nextFile = db.GetNextFileToBackup();
             Assert.IsNull(nextFile);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LiteDBClientDatabaseGetBackupProgressThrowsIfPrepareDatabaseHasNotBeenCalled()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.GetBackupProgress();
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsZeroPercentBackedUpWhenNoFilesPresent()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            var result = db.GetBackupProgress();
+
+            // should not be null
+            // should have zero % completed.
+            Assert.IsNotNull(result);
+            Assert.AreEqual("0.00 %", result.OverallPercentage);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsZeroPercentBackedUpWhenNoFilesPresentAndProvidersPresent()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add providers, but no files yet
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 2, Type = ProviderTypes.AWS } });
+
+            var result = db.GetBackupProgress();
+
+            // should not be null
+            // should have zero % completed.
+            Assert.IsNotNull(result);
+            Assert.AreEqual("0.00 %", result.OverallPercentage);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturns100PercentBackedUpWhenSingleFileSingleProviderIsBackedUp()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1024, ProviderTypes.Azure));
+
+            // query progress
+
+            var result = db.GetBackupProgress();
+
+            // verify results
+
+            Assert.AreEqual("100.00 %", result.OverallPercentage);
+
+            Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
+            Assert.AreEqual(1, result.BackedUpFileCount);
+
+            Assert.AreEqual("0.00 KB", result.RemainingFileSize);
+            Assert.AreEqual(0, result.RemainingFileCount);
+
+            Assert.AreEqual("0.00 KB", result.FailedFileSize);
+            Assert.AreEqual(0, result.FailedFileCount);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturns100PercentBackedUpWhenTwoFilesSingleProviderAreBackedUp()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1024, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateSyncedFile(2048, ProviderTypes.Azure));
+
+            // query progress
+
+            var result = db.GetBackupProgress();
+
+            // verify results
+
+            Assert.AreEqual("100.00 %", result.OverallPercentage);
+
+            Assert.AreEqual("3.00 KB", result.BackedUpFileSize);
+            Assert.AreEqual(2, result.BackedUpFileCount);
+
+            Assert.AreEqual("0.00 KB", result.RemainingFileSize);
+            Assert.AreEqual(0, result.RemainingFileCount);
+
+            Assert.AreEqual("0.00 KB", result.FailedFileSize);
+            Assert.AreEqual(0, result.FailedFileCount);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturns100PercentBackedUpWhenTwoFilesTwoProvidersAreBackedUp()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 2, Type = ProviderTypes.AWS } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1024, ProviderTypes.Azure, ProviderTypes.AWS));
+            db.AddBackupFile(GenerateSyncedFile(2048, ProviderTypes.Azure, ProviderTypes.AWS));
+
+            // query progress
+
+            var result = db.GetBackupProgress();
+
+            // verify results
+
+            Assert.AreEqual("100.00 %", result.OverallPercentage);
+
+            Assert.AreEqual("3.00 KB", result.BackedUpFileSize);
+            Assert.AreEqual(2, result.BackedUpFileCount);
+
+            Assert.AreEqual("0.00 KB", result.RemainingFileSize);
+            Assert.AreEqual(0, result.RemainingFileCount);
+
+            Assert.AreEqual("0.00 KB", result.FailedFileSize);
+            Assert.AreEqual(0, result.FailedFileCount);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsPartialPercentBackedUpFileAndRemainingFileSingleProvider()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1024, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateUnsyncedFile(2048, ProviderTypes.Azure));
+
+            // query progress
+
+            var result = db.GetBackupProgress();
+
+            // verify results
+
+            Assert.AreEqual("33.33 %", result.OverallPercentage);
+
+            Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
+            Assert.AreEqual(1, result.BackedUpFileCount);
+
+            Assert.AreEqual("2.00 KB", result.RemainingFileSize);
+            Assert.AreEqual(1, result.RemainingFileCount);
+
+            Assert.AreEqual("0.00 KB", result.FailedFileSize);
+            Assert.AreEqual(0, result.FailedFileCount);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsPartialPercentBackedUpFileAndFailedFileSingleProvider()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1024, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateFailedFile(2048, ProviderTypes.Azure));
+
+            // query progress
+
+            var result = db.GetBackupProgress();
+
+            // verify results
+
+            Assert.AreEqual("33.33 %", result.OverallPercentage);
+
+            Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
+            Assert.AreEqual(1, result.BackedUpFileCount);
+
+            Assert.AreEqual("0.00 KB", result.RemainingFileSize);
+            Assert.AreEqual(0, result.RemainingFileCount);
+
+            Assert.AreEqual("2.00 KB", result.FailedFileSize);
+            Assert.AreEqual(1, result.FailedFileCount);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsPartialPercentWithAllFileStatesSingleProvider()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1024, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateFailedFile(2048, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateUnsyncedFile(2048, ProviderTypes.Azure));
+
+            // query progress
+
+            var result = db.GetBackupProgress();
+
+            // verify results
+
+            Assert.AreEqual("20.00 %", result.OverallPercentage);
+
+            Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
+            Assert.AreEqual(1, result.BackedUpFileCount);
+
+            Assert.AreEqual("2.00 KB", result.RemainingFileSize);
+            Assert.AreEqual(1, result.RemainingFileCount);
+
+            Assert.AreEqual("2.00 KB", result.FailedFileSize);
+            Assert.AreEqual(1, result.FailedFileCount);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsPartialPercentWithSeveralFilesWithAllFileStatesSingleProvider()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1024, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateSyncedFile(2048, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateSyncedFile(4096, ProviderTypes.Azure));
+
+            db.AddBackupFile(GenerateFailedFile(4096, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateFailedFile(4096, ProviderTypes.Azure));
+
+            db.AddBackupFile(GenerateUnsyncedFile(1024, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateUnsyncedFile(2048, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateUnsyncedFile(2048, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateUnsyncedFile(4096, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateUnsyncedFile(1024, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateUnsyncedFile(2048, ProviderTypes.Azure));
+            db.AddBackupFile(GenerateUnsyncedFile(4096, ProviderTypes.Azure));
+
+            // query progress
+
+            var result = db.GetBackupProgress();
+
+            // verify results
+
+            Assert.AreEqual("22.58 %", result.OverallPercentage);
+
+            Assert.AreEqual("7.00 KB", result.BackedUpFileSize);
+            Assert.AreEqual(3, result.BackedUpFileCount);
+
+            Assert.AreEqual("8.00 KB", result.FailedFileSize);
+            Assert.AreEqual(2, result.FailedFileCount);
+
+            Assert.AreEqual("16.00 KB", result.RemainingFileSize);
+            Assert.AreEqual(7, result.RemainingFileCount);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForKilobytesEx1()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(800, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // under 1kb
+            Assert.AreEqual("0.78 KB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForKilobytesEx2()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1024, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // exact value (1kb)
+            Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForKilobytesEx3()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1300, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // slightly over 1kb
+            Assert.AreEqual("1.27 KB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForKilobytesEx4()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1014421, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // just under 1mb
+            Assert.AreEqual("990.65 KB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForMegabytesEx1()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1048576, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // exact value
+            Assert.AreEqual("1.00 MB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForMegabytesEx2()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1108576, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // slightly over
+            Assert.AreEqual("1.06 MB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForMegabytesEx3()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1013741824, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // just under next increment
+            Assert.AreEqual("966.78 MB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForGigabytesEx1()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1073741824, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // exact value
+            Assert.AreEqual("1.00 GB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForGigabytesEx2()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1123741824, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // slightly over
+            Assert.AreEqual("1.05 GB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForGigabytesEx3()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1033511627776, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // just under next increment
+            Assert.AreEqual("962.53 GB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForTerabytesEx1()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1099511627776, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // exact value
+            Assert.AreEqual("1.00 TB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForTerabytesEx2()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1208511627776, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // slightly over
+            Assert.AreEqual("1.10 TB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForTerabytesEx3()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1025199906842624, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // just under next increment
+            Assert.AreEqual("932.41 TB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForPetabytesEx1()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1125899906842624, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // exact value
+            Assert.AreEqual("1.00 PB", result.BackedUpFileSize);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupProgressReturnsCorrectBackedUpSizeStringForPetabytesEx2()
+        {
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // add provider
+            db.SetProviders(new ProvidersCollection() { new Provider() { Enabled = true, ID = 1, Type = ProviderTypes.Azure } });
+
+            // create file(s)
+            db.AddBackupFile(GenerateSyncedFile(1225899906842624, ProviderTypes.Azure));
+
+            var result = db.GetBackupProgress();
+
+            // slightly over
+            Assert.AreEqual("1.09 PB", result.BackedUpFileSize);
+        }
+
+        /// <summary>
+        /// Helper method to quickly create a testable BackupFile object with a predetermined size.
+        /// </summary>
+        /// <param name="sizeInBytes"></param>
+        /// <returns></returns>
+        private BackupFile GenerateFile(long sizeInBytes)
+        {
+            return new BackupFile()
+            {
+                FileID = Guid.NewGuid(),
+                FileSizeBytes = sizeInBytes,
+                CopyState = new Dictionary<ProviderTypes, ProviderFileStatus>()
+            };
+        }
+
+        /// <summary>
+        /// Helper method to quickly create a testable BackupFile object with a predetermined size and unsynced state.
+        /// </summary>
+        /// <param name="sizeInBytes"></param>
+        /// <param name="backedUpProviders"></param>
+        /// <returns></returns>
+        private BackupFile GenerateUnsyncedFile(long sizeInBytes, params ProviderTypes[] backedUpProviders)
+        {
+            var file = GenerateFile(sizeInBytes);
+
+            foreach (var item in backedUpProviders)
+            {
+                file.OverallState = FileStatus.Unsynced;
+            }
+
+            return file;
+        }
+
+        /// <summary>
+        /// Helper method to quickly create a testable BackupFile object with a predetermined size and synced state.
+        /// </summary>
+        /// <param name="sizeInBytes"></param>
+        /// <param name="backedUpProviders"></param>
+        /// <returns></returns>
+        private BackupFile GenerateSyncedFile(long sizeInBytes, params ProviderTypes[] backedUpProviders)
+        {
+            var file = GenerateFile(sizeInBytes);
+
+            foreach (var item in backedUpProviders)
+            {
+                file.OverallState = FileStatus.Synced;
+            }
+
+            return file;
+        }
+
+        /// <summary>
+        /// Helper method to quickly create a testable BackupFile object with a predetermined size and failed state.
+        /// </summary>
+        /// <param name="sizeInBytes"></param>
+        /// <param name="backedUpProviders"></param>
+        /// <returns></returns>
+        private BackupFile GenerateFailedFile(long sizeInBytes, params ProviderTypes[] backedUpProviders)
+        {
+            var file = GenerateFile(sizeInBytes);
+
+            foreach (var item in backedUpProviders)
+            {
+                file.OverallState = FileStatus.ProviderError;
+            }
+
+            return file;
         }
     }
 }

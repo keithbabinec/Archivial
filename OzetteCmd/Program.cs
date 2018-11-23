@@ -145,6 +145,11 @@ namespace OzetteCmd
             help.AppendLine("\tRemoves a backup source with specified ID. Run list-sources to see the current sources with IDs.");
             help.AppendLine("  Arguments:");
             help.AppendLine("\t--sourceid\tThe ID of the backup source to remove.");
+            help.AppendLine();
+            help.AppendLine("OzetteCmd.exe show-status");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tShows the current backup progress (files completed, remaining, failed, etc)");
 
             Console.WriteLine(help.ToString());
         }
@@ -202,6 +207,10 @@ namespace OzetteCmd
             else if (arguments is RemoveNetCredentialArguments)
             {
                 command = new RemoveNetCredentialCommand(logger);
+            }
+            else if (arguments is ShowStatusArguments)
+            {
+                command = new ShowStatusCommand(logger);
             }
             else
             {

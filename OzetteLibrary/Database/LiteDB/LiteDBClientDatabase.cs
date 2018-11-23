@@ -5,6 +5,8 @@ using OzetteLibrary.Providers;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace OzetteLibrary.Database.LiteDB
@@ -204,6 +206,69 @@ namespace OzetteLibrary.Database.LiteDB
         /// A flag to indicate if the database has been prepared.
         /// </summary>
         private bool DatabaseHasBeenPrepared;
+
+        /// <summary>
+        /// Calculates and returns the overall backup progress.
+        /// </summary>
+        /// <returns></returns>
+        public BackupProgress GetBackupProgress()
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                BackupProgress progress = new BackupProgress();
+
+                var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
+
+                var allFiles = backupFilesCol.FindAll();
+
+                foreach (var file in allFiles)
+                {
+                    progress.TotalFileCount++;
+                    progress.TotalFileSizeBytes += file.FileSizeBytes;
+
+                    switch (file.OverallState)
+                    {
+                        case FileStatus.Unsynced:
+                        case FileStatus.OutOfDate:
+                        case FileStatus.InProgress:
+                        {
+                            progress.RemainingFileCount++;
+                            progress.RemainingFileSizeBytes += file.FileSizeBytes;
+                            break;
+                        }
+                        case FileStatus.Synced:
+                        {
+                            progress.BackedUpFileCount++;
+                            progress.BackedUpFileSizeBytes += file.FileSizeBytes;
+                            break;
+                        }
+                        case FileStatus.ProviderError:
+                        {
+                            progress.FailedFileCount++;
+                            progress.FailedFileSizeBytes += file.FileSizeBytes;
+                            break;
+                        }
+                    }
+                }
+
+                // set the overall completion rate
+                if (progress.TotalFileSizeBytes != 0)
+                {
+                    progress.OverallPercentage = ((double)progress.BackedUpFileSizeBytes / progress.TotalFileSizeBytes).ToString("P2", CultureInfo.CreateSpecificCulture("US"));
+                }
+                else
+                {
+                    progress.OverallPercentage = "0.00 %";
+                }
+
+                return progress;
+            }
+        }
 
         /// <summary>
         /// Saves an application setting to the database.
