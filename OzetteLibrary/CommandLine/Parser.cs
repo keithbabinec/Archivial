@@ -78,6 +78,12 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseRemoveNetCredentialArgs(args, out parsed);
             }
+            else if (baseCommand == "show-status")
+            {
+                // command has no additional arguments
+                parsed = new ShowStatusArguments();
+                return true;
+            }
             else
             {
                 // unexpected/no base command provided.

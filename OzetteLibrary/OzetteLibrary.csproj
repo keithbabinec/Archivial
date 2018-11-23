@@ -65,6 +65,7 @@
     <Compile Include="CommandLine\Arguments\AddLocalSourceArguments.cs" />
     <Compile Include="CommandLine\Arguments\ListNetCredentialsArguments.cs" />
     <Compile Include="CommandLine\Arguments\RemoveNetCredentialArguments.cs" />
+    <Compile Include="CommandLine\Arguments\ShowStatusArguments.cs" />
     <Compile Include="CommandLine\Commands\AddLocalSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\AddNetCredentialCommand.cs" />
     <Compile Include="CommandLine\Commands\AddNetSourceCommand.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="CommandLine\Arguments\InstallationArguments.cs" />
     <Compile Include="CommandLine\Arguments\ListProvidersArguments.cs" />
     <Compile Include="CommandLine\Arguments\ListSourcesArguments.cs" />
+    <Compile Include="CommandLine\Commands\ShowStatusCommand.cs" />
     <Compile Include="CommandLine\Parser.cs" />
     <Compile Include="CommandLine\Arguments\ArgumentBase.cs" />
     <Compile Include="CommandLine\Arguments\RemoveProviderArguments.cs" />
