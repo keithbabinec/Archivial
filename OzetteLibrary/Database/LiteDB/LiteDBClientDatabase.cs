@@ -6,6 +6,7 @@ using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace OzetteLibrary.Database.LiteDB
@@ -258,11 +259,11 @@ namespace OzetteLibrary.Database.LiteDB
                 // set the overall completion rate
                 if (progress.TotalFileSizeBytes != 0)
                 {
-                    progress.OverallPercentage = ((double)progress.BackedUpFileSizeBytes / progress.TotalFileSizeBytes).ToString("P2");
+                    progress.OverallPercentage = ((double)progress.BackedUpFileSizeBytes / progress.TotalFileSizeBytes).ToString("P2", CultureInfo.CreateSpecificCulture("US"));
                 }
                 else
                 {
-                    progress.OverallPercentage = "0.00%";
+                    progress.OverallPercentage = "0.00 %";
                 }
 
                 return progress;

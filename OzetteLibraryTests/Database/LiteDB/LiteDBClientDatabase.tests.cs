@@ -1162,7 +1162,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             // should not be null
             // should have zero % completed.
             Assert.IsNotNull(result);
-            Assert.AreEqual("0.00%", result.OverallPercentage);
+            Assert.AreEqual("0.00 %", result.OverallPercentage);
         }
 
         [TestMethod]
@@ -1184,7 +1184,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             // should not be null
             // should have zero % completed.
             Assert.IsNotNull(result);
-            Assert.AreEqual("0.00%", result.OverallPercentage);
+            Assert.AreEqual("0.00 %", result.OverallPercentage);
         }
 
         [TestMethod]
@@ -1209,7 +1209,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual("100.00%", result.OverallPercentage);
+            Assert.AreEqual("100.00 %", result.OverallPercentage);
 
             Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(1, result.BackedUpFileCount);
@@ -1244,7 +1244,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual("100.00%", result.OverallPercentage);
+            Assert.AreEqual("100.00 %", result.OverallPercentage);
 
             Assert.AreEqual("3.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(2, result.BackedUpFileCount);
@@ -1280,7 +1280,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual("100.00%", result.OverallPercentage);
+            Assert.AreEqual("100.00 %", result.OverallPercentage);
 
             Assert.AreEqual("3.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(2, result.BackedUpFileCount);
@@ -1315,7 +1315,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual("33.33%", result.OverallPercentage);
+            Assert.AreEqual("33.33 %", result.OverallPercentage);
 
             Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(1, result.BackedUpFileCount);
@@ -1350,7 +1350,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual("33.33%", result.OverallPercentage);
+            Assert.AreEqual("33.33 %", result.OverallPercentage);
 
             Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(1, result.BackedUpFileCount);
@@ -1386,7 +1386,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual("20.00%", result.OverallPercentage);
+            Assert.AreEqual("20.00 %", result.OverallPercentage);
 
             Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(1, result.BackedUpFileCount);
@@ -1433,7 +1433,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual("22.58%", result.OverallPercentage);
+            Assert.AreEqual("22.58 %", result.OverallPercentage);
 
             Assert.AreEqual("7.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(3, result.BackedUpFileCount);
