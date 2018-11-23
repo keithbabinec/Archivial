@@ -1162,12 +1162,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             // should not be null
             // should have zero % completed.
             Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.OverallPercentage);
-
-            // providers should not be null.
-            // providers count should be zero.
-            Assert.IsNotNull(result.PercentageByProvider);
-            Assert.AreEqual(0, result.PercentageByProvider.Count);
+            Assert.AreEqual("0.00%", result.OverallPercentage);
         }
 
         [TestMethod]
@@ -1189,14 +1184,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             // should not be null
             // should have zero % completed.
             Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.OverallPercentage);
-
-            // providers should not be null.
-            // providers should be populated, and have zero percent completed.
-            Assert.IsNotNull(result.PercentageByProvider);
-            Assert.AreEqual(2, result.PercentageByProvider.Count);
-            Assert.AreEqual(0, result.PercentageByProvider[ProviderTypes.Azure]);
-            Assert.AreEqual(0, result.PercentageByProvider[ProviderTypes.AWS]);
+            Assert.AreEqual("0.00%", result.OverallPercentage);
         }
 
         [TestMethod]
@@ -1221,16 +1209,15 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual(100, result.OverallPercentage);
-            Assert.AreEqual(100, result.PercentageByProvider[ProviderTypes.Azure]);
+            Assert.AreEqual("100.00%", result.OverallPercentage);
 
-            Assert.AreEqual("1 KB", result.BackedUpFileSize);
+            Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(1, result.BackedUpFileCount);
 
-            Assert.AreEqual("0 KB", result.RemainingFileSize);
+            Assert.AreEqual("0.00 KB", result.RemainingFileSize);
             Assert.AreEqual(0, result.RemainingFileCount);
 
-            Assert.AreEqual("0 KB", result.FailedFileSize);
+            Assert.AreEqual("0.00 KB", result.FailedFileSize);
             Assert.AreEqual(0, result.FailedFileCount);
         }
 
@@ -1257,16 +1244,15 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual(100, result.OverallPercentage);
-            Assert.AreEqual(100, result.PercentageByProvider[ProviderTypes.Azure]);
+            Assert.AreEqual("100.00%", result.OverallPercentage);
 
-            Assert.AreEqual("3 KB", result.BackedUpFileSize);
+            Assert.AreEqual("3.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(2, result.BackedUpFileCount);
 
-            Assert.AreEqual("0 KB", result.RemainingFileSize);
+            Assert.AreEqual("0.00 KB", result.RemainingFileSize);
             Assert.AreEqual(0, result.RemainingFileCount);
 
-            Assert.AreEqual("0 KB", result.FailedFileSize);
+            Assert.AreEqual("0.00 KB", result.FailedFileSize);
             Assert.AreEqual(0, result.FailedFileCount);
         }
 
@@ -1294,17 +1280,15 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual(100, result.OverallPercentage);
-            Assert.AreEqual(100, result.PercentageByProvider[ProviderTypes.Azure]);
-            Assert.AreEqual(100, result.PercentageByProvider[ProviderTypes.AWS]);
+            Assert.AreEqual("100.00%", result.OverallPercentage);
 
-            Assert.AreEqual("3 KB", result.BackedUpFileSize);
+            Assert.AreEqual("3.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(2, result.BackedUpFileCount);
 
-            Assert.AreEqual("0 KB", result.RemainingFileSize);
+            Assert.AreEqual("0.00 KB", result.RemainingFileSize);
             Assert.AreEqual(0, result.RemainingFileCount);
 
-            Assert.AreEqual("0 KB", result.FailedFileSize);
+            Assert.AreEqual("0.00 KB", result.FailedFileSize);
             Assert.AreEqual(0, result.FailedFileCount);
         }
 
@@ -1331,16 +1315,15 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual(33.33, result.OverallPercentage);
-            Assert.AreEqual(33.33, result.PercentageByProvider[ProviderTypes.Azure]);
+            Assert.AreEqual("33.33%", result.OverallPercentage);
 
-            Assert.AreEqual("1 KB", result.BackedUpFileSize);
+            Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(1, result.BackedUpFileCount);
 
-            Assert.AreEqual("2 KB", result.RemainingFileSize);
+            Assert.AreEqual("2.00 KB", result.RemainingFileSize);
             Assert.AreEqual(1, result.RemainingFileCount);
 
-            Assert.AreEqual("0 KB", result.FailedFileSize);
+            Assert.AreEqual("0.00 KB", result.FailedFileSize);
             Assert.AreEqual(0, result.FailedFileCount);
         }
 
@@ -1367,16 +1350,15 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual(33.33, result.OverallPercentage);
-            Assert.AreEqual(33.33, result.PercentageByProvider[ProviderTypes.Azure]);
+            Assert.AreEqual("33.33%", result.OverallPercentage);
 
-            Assert.AreEqual("1 KB", result.BackedUpFileSize);
+            Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(1, result.BackedUpFileCount);
 
-            Assert.AreEqual("0 KB", result.RemainingFileSize);
+            Assert.AreEqual("0.00 KB", result.RemainingFileSize);
             Assert.AreEqual(0, result.RemainingFileCount);
 
-            Assert.AreEqual("2 KB", result.FailedFileSize);
+            Assert.AreEqual("2.00 KB", result.FailedFileSize);
             Assert.AreEqual(1, result.FailedFileCount);
         }
 
@@ -1404,16 +1386,15 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual(20, result.OverallPercentage);
-            Assert.AreEqual(20, result.PercentageByProvider[ProviderTypes.Azure]);
+            Assert.AreEqual("20.00%", result.OverallPercentage);
 
-            Assert.AreEqual("1 KB", result.BackedUpFileSize);
+            Assert.AreEqual("1.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(1, result.BackedUpFileCount);
 
-            Assert.AreEqual("2 KB", result.RemainingFileSize);
+            Assert.AreEqual("2.00 KB", result.RemainingFileSize);
             Assert.AreEqual(1, result.RemainingFileCount);
 
-            Assert.AreEqual("2 KB", result.FailedFileSize);
+            Assert.AreEqual("2.00 KB", result.FailedFileSize);
             Assert.AreEqual(1, result.FailedFileCount);
         }
 
@@ -1452,17 +1433,16 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // verify results
 
-            Assert.AreEqual(22.58, result.OverallPercentage);
-            Assert.AreEqual(22.58, result.PercentageByProvider[ProviderTypes.Azure]);
+            Assert.AreEqual("22.58%", result.OverallPercentage);
 
-            Assert.AreEqual("7 KB", result.BackedUpFileSize);
+            Assert.AreEqual("7.00 KB", result.BackedUpFileSize);
             Assert.AreEqual(3, result.BackedUpFileCount);
 
-            Assert.AreEqual("8 KB", result.RemainingFileSize);
-            Assert.AreEqual(2, result.RemainingFileCount);
+            Assert.AreEqual("8.00 KB", result.FailedFileSize);
+            Assert.AreEqual(2, result.FailedFileCount);
 
-            Assert.AreEqual("16 KB", result.FailedFileSize);
-            Assert.AreEqual(7, result.FailedFileCount);
+            Assert.AreEqual("16.00 KB", result.RemainingFileSize);
+            Assert.AreEqual(7, result.RemainingFileCount);
         }
 
         [TestMethod]
@@ -1528,7 +1508,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var result = db.GetBackupProgress();
 
             // slightly over 1kb
-            Assert.AreEqual("1.26 KB", result.BackedUpFileSize);
+            Assert.AreEqual("1.27 KB", result.BackedUpFileSize);
         }
 
         [TestMethod]
@@ -1550,7 +1530,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var result = db.GetBackupProgress();
 
             // just under 1mb
-            Assert.AreEqual("990.64 KB", result.BackedUpFileSize);
+            Assert.AreEqual("990.65 KB", result.BackedUpFileSize);
         }
 
         [TestMethod]
@@ -1594,7 +1574,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var result = db.GetBackupProgress();
 
             // slightly over
-            Assert.AreEqual("1.05 MB", result.BackedUpFileSize);
+            Assert.AreEqual("1.06 MB", result.BackedUpFileSize);
         }
 
         [TestMethod]
@@ -1616,7 +1596,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var result = db.GetBackupProgress();
 
             // just under next increment
-            Assert.AreEqual("966.77 MB", result.BackedUpFileSize);
+            Assert.AreEqual("966.78 MB", result.BackedUpFileSize);
         }
 
         [TestMethod]
@@ -1660,7 +1640,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var result = db.GetBackupProgress();
 
             // slightly over
-            Assert.AreEqual("1.04 GB", result.BackedUpFileSize);
+            Assert.AreEqual("1.05 GB", result.BackedUpFileSize);
         }
 
         [TestMethod]
@@ -1726,7 +1706,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var result = db.GetBackupProgress();
 
             // slightly over
-            Assert.AreEqual("1.09 TB", result.BackedUpFileSize);
+            Assert.AreEqual("1.10 TB", result.BackedUpFileSize);
         }
 
         [TestMethod]
@@ -1792,7 +1772,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             var result = db.GetBackupProgress();
 
             // slightly over
-            Assert.AreEqual("1.08 PB", result.BackedUpFileSize);
+            Assert.AreEqual("1.09 PB", result.BackedUpFileSize);
         }
 
         /// <summary>
@@ -1822,7 +1802,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             foreach (var item in backedUpProviders)
             {
-                file.CopyState[item].SyncStatus = FileStatus.Unsynced;
+                file.OverallState = FileStatus.Unsynced;
             }
 
             return file;
@@ -1840,7 +1820,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             foreach (var item in backedUpProviders)
             {
-                file.CopyState[item].SyncStatus = FileStatus.Synced;
+                file.OverallState = FileStatus.Synced;
             }
 
             return file;
@@ -1858,7 +1838,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             foreach (var item in backedUpProviders)
             {
-                file.CopyState[item].SyncStatus = FileStatus.ProviderError;
+                file.OverallState = FileStatus.ProviderError;
             }
 
             return file;

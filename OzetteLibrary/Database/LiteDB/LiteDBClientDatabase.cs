@@ -5,6 +5,7 @@ using OzetteLibrary.Providers;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OzetteLibrary.Database.LiteDB
@@ -218,13 +219,53 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                throw new NotImplementedException();
+                BackupProgress progress = new BackupProgress();
 
-                // 1024 + 2048 = 3072
-                // 1024 / 3072 = .3333
-                // 
-                // 1024 + 2048 + 2048 = 5120
-                // 1024 / 5120 = .20
+                var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
+
+                var allFiles = backupFilesCol.FindAll();
+
+                foreach (var file in allFiles)
+                {
+                    progress.TotalFileCount++;
+                    progress.TotalFileSizeBytes += file.FileSizeBytes;
+
+                    switch (file.OverallState)
+                    {
+                        case FileStatus.Unsynced:
+                        case FileStatus.OutOfDate:
+                        case FileStatus.InProgress:
+                        {
+                            progress.RemainingFileCount++;
+                            progress.RemainingFileSizeBytes += file.FileSizeBytes;
+                            break;
+                        }
+                        case FileStatus.Synced:
+                        {
+                            progress.BackedUpFileCount++;
+                            progress.BackedUpFileSizeBytes += file.FileSizeBytes;
+                            break;
+                        }
+                        case FileStatus.ProviderError:
+                        {
+                            progress.FailedFileCount++;
+                            progress.FailedFileSizeBytes += file.FileSizeBytes;
+                            break;
+                        }
+                    }
+                }
+
+                // set the overall completion rate
+                if (progress.TotalFileSizeBytes != 0)
+                {
+                    progress.OverallPercentage = ((double)progress.BackedUpFileSizeBytes / progress.TotalFileSizeBytes).ToString("P2");
+                }
+                else
+                {
+                    progress.OverallPercentage = "0.00%";
+                }
+
+                return progress;
             }
         }
 
