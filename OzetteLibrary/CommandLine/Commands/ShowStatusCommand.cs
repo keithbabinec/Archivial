@@ -73,21 +73,23 @@ namespace OzetteLibrary.CommandLine.Commands
 
             var progress = db.GetBackupProgress();
 
+            Console.WriteLine("------------------------------------------------");
             Console.WriteLine("Completion Percentage");
-            Console.WriteLine("`tOverall: " + progress.OverallPercentage);
+            Console.WriteLine("\tOverall: " + progress.OverallPercentage);
             Console.WriteLine();
             Console.WriteLine("Files");
-            Console.WriteLine("`tTotal File Count: " + progress.TotalFileCount);
-            Console.WriteLine("`tTotal File Size: " + progress.TotalFileSize);
+            Console.WriteLine("\tTotal File Count: " + progress.TotalFileCount);
+            Console.WriteLine("\tTotal File Size: " + progress.TotalFileSize);
             Console.WriteLine();
-            Console.WriteLine("`tBacked Up Count: " + progress.BackedUpFileCount);
-            Console.WriteLine("`tBacked Up Size: " + progress.BackedUpFileSize);
+            Console.WriteLine("\tBacked Up Count: " + progress.BackedUpFileCount);
+            Console.WriteLine("\tBacked Up Size: " + progress.BackedUpFileSize);
             Console.WriteLine();
-            Console.WriteLine("`tRemaining Count: " + progress.RemainingFileCount);
-            Console.WriteLine("`tRemaining Size: " + progress.RemainingFileSize);
+            Console.WriteLine("\tRemaining Count: " + progress.RemainingFileCount);
+            Console.WriteLine("\tRemaining Size: " + progress.RemainingFileSize);
             Console.WriteLine();
-            Console.WriteLine("`tFailed Count: " + progress.FailedFileCount);
-            Console.WriteLine("`tFailed Size: " + progress.FailedFileSize);
+            Console.WriteLine("\tFailed Count: " + progress.FailedFileCount);
+            Console.WriteLine("\tFailed Size: " + progress.FailedFileSize);
+            Console.WriteLine("------------------------------------------------");
         }
     }
 }
