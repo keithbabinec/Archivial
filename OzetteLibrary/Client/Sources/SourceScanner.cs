@@ -276,29 +276,20 @@ namespace OzetteLibrary.Client.Sources
                 return;
             }
 
-            var hashType = Hasher.GetDefaultHashAlgorithm(source.Priority);
-            var hash = Hasher.GenerateDefaultHash(fileInfo.FullName, source.Priority);
+            // do a simple file lookup, based on the name/path, size, and date modified
+            // do not hash yet-- we dont need it until backup time.
 
-            if (hash.Length == 0)
-            {
-                // failed to generate a hash.
-                // cant properly lookup the file in the database without it.
-                // error has already been logged by the hasher
-                return;
-            }
-
-            var fileHashString = string.Join("-", hash);
-            var fileIndexLookup = Database.GetBackupFile(fileInfo.Name, fileInfo.DirectoryName, fileHashString);
+            var fileIndexLookup = Database.GetBackupFile(fileInfo.Name, fileInfo.DirectoryName, fileInfo.Length, fileInfo.LastWriteTime);
 
             if (fileIndexLookup.Result == BackupFileLookupResult.New)
             {
-                ProcessNewFile(fileInfo, hash, hashType, source.Priority);
+                ProcessNewFile(fileInfo, source.Priority);
                 results.NewFilesFound++;
                 results.NewBytesFound += (ulong)fileInfo.Length;
             }
             else if (fileIndexLookup.Result == BackupFileLookupResult.Updated)
             {
-                ProcessUpdatedFile(fileIndexLookup, fileInfo, hash, hashType);
+                ProcessUpdatedFile(fileIndexLookup, fileInfo);
                 results.UpdatedFilesFound++;
                 results.UpdatedBytesFound += (ulong)fileInfo.Length;
             }
@@ -319,16 +310,13 @@ namespace OzetteLibrary.Client.Sources
         /// Processes a new scanned file into the database.
         /// </summary>
         /// <param name="fileInfo">FileInfo details</param>
-        /// <param name="fileHash">The computed hash</param>
-        /// <param name="algorithm">The hash algorithm used</param>
         /// <param name="priority">The source priority</param>
-        private void ProcessNewFile(FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm, FileBackupPriority priority)
+        private void ProcessNewFile(FileInfo fileInfo, FileBackupPriority priority)
         {
             Logger.WriteTraceMessage(string.Format("New File: {0}", fileInfo.FullName));
 
             // brand new file
             var backupFile = new BackupFile(fileInfo, priority);
-            backupFile.SetFileHashWithAlgorithm(fileHash, algorithm);
             backupFile.ResetCopyState(Database.GetProvidersList());
             backupFile.SetLastCheckedTimeStamp();
 
@@ -340,14 +328,11 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         /// <param name="fileLookup">File index lookup result</param>
         /// <param name="fileInfo">FileInfo details</param>
-        /// <param name="fileHash">The computed hash</param>
-        /// <param name="algorithm">Hash algorithm used to compute the hash</param>
-        private void ProcessUpdatedFile(BackupFileLookup fileLookup, FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
+        private void ProcessUpdatedFile(BackupFileLookup fileLookup, FileInfo fileInfo)
         {
             Logger.WriteTraceMessage(string.Format("Updated File: {0}", fileInfo.FullName));
 
             // updated file
-            fileLookup.File.SetFileHashWithAlgorithm(fileHash, algorithm);
             fileLookup.File.ResetCopyState(Database.GetProvidersList());
             fileLookup.File.SetLastCheckedTimeStamp();
             fileLookup.File.IncrementFileRevision();
