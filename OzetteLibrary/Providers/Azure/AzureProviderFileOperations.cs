@@ -10,7 +10,6 @@ using OzetteLibrary.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace OzetteLibrary.Providers.Azure
@@ -244,7 +243,7 @@ namespace OzetteLibrary.Providers.Azure
                     FileStatus.InProgress.ToString());
 
             blob.Metadata[ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName] = currentBlockIndex.ToString();
-            blob.Metadata[ProviderMetadata.FullSourcePathKeyName] = System.Web.HttpUtility.UrlEncode(file.FullSourcePath);
+            blob.Metadata[ProviderMetadata.FullSourcePathKeyName] = file.FullSourcePath;
             blob.Metadata[ProviderMetadata.FileHashKeyName] = file.FileHashString;
             blob.Metadata[ProviderMetadata.FileHashAlgorithmKeyName] = file.HashAlgorithmType;
 
