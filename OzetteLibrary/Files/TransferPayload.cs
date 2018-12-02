@@ -30,11 +30,6 @@ namespace OzetteLibrary.Files
         public long TotalBlocks { get; set; }
 
         /// <summary>
-        /// The expected hash of this payload data chunk.
-        /// </summary>
-        public byte[] ExpectedHash { get; set; }
-
-        /// <summary>
         /// The actual payload/file data chunk.
         /// </summary>
         public byte[] Data { get; set; }

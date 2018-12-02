@@ -359,14 +359,13 @@ namespace OzetteLibrary.Files
             TransferPayload payload = new TransferPayload();
             payload.FileID = FileID;
             payload.CurrentBlockNumber = nextBlock.Value;
-            payload.TotalBlocks = CalculateTotalFileBlocks(Constants.Transfers.TransferBlockSizeBytes);
+            payload.TotalBlocks = TotalFileBlocks;
             payload.DestinationProviders = FindProvidersThatCanTransferSpecifiedBlock(nextBlock.Value);
 
             // generate the 'data' payload: the next file block as byte[].
             // hash that block so we can validate it on the other side.
 
             payload.Data = ReadFileBlock(Stream, nextBlock.Value);
-            payload.ExpectedHash = Hasher.HashFileBlockFromByteArray(Hasher.GetDefaultHashAlgorithm(Priority), payload.Data);
 
             return payload;
         }

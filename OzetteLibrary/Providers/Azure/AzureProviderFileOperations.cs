@@ -75,7 +75,8 @@ namespace OzetteLibrary.Providers.Azure
 
             RequestOptions = new BlobRequestOptions()
             {
-                RetryPolicy = new ExponentialRetry(TimeSpan.FromSeconds(1), 3)
+                RetryPolicy = new ExponentialRetry(TimeSpan.FromSeconds(1), 3),
+                StoreBlobContentMD5 = false
             };
         }
 
@@ -147,23 +148,17 @@ namespace OzetteLibrary.Providers.Azure
                 Logger.WriteTraceMessage(string.Format("Azure destination: {0}/{1}", containerName, blobName));
             }
 
-            // hash the block. Azure has an integrity check on the server side if we supply the expected md5 hash.
-
             Logger.WriteTraceMessage(string.Format("Uploading file block ({0} of {1}) to Azure storage.", currentBlockNumber, totalBlocks));
 
-            string blockMd5Hash = Hasher.ConvertHashByteArrayToBase64EncodedString(
-                Hasher.HashFileBlockFromByteArray(HashAlgorithmName.MD5, data)
-            );
-
             // get a current reference to the blob and it's attributes.
-            // upload the block and expected hash.
+            // upload the block.
 
             CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri), AzureStorage.Credentials);
 
             using (var stream = new MemoryStream(data))
             {
                 var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlockIndex);
-                await blob.PutBlockAsync(encodedBlockIdString, stream, blockMd5Hash, null, RequestOptions, null).ConfigureAwait(false);
+                await blob.PutBlockAsync(encodedBlockIdString, stream, null, null, RequestOptions, null).ConfigureAwait(false);
             }
 
             // is this the first block or the last block? then run the block commit.

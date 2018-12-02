@@ -3,6 +3,7 @@ using OzetteLibrary.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace OzetteLibraryTests.Files
 {
@@ -395,10 +396,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
-                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
-                {
-                    104,190,157,129,20,64,203,47,12,223,69,124,46,207,146,245,145,182,132,186
-                }));
+                // assert that the contents of the payload match.
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload1.data"), payload.Data));
             }
         }
 
@@ -429,10 +428,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
-                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
-                {
-                    87,42,186,67,68,10,37,216,48,58,2,219,171,171,115,137,238,242,144,168,93,135,96,249,169,49,17,123,22,30,252,81
-                }));
+                // assert that the contents of the payload match.
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload2.data"), payload.Data));
             }
         }
 
@@ -468,10 +465,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
-                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
-                {
-                    219,24,62,65,143,24,145,76,71,142,207,220,183,68,220,193,27,199,6,90
-                }));
+                // assert that the contents of the payload match.
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload3.data"), payload.Data));
             }
         }
 
@@ -507,10 +502,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
-                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
-                {
-                    62,53,249,165,158,29,2,214,101,66,11,113,2,175,24,160,31,144,25,105
-                }));
+                // assert that the contents of the payload match.
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload4.data"), payload.Data));
             }
         }
 
@@ -546,10 +539,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.AreEqual(102809, payload.Data.Length); // partial chunk
 
-                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
-                {
-                    250, 27, 250, 217, 229, 10, 217, 143, 211, 205, 186, 171, 83, 35, 218, 172, 40, 4, 138, 110
-                }));
+                // assert that the contents of the payload match.
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload5.data"), payload.Data));
             }
         }
 
@@ -592,10 +583,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.AreEqual(102809, payload.Data.Length); // partial chunk
 
-                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
-                {
-                    250, 27, 250, 217, 229, 10, 217, 143, 211, 205, 186, 171, 83, 35, 218, 172, 40, 4, 138, 110
-                }));
+                // assert that the contents of the payload match.
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload6.data"), payload.Data));
             }
         }
 
@@ -647,10 +636,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
-                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
-                {
-                    62,53,249,165,158,29,2,214,101,66,11,113,2,175,24,160,31,144,25,105
-                }));
+                // assert that the contents of the payload match.
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload7.data"), payload.Data));
             }
         }
 
@@ -702,10 +689,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
-                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
-                {
-                    62,53,249,165,158,29,2,214,101,66,11,113,2,175,24,160,31,144,25,105
-                }));
+                // assert that the contents of the payload match.
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload8.data"), payload.Data));
             }
         }
 
@@ -759,10 +744,8 @@ namespace OzetteLibraryTests.Files
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
-                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(payload.ExpectedHash, new byte[]
-                {
-                    111,40,74,161,120,65,67,23,252,204,239,135,18,152,53,141,219,111,38,180
-                }));
+                // assert that the contents of the payload match.
+                Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload9.data"), payload.Data));
             }
         }
 
