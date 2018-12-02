@@ -104,6 +104,7 @@ namespace OzetteLibrary.Database.LiteDB
                 backupFilesCol.EnsureIndex(x => x.FileID);
                 backupFilesCol.EnsureIndex(x => x.Filename);
                 backupFilesCol.EnsureIndex(x => x.Directory);
+                backupFilesCol.EnsureIndex(x => x.FullSourcePath);
                 backupFilesCol.EnsureIndex(x => x.FileHashString);
 
                 var dirMapCol = db.GetCollection<DirectoryMapItem>(Constants.Database.DirectoryMapTableName);
@@ -466,25 +467,24 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// Checks the index for a file matching the provided name, path, filesize, and lastmodified date.
         /// </summary>
-        /// <param name="FileName">Name of the file (ex: document.doc)</param>
-        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
+        /// <param name="FullFilePath">Full file path (file name and path)</param>
         /// <param name="FileSizeBytes">File size in bytes</param>
         /// <param name="FileLastModified">File last modified timestamp</param>
         /// <returns></returns>
-        public BackupFileLookup GetBackupFile(string FileName, string DirectoryPath, long FileSizeBytes, DateTime FileLastModified)
+        public BackupFileLookup GetBackupFile(string FullFilePath, long FileSizeBytes, DateTime FileLastModified)
         {
             if (DatabaseHasBeenPrepared == false)
             {
                 throw new InvalidOperationException("Database has not been prepared.");
             }
 
-            var existingFile = FindFullMatchOnNameDirectorySizeAndModified(FileName, DirectoryPath, FileSizeBytes, FileLastModified);
+            var existingFile = FindFullMatchOnNameDirectorySizeAndModified(FullFilePath, FileSizeBytes, FileLastModified);
             if (existingFile != null)
             {
                 return new BackupFileLookup() { File = existingFile, Result = BackupFileLookupResult.Existing };
             }
 
-            var updatedFile = FindFilesWithExactNameAndPathButWrongSizeOrLastModified(FileName, DirectoryPath, FileSizeBytes, FileLastModified);
+            var updatedFile = FindFilesWithExactNameAndPathButWrongSizeOrLastModified(FullFilePath, FileSizeBytes, FileLastModified);
             if (updatedFile != null)
             {
                 return new BackupFileLookup() { File = updatedFile, Result = BackupFileLookupResult.Updated };
@@ -496,20 +496,18 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// Checks the index for a full file exact match.
         /// </summary>
-        /// <param name="FileName">Name of the file (ex: document.doc)</param>
-        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
+        /// <param name="FullFilePath">Full file path (file name and path)</param>
         /// <param name="FileSizeBytes">File size in bytes</param>
         /// <param name="FileLastModified">File last modified timestamp</param>
         /// <returns><c>BackupFileLookup</c></returns>
-        private BackupFile FindFullMatchOnNameDirectorySizeAndModified(string FileName, string DirectoryPath, long FileSizeBytes, DateTime FileLastModified)
+        private BackupFile FindFullMatchOnNameDirectorySizeAndModified(string FullFilePath, long FileSizeBytes, DateTime FileLastModified)
         {
             using (var db = GetLiteDBInstance())
             {
                 var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
 
                 var exactMatches = backupFilesCol.Find(
-                    x => x.Filename == FileName
-                      && x.Directory == DirectoryPath
+                    x => x.FullSourcePath == FullFilePath
                       && x.FileSizeBytes == FileSizeBytes
                       && x.LastModified == FileLastModified
                 );
@@ -528,20 +526,18 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// Checks the index for a partial file match (wrong size or modified date).
         /// </summary>
-        /// <param name="FileName">Name of the file (ex: document.doc)</param>
-        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
+        /// <param name="FullFilePath">Full file path (file name and path)</param>
         /// <param name="FileSizeBytes">File size in bytes</param>
         /// <param name="FileLastModified">File last modified timestamp</param>
         /// <returns><c>BackupFileLookup</c></returns>
-        private BackupFile FindFilesWithExactNameAndPathButWrongSizeOrLastModified(string FileName, string DirectoryPath, long FileSizeBytes, DateTime FileLastModified)
+        private BackupFile FindFilesWithExactNameAndPathButWrongSizeOrLastModified(string FullFilePath, long FileSizeBytes, DateTime FileLastModified)
         {
             using (var db = GetLiteDBInstance())
             {
                 var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
 
                 var partialMatches = backupFilesCol.Find(
-                    x => x.Filename == FileName
-                      && x.Directory == DirectoryPath
+                    x => x.FullSourcePath == FullFilePath
                       && (x.FileSizeBytes != FileSizeBytes || x.LastModified != FileLastModified)
                 );
 

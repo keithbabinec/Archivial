@@ -279,7 +279,7 @@ namespace OzetteLibrary.Client.Sources
             // do a simple file lookup, based on the name/path, size, and date modified
             // do not hash yet-- we dont need it until backup time.
 
-            var fileIndexLookup = Database.GetBackupFile(fileInfo.Name, fileInfo.DirectoryName, fileInfo.Length, fileInfo.LastWriteTime);
+            var fileIndexLookup = Database.GetBackupFile(fileInfo.FullName, fileInfo.Length, fileInfo.LastWriteTime);
 
             if (fileIndexLookup.Result == BackupFileLookupResult.New)
             {

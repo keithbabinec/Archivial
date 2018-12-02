@@ -89,7 +89,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
-            db.GetBackupFile(null, null, 0, DateTime.Now);
+            db.GetBackupFile(null, 0, DateTime.Now);
         }
 
         [TestMethod]
@@ -439,7 +439,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             file.SetLastCheckedTimeStamp();
 
             // file will be 'new' because no files have been added yet.
-            var result = db.GetBackupFile(file.Filename, file.Directory, file.FileSizeBytes, file.LastModified);
+            var result = db.GetBackupFile(file.FullSourcePath, file.FileSizeBytes, file.LastModified);
 
             Assert.IsNotNull(result);
             Assert.IsNull(result.File);
@@ -467,7 +467,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             // file will be 'existing'
             // it is added to the database, and then we check for it immediately afterwards.
             db.AddBackupFile(file);
-            var result = db.GetBackupFile(file.Filename, file.Directory, file.FileSizeBytes, file.LastModified);
+            var result = db.GetBackupFile(file.FullSourcePath, file.FileSizeBytes, file.LastModified);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
@@ -496,7 +496,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             // it is added to the database, and then we check for it immediately afterwards using a different file size.
             db.AddBackupFile(file);
             var updatedFileSizeBytes = 1024;
-            var result = db.GetBackupFile(file.Filename, file.Directory, updatedFileSizeBytes, file.LastModified);
+            var result = db.GetBackupFile(file.FullSourcePath, updatedFileSizeBytes, file.LastModified);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
@@ -525,7 +525,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             // it is added to the database, and then we check for it immediately afterwards using a different file modified date.
             db.AddBackupFile(file);
             var updatedModifiedDate = DateTime.Now.AddMinutes(5);
-            var result = db.GetBackupFile(file.Filename, file.Directory, file.FileSizeBytes, updatedModifiedDate);
+            var result = db.GetBackupFile(file.FullSourcePath, file.FileSizeBytes, updatedModifiedDate);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);

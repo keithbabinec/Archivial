@@ -62,12 +62,11 @@ namespace OzetteLibrary.Database
         /// <summary>
         /// Checks the index for a file matching the provided name, path, filesize, and lastmodified date.
         /// </summary>
-        /// <param name="FileName">Name of the file (ex: document.doc)</param>
-        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
+        /// <param name="FullFilePath">Full file path (file name and path)</param>
         /// <param name="FileSizeBytes">File size in bytes</param>
         /// <param name="FileLastModified">File last modified timestamp</param>
         /// <returns></returns>
-        BackupFileLookup GetBackupFile(string FileName, string DirectoryPath, long FileSizeBytes, DateTime FileLastModified);
+        BackupFileLookup GetBackupFile(string FullFilePath, long FileSizeBytes, DateTime FileLastModified);
 
         /// <summary>
         /// Returns all of the client files in the database.
