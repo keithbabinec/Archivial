@@ -221,11 +221,12 @@ namespace OzetteLibrary.Client.Transfer
                 throw new ArgumentNullException(nameof(Stream));
             }
 
-            var currentHash = Hasher.GenerateFileHash(File.GetFileHashAlgorithm(), Stream);
+            var hashAlgo = Hasher.GetDefaultHashAlgorithm(File.Priority);
+            var currentHash = Hasher.GenerateFileHash(hashAlgo, Stream);
 
             if (currentHash.Length != 0)
             {
-                File.SetFileHashWithAlgorithm(currentHash, File.GetFileHashAlgorithm());
+                File.SetFileHashWithAlgorithm(currentHash, hashAlgo);
                 File.SetLastCheckedTimeStamp();
                 Database.UpdateBackupFile(File);
             }

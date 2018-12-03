@@ -694,15 +694,6 @@ namespace OzetteLibrary.Files
         }
 
         /// <summary>
-        /// Gets the file hash.
-        /// </summary>
-        /// <returns>HashAlgorithmName</returns>
-        public HashAlgorithmName GetFileHashAlgorithm()
-        {
-            return new HashAlgorithmName(this.HashAlgorithmType);
-        }
-
-        /// <summary>
         /// Returns the expected number of file blocks.
         /// </summary>
         /// <param name="BlockSize"></param>
