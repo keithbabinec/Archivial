@@ -63,6 +63,11 @@ namespace OzetteClientAgent
         private ConnectionEngine Connection { get; set; }
 
         /// <summary>
+        /// A reference to the status engine instance.
+        /// </summary>
+        private StatusEngine Status { get; set; }
+
+        /// <summary>
         /// A reference to the scanning engine instance.
         /// </summary>
         private ScanEngine Scan { get; set; }
@@ -100,6 +105,12 @@ namespace OzetteClientAgent
             }
 
             if (!StartConnectionEngine())
+            {
+                Stop();
+                return;
+            }
+
+            if (!StartStatusEngine())
             {
                 Stop();
                 return;
@@ -145,6 +156,10 @@ namespace OzetteClientAgent
             if (Connection != null)
             {
                 Connection.BeginStop();
+            }
+            if (Status != null)
+            {
+                Status.BeginStop();
             }
 
             if (CoreLog != null)
@@ -324,6 +339,66 @@ namespace OzetteClientAgent
                 CoreLog.WriteSystemEvent(
                     string.Format("Connection Engine has stopped."),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedConnectionEngine, true);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unexpected EngineStoppedReason: " + e.Reason);
+            }
+        }
+
+        /// <summary>
+        /// Starts the status engine.
+        /// </summary>
+        /// <returns>True if successful, otherwise false.</returns>
+        private bool StartStatusEngine()
+        {
+            // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
+            // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
+
+            try
+            {
+                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
+                db.PrepareDatabase();
+
+                Status = new StatusEngine(db, CoreLog, ProviderConnections);
+                Status.Stopped += Status_Stopped;
+                Status.BeginStart();
+
+                CoreLog.WriteSystemEvent(
+                    string.Format("Status Engine has started."),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedStatusEngine, true);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var message = "Failed to start the status engine.";
+                var context = CoreLog.GenerateFullContextStackTrace();
+                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedStatusEngine, true);
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// Callback event for when status engine has stopped.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Status_Stopped(object sender, OzetteLibrary.Events.EngineStoppedEventArgs e)
+        {
+            if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
+            {
+                CoreLog.WriteSystemEvent(
+                    string.Format("Status Engine has failed."),
+                    e.Exception,
+                    CoreLog.GenerateFullContextStackTrace(),
+                    OzetteLibrary.Constants.EventIDs.FailedStatusEngine, true);
+            }
+            else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
+            {
+                CoreLog.WriteSystemEvent(
+                    string.Format("Status Engine has stopped."),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedStatusEngine, true);
             }
             else
             {
