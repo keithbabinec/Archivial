@@ -71,6 +71,16 @@
         public const int StoppedConnectionEngine = 1012;
 
         /// <summary>
+        /// Event ID: Started status engine.
+        /// </summary>
+        public const int StartedStatusEngine = 1013;
+
+        /// <summary>
+        /// Event ID: Stopped status engine.
+        /// </summary>
+        public const int StoppedStatusEngine = 1014;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;
@@ -139,5 +149,10 @@
         /// Event ID: Failed to save scan sources.
         /// </summary>
         public const int FailedToSaveScanSources = 2013;
+
+        /// <summary>
+        /// Event ID: Failed status engine.
+        /// </summary>
+        public const int FailedStatusEngine = 2014;
     }
 }
