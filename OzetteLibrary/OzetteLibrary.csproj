@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Client\BackupEngine.cs" />
     <Compile Include="Client\ConnectionEngine.cs" />
+    <Compile Include="Client\StatusEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
     <Compile Include="CommandLine\Arguments\AddNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Arguments\AddNetSourceArguments.cs" />
