@@ -255,6 +255,8 @@ namespace OzetteLibrary.Client.Sources
             Logger.WriteTraceMessage(string.Format("Scan results: NewBytesFound={0}", results.NewBytesFound));
             Logger.WriteTraceMessage(string.Format("Scan results: UpdatedFilesFound={0}", results.UpdatedFilesFound));
             Logger.WriteTraceMessage(string.Format("Scan results: UpdatedBytesFound={0}", results.UpdatedBytesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: UnsupportedFilesFound={0}", results.UnsupportedFilesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: UnsupportedBytesFound={0}", results.UnsupportedBytesFound));
             Logger.WriteTraceMessage(string.Format("Scan results: TotalFilesFound={0}", results.TotalFilesFound));
             Logger.WriteTraceMessage(string.Format("Scan results: TotalBytesFound={0}", results.TotalBytesFound));
         }
@@ -273,6 +275,21 @@ namespace OzetteLibrary.Client.Sources
             {
                 // this file is empty (has no contents).
                 // unable to back up empty files.
+                Logger.WriteTraceMessage(string.Format("Unsupported File (Empty): {0}", fileInfo.FullName));
+                results.UnsupportedFilesFound++;
+                results.TotalFilesFound++;
+                return;
+            }
+            if (fileInfo.FullName.Length >= 260)
+            {
+                // this filename is too long, windows won't open it correctly without some additional code/support.
+                // unable to back up.
+                // The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters
+                Logger.WriteTraceMessage(string.Format("Unsupported File (Path too long): {0}", fileInfo.FullName));
+                results.UnsupportedFilesFound++;
+                results.UnsupportedBytesFound += (ulong)fileInfo.Length;
+                results.TotalFilesFound++;
+                results.TotalBytesFound += (ulong)fileInfo.Length;
                 return;
             }
 
