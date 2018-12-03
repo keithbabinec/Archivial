@@ -15,7 +15,7 @@ namespace OzetteLibrary.Folders
         /// <summary>
         /// The total number of new files found.
         /// </summary>
-        public int NewFilesFound { get; set; }
+        public long NewFilesFound { get; set; }
 
         /// <summary>
         /// The total number of new file bytes found.
@@ -25,7 +25,7 @@ namespace OzetteLibrary.Folders
         /// <summary>
         /// The total number of updated files found.
         /// </summary>
-        public int UpdatedFilesFound { get; set; }
+        public long UpdatedFilesFound { get; set; }
 
         /// <summary>
         /// The total number of updated file bytes found.
@@ -33,9 +33,19 @@ namespace OzetteLibrary.Folders
         public ulong UpdatedBytesFound { get; set; }
 
         /// <summary>
+        /// The total number of unsupported files found.
+        /// </summary>
+        public long UnsupportedFilesFound { get; set; }
+
+        /// <summary>
+        /// The total number of unsupported file bytes found.
+        /// </summary>
+        public ulong UnsupportedBytesFound { get; set; }
+
+        /// <summary>
         /// The total number of all files found.
         /// </summary>
-        public int TotalFilesFound { get; set; }
+        public long TotalFilesFound { get; set; }
 
         /// <summary>
         /// The total number of all file bytes found.
@@ -45,6 +55,6 @@ namespace OzetteLibrary.Folders
         /// <summary>
         /// The total number of scanned directories.
         /// </summary>
-        public int ScannedDirectoriesCount { get; set; }
+        public long ScannedDirectoriesCount { get; set; }
     }
 }

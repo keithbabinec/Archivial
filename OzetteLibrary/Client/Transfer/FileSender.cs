@@ -107,11 +107,9 @@ namespace OzetteLibrary.Client.Transfer
 
                 using (FileStream fs = new FileStream(File.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    // step 3: verify/update the hash.
-                    // if the file contents have changed between the time it was scanned and now, then this would result in a hash mismatch. 
-                    // re-verify the hash of this file, and update the database if needed.
+                    // step 3: calculate and save the hash.
 
-                    UpdateHashIfFileHasChangedRecently(File, fs);
+                    UpdateFileHashInDatabase(File, fs);
 
                     // step 4: see if this file is already on the destination target provider(s).
                     // this avoids resending the file if for some reason the client DB/states got wiped out.
@@ -208,11 +206,11 @@ namespace OzetteLibrary.Client.Transfer
         }
 
         /// <summary>
-        /// Verifies that the existing hash for the specified file is correct in the database.
+        /// Calculates the hash for the specified file and saves it to the database.
         /// </summary>
         /// <param name="File"></param>
         /// <param name="Stream"></param>
-        private void UpdateHashIfFileHasChangedRecently(BackupFile File, FileStream Stream)
+        private void UpdateFileHashInDatabase(BackupFile File, FileStream Stream)
         {
             if (File == null)
             {
@@ -223,17 +221,14 @@ namespace OzetteLibrary.Client.Transfer
                 throw new ArgumentNullException(nameof(Stream));
             }
 
-            var currentHash = Hasher.GenerateFileHash(File.GetFileHashAlgorithm(), Stream);
+            var hashAlgo = Hasher.GetDefaultHashAlgorithm(File.Priority);
+            var currentHash = Hasher.GenerateFileHash(hashAlgo, Stream);
 
             if (currentHash.Length != 0)
             {
-                if (Hasher.CheckTwoByteHashesAreTheSame(File.GetFileHash(), currentHash) == false)
-                {
-                    File.SetFileHashWithAlgorithm(currentHash, File.GetFileHashAlgorithm());
-                    File.SetLastCheckedTimeStamp();
-                    File.ResetCopyState(Database.GetProvidersList());
-                    Database.UpdateBackupFile(File);
-                }
+                File.SetFileHashWithAlgorithm(currentHash, hashAlgo);
+                File.SetLastCheckedTimeStamp();
+                Database.UpdateBackupFile(File);
             }
             else
             {

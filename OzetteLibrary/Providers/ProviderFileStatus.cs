@@ -110,7 +110,7 @@ namespace OzetteLibrary.Providers
                     throw new ProviderMetadataMalformedException(ProviderMetadata.ProviderLastCompletedFileBlockIndexKeyName);
                 }
 
-                // decode any URL escaped properties
+                // decode url-encoded fields
                 if (providerMetadata.ContainsKey(ProviderMetadata.FullSourcePathKeyName))
                 {
                     providerMetadata[ProviderMetadata.FullSourcePathKeyName] = System.Web.HttpUtility.UrlDecode(providerMetadata[ProviderMetadata.FullSourcePathKeyName]);

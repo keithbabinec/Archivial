@@ -3,6 +3,7 @@ using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
+using System;
 
 namespace OzetteLibrary.Database
 {
@@ -59,18 +60,13 @@ namespace OzetteLibrary.Database
         NetCredentialsCollection GetNetCredentialsList();
 
         /// <summary>
-        /// Checks the index for a file matching the provided name, path, and hash.
+        /// Checks the index for a file matching the provided name, path, filesize, and lastmodified date.
         /// </summary>
-        /// <remarks>
-        /// The lookup result object is returned that contains:
-        /// 1. A reference to the indexed file, if present.
-        /// 2. An enumeration that describes the file state (new, updated, moved, renamed, etc).
-        /// </remarks>
-        /// <param name="FileName">Name of the file (ex: document.doc)</param>
-        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
-        /// <param name="FileHash">File hash expressed as a string.</param>
-        /// <returns><c>BackupFileLookup</c></returns>
-        BackupFileLookup GetBackupFile(string FileName, string DirectoryPath, string FileHashString);
+        /// <param name="FullFilePath">Full file path (file name and path)</param>
+        /// <param name="FileSizeBytes">File size in bytes</param>
+        /// <param name="FileLastModified">File last modified timestamp</param>
+        /// <returns></returns>
+        BackupFileLookup GetBackupFile(string FullFilePath, long FileSizeBytes, DateTime FileLastModified);
 
         /// <summary>
         /// Returns all of the client files in the database.

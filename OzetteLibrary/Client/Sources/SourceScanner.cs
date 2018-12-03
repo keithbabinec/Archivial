@@ -255,6 +255,8 @@ namespace OzetteLibrary.Client.Sources
             Logger.WriteTraceMessage(string.Format("Scan results: NewBytesFound={0}", results.NewBytesFound));
             Logger.WriteTraceMessage(string.Format("Scan results: UpdatedFilesFound={0}", results.UpdatedFilesFound));
             Logger.WriteTraceMessage(string.Format("Scan results: UpdatedBytesFound={0}", results.UpdatedBytesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: UnsupportedFilesFound={0}", results.UnsupportedFilesFound));
+            Logger.WriteTraceMessage(string.Format("Scan results: UnsupportedBytesFound={0}", results.UnsupportedBytesFound));
             Logger.WriteTraceMessage(string.Format("Scan results: TotalFilesFound={0}", results.TotalFilesFound));
             Logger.WriteTraceMessage(string.Format("Scan results: TotalBytesFound={0}", results.TotalBytesFound));
         }
@@ -273,32 +275,38 @@ namespace OzetteLibrary.Client.Sources
             {
                 // this file is empty (has no contents).
                 // unable to back up empty files.
+                Logger.WriteTraceMessage(string.Format("Unsupported File (Empty): {0}", fileInfo.FullName));
+                results.UnsupportedFilesFound++;
+                results.TotalFilesFound++;
                 return;
             }
-
-            var hashType = Hasher.GetDefaultHashAlgorithm(source.Priority);
-            var hash = Hasher.GenerateDefaultHash(fileInfo.FullName, source.Priority);
-
-            if (hash.Length == 0)
+            if (fileInfo.FullName.Length >= 260)
             {
-                // failed to generate a hash.
-                // cant properly lookup the file in the database without it.
-                // error has already been logged by the hasher
+                // this filename is too long, windows won't open it correctly without some additional code/support.
+                // unable to back up.
+                // The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters
+                Logger.WriteTraceMessage(string.Format("Unsupported File (Path too long): {0}", fileInfo.FullName));
+                results.UnsupportedFilesFound++;
+                results.UnsupportedBytesFound += (ulong)fileInfo.Length;
+                results.TotalFilesFound++;
+                results.TotalBytesFound += (ulong)fileInfo.Length;
                 return;
             }
 
-            var fileHashString = string.Join("-", hash);
-            var fileIndexLookup = Database.GetBackupFile(fileInfo.Name, fileInfo.DirectoryName, fileHashString);
+            // do a simple file lookup, based on the name/path, size, and date modified
+            // do not hash yet-- we dont need it until backup time.
+
+            var fileIndexLookup = Database.GetBackupFile(fileInfo.FullName, fileInfo.Length, fileInfo.LastWriteTime);
 
             if (fileIndexLookup.Result == BackupFileLookupResult.New)
             {
-                ProcessNewFile(fileInfo, hash, hashType, source.Priority);
+                ProcessNewFile(fileInfo, source.Priority);
                 results.NewFilesFound++;
                 results.NewBytesFound += (ulong)fileInfo.Length;
             }
             else if (fileIndexLookup.Result == BackupFileLookupResult.Updated)
             {
-                ProcessUpdatedFile(fileIndexLookup, fileInfo, hash, hashType);
+                ProcessUpdatedFile(fileIndexLookup, fileInfo);
                 results.UpdatedFilesFound++;
                 results.UpdatedBytesFound += (ulong)fileInfo.Length;
             }
@@ -319,16 +327,13 @@ namespace OzetteLibrary.Client.Sources
         /// Processes a new scanned file into the database.
         /// </summary>
         /// <param name="fileInfo">FileInfo details</param>
-        /// <param name="fileHash">The computed hash</param>
-        /// <param name="algorithm">The hash algorithm used</param>
         /// <param name="priority">The source priority</param>
-        private void ProcessNewFile(FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm, FileBackupPriority priority)
+        private void ProcessNewFile(FileInfo fileInfo, FileBackupPriority priority)
         {
             Logger.WriteTraceMessage(string.Format("New File: {0}", fileInfo.FullName));
 
             // brand new file
             var backupFile = new BackupFile(fileInfo, priority);
-            backupFile.SetFileHashWithAlgorithm(fileHash, algorithm);
             backupFile.ResetCopyState(Database.GetProvidersList());
             backupFile.SetLastCheckedTimeStamp();
 
@@ -340,14 +345,11 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         /// <param name="fileLookup">File index lookup result</param>
         /// <param name="fileInfo">FileInfo details</param>
-        /// <param name="fileHash">The computed hash</param>
-        /// <param name="algorithm">Hash algorithm used to compute the hash</param>
-        private void ProcessUpdatedFile(BackupFileLookup fileLookup, FileInfo fileInfo, byte[] fileHash, HashAlgorithmName algorithm)
+        private void ProcessUpdatedFile(BackupFileLookup fileLookup, FileInfo fileInfo)
         {
             Logger.WriteTraceMessage(string.Format("Updated File: {0}", fileInfo.FullName));
 
             // updated file
-            fileLookup.File.SetFileHashWithAlgorithm(fileHash, algorithm);
             fileLookup.File.ResetCopyState(Database.GetProvidersList());
             fileLookup.File.SetLastCheckedTimeStamp();
             fileLookup.File.IncrementFileRevision();

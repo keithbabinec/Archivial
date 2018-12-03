@@ -104,6 +104,7 @@ namespace OzetteLibrary.Database.LiteDB
                 backupFilesCol.EnsureIndex(x => x.FileID);
                 backupFilesCol.EnsureIndex(x => x.Filename);
                 backupFilesCol.EnsureIndex(x => x.Directory);
+                backupFilesCol.EnsureIndex(x => x.FullSourcePath);
                 backupFilesCol.EnsureIndex(x => x.FileHashString);
 
                 var dirMapCol = db.GetCollection<DirectoryMapItem>(Constants.Database.DirectoryMapTableName);
@@ -464,31 +465,26 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
-        /// Checks the index for a file matching the provided name, path, and hash.
+        /// Checks the index for a file matching the provided name, path, filesize, and lastmodified date.
         /// </summary>
-        /// <remarks>
-        /// The lookup result object is returned that contains:
-        /// 1. A reference to the indexed file, if present.
-        /// 2. An enumeration that describes the file state (new, updated, moved, renamed, etc).
-        /// </remarks>
-        /// <param name="FileName">Name of the file (ex: document.doc)</param>
-        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
-        /// <param name="FileHash">File hash expressed as a string.</param>
-        /// <returns><c>BackupFileLookup</c></returns>
-        public BackupFileLookup GetBackupFile(string FileName, string DirectoryPath, string FileHashString)
+        /// <param name="FullFilePath">Full file path (file name and path)</param>
+        /// <param name="FileSizeBytes">File size in bytes</param>
+        /// <param name="FileLastModified">File last modified timestamp</param>
+        /// <returns></returns>
+        public BackupFileLookup GetBackupFile(string FullFilePath, long FileSizeBytes, DateTime FileLastModified)
         {
             if (DatabaseHasBeenPrepared == false)
             {
                 throw new InvalidOperationException("Database has not been prepared.");
             }
 
-            var existingFile = FindFullMatchOnNameDirectoryAndHash(FileName, DirectoryPath, FileHashString);
+            var existingFile = FindFullMatchOnNameDirectorySizeAndModified(FullFilePath, FileSizeBytes, FileLastModified);
             if (existingFile != null)
             {
                 return new BackupFileLookup() { File = existingFile, Result = BackupFileLookupResult.Existing };
             }
 
-            var updatedFile = FindFilesWithExactNameAndPathButWrongHash(FileName, DirectoryPath, FileHashString);
+            var updatedFile = FindFilesWithExactNameAndPathButWrongSizeOrLastModified(FullFilePath, FileSizeBytes, FileLastModified);
             if (updatedFile != null)
             {
                 return new BackupFileLookup() { File = updatedFile, Result = BackupFileLookupResult.Updated };
@@ -500,20 +496,23 @@ namespace OzetteLibrary.Database.LiteDB
         /// <summary>
         /// Checks the index for a full file exact match.
         /// </summary>
-        /// <param name="FileName">Name of the file (ex: document.doc)</param>
-        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
-        /// <param name="FileHash">File hash expressed as a string.</param>
+        /// <param name="FullFilePath">Full file path (file name and path)</param>
+        /// <param name="FileSizeBytes">File size in bytes</param>
+        /// <param name="FileLastModified">File last modified timestamp</param>
         /// <returns><c>BackupFileLookup</c></returns>
-        private BackupFile FindFullMatchOnNameDirectoryAndHash(string FileName, string DirectoryPath, string FileHashString)
+        private BackupFile FindFullMatchOnNameDirectorySizeAndModified(string FullFilePath, long FileSizeBytes, DateTime FileLastModified)
         {
             using (var db = GetLiteDBInstance())
             {
-                BackupFileLookup result = new BackupFileLookup();
-
                 var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
-                var matchesOnHash = backupFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHashString == FileHashString);
 
-                foreach (var file in matchesOnHash)
+                var exactMatches = backupFilesCol.Find(
+                    x => x.FullSourcePath == FullFilePath
+                      && x.FileSizeBytes == FileSizeBytes
+                      && x.LastModified == FileLastModified
+                );
+
+                foreach (var file in exactMatches)
                 {
                     // exact file hash, name, location.
                     // only possible to have one.
@@ -525,23 +524,26 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
-        /// Checks the index for a file name/path match, but hash mismatch.
+        /// Checks the index for a partial file match (wrong size or modified date).
         /// </summary>
-        /// <param name="FileName">Name of the file (ex: document.doc)</param>
-        /// <param name="DirectoryPath">Full directory path (ex: C:\folder\documents)</param>
-        /// <param name="FileHash">File hash expressed as a byte array.</param>
+        /// <param name="FullFilePath">Full file path (file name and path)</param>
+        /// <param name="FileSizeBytes">File size in bytes</param>
+        /// <param name="FileLastModified">File last modified timestamp</param>
         /// <returns><c>BackupFileLookup</c></returns>
-        private BackupFile FindFilesWithExactNameAndPathButWrongHash(string FileName, string DirectoryPath, string FileHashString)
+        private BackupFile FindFilesWithExactNameAndPathButWrongSizeOrLastModified(string FullFilePath, long FileSizeBytes, DateTime FileLastModified)
         {
             using (var db = GetLiteDBInstance())
             {
                 var backupFilesCol = db.GetCollection<BackupFile>(Constants.Database.FilesTableName);
-                var matchesOnHash = backupFilesCol.Find(x => x.Filename == FileName && x.Directory == DirectoryPath && x.FileHashString != FileHashString);
 
-                foreach (var file in matchesOnHash)
+                var partialMatches = backupFilesCol.Find(
+                    x => x.FullSourcePath == FullFilePath
+                      && (x.FileSizeBytes != FileSizeBytes || x.LastModified != FileLastModified)
+                );
+
+                foreach (var file in partialMatches)
                 {
-                    // exact name, location.
-                    // only possible to have one.
+                    // grab the match (should only be one, since filename and path must be unique)
                     return file;
                 }
 

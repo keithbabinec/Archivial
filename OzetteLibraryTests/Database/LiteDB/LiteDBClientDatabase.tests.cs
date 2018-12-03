@@ -89,7 +89,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
-            db.GetBackupFile(null, null, null);
+            db.GetBackupFile(null, 0, DateTime.Now);
         }
 
         [TestMethod]
@@ -435,18 +435,15 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Files.BackupFile(info, OzetteLibrary.Files.FileBackupPriority.Medium);
+            var file = new BackupFile(info, FileBackupPriority.Medium);
+            file.SetLastCheckedTimeStamp();
 
-            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Files.FileBackupPriority.Medium),
-                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.Medium));
-
-            t.SetLastCheckedTimeStamp();
-
-            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHashString());
+            // file will be 'new' because no files have been added yet.
+            var result = db.GetBackupFile(file.FullSourcePath, file.FileSizeBytes, file.LastModified);
 
             Assert.IsNotNull(result);
             Assert.IsNull(result.File);
-            Assert.AreEqual(OzetteLibrary.Files.BackupFileLookupResult.New, result.Result);
+            Assert.AreEqual(BackupFileLookupResult.New, result.Result);
         }
 
         [TestMethod]
@@ -464,23 +461,21 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Files.BackupFile(info, OzetteLibrary.Files.FileBackupPriority.Medium);
+            var file = new BackupFile(info, FileBackupPriority.Medium);
+            file.SetLastCheckedTimeStamp();
 
-            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Files.FileBackupPriority.Medium),
-                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.Medium));
-
-            t.SetLastCheckedTimeStamp();
-
-            db.AddBackupFile(t);
-            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHashString());
+            // file will be 'existing'
+            // it is added to the database, and then we check for it immediately afterwards.
+            db.AddBackupFile(file);
+            var result = db.GetBackupFile(file.FullSourcePath, file.FileSizeBytes, file.LastModified);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
-            Assert.AreEqual(OzetteLibrary.Files.BackupFileLookupResult.Existing, result.Result);
+            Assert.AreEqual(BackupFileLookupResult.Existing, result.Result);
         }
 
         [TestMethod]
-        public void LiteDBClientDatabaseGetBackupFileReturnsUpdatedFileExample()
+        public void LiteDBClientDatabaseGetBackupFileReturnsUpdatedFileExampleUpdatedSize()
         {
             OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
             OzetteLibrary.Crypto.Hasher hasher = new OzetteLibrary.Crypto.Hasher(logger);
@@ -494,26 +489,47 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             // need a sample file (the calling assembly itself).
             FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            var t = new OzetteLibrary.Files.BackupFile(info, OzetteLibrary.Files.FileBackupPriority.Medium);
+            var file = new BackupFile(info, FileBackupPriority.Medium);
+            file.SetLastCheckedTimeStamp();
 
-            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Files.FileBackupPriority.Medium),
-                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.Medium));
-
-            t.SetLastCheckedTimeStamp();
-
-            db.AddBackupFile(t);
-
-            // update the file
-            t.SetFileHashWithAlgorithm(hasher.GenerateDefaultHash(info.FullName, OzetteLibrary.Files.FileBackupPriority.High),
-                          hasher.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.High));
-
-            t.SetLastCheckedTimeStamp();
-
-            var result = db.GetBackupFile(info.Name, info.DirectoryName, t.GetFileHashString());
+            // file will be 'updated'
+            // it is added to the database, and then we check for it immediately afterwards using a different file size.
+            db.AddBackupFile(file);
+            var updatedFileSizeBytes = 1024;
+            var result = db.GetBackupFile(file.FullSourcePath, updatedFileSizeBytes, file.LastModified);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.File);
-            Assert.AreEqual(OzetteLibrary.Files.BackupFileLookupResult.Updated, result.Result);
+            Assert.AreEqual(BackupFileLookupResult.Updated, result.Result);
+        }
+
+        [TestMethod]
+        public void LiteDBClientDatabaseGetBackupFileReturnsUpdatedFileExampleUpdatedModifiedDate()
+        {
+            OzetteLibrary.Logging.Mock.MockLogger logger = new OzetteLibrary.Logging.Mock.MockLogger();
+            OzetteLibrary.Crypto.Hasher hasher = new OzetteLibrary.Crypto.Hasher(logger);
+
+            var ms = new MemoryStream();
+
+            OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
+                new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
+
+            db.PrepareDatabase();
+
+            // need a sample file (the calling assembly itself).
+            FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            var file = new BackupFile(info, FileBackupPriority.Medium);
+            file.SetLastCheckedTimeStamp();
+
+            // file will be 'updated'
+            // it is added to the database, and then we check for it immediately afterwards using a different file modified date.
+            db.AddBackupFile(file);
+            var updatedModifiedDate = DateTime.Now.AddMinutes(5);
+            var result = db.GetBackupFile(file.FullSourcePath, file.FileSizeBytes, updatedModifiedDate);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.File);
+            Assert.AreEqual(BackupFileLookupResult.Updated, result.Result);
         }
 
         [TestMethod]

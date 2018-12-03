@@ -41,6 +41,7 @@ namespace OzetteLibrary.Files
             Directory = fileInfo.DirectoryName;
             FullSourcePath = fileInfo.FullName;
             FileSizeBytes = fileInfo.Length;
+            LastModified = fileInfo.LastWriteTime;
             TotalFileBlocks = CalculateTotalFileBlocks(Constants.Transfers.TransferBlockSizeBytes);
             Priority = priority;
             FileRevisionNumber = 1;
@@ -79,6 +80,11 @@ namespace OzetteLibrary.Files
         /// The files size measured in bytes.
         /// </summary>
         public long FileSizeBytes { get; set; }
+
+        /// <summary>
+        /// The timestamp for when the file was modified on disk.
+        /// </summary>
+        public DateTime LastModified { get; set; }
 
         /// <summary>
         /// The total number of file transfer blocks.
@@ -685,15 +691,6 @@ namespace OzetteLibrary.Files
         public string GetFileHashString()
         {
             return FileHashString;
-        }
-
-        /// <summary>
-        /// Gets the file hash.
-        /// </summary>
-        /// <returns>HashAlgorithmName</returns>
-        public HashAlgorithmName GetFileHashAlgorithm()
-        {
-            return new HashAlgorithmName(this.HashAlgorithmType);
         }
 
         /// <summary>
