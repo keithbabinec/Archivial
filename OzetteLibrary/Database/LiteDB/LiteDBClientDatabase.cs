@@ -160,6 +160,16 @@ namespace OzetteLibrary.Database.LiteDB
                             Value = "1"
                         });
                 }
+
+                if (optionsCol.FindOne(x => x.Name == Constants.RuntimeSettingNames.StatusUpdateSchedule) == null)
+                {
+                    optionsCol.Insert(
+                        new ApplicationOption()
+                        {
+                            Name = Constants.RuntimeSettingNames.StatusUpdateSchedule,
+                            Value = "0 8 * * *"
+                        });
+                }
             }
         }
 

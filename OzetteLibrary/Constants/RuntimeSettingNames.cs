@@ -24,6 +24,11 @@
         public const string HighPriorityScanFrequencyInHours = "HighPriorityScanFrequencyInHours";
 
         /// <summary>
+        /// Option: StatusUpdateSchedule.
+        /// </summary>
+        public const string StatusUpdateSchedule = "StatusUpdateSchedule";
+
+        /// <summary>
         /// Option: SourcesFilePath.
         /// </summary>
         public const string SourcesFilePath = "SourcesFilePath";

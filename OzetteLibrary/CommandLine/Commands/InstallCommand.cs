@@ -202,6 +202,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 "Microsoft.Azure.KeyVault.Core.xml",
                 "Microsoft.WindowsAzure.Storage.dll",
                 "Microsoft.WindowsAzure.Storage.xml",
+                "NCrontab.dll",
                 "Newtonsoft.Json.dll",
                 "Newtonsoft.Json.xml",
                 "OzetteClientAgent.exe",
