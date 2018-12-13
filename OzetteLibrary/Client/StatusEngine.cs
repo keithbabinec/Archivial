@@ -4,6 +4,7 @@ using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Providers;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace OzetteLibrary.Client
@@ -32,6 +33,7 @@ namespace OzetteLibrary.Client
             }
 
             Running = true;
+            StatusCheckTimes = new Queue<DateTime>();
 
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();
@@ -49,6 +51,11 @@ namespace OzetteLibrary.Client
         }
 
         /// <summary>
+        /// A queue that keeps track of the next status update times.
+        /// </summary>
+        private Queue<DateTime> StatusCheckTimes { get; set; }
+
+        /// <summary>
         /// Core processing loop.
         /// </summary>
         private void ProcessLoop()
@@ -57,7 +64,10 @@ namespace OzetteLibrary.Client
             {
                 while (true)
                 {
-                    // TODO: do some work
+                    if (CanSendStatusUpdate())
+                    {
+                        SendStatusUpdate();
+                    }
 
                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
 
@@ -72,6 +82,47 @@ namespace OzetteLibrary.Client
             {
                 OnStopped(new EngineStoppedEventArgs(ex));
             }
+        }
+
+        /// <summary>
+        /// Checks to see if we can send the current status to the status provider.
+        /// </summary>
+        /// <returns></returns>
+        private bool CanSendStatusUpdate()
+        {
+            // add the next status check time, if it isn't already in the queue.
+
+            var scheduleString = (Database as IClientDatabase).GetApplicationOption(Constants.RuntimeSettingNames.StatusUpdateSchedule);
+            var schedule = NCrontab.CrontabSchedule.Parse(scheduleString);
+            var nextRun = schedule.GetNextOccurrence(DateTime.Now);
+
+            if (StatusCheckTimes.Contains(nextRun) == false)
+            {
+                StatusCheckTimes.Enqueue(nextRun);
+            }
+
+            // now check the status time queue.
+            // if the next item in the queue has passed, then dequeue it for processing.
+
+            if (StatusCheckTimes.Count == 0 || StatusCheckTimes.Peek() > DateTime.Now)
+            {
+                return false;
+            }
+            else
+            {
+                // we know that the time has passed.
+                // we don't need to do anything with the dequeued object-- just send the status update.
+                StatusCheckTimes.Dequeue();
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Sends the status update to the current status provider.
+        /// </summary>
+        private void SendStatusUpdate()
+        {
+            throw new NotImplementedException();
         }
     }
 }
