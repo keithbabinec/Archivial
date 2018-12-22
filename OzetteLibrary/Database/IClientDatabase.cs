@@ -1,6 +1,6 @@
 ﻿using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
-using OzetteLibrary.Providers;
+using OzetteLibrary.StorageProviders;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
@@ -39,13 +39,13 @@ namespace OzetteLibrary.Database
         /// Commits the providers collection to the database.
         /// </summary>
         /// <param name="Providers">A collection of providers.</param>
-        void SetProviders(ProvidersCollection Providers);
+        void SetProviders(StorageProvidersCollection Providers);
 
         /// <summary>
         /// Returns all of the providers defined in the database.
         /// </summary>
         /// <returns>A collection of providers.</returns>
-        ProvidersCollection GetProvidersList();
+        StorageProvidersCollection GetProvidersList();
 
         /// <summary>
         /// Commits the net credentials collection to the database.

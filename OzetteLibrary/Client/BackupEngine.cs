@@ -4,7 +4,7 @@ using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Files;
 using OzetteLibrary.Logging;
-using OzetteLibrary.Providers;
+using OzetteLibrary.StorageProviders;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace OzetteLibrary.Client
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
-        public BackupEngine(IClientDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
+        public BackupEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
 
         /// <summary>
         /// Begins to start the backup engine, returns immediately to the caller.

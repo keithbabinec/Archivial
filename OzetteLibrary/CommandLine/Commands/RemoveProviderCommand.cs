@@ -90,7 +90,7 @@ namespace OzetteLibrary.CommandLine.Commands
             allProviders.Remove(providerToRemove);
             db.SetProviders(allProviders);
 
-            if (providerToRemove.Type == Providers.ProviderTypes.Azure)
+            if (providerToRemove.Type == StorageProviders.StorageProviderTypes.Azure)
             {
                 // remove provider specific secrets
                 db.RemoveApplicationOption(Constants.RuntimeSettingNames.AzureStorageAccountName);

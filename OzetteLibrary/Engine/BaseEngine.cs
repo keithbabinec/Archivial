@@ -1,7 +1,7 @@
 ﻿using OzetteLibrary.Database;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
-using OzetteLibrary.Providers;
+using OzetteLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -22,7 +22,7 @@ namespace OzetteLibrary.Engine
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
-        protected BaseEngine(IClientDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections)
+        protected BaseEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection providerConnections)
         {
             if (database == null)
             {
@@ -88,7 +88,7 @@ namespace OzetteLibrary.Engine
         /// <summary>
         /// A reference to the cloud providers.
         /// </summary>
-        protected Dictionary<ProviderTypes, IProviderFileOperations> Providers { get; set; }
+        protected Dictionary<StorageProviderTypes, IStorageProviderFileOperations> Providers { get; set; }
 
         /// <summary>
         /// Sleeps the engine for the specified time, while checking periodically for stop request.

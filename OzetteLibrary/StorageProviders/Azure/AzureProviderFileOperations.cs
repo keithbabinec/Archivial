@@ -12,12 +12,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Providers.Azure
+namespace OzetteLibrary.StorageProviders.Azure
 {
     /// <summary>
     /// Contains file operations for the Azure cloud storage provider.
     /// </summary>
-    public class AzureProviderFileOperations : IProviderFileOperations
+    public class AzureProviderFileOperations : IStorageProviderFileOperations
     {
         /// <summary>
         /// A reference to the logging utility.
@@ -85,17 +85,17 @@ namespace OzetteLibrary.Providers.Azure
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <returns><c>ProviderFileStatus</c></returns>
-        public async Task<ProviderFileStatus> GetFileStatusAsync(BackupFile file, DirectoryMapItem directory)
+        public async Task<StorageProviderFileStatus> GetFileStatusAsync(BackupFile file, DirectoryMapItem directory)
         {
             // calculate my uri
 
-            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, directory.GetRemoteContainerName(ProviderTypes.Azure), file.GetRemoteFileName(ProviderTypes.Azure));
+            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, directory.GetRemoteContainerName(StorageProviderTypes.Azure), file.GetRemoteFileName(StorageProviderTypes.Azure));
 
             // the default state for a freshly initialized file status object is unsynced.
             // if the blob doesn't exist, the file is unsynced.
 
             CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri), AzureStorage.Credentials);
-            var fileStatus = new ProviderFileStatus(ProviderTypes.Azure);
+            var fileStatus = new StorageProviderFileStatus(StorageProviderTypes.Azure);
 
             // does the file exist at the specified uri?
 
@@ -128,7 +128,7 @@ namespace OzetteLibrary.Providers.Azure
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
         public async Task UploadFileBlockAsync(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks)
         {
-            var containerName = directory.GetRemoteContainerName(ProviderTypes.Azure);
+            var containerName = directory.GetRemoteContainerName(StorageProviderTypes.Azure);
             var containerUri = ProviderUtilities.GetContainerUri(AzureStorage.Credentials.AccountName, containerName);
             var currentBlockNumber = currentBlockIndex + 1;
 
@@ -139,7 +139,7 @@ namespace OzetteLibrary.Providers.Azure
 
             // calculate my uri
 
-            var blobName = file.GetRemoteFileName(ProviderTypes.Azure);
+            var blobName = file.GetRemoteFileName(StorageProviderTypes.Azure);
             var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, containerName, blobName);
 
             if (isFirstBlock)

@@ -1,7 +1,7 @@
 ﻿using LiteDB;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
-using OzetteLibrary.Providers;
+using OzetteLibrary.StorageProviders;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
@@ -79,7 +79,7 @@ namespace OzetteLibrary.Database.LiteDB
             map.Entity<BackupFile>().Id(x => x.FileID);
             map.Entity<DirectoryMapItem>().Id(x => x.ID);
             map.Entity<SourceLocation>().Id(x => x.ID);
-            map.Entity<Provider>().Id(x => x.ID);
+            map.Entity<StorageProvider>().Id(x => x.ID);
             map.Entity<NetCredential>().Id(x => x.ID);
         }
 
@@ -113,7 +113,7 @@ namespace OzetteLibrary.Database.LiteDB
                 var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
                 sourcesCol.EnsureIndex(x => x.ID);
 
-                var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
+                var providersCol = db.GetCollection<StorageProvider>(Constants.Database.ProvidersTableName);
                 providersCol.EnsureIndex(x => x.ID);
 
                 var credentialsCol = db.GetCollection<NetCredential>(Constants.Database.NetCredentialsTableName);
@@ -363,7 +363,7 @@ namespace OzetteLibrary.Database.LiteDB
         /// Commits the providers collection to the database.
         /// </summary>
         /// <param name="Providers">A collection of providers.</param>
-        public void SetProviders(ProvidersCollection Providers)
+        public void SetProviders(StorageProvidersCollection Providers)
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -376,7 +376,7 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
+                var providersCol = db.GetCollection<StorageProvider>(Constants.Database.ProvidersTableName);
 
                 // remove all documents in this collection
                 providersCol.Delete(x => 1 == 1);
@@ -394,7 +394,7 @@ namespace OzetteLibrary.Database.LiteDB
         /// Returns all of the providers defined in the database.
         /// </summary>
         /// <returns>A collection of providers.</returns>
-        public ProvidersCollection GetProvidersList()
+        public StorageProvidersCollection GetProvidersList()
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -403,15 +403,15 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
+                var providersCol = db.GetCollection<StorageProvider>(Constants.Database.ProvidersTableName);
 
                 if (providersCol.Count() > 0)
                 {
-                    return new ProvidersCollection(providersCol.FindAll());
+                    return new StorageProvidersCollection(providersCol.FindAll());
                 }
                 else
                 {
-                    return new ProvidersCollection();
+                    return new StorageProvidersCollection();
                 }
             }
         }

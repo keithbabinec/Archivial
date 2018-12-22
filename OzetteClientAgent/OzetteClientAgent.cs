@@ -3,8 +3,8 @@ using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Logging.Default;
-using OzetteLibrary.Providers;
-using OzetteLibrary.Providers.Azure;
+using OzetteLibrary.StorageProviders;
+using OzetteLibrary.StorageProviders.Azure;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
@@ -80,7 +80,7 @@ namespace OzetteClientAgent
         /// <summary>
         /// A reference to the backup provider connections.
         /// </summary>
-        private ProviderConnectionsCollection ProviderConnections { get; set; }
+        private StorageProviderConnectionsCollection ProviderConnections { get; set; }
 
         /// <summary>
         /// Core application start.
@@ -202,7 +202,7 @@ namespace OzetteClientAgent
         {
             CoreLog.WriteSystemEvent("Configuring cloud storage provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguringCloudProviderConnections, true);
 
-            ProviderConnections = new ProviderConnectionsCollection();
+            ProviderConnections = new StorageProviderConnectionsCollection();
 
             try
             {
@@ -231,7 +231,7 @@ namespace OzetteClientAgent
                     {
                         switch (provider.Type)
                         {
-                            case ProviderTypes.Azure:
+                            case StorageProviderTypes.Azure:
                                 {
                                     CoreLog.WriteTraceMessage("Checking for Azure cloud storage provider connection settings.");
                                     string storageAccountName = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
@@ -239,7 +239,7 @@ namespace OzetteClientAgent
 
                                     CoreLog.WriteTraceMessage("Initializing Azure cloud storage provider.");
                                     AzureProviderFileOperations azureConnection = new AzureProviderFileOperations(BackupEngineLog, storageAccountName, storageAccountToken);
-                                    ProviderConnections.Add(ProviderTypes.Azure, azureConnection);
+                                    ProviderConnections.Add(StorageProviderTypes.Azure, azureConnection);
                                     CoreLog.WriteTraceMessage("Successfully initialized the cloud storage provider.");
 
                                     break;

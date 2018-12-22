@@ -1,7 +1,7 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
-using OzetteLibrary.Providers;
+using OzetteLibrary.StorageProviders;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
@@ -88,16 +88,16 @@ namespace OzetteLibrary.CommandLine.Commands
 
             var existingProviders = db.GetProvidersList();
 
-            if (existingProviders.Any(x => x.Type == ProviderTypes.Azure) == false)
+            if (existingProviders.Any(x => x.Type == StorageProviderTypes.Azure) == false)
             {
                 Logger.WriteConsole("Azure is not configured as a provider in the client database. Adding it now.");
 
                 existingProviders.Add(
-                    new Provider()
+                    new StorageProvider()
                     {
                         Enabled = true,
-                        ID = (int)ProviderTypes.Azure,
-                        Type = ProviderTypes.Azure
+                        ID = (int)StorageProviderTypes.Azure,
+                        Type = StorageProviderTypes.Azure
                     });
 
                 db.SetProviders(existingProviders);

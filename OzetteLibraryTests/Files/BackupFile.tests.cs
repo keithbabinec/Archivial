@@ -178,28 +178,28 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileResetCopyStateCorrectlyResetsState1()
         {
-            var provider1 = OzetteLibrary.Providers.ProviderTypes.AWS;
-            var provider2 = OzetteLibrary.Providers.ProviderTypes.Azure;
+            var provider1 = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS;
+            var provider2 = OzetteLibrary.StorageProviders.StorageProviderTypes.Azure;
 
             var file = new OzetteLibrary.Files.BackupFile();
 
             file.CopyState = new System.Collections.Generic.Dictionary
-                <OzetteLibrary.Providers.ProviderTypes,
-                OzetteLibrary.Providers.ProviderFileStatus>();
+                <OzetteLibrary.StorageProviders.StorageProviderTypes,
+                OzetteLibrary.StorageProviders.StorageProviderFileStatus>();
 
             file.CopyState.Add(
                 provider1,
-                new OzetteLibrary.Providers.ProviderFileStatus()
+                new OzetteLibrary.StorageProviders.StorageProviderFileStatus()
                 {
                     Provider = provider1,
                     SyncStatus = OzetteLibrary.Files.FileStatus.InProgress
                 });
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = provider1, Enabled = true },
-                    new OzetteLibrary.Providers.Provider() { Type = provider2, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = provider1, Enabled = true },
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = provider2, Enabled = true }
                 });
 
             Assert.AreEqual(2, file.CopyState.Count);
@@ -210,18 +210,18 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileResetCopyStateCorrectlyResetsState2()
         {
-            var provider1 = OzetteLibrary.Providers.ProviderTypes.AWS;
-            var provider2 = OzetteLibrary.Providers.ProviderTypes.Azure;
+            var provider1 = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS;
+            var provider2 = OzetteLibrary.StorageProviders.StorageProviderTypes.Azure;
 
             var file = new OzetteLibrary.Files.BackupFile();
 
             file.CopyState = new Dictionary
-                <OzetteLibrary.Providers.ProviderTypes,
-                OzetteLibrary.Providers.ProviderFileStatus>();
+                <OzetteLibrary.StorageProviders.StorageProviderTypes,
+                OzetteLibrary.StorageProviders.StorageProviderFileStatus>();
 
             file.CopyState.Add(
                 provider1,
-                new OzetteLibrary.Providers.ProviderFileStatus()
+                new OzetteLibrary.StorageProviders.StorageProviderFileStatus()
                 {
                     Provider = provider1,
                     SyncStatus = OzetteLibrary.Files.FileStatus.Synced
@@ -229,16 +229,16 @@ namespace OzetteLibraryTests.Files
 
             file.CopyState.Add(
                 provider2,
-                new OzetteLibrary.Providers.ProviderFileStatus()
+                new OzetteLibrary.StorageProviders.StorageProviderFileStatus()
                 {
                     Provider = provider2,
                     SyncStatus = OzetteLibrary.Files.FileStatus.Synced
                 });
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = provider1, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = provider1, Enabled = true }
                 });
 
             Assert.AreEqual(1, file.CopyState.Count);
@@ -248,35 +248,35 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileResetCopyStateCorrectlyResetsState3()
         {
-            var provider1 = OzetteLibrary.Providers.ProviderTypes.AWS;
-            var provider2 = OzetteLibrary.Providers.ProviderTypes.Azure;
+            var provider1 = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS;
+            var provider2 = OzetteLibrary.StorageProviders.StorageProviderTypes.Azure;
 
             var file = new OzetteLibrary.Files.BackupFile();
 
             file.CopyState = new Dictionary
-                <OzetteLibrary.Providers.ProviderTypes,
-                OzetteLibrary.Providers.ProviderFileStatus>();
+                <OzetteLibrary.StorageProviders.StorageProviderTypes,
+                OzetteLibrary.StorageProviders.StorageProviderFileStatus>();
 
             file.CopyState.Add(
                 provider1,
-                new OzetteLibrary.Providers.ProviderFileStatus()
+                new OzetteLibrary.StorageProviders.StorageProviderFileStatus()
                 {
                     Provider = provider1,
                     SyncStatus = OzetteLibrary.Files.FileStatus.InProgress
                 });
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
                     // the difference here is that a disabled provider should not be registered in copystate
 
-                    new OzetteLibrary.Providers.Provider() { Type = provider1, Enabled = false },
-                    new OzetteLibrary.Providers.Provider() { Type = provider2, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = provider1, Enabled = false },
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = provider2, Enabled = true }
                 });
 
             Assert.AreEqual(1, file.CopyState.Count);
-            Assert.AreEqual(provider2, file.CopyState[OzetteLibrary.Providers.ProviderTypes.Azure].Provider);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.CopyState[OzetteLibrary.Providers.ProviderTypes.Azure].SyncStatus);
+            Assert.AreEqual(provider2, file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.Azure].Provider);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.Azure].SyncStatus);
         }
 
         [TestMethod]
@@ -355,12 +355,12 @@ namespace OzetteLibraryTests.Files
             // copy state is inconsistent
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, Enabled = true }
                 });
 
-            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.Synced;
+            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.Synced;
             file.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
 
             using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -376,9 +376,9 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, Enabled = true }
                 });
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -392,7 +392,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
-                Assert.AreEqual(OzetteLibrary.Providers.ProviderTypes.AWS, payload.DestinationProviders[0]);
+                Assert.AreEqual(OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
@@ -408,9 +408,9 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Medium);
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, Enabled = true }
                 });
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -424,7 +424,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
-                Assert.AreEqual(OzetteLibrary.Providers.ProviderTypes.AWS, payload.DestinationProviders[0]);
+                Assert.AreEqual(OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
@@ -442,13 +442,13 @@ namespace OzetteLibraryTests.Files
             // generate a payload for the second block (index 1)
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, Enabled = true }
                 });
 
-            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].LastCompletedFileBlockIndex = 0;
-            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].LastCompletedFileBlockIndex = 0;
+            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -461,7 +461,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
-                Assert.AreEqual(OzetteLibrary.Providers.ProviderTypes.AWS, payload.DestinationProviders[0]);
+                Assert.AreEqual(OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
@@ -479,13 +479,13 @@ namespace OzetteLibraryTests.Files
             // generate a payload for a block in the middle (index 3)
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, Enabled = true }
                 });
 
-            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].LastCompletedFileBlockIndex = 2;
-            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].LastCompletedFileBlockIndex = 2;
+            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -498,7 +498,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
-                Assert.AreEqual(OzetteLibrary.Providers.ProviderTypes.AWS, payload.DestinationProviders[0]);
+                Assert.AreEqual(OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
 
                 Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
@@ -516,13 +516,13 @@ namespace OzetteLibraryTests.Files
             // generate a payload for the final block (index 4)
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, Enabled = true }
                 });
 
-            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].LastCompletedFileBlockIndex = 3;
-            file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].LastCompletedFileBlockIndex = 3;
+            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -535,7 +535,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
-                Assert.AreEqual(OzetteLibrary.Providers.ProviderTypes.AWS, payload.DestinationProviders[0]);
+                Assert.AreEqual(OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
 
                 Assert.AreEqual(102809, payload.Data.Length); // partial chunk
 
@@ -550,15 +550,15 @@ namespace OzetteLibraryTests.Files
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
-            var providers = new OzetteLibrary.Providers.ProviderTypes[] { OzetteLibrary.Providers.ProviderTypes.AWS, OzetteLibrary.Providers.ProviderTypes.Azure };
+            var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] { OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure };
 
             // generate a payload for the final block (index 4) for multiple providers
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = providers[0], Enabled = true },
-                    new OzetteLibrary.Providers.Provider() { Type = providers[1], Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[0], Enabled = true },
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[1], Enabled = true }
                 });
 
             file.CopyState[providers[0]].LastCompletedFileBlockIndex = 3;
@@ -594,20 +594,20 @@ namespace OzetteLibraryTests.Files
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
-            var providers = new OzetteLibrary.Providers.ProviderTypes[] {
-                OzetteLibrary.Providers.ProviderTypes.AWS,
-                OzetteLibrary.Providers.ProviderTypes.Azure,
-                OzetteLibrary.Providers.ProviderTypes.Google
+            var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] {
+                OzetteLibrary.StorageProviders.StorageProviderTypes.AWS,
+                OzetteLibrary.StorageProviders.StorageProviderTypes.Azure,
+                OzetteLibrary.StorageProviders.StorageProviderTypes.Google
             };
 
             // generate a payload for a block in the middle (index 3) for multiple providers.
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = providers[0], Enabled = true },
-                    new OzetteLibrary.Providers.Provider() { Type = providers[1], Enabled = true },
-                    new OzetteLibrary.Providers.Provider() { Type = providers[2], Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[0], Enabled = true },
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[1], Enabled = true },
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[2], Enabled = true }
                 });
 
             file.CopyState[providers[0]].LastCompletedFileBlockIndex = 2;
@@ -647,21 +647,21 @@ namespace OzetteLibraryTests.Files
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
-            var providers = new OzetteLibrary.Providers.ProviderTypes[] {
-                OzetteLibrary.Providers.ProviderTypes.AWS,
-                OzetteLibrary.Providers.ProviderTypes.Azure,
-                OzetteLibrary.Providers.ProviderTypes.Google
+            var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] {
+                OzetteLibrary.StorageProviders.StorageProviderTypes.AWS,
+                OzetteLibrary.StorageProviders.StorageProviderTypes.Azure,
+                OzetteLibrary.StorageProviders.StorageProviderTypes.Google
             };
 
             // generate a payload for a block in the middle (index 3)
             // this file is already synced in the first provider, so only two destination providers should be returned.
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = providers[0], Enabled = true },
-                    new OzetteLibrary.Providers.Provider() { Type = providers[1], Enabled = true },
-                    new OzetteLibrary.Providers.Provider() { Type = providers[2], Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[0], Enabled = true },
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[1], Enabled = true },
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[2], Enabled = true }
                 });
 
             file.CopyState[providers[0]].LastCompletedFileBlockIndex = 4;
@@ -700,10 +700,10 @@ namespace OzetteLibraryTests.Files
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
-            var providers = new OzetteLibrary.Providers.ProviderTypes[] {
-                OzetteLibrary.Providers.ProviderTypes.AWS,
-                OzetteLibrary.Providers.ProviderTypes.Azure,
-                OzetteLibrary.Providers.ProviderTypes.Google
+            var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] {
+                OzetteLibrary.StorageProviders.StorageProviderTypes.AWS,
+                OzetteLibrary.StorageProviders.StorageProviderTypes.Azure,
+                OzetteLibrary.StorageProviders.StorageProviderTypes.Google
             };
 
             // generate a payload for a block in the middle (index 2)
@@ -711,11 +711,11 @@ namespace OzetteLibraryTests.Files
             // thus only the third provider should be returned, as that is the next available block to send.
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = providers[0], Enabled = true },
-                    new OzetteLibrary.Providers.Provider() { Type = providers[1], Enabled = true },
-                    new OzetteLibrary.Providers.Provider() { Type = providers[2], Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[0], Enabled = true },
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[1], Enabled = true },
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = providers[2], Enabled = true }
                 });
 
             file.CopyState[providers[0]].LastCompletedFileBlockIndex = 4;
@@ -755,7 +755,7 @@ namespace OzetteLibraryTests.Files
         {
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
-            file.SetBlockAsSent(-5, OzetteLibrary.Providers.ProviderTypes.Azure);
+            file.SetBlockAsSent(-5, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
         }
 
         [TestMethod]
@@ -765,7 +765,7 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
             file.OverallState = OzetteLibrary.Files.FileStatus.Synced;
 
-            file.SetBlockAsSent(2, OzetteLibrary.Providers.ProviderTypes.Azure);
+            file.SetBlockAsSent(2, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
         }
 
         [TestMethod]
@@ -775,7 +775,7 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
             file.OverallState = OzetteLibrary.Files.FileStatus.InProgress;
 
-            file.SetBlockAsSent(2, OzetteLibrary.Providers.ProviderTypes.Azure);
+            file.SetBlockAsSent(2, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
         }
 
         [TestMethod]
@@ -784,19 +784,19 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, Enabled = true }
                 });
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
             // this example file has 5 total blocks
 
-            file.SetBlockAsSent(0, OzetteLibrary.Providers.ProviderTypes.AWS);
+            file.SetBlockAsSent(0, OzetteLibrary.StorageProviders.StorageProviderTypes.AWS);
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
         }
 
         [TestMethod]
@@ -805,19 +805,19 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, Enabled = true }
                 });
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
             // this example file has 5 total blocks
 
-            file.SetBlockAsSent(1, OzetteLibrary.Providers.ProviderTypes.AWS);
+            file.SetBlockAsSent(1, OzetteLibrary.StorageProviders.StorageProviderTypes.AWS);
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
         }
 
         [TestMethod]
@@ -826,19 +826,19 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, Enabled = true }
                 });
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
             // this example file has 5 total blocks
 
-            file.SetBlockAsSent(3, OzetteLibrary.Providers.ProviderTypes.AWS);
+            file.SetBlockAsSent(3, OzetteLibrary.StorageProviders.StorageProviderTypes.AWS);
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
         }
 
         [TestMethod]
@@ -847,19 +847,19 @@ namespace OzetteLibraryTests.Files
             var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
 
             file.ResetCopyState(
-                new OzetteLibrary.Providers.ProvidersCollection()
+                new OzetteLibrary.StorageProviders.StorageProvidersCollection()
                 {
-                    new OzetteLibrary.Providers.Provider() { Type = OzetteLibrary.Providers.ProviderTypes.AWS, Enabled = true }
+                    new OzetteLibrary.StorageProviders.StorageProvider() { Type = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, Enabled = true }
                 });
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
             // this example file has 5 total blocks
 
-            file.SetBlockAsSent(4, OzetteLibrary.Providers.ProviderTypes.AWS);
+            file.SetBlockAsSent(4, OzetteLibrary.StorageProviders.StorageProviderTypes.AWS);
 
             Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.OverallState);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.CopyState[OzetteLibrary.Providers.ProviderTypes.AWS].SyncStatus);
+            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
         }
 
         [TestMethod]
@@ -870,7 +870,7 @@ namespace OzetteLibraryTests.Files
             // reset auto-generated id for stable test result.
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
 
-            var remoteName = file.GetRemoteFileName(OzetteLibrary.Providers.ProviderTypes.Azure);
+            var remoteName = file.GetRemoteFileName(OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
             var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v1.mp3";
 
             Assert.IsNotNull(remoteName);
@@ -885,7 +885,7 @@ namespace OzetteLibraryTests.Files
             // reset auto-generated id for stable test result.
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
 
-            var remoteName = file.GetRemoteFileName(OzetteLibrary.Providers.ProviderTypes.Azure);
+            var remoteName = file.GetRemoteFileName(OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
             var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v1";
 
             Assert.IsNotNull(remoteName);
@@ -903,7 +903,7 @@ namespace OzetteLibraryTests.Files
             // force set the version
             file.FileRevisionNumber = 4;
 
-            var remoteName = file.GetRemoteFileName(OzetteLibrary.Providers.ProviderTypes.Azure);
+            var remoteName = file.GetRemoteFileName(OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
             var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v4.mp3";
 
             Assert.IsNotNull(remoteName);

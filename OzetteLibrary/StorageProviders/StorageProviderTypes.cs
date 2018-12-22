@@ -1,9 +1,9 @@
-﻿namespace OzetteLibrary.Providers
+﻿namespace OzetteLibrary.StorageProviders
 {
     /// <summary>
     /// Describes possible target cloud providers.
     /// </summary>
-    public enum ProviderTypes
+    public enum StorageProviderTypes
     {
         /// <summary>
         /// Microsoft Azure cloud storage.
