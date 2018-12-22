@@ -107,7 +107,6 @@
     <Compile Include="Constants\Database.cs" />
     <Compile Include="Constants\Logging.cs" />
     <Compile Include="Database\IClientDatabase.cs" />
-    <Compile Include="Database\IDatabase.cs" />
     <Compile Include="Database\LiteDB\LiteDBClientDatabase.cs" />
     <Compile Include="Events\EngineStoppedReason.cs" />
     <Compile Include="Exceptions\ApplicationCoreSettingMissingException.cs" />

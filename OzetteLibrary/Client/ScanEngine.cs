@@ -22,7 +22,7 @@ namespace OzetteLibrary.Client
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
-        public ScanEngine(IDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
+        public ScanEngine(IClientDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
 
         /// <summary>
         /// Begins to start the scanning engine, returns immediately to the caller.
@@ -35,7 +35,7 @@ namespace OzetteLibrary.Client
             }
 
             Running = true;
-            Scanner = new SourceScanner(Database as IClientDatabase, Logger);
+            Scanner = new SourceScanner(Database, Logger);
 
             Logger.WriteTraceMessage("Scan engine is starting up.");
 
@@ -78,10 +78,9 @@ namespace OzetteLibrary.Client
                 {
                     // first: grab current options from the database
 
-                    var db = Database as IClientDatabase;
-                    var sourcesFilePath = db.GetApplicationOption(Constants.RuntimeSettingNames.SourcesFilePath);
-                    var providersFilePath = db.GetApplicationOption(Constants.RuntimeSettingNames.ProvidersFilePath);
-                    var scanOptions = GetScanFrequencies(db);
+                    var sourcesFilePath = Database.GetApplicationOption(Constants.RuntimeSettingNames.SourcesFilePath);
+                    var providersFilePath = Database.GetApplicationOption(Constants.RuntimeSettingNames.ProvidersFilePath);
+                    var scanOptions = GetScanFrequencies(Database);
 
                     // second: check to see if we have any valid sources defined.
                     // the sources found are returned in the order they should be scanned.
@@ -221,9 +220,7 @@ namespace OzetteLibrary.Client
         private void UpdateLastScannedTimeStamp(SourceLocation source)
         {
             source.LastCompletedScan = DateTime.Now;
-
-            var clientDB = Database as IClientDatabase;
-            clientDB.UpdateSourceLocation(source);
+            Database.UpdateSourceLocation(source);
         }
 
         /// <summary>
@@ -231,8 +228,7 @@ namespace OzetteLibrary.Client
         /// </summary>
         private SourceLocations GetSourceLocationsFromDatabase()
         {
-            var clientDB = Database as IClientDatabase;
-            return clientDB.GetAllSourceLocations();
+            return Database.GetAllSourceLocations();
         }
 
         /// <summary>

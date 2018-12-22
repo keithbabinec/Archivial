@@ -25,7 +25,7 @@ namespace OzetteLibrary.Client
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
-        public ConnectionEngine(IDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
+        public ConnectionEngine(IClientDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
 
         /// <summary>
         /// Begins to start the connection engine, returns immediately to the caller.
@@ -104,8 +104,7 @@ namespace OzetteLibrary.Client
         {
             try
             {
-                var clientDB = Database as IClientDatabase;
-                return clientDB.GetAllSourceLocations();
+                return Database.GetAllSourceLocations();
             }
             catch (Exception ex)
             {
@@ -250,8 +249,7 @@ namespace OzetteLibrary.Client
         /// <returns></returns>
         private bool TryGetNetSourceCredentials(string credentialName, out string netUser, out string netPass)
         {
-            var clientDB = Database as IClientDatabase;
-            var dbCredNames = clientDB.GetNetCredentialsList();
+            var dbCredNames = Database.GetNetCredentialsList();
 
             var foundCred = dbCredNames.FirstOrDefault(x => string.Equals(x.CredentialName, credentialName, StringComparison.CurrentCultureIgnoreCase));
 
@@ -266,7 +264,7 @@ namespace OzetteLibrary.Client
             {
                 var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
                 var ivkey = Convert.FromBase64String(CoreSettings.ProtectionIv);
-                var pds = new ProtectedDataStore(clientDB, scope, ivkey);
+                var pds = new ProtectedDataStore(Database, scope, ivkey);
 
                 netUser = pds.GetApplicationSecret(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, foundCred.CredentialName));
                 netPass = pds.GetApplicationSecret(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, foundCred.CredentialName));
@@ -293,13 +291,11 @@ namespace OzetteLibrary.Client
         {
             try
             {
-                var clientDB = Database as IClientDatabase;
-
                 netSource.IsConnected = isConnected;
                 netSource.IsFailed = isFailed;
                 netSource.LastConnectionCheck = DateTime.Now;
 
-                clientDB.UpdateSourceLocation(netSource);
+                Database.UpdateSourceLocation(netSource);
             }
             catch (Exception ex)
             {
