@@ -219,7 +219,7 @@ namespace OzetteClientAgent
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
 
-                var providersList = db.GetProvidersList();
+                var providersList = db.GetStorageProvidersList();
 
                 foreach (var provider in providersList)
                 {

@@ -75,7 +75,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing cloud providers to see if the specified provider exists.");
 
-            var allProviders = db.GetProvidersList();
+            var allProviders = db.GetStorageProvidersList();
             var providerToRemove = allProviders.FirstOrDefault(x => x.ID == arguments.ProviderID);
 
             if (providerToRemove == null)
@@ -88,7 +88,7 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("Found a matching cloud provider, removing it now.");
 
             allProviders.Remove(providerToRemove);
-            db.SetProviders(allProviders);
+            db.SetStorageProviders(allProviders);
 
             if (providerToRemove.Type == StorageProviders.StorageProviderTypes.Azure)
             {

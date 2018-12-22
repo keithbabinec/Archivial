@@ -86,7 +86,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Fetching current providers configuration from the database.");
 
-            var existingProviders = db.GetProvidersList();
+            var existingProviders = db.GetStorageProvidersList();
 
             if (existingProviders.Any(x => x.Type == StorageProviderTypes.Azure) == false)
             {
@@ -100,7 +100,7 @@ namespace OzetteLibrary.CommandLine.Commands
                         Type = StorageProviderTypes.Azure
                     });
 
-                db.SetProviders(existingProviders);
+                db.SetStorageProviders(existingProviders);
 
                 Logger.WriteConsole("Successfully configured Azure as a cloud backup provider.");
             }

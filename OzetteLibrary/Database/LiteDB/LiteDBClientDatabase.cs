@@ -363,7 +363,7 @@ namespace OzetteLibrary.Database.LiteDB
         /// Commits the providers collection to the database.
         /// </summary>
         /// <param name="Providers">A collection of providers.</param>
-        public void SetProviders(StorageProvidersCollection Providers)
+        public void SetStorageProviders(StorageProvidersCollection Providers)
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -394,7 +394,7 @@ namespace OzetteLibrary.Database.LiteDB
         /// Returns all of the providers defined in the database.
         /// </summary>
         /// <returns>A collection of providers.</returns>
-        public StorageProvidersCollection GetProvidersList()
+        public StorageProvidersCollection GetStorageProvidersList()
         {
             if (DatabaseHasBeenPrepared == false)
             {

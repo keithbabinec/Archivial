@@ -334,7 +334,7 @@ namespace OzetteLibrary.Client.Sources
 
             // brand new file
             var backupFile = new BackupFile(fileInfo, priority);
-            backupFile.ResetCopyState(Database.GetProvidersList());
+            backupFile.ResetCopyState(Database.GetStorageProvidersList());
             backupFile.SetLastCheckedTimeStamp();
 
             Database.AddBackupFile(backupFile);
@@ -350,7 +350,7 @@ namespace OzetteLibrary.Client.Sources
             Logger.WriteTraceMessage(string.Format("Updated File: {0}", fileInfo.FullName));
 
             // updated file
-            fileLookup.File.ResetCopyState(Database.GetProvidersList());
+            fileLookup.File.ResetCopyState(Database.GetStorageProvidersList());
             fileLookup.File.SetLastCheckedTimeStamp();
             fileLookup.File.IncrementFileRevision();
 

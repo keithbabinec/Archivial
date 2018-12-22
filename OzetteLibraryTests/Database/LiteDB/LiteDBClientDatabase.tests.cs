@@ -197,7 +197,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
-            db.SetProviders(null);
+            db.SetStorageProviders(null);
         }
 
         [TestMethod]
@@ -209,7 +209,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             OzetteLibrary.Database.LiteDB.LiteDBClientDatabase db =
                 new OzetteLibrary.Database.LiteDB.LiteDBClientDatabase(ms);
 
-            db.GetProvidersList();
+            db.GetStorageProvidersList();
         }
 
         [TestMethod]
@@ -543,7 +543,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            db.SetProviders(null);
+            db.SetStorageProviders(null);
         }
 
         [TestMethod]
@@ -556,7 +556,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            db.SetProviders(new OzetteLibrary.StorageProviders.StorageProvidersCollection());
+            db.SetStorageProviders(new OzetteLibrary.StorageProviders.StorageProvidersCollection());
         }
 
         [TestMethod]
@@ -576,7 +576,7 @@ namespace OzetteLibraryTests.Database.LiteDB
                 Type = OzetteLibrary.StorageProviders.StorageProviderTypes.Azure
             });
 
-            db.SetProviders(provList);
+            db.SetStorageProviders(provList);
 
             // manually check the db stream to make sure changes were applied.
 
@@ -596,7 +596,7 @@ namespace OzetteLibraryTests.Database.LiteDB
 
             db.PrepareDatabase();
 
-            var result = db.GetProvidersList();
+            var result = db.GetStorageProvidersList();
 
             Assert.AreEqual(typeof(OzetteLibrary.StorageProviders.StorageProvidersCollection), result.GetType());
             Assert.AreEqual(0, result.Count);
@@ -619,9 +619,9 @@ namespace OzetteLibraryTests.Database.LiteDB
                 Type = OzetteLibrary.StorageProviders.StorageProviderTypes.Azure
             });
 
-            db.SetProviders(provList);
+            db.SetStorageProviders(provList);
 
-            var result = db.GetProvidersList();
+            var result = db.GetStorageProvidersList();
 
             Assert.AreEqual(typeof(OzetteLibrary.StorageProviders.StorageProvidersCollection), result.GetType());
             Assert.AreEqual(1, result.Count);
@@ -1192,8 +1192,8 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add providers, but no files yet
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 2, Type = StorageProviderTypes.AWS } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 2, Type = StorageProviderTypes.AWS } });
 
             var result = db.GetBackupProgress();
 
@@ -1214,7 +1214,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1024, StorageProviderTypes.Azure));
@@ -1248,7 +1248,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1024, StorageProviderTypes.Azure));
@@ -1283,8 +1283,8 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 2, Type = StorageProviderTypes.AWS } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 2, Type = StorageProviderTypes.AWS } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1024, StorageProviderTypes.Azure, StorageProviderTypes.AWS));
@@ -1319,7 +1319,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1024, StorageProviderTypes.Azure));
@@ -1354,7 +1354,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1024, StorageProviderTypes.Azure));
@@ -1389,7 +1389,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1024, StorageProviderTypes.Azure));
@@ -1425,7 +1425,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1024, StorageProviderTypes.Azure));
@@ -1472,7 +1472,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(800, StorageProviderTypes.Azure));
@@ -1494,7 +1494,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1024, StorageProviderTypes.Azure));
@@ -1516,7 +1516,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1300, StorageProviderTypes.Azure));
@@ -1538,7 +1538,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1014421, StorageProviderTypes.Azure));
@@ -1560,7 +1560,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1048576, StorageProviderTypes.Azure));
@@ -1582,7 +1582,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1108576, StorageProviderTypes.Azure));
@@ -1604,7 +1604,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1013741824, StorageProviderTypes.Azure));
@@ -1626,7 +1626,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1073741824, StorageProviderTypes.Azure));
@@ -1648,7 +1648,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1123741824, StorageProviderTypes.Azure));
@@ -1670,7 +1670,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1033511627776, StorageProviderTypes.Azure));
@@ -1692,7 +1692,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1099511627776, StorageProviderTypes.Azure));
@@ -1714,7 +1714,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1208511627776, StorageProviderTypes.Azure));
@@ -1736,7 +1736,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1025199906842624, StorageProviderTypes.Azure));
@@ -1758,7 +1758,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1125899906842624, StorageProviderTypes.Azure));
@@ -1780,7 +1780,7 @@ namespace OzetteLibraryTests.Database.LiteDB
             db.PrepareDatabase();
 
             // add provider
-            db.SetProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
+            db.SetStorageProviders(new StorageProvidersCollection() { new StorageProvider() { Enabled = true, ID = 1, Type = StorageProviderTypes.Azure } });
 
             // create file(s)
             db.AddBackupFile(GenerateSyncedFile(1225899906842624, StorageProviderTypes.Azure));
