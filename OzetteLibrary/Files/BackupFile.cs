@@ -1,6 +1,6 @@
 ﻿using OzetteLibrary.Crypto;
 using OzetteLibrary.Exceptions;
-using OzetteLibrary.Providers;
+using OzetteLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -147,7 +147,7 @@ namespace OzetteLibrary.Files
         /// The dictionary key is the provider type.
         /// The dictionary value is the provider file state.
         /// </remarks>
-        public Dictionary<ProviderTypes, ProviderFileStatus> CopyState { get; set; }
+        public Dictionary<StorageProviderTypes, StorageProviderFileStatus> CopyState { get; set; }
 
         /// <summary>
         /// An overall state across one or more providers.
@@ -159,7 +159,7 @@ namespace OzetteLibrary.Files
         /// </summary>
         /// <param name="provider">The cloud provider.</param>
         /// <returns>A </returns>
-        public string GetRemoteFileName(ProviderTypes provider)
+        public string GetRemoteFileName(StorageProviderTypes provider)
         {
             // Different cloud providers may have different naming rules for URIs.
             // Azure for example is all lowercase required.
@@ -169,7 +169,7 @@ namespace OzetteLibrary.Files
                 throw new InvalidOperationException("Cannot generate file name. FileID has not been set.");
             }
 
-            if (provider == ProviderTypes.Azure)
+            if (provider == StorageProviderTypes.Azure)
             {
                 if (Filename.Contains("."))
                 {
@@ -218,15 +218,15 @@ namespace OzetteLibrary.Files
         /// Resets existing copy progress state with the specified providers.
         /// </summary>
         /// <param name="providers"></param>
-        public void ResetCopyState(ProvidersCollection providers)
+        public void ResetCopyState(StorageProvidersCollection providers)
         {
-            CopyState = new Dictionary<ProviderTypes, ProviderFileStatus>();
+            CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>();
 
             foreach (var provider in providers)
             {
                 if (provider.Enabled)
                 {
-                    CopyState.Add(provider.Type, new ProviderFileStatus(provider.Type));
+                    CopyState.Add(provider.Type, new StorageProviderFileStatus(provider.Type));
                 }
             }
 
@@ -476,9 +476,9 @@ namespace OzetteLibrary.Files
         /// </summary>
         /// <param name="blockNumber">The next block to transfer</param>
         /// <returns></returns>
-        private List<ProviderTypes> FindProvidersThatCanTransferSpecifiedBlock(int blockNumber)
+        private List<StorageProviderTypes> FindProvidersThatCanTransferSpecifiedBlock(int blockNumber)
         {
-            List<ProviderTypes> result = new List<ProviderTypes>();
+            List<StorageProviderTypes> result = new List<StorageProviderTypes>();
 
             if (CopyState != null)
             {
@@ -516,11 +516,11 @@ namespace OzetteLibrary.Files
         /// Sets the provider status to completed.
         /// </summary>
         /// <param name="Provider"></param>
-        public void SetProviderToCompleted(ProviderTypes Provider)
+        public void SetProviderToCompleted(StorageProviderTypes Provider)
         {
             if (!CopyState.ContainsKey(Provider))
             {
-                CopyState.Add(Provider, new ProviderFileStatus(Provider));
+                CopyState.Add(Provider, new StorageProviderFileStatus(Provider));
             }
 
             var state = CopyState[Provider];
@@ -534,11 +534,11 @@ namespace OzetteLibrary.Files
         /// Sets the provider status to failed.
         /// </summary>
         /// <param name="Provider"></param>
-        public void SetProviderToFailed(ProviderTypes Provider)
+        public void SetProviderToFailed(StorageProviderTypes Provider)
         {
             if (!CopyState.ContainsKey(Provider))
             {
-                CopyState.Add(Provider, new ProviderFileStatus(Provider));
+                CopyState.Add(Provider, new StorageProviderFileStatus(Provider));
             }
 
             var state = CopyState[Provider];
@@ -552,7 +552,7 @@ namespace OzetteLibrary.Files
         /// </summary>
         /// <param name="BlockIndex"></param>
         /// <param name="Providers"></param>
-        public void SetBlockAsSent(int BlockIndex, ProviderTypes Provider)
+        public void SetBlockAsSent(int BlockIndex, StorageProviderTypes Provider)
         {
             if (BlockIndex < 0)
             {

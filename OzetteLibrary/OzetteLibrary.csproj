@@ -132,12 +132,12 @@
     <Compile Include="Exceptions\SourceLocationException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidIDException.cs" />
     <Compile Include="Exceptions\SourceLocationsDuplicateIDException.cs" />
-    <Compile Include="Providers\Azure\AzureProviderUtilities.cs" />
-    <Compile Include="Providers\Provider.cs" />
-    <Compile Include="Providers\ProviderConnectionsCollection.cs" />
-    <Compile Include="Providers\ProviderHydrationStatus.cs" />
-    <Compile Include="Providers\ProvidersCollection.cs" />
-    <Compile Include="Providers\ProviderTypes.cs" />
+    <Compile Include="StorageProviders\Azure\AzureProviderUtilities.cs" />
+    <Compile Include="StorageProviders\StorageProvider.cs" />
+    <Compile Include="StorageProviders\StorageProviderConnectionsCollection.cs" />
+    <Compile Include="StorageProviders\StorageProviderHydrationStatus.cs" />
+    <Compile Include="StorageProviders\StorageProvidersCollection.cs" />
+    <Compile Include="StorageProviders\StorageProviderTypes.cs" />
     <Compile Include="Secrets\ISecretStore.cs" />
     <Compile Include="Secrets\NetCredential.cs" />
     <Compile Include="Secrets\NetCredentialsCollection.cs" />
@@ -157,9 +157,9 @@
     <Compile Include="Crypto\Hasher.cs" />
     <Compile Include="Files\BackupFile.cs" />
     <Compile Include="Files\FileStatus.cs" />
-    <Compile Include="Providers\Azure\AzureProviderFileOperations.cs" />
-    <Compile Include="Providers\IProviderFileOperations.cs" />
-    <Compile Include="Providers\ProviderFileStatus.cs" />
+    <Compile Include="StorageProviders\Azure\AzureProviderFileOperations.cs" />
+    <Compile Include="StorageProviders\IStorageProviderFileOperations.cs" />
+    <Compile Include="StorageProviders\StorageProviderFileStatus.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

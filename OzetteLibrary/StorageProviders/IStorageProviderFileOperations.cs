@@ -2,12 +2,12 @@
 using OzetteLibrary.Folders;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Providers
+namespace OzetteLibrary.StorageProviders
 {
     /// <summary>
     /// Describes the required file operations for cloud providers.
     /// </summary>
-    public interface IProviderFileOperations
+    public interface IStorageProviderFileOperations
     {
         /// <summary>
         /// Returns the status of a file as it exists (or doesn't) in the cloud provider.
@@ -15,7 +15,7 @@ namespace OzetteLibrary.Providers
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <returns><c>ProviderFileStatus</c></returns>
-        Task<ProviderFileStatus> GetFileStatusAsync(BackupFile file, DirectoryMapItem directory);
+        Task<StorageProviderFileStatus> GetFileStatusAsync(BackupFile file, DirectoryMapItem directory);
 
         /// <summary>
         /// Uploads a single block of a file to the cloud provider.

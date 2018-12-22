@@ -1,4 +1,4 @@
-﻿using OzetteLibrary.Providers;
+﻿using OzetteLibrary.StorageProviders;
 using System;
 
 namespace OzetteLibrary.Folders
@@ -30,7 +30,7 @@ namespace OzetteLibrary.Folders
         /// </summary>
         /// <param name="Provider"></param>
         /// <returns></returns>
-        public string GetRemoteContainerName(ProviderTypes Provider)
+        public string GetRemoteContainerName(StorageProviderTypes Provider)
         {
             // Different cloud providers may have different naming rules for URIs.
             // Azure for example is all lowercase required.
@@ -40,7 +40,7 @@ namespace OzetteLibrary.Folders
                 throw new InvalidOperationException("Cannot generate container name. Directory ID has not been set.");
             }
 
-            if (Provider == ProviderTypes.Azure)
+            if (Provider == StorageProviderTypes.Azure)
             {
                 return string.Format("{0}-directory-{1}", Constants.Logging.AppName, ID.ToString()).ToLower();
             }

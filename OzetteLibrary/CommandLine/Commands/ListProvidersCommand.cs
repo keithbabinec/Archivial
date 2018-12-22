@@ -70,7 +70,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing providers.");
 
-            var allProviders = db.GetProvidersList();
+            var allProviders = db.GetStorageProvidersList();
 
             Logger.WriteConsole("Number of configured providers: " + allProviders.Count);
 

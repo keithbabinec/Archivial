@@ -4,17 +4,17 @@ using OzetteLibrary.Files;
 using System;
 using System.Collections.Generic;
 
-namespace OzetteLibrary.Providers
+namespace OzetteLibrary.StorageProviders
 {
     /// <summary>
     /// Describes the status for a file under any cloud provider.
     /// </summary>
-    public class ProviderFileStatus
+    public class StorageProviderFileStatus
     {
         /// <summary>
         /// Default/empty constructor.
         /// </summary>
-        public ProviderFileStatus()
+        public StorageProviderFileStatus()
         {
         }
 
@@ -22,7 +22,7 @@ namespace OzetteLibrary.Providers
         /// A constructor that accepts a <c>ProviderTypes</c> enumeration.
         /// </summary>
         /// <param name="provider"></param>
-        public ProviderFileStatus(ProviderTypes provider)
+        public StorageProviderFileStatus(StorageProviderTypes provider)
         {
             Provider = provider;
             ResetState();
@@ -36,7 +36,7 @@ namespace OzetteLibrary.Providers
         /// <summary>
         /// The type of cloud storage provider.
         /// </summary>
-        public ProviderTypes Provider { get; set; }
+        public StorageProviderTypes Provider { get; set; }
 
         /// <summary>
         /// A status enumeration to describe sync state.
@@ -46,7 +46,7 @@ namespace OzetteLibrary.Providers
         /// <summary>
         /// Stores the hydration status value (transitioning, stable, etc).
         /// </summary>
-        public ProviderHydrationStatus HydrationStatus { get; set; }
+        public StorageProviderHydrationStatus HydrationStatus { get; set; }
 
         /// <summary>
         /// The last completed file transfer block, if multiple blocks are required.
@@ -77,7 +77,7 @@ namespace OzetteLibrary.Providers
                 throw new ArgumentNullException(nameof(providerMetadata));
             }
 
-            if (Provider == ProviderTypes.Azure)
+            if (Provider == StorageProviderTypes.Azure)
             {
                 if (!providerMetadata.ContainsKey(ProviderMetadata.ProviderSyncStatusKeyName))
                 {
@@ -98,7 +98,7 @@ namespace OzetteLibrary.Providers
                     throw new ProviderMetadataMalformedException(ProviderMetadata.ProviderSyncStatusKeyName);
                 }
 
-                ProviderHydrationStatus parsedHydrationStatus;
+                StorageProviderHydrationStatus parsedHydrationStatus;
                 if (!Enum.TryParse(providerMetadata[ProviderMetadata.HydrationStateKeyName], out parsedHydrationStatus))
                 {
                     throw new ProviderMetadataMalformedException(ProviderMetadata.HydrationStateKeyName);

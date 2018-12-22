@@ -1,9 +1,9 @@
-﻿namespace OzetteLibrary.Providers
+﻿namespace OzetteLibrary.StorageProviders
 {
     /// <summary>
     /// Describes a cloud storage provider.
     /// </summary>
-    public class Provider
+    public class StorageProvider
     {
         /// <summary>
         /// The internal database ID of this provider.
@@ -13,7 +13,7 @@
         /// <summary>
         /// The provider type.
         /// </summary>
-        public ProviderTypes Type { get; set; }
+        public StorageProviderTypes Type { get; set; }
 
         /// <summary>
         /// A flag to indicate if the provider is enabled.

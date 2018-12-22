@@ -1,9 +1,9 @@
-﻿namespace OzetteLibrary.Providers
+﻿namespace OzetteLibrary.StorageProviders
 {
     /// <summary>
     /// Describes possible target cloud providers.
     /// </summary>
-    public enum ProviderHydrationStatus
+    public enum StorageProviderHydrationStatus
     {
         /// <summary>
         /// No status (not moving).

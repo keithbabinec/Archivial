@@ -2,7 +2,7 @@
 using Moq;
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Mock;
-using OzetteLibrary.Providers;
+using OzetteLibrary.StorageProviders;
 using System;
 using System.IO;
 using System.Threading;
@@ -12,11 +12,11 @@ namespace OzetteLibraryTests.Client
     [TestClass]
     public class ConnectionEngineTests
     {
-        private ProviderConnectionsCollection GenerateMockProviders()
+        private StorageProviderConnectionsCollection GenerateMockProviders()
         {
-            var providers = new ProviderConnectionsCollection();
-            var mockedProvider = new Mock<IProviderFileOperations>();
-            providers.Add(ProviderTypes.Azure, mockedProvider.Object);
+            var providers = new StorageProviderConnectionsCollection();
+            var mockedProvider = new Mock<IStorageProviderFileOperations>();
+            providers.Add(StorageProviderTypes.Azure, mockedProvider.Object);
 
             return providers;
         }

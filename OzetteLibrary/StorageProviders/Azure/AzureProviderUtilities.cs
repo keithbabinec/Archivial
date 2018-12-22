@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OzetteLibrary.Providers.Azure
+namespace OzetteLibrary.StorageProviders.Azure
 {
     /// <summary>
     /// Provides utility functions for the Azure provider.
@@ -133,11 +133,11 @@ namespace OzetteLibrary.Providers.Azure
 
             if (rehydrationStatus.HasValue == false || rehydrationStatus.Value == RehydrationStatus.Unknown)
             {
-                return ProviderHydrationStatus.None.ToString();
+                return StorageProviderHydrationStatus.None.ToString();
             }
             else if (rehydrationStatus.Value == RehydrationStatus.PendingToCool || rehydrationStatus.Value == RehydrationStatus.PendingToHot)
             {
-                return ProviderHydrationStatus.MovingToActiveTier.ToString();
+                return StorageProviderHydrationStatus.MovingToActiveTier.ToString();
             }
             else
             {

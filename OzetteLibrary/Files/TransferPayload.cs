@@ -1,4 +1,4 @@
-﻿using OzetteLibrary.Providers;
+﻿using OzetteLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
 
@@ -17,7 +17,7 @@ namespace OzetteLibrary.Files
         /// <summary>
         /// A set of destination providers for this payload.
         /// </summary>
-        public List<ProviderTypes> DestinationProviders { get; set; }
+        public List<StorageProviderTypes> DestinationProviders { get; set; }
 
         /// <summary>
         /// The block number currently associated with this transfer payload.

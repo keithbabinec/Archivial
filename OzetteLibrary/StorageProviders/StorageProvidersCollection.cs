@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace OzetteLibrary.Providers
+namespace OzetteLibrary.StorageProviders
 {
     /// <summary>
     /// A collection of <c>Provider</c> objects.
     /// </summary>
-    public class ProvidersCollection : List<Provider>
+    public class StorageProvidersCollection : List<StorageProvider>
     {
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public ProvidersCollection()
+        public StorageProvidersCollection()
         {
         }
 
@@ -18,7 +18,7 @@ namespace OzetteLibrary.Providers
         /// Constructor that accepts a collection.
         /// </summary>
         /// <param name="collection"></param>
-        public ProvidersCollection(IEnumerable<Provider> collection) : base(collection)
+        public StorageProvidersCollection(IEnumerable<StorageProvider> collection) : base(collection)
         {
         }
     }
