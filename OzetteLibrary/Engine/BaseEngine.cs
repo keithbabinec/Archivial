@@ -22,7 +22,7 @@ namespace OzetteLibrary.Engine
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
-        protected BaseEngine(IDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections)
+        protected BaseEngine(IClientDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections)
         {
             if (database == null)
             {
@@ -83,7 +83,7 @@ namespace OzetteLibrary.Engine
         /// <summary>
         /// A reference to the database.
         /// </summary>
-        protected IDatabase Database { get; set; }
+        protected IClientDatabase Database { get; set; }
 
         /// <summary>
         /// A reference to the cloud providers.

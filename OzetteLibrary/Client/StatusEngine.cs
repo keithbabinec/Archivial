@@ -20,7 +20,7 @@ namespace OzetteLibrary.Client
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
-        public StatusEngine(IDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
+        public StatusEngine(IClientDatabase database, ILogger logger, ProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
 
         /// <summary>
         /// Begins to start the status engine, returns immediately to the caller.
@@ -92,7 +92,7 @@ namespace OzetteLibrary.Client
         {
             // add the next status check time, if it isn't already in the queue.
 
-            var scheduleString = (Database as IClientDatabase).GetApplicationOption(Constants.RuntimeSettingNames.StatusUpdateSchedule);
+            var scheduleString = Database.GetApplicationOption(Constants.RuntimeSettingNames.StatusUpdateSchedule);
             var schedule = NCrontab.CrontabSchedule.Parse(scheduleString);
             var nextRun = schedule.GetNextOccurrence(DateTime.Now);
 
