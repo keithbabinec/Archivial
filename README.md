@@ -85,7 +85,7 @@ You must have a pre-configured Twilio account and Twilio phone number to use thi
 
 Note: These secrets will be saved as encrypted values in the local database.
 ```
-OzetteCmd.exe configure-twilio --accountid "myaccount" --authtoken "mytoken" --sourcephone "+12065551234" --destinationphones "+12065554567;+12065556789"
+OzetteCmd.exe configure-twilio --twilioaccountid "myaccount" --twilioauthtoken "mytoken" --twiliosourcephone "+12065551234" --twiliodestinationphones "+12065554567;+12065556789"
 ```
 
 ### Manage Existing Providers
