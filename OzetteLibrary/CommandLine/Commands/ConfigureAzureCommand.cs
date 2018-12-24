@@ -7,6 +7,7 @@ using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using OzetteLibrary.Providers;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -86,21 +87,20 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Fetching current providers configuration from the database.");
 
-            var existingProviders = db.GetStorageProvidersList();
+            var existingProviders = db.GetProviders(ProviderTypes.Storage);
 
-            if (existingProviders.Any(x => x.Type == StorageProviderTypes.Azure) == false)
+            if (existingProviders.Any(x => x.Name == nameof(StorageProviderTypes.Azure)) == false)
             {
                 Logger.WriteConsole("Azure is not configured as a provider in the client database. Adding it now.");
 
-                existingProviders.Add(
-                    new StorageProvider()
+                var newProvider = 
+                    new Provider()
                     {
-                        Enabled = true,
-                        ID = (int)StorageProviderTypes.Azure,
-                        Type = StorageProviderTypes.Azure
-                    });
+                        Type = ProviderTypes.Storage,
+                        Name = nameof(StorageProviderTypes.Azure)
+                    };
 
-                db.SetStorageProviders(existingProviders);
+                db.AddProvider(newProvider);
 
                 Logger.WriteConsole("Successfully configured Azure as a cloud backup provider.");
             }

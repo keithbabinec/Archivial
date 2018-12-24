@@ -29,6 +29,23 @@ namespace OzetteLibrary.StorageProviders
         }
 
         /// <summary>
+        /// A constructor that accepts a <c>ProviderTypes</c> value but as a string.
+        /// </summary>
+        /// <param name="providerString"></param>
+        public StorageProviderFileStatus(string providerString)
+        {
+            StorageProviderTypes provider;
+
+            if (!Enum.TryParse(providerString, out provider))
+            {
+                throw new ArgumentException(nameof(providerString) + " was not a valid " + nameof(StorageProviderTypes));
+            }
+
+            Provider = provider;
+            ResetState();
+        }
+
+        /// <summary>
         /// A collection of metadata properties assigned to the file in the cloud provider.
         /// </summary>
         public IDictionary<string, string> Metadata { get; set; }

@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.Crypto;
 using OzetteLibrary.Exceptions;
+using OzetteLibrary.Providers;
 using OzetteLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
@@ -218,15 +219,16 @@ namespace OzetteLibrary.Files
         /// Resets existing copy progress state with the specified providers.
         /// </summary>
         /// <param name="providers"></param>
-        public void ResetCopyState(StorageProvidersCollection providers)
+        public void ResetCopyState(ProviderCollection providers)
         {
             CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>();
 
             foreach (var provider in providers)
             {
-                if (provider.Enabled)
+                if (provider.Type == ProviderTypes.Storage)
                 {
-                    CopyState.Add(provider.Type, new StorageProviderFileStatus(provider.Type));
+                    var item = new StorageProviderFileStatus(provider.Name);
+                    CopyState.Add(item.Provider, item);
                 }
             }
 

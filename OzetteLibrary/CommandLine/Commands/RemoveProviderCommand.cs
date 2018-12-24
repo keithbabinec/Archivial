@@ -1,7 +1,9 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
+using OzetteLibrary.Providers;
 using OzetteLibrary.ServiceCore;
+using OzetteLibrary.StorageProviders;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -75,22 +77,20 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing cloud providers to see if the specified provider exists.");
 
-            var allProviders = db.GetStorageProvidersList();
+            var allProviders = db.GetProviders(ProviderTypes.Any);
             var providerToRemove = allProviders.FirstOrDefault(x => x.ID == arguments.ProviderID);
 
             if (providerToRemove == null)
             {
                 // the source doesn't exist. nothing to do.
-                Logger.WriteConsole("No cloud provider was found with the specified ID. Nothing to remove.");
+                Logger.WriteConsole("No provider was found with the specified ID. Nothing to remove.");
                 return;
             }
 
-            Logger.WriteConsole("Found a matching cloud provider, removing it now.");
+            Logger.WriteConsole("Found a matching provider, removing it now.");
+            db.RemoveProvider(arguments.ProviderID);
 
-            allProviders.Remove(providerToRemove);
-            db.SetStorageProviders(allProviders);
-
-            if (providerToRemove.Type == StorageProviders.StorageProviderTypes.Azure)
+            if (providerToRemove.Name == nameof(StorageProviderTypes.Azure))
             {
                 // remove provider specific secrets
                 db.RemoveApplicationOption(Constants.RuntimeSettingNames.AzureStorageAccountName);

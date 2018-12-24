@@ -14,10 +14,5 @@
         /// The provider type.
         /// </summary>
         public StorageProviderTypes Type { get; set; }
-
-        /// <summary>
-        /// A flag to indicate if the provider is enabled.
-        /// </summary>
-        public bool Enabled { get; set; }
     }
 }
