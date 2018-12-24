@@ -1,24 +1,24 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
 using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
-using OzetteLibrary.StorageProviders;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using OzetteLibrary.Providers;
+using OzetteLibrary.MessagingProviders;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
     /// <summary>
-    /// A command for configuring azure provider settings.
+    /// A command for configuring twilio provider settings.
     /// </summary>
     /// <remarks>
     /// The reason for elevation requirement: This command uses encryption at the Machine-key scope. We cannot correctly save the encrypted secrets at this level without elevation.
     /// </remarks>
     [RequiresElevation]
-    public class ConfigureAzureCommand : ICommand
+    public class ConfigureTwilioCommand : ICommand
     {
         /// <summary>
         /// A logging helper instance.
@@ -29,7 +29,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Constructor that requires a logging instance.
         /// </summary>
         /// <param name="logger"></param>
-        public ConfigureAzureCommand(Logger logger)
+        public ConfigureTwilioCommand(Logger logger)
         {
             if (logger == null)
             {
@@ -40,36 +40,36 @@ namespace OzetteLibrary.CommandLine.Commands
         }
 
         /// <summary>
-        /// Runs the configure-azure command.
+        /// Runs the configure-twilio command.
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
         public bool Run(ArgumentBase arguments)
         {
-            var configAzArgs = arguments as ConfigureAzureArguments;
+            var configTwilioArgs = arguments as ConfigureTwilioArguments;
 
-            if (configAzArgs == null)
+            if (configTwilioArgs == null)
             {
                 throw new ArgumentNullException(nameof(arguments));
             }
 
             try
             {
-                Logger.WriteConsole("--- Starting Ozette Cloud Backup Azure configuration");
+                Logger.WriteConsole("--- Starting Ozette Cloud Backup Twilio Provider configuration");
 
-                Logger.WriteConsole("--- Step 1: Encrypt and save Azure settings.");
-                EncryptAndSave(configAzArgs);
+                Logger.WriteConsole("--- Step 1: Encrypt and save Twilio provider settings.");
+                EncryptAndSave(configTwilioArgs);
 
                 Logger.WriteConsole("--- Step 2: Configure providers list.");
                 ConfigureProviders();
 
-                Logger.WriteConsole("--- Azure configuration completed successfully.");
+                Logger.WriteConsole("--- Twilio configuration completed successfully.");
 
                 return true;
             }
             catch (Exception ex)
             {
-                Logger.WriteConsole("--- Ozette Cloud Backup Azure configuration failed", EventLogEntryType.Error);
+                Logger.WriteConsole("--- Ozette Cloud Backup Twilio configuration failed", EventLogEntryType.Error);
                 Logger.WriteConsole(ex.ToString(), EventLogEntryType.Error);
                 return false;
             }
@@ -87,34 +87,34 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Fetching current providers configuration from the database.");
 
-            var existingProviders = db.GetProviders(ProviderTypes.Storage);
+            var existingProviders = db.GetProviders(ProviderTypes.Messaging);
 
-            if (existingProviders.Any(x => x.Name == nameof(StorageProviderTypes.Azure)) == false)
+            if (existingProviders.Any(x => x.Name == nameof(MessagingProviderTypes.Twilio)) == false)
             {
-                Logger.WriteConsole("Azure is not configured as a provider in the client database. Adding it now.");
+                Logger.WriteConsole("Twilio is not configured as a provider in the client database. Adding it now.");
 
-                var newProvider = 
+                var newProvider =
                     new Provider()
                     {
-                        Type = ProviderTypes.Storage,
-                        Name = nameof(StorageProviderTypes.Azure)
+                        Type = ProviderTypes.Messaging,
+                        Name = nameof(MessagingProviderTypes.Twilio)
                     };
 
                 db.AddProvider(newProvider);
 
-                Logger.WriteConsole("Successfully configured Azure as a cloud backup provider.");
+                Logger.WriteConsole("Successfully configured Twilio as a messaging provider.");
             }
             else
             {
-                Logger.WriteConsole("Azure is already configured as a provider in the client database. No action required.");
+                Logger.WriteConsole("Twilio is already configured as a messaging provider in the client database. No action required.");
             }
         }
 
         /// <summary>
-        /// Encrypts and saves the Azure configuration settings.
+        /// Encrypts and saves the Twilio configuration settings.
         /// </summary>
         /// <param name="arguments"></param>
-        private void EncryptAndSave(ConfigureAzureArguments arguments)
+        private void EncryptAndSave(ConfigureTwilioArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -127,13 +127,17 @@ namespace OzetteLibrary.CommandLine.Commands
             var ivkey = Convert.FromBase64String(CoreSettings.ProtectionIv);
             var pds = new ProtectedDataStore(db, scope, ivkey);
 
-            Logger.WriteConsole("Saving encrypted Azure configuration setting: AzureStorageAccountName.");
+            Logger.WriteConsole("Saving encrypted Twilio configuration setting: TwilioAccountID.");
+            pds.SetApplicationSecret(Constants.RuntimeSettingNames.TwilioAccountID, arguments.TwilioAccountID);
 
-            pds.SetApplicationSecret(Constants.RuntimeSettingNames.AzureStorageAccountName, arguments.AzureStorageAccountName);
+            Logger.WriteConsole("Saving encrypted Twilio configuration setting: TwilioAuthToken.");
+            pds.SetApplicationSecret(Constants.RuntimeSettingNames.TwilioAuthToken, arguments.TwilioAuthToken);
 
-            Logger.WriteConsole("Saving encrypted Azure configuration setting: AzureStorageAccountToken.");
+            Logger.WriteConsole("Saving encrypted Twilio configuration setting: TwilioSourcePhone.");
+            pds.SetApplicationSecret(Constants.RuntimeSettingNames.TwilioSourcePhone, arguments.TwilioSourcePhone);
 
-            pds.SetApplicationSecret(Constants.RuntimeSettingNames.AzureStorageAccountToken, arguments.AzureStorageAccountToken);
+            Logger.WriteConsole("Saving encrypted Twilio configuration setting: TwilioDestinationPhones.");
+            pds.SetApplicationSecret(Constants.RuntimeSettingNames.TwilioDestinationPhones, arguments.TwilioDestinationPhones);
         }
     }
 }

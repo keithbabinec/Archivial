@@ -67,6 +67,7 @@
     <Compile Include="CommandLine\Arguments\AddNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Arguments\AddNetSourceArguments.cs" />
     <Compile Include="CommandLine\Arguments\AddLocalSourceArguments.cs" />
+    <Compile Include="CommandLine\Arguments\ConfigureTwilioArguments.cs" />
     <Compile Include="CommandLine\Arguments\ListNetCredentialsArguments.cs" />
     <Compile Include="CommandLine\Arguments\RemoveNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Arguments\ShowStatusArguments.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="CommandLine\Commands\AddNetCredentialCommand.cs" />
     <Compile Include="CommandLine\Commands\AddNetSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\ConfigureAzureCommand.cs" />
+    <Compile Include="CommandLine\Commands\ConfigureTwilioCommand.cs" />
     <Compile Include="CommandLine\Commands\ICommand.cs" />
     <Compile Include="CommandLine\Commands\InstallCommand.cs" />
     <Compile Include="CommandLine\Commands\ListNetCredentialsCommand.cs" />
@@ -132,6 +134,10 @@
     <Compile Include="Exceptions\SourceLocationException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidIDException.cs" />
     <Compile Include="Exceptions\SourceLocationsDuplicateIDException.cs" />
+    <Compile Include="MessagingProviders\MessagingProviderTypes.cs" />
+    <Compile Include="Providers\Provider.cs" />
+    <Compile Include="Providers\ProviderCollection.cs" />
+    <Compile Include="Providers\ProviderTypes.cs" />
     <Compile Include="StorageProviders\Azure\AzureProviderUtilities.cs" />
     <Compile Include="StorageProviders\StorageProvider.cs" />
     <Compile Include="StorageProviders\StorageProviderConnectionsCollection.cs" />

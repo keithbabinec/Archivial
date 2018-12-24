@@ -75,20 +75,30 @@ namespace OzetteCmd
             help.AppendLine("OzetteCmd.exe list-providers");
             help.AppendLine();
             help.AppendLine("  Description:");
-            help.AppendLine("\tLists the currently configured cloud backup providers (Azure, AWS, etc).");
+            help.AppendLine("\tLists the currently configured providers (storage providers and messaging providers).");
             help.AppendLine();
             help.AppendLine("OzetteCmd.exe configure-azure");
             help.AppendLine();
             help.AppendLine("  Description:");
-            help.AppendLine("\tConfigures Azure as a cloud backup provider for this computer.");
+            help.AppendLine("\tConfigures Azure as a cloud storage provider for this computer.");
             help.AppendLine("  Arguments:");
             help.AppendLine("\t--azurestorageaccountname\tThe name of the Azure storage account to backup files to.");
             help.AppendLine("\t--azurestorageaccounttoken\tThe access token for the Azure storage account.");
             help.AppendLine();
+            help.AppendLine("OzetteCmd.exe configure-twilio");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tConfigures Twilio as a messaging provider for this computer.");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t--twilioaccountid\tThe Twilio account ID");
+            help.AppendLine("\t--twilioauthtoken\tThe Twilio authentication token.");
+            help.AppendLine("\t--twiliosourcephone\tThe Twilio source phone number.");
+            help.AppendLine("\t--twiliodestinationphones\tThe destination phone numbers to send updates to. If multiple, use semicolon separator.");
+            help.AppendLine();
             help.AppendLine("OzetteCmd.exe remove-provider");
             help.AppendLine();
             help.AppendLine("  Description:");
-            help.AppendLine("\tRemoves a cloud backup provider (Azure, AWS, etc) with specified ID. Run list-providers to see the current providers with IDs.");
+            help.AppendLine("\tRemoves a provider with specified ID. Run list-providers to see the current providers with IDs.");
             help.AppendLine("  Arguments:");
             help.AppendLine("\t--providerid\tThe ID of the provider to remove.");
             help.AppendLine();
@@ -183,6 +193,10 @@ namespace OzetteCmd
             else if (arguments is ConfigureAzureArguments)
             {
                 command = new ConfigureAzureCommand(logger);
+            }
+            else if (arguments is ConfigureTwilioArguments)
+            {
+                command = new ConfigureTwilioCommand(logger);
             }
             else if (arguments is ListSourcesArguments)
             {

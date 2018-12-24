@@ -7,6 +7,7 @@ using OzetteLibrary.ServiceCore;
 using System;
 using System.Globalization;
 using System.IO;
+using OzetteLibrary.Providers;
 
 namespace OzetteLibrary.Database.LiteDB
 {
@@ -79,7 +80,7 @@ namespace OzetteLibrary.Database.LiteDB
             map.Entity<BackupFile>().Id(x => x.FileID);
             map.Entity<DirectoryMapItem>().Id(x => x.ID);
             map.Entity<SourceLocation>().Id(x => x.ID);
-            map.Entity<StorageProvider>().Id(x => x.ID);
+            map.Entity<Provider>().Id(x => x.ID);
             map.Entity<NetCredential>().Id(x => x.ID);
         }
 
@@ -113,7 +114,7 @@ namespace OzetteLibrary.Database.LiteDB
                 var sourcesCol = db.GetCollection<SourceLocation>(Constants.Database.SourceLocationsTableName);
                 sourcesCol.EnsureIndex(x => x.ID);
 
-                var providersCol = db.GetCollection<StorageProvider>(Constants.Database.ProvidersTableName);
+                var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
                 providersCol.EnsureIndex(x => x.ID);
 
                 var credentialsCol = db.GetCollection<NetCredential>(Constants.Database.NetCredentialsTableName);
@@ -360,41 +361,48 @@ namespace OzetteLibrary.Database.LiteDB
         }
 
         /// <summary>
-        /// Commits the providers collection to the database.
+        /// Returns a list of all providers defined in the database.
         /// </summary>
-        /// <param name="Providers">A collection of providers.</param>
-        public void SetStorageProviders(StorageProvidersCollection Providers)
+        /// <param name="Type">The type of providers to return.</param>
+        /// <returns><c>ProviderCollection</c></returns>
+        public ProviderCollection GetProviders(ProviderTypes Type)
         {
             if (DatabaseHasBeenPrepared == false)
             {
                 throw new InvalidOperationException("Database has not been prepared.");
             }
-            if (Providers == null)
-            {
-                throw new ArgumentNullException(nameof(Providers));
-            }
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<StorageProvider>(Constants.Database.ProvidersTableName);
+                var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
+                var queryResult = providersCol.FindAll();
 
-                // remove all documents in this collection
-                providersCol.Delete(x => 1 == 1);
-
-                // insert providers (if any)
-                // note: empty (0 count) is valid input from Locations.
-                foreach (var provider in Providers)
+                if (Type == ProviderTypes.Any)
                 {
-                    providersCol.Insert(provider);
+                    return new ProviderCollection(queryResult);
+                }
+                else
+                {
+                    var result = new ProviderCollection();
+
+                    foreach (var item in queryResult)
+                    {
+                        if (item.Type == Type)
+                        {
+                            result.Add(item);
+                        }
+                    }
+
+                    return result;
                 }
             }
         }
 
         /// <summary>
-        /// Returns all of the providers defined in the database.
+        /// Removes the specified provider by ID.
         /// </summary>
-        /// <returns>A collection of providers.</returns>
-        public StorageProvidersCollection GetStorageProvidersList()
+        /// <param name="ProviderID">Provider ID.</param>
+        public void RemoveProvider(int ProviderID)
         {
             if (DatabaseHasBeenPrepared == false)
             {
@@ -403,16 +411,30 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<StorageProvider>(Constants.Database.ProvidersTableName);
+                var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
+                providersCol.Delete(x => x.ID == ProviderID);
+            }
+        }
 
-                if (providersCol.Count() > 0)
-                {
-                    return new StorageProvidersCollection(providersCol.FindAll());
-                }
-                else
-                {
-                    return new StorageProvidersCollection();
-                }
+        /// <summary>
+        /// Adds the specified Provider object to the database.
+        /// </summary>
+        /// <param name="Provider"></param>
+        public void AddProvider(Provider Provider)
+        {
+            if (DatabaseHasBeenPrepared == false)
+            {
+                throw new InvalidOperationException("Database has not been prepared.");
+            }
+            if (Provider == null)
+            {
+                throw new ArgumentNullException(nameof(Provider));
+            }
+
+            using (var db = GetLiteDBInstance())
+            {
+                var providersCol = db.GetCollection<Provider>(Constants.Database.ProvidersTableName);
+                providersCol.Insert(Provider);
             }
         }
 

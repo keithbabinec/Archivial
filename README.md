@@ -5,13 +5,17 @@ Data backup agent software for Windows that automatically archives your local da
 [![Build status](https://ozette.visualstudio.com/ozette-project/_apis/build/status/ozette-project-CI)](https://ozette.visualstudio.com/ozette-project/_build/latest?definitionId=1)
 
 # Project Status
-This project is under active development and not fully usuable yet. This grid shows progress by feature.
+This project is under active development and not fully usuable yet. Breaking changes may occur without notice. This grid shows progress by feature.
 
-| Feature | Azure Support | AWS Support |
+| Storage Providers | Azure Support | AWS Support |
 | --- | --- | --- |
 | Install / Tools | Complete | N/A |
 | Backup | In-Progress | N/A |
 | Restore | N/A | N/A |
+
+| Messaging Providers | SMS (Twilio) | Email (SendGrid) |
+| --- | --- | --- |
+| Backup Status | In-Progress | N/A |
 
 # Installation
 
@@ -60,6 +64,12 @@ OzetteCmd.exe show-status
 
 ## Providers
 
+There are two types of providers available: Storage Providers and Messaging Providers.
+* A storage provider is your cloud storage backup destination/target. Examples include Azure storage, Amazon S3, etc.
+* A messaging provider sends you notifications about backup status, usually through email or SMS text messaging. Examples include Twilio, Sendgrid, etc.
+
+### Storage Providers
+
 **Example: Set Microsoft Azure as one of your cloud storage providers.**
 
 Note: These secrets will be saved as encrypted values in the local database.
@@ -67,14 +77,27 @@ Note: These secrets will be saved as encrypted values in the local database.
 OzetteCmd.exe configure-azure --azurestorageaccountname "myaccount" --azurestorageaccounttoken "mytoken"
 ```
 
-**Example: List the existing cloud storage providers you have configured**
+### Messaging Providers
+
+**Example: Set Twilio as your messaging provider (SMS/Text message updates).**
+
+You must have a pre-configured Twilio account and Twilio phone number to use this feature. One or more phone numbers can be used for the destination. If using multiple phone numbers, use a semicolon ';' character to seperate the list. The phone number format should include country code and area code, as specified in the below example.
+
+Note: These secrets will be saved as encrypted values in the local database.
+```
+OzetteCmd.exe configure-twilio --twilioaccountid "myaccount" --twilioauthtoken "mytoken" --twiliosourcephone "+12065551234" --twiliodestinationphones "+12065554567;+12065556789"
+```
+
+### Manage Existing Providers
+
+**Example: List the existing providers you have configured**
 ```
 OzetteCmd.exe list-providers
 ```
 
-**Example: Remove one of the configured cloud providers by ID**
+**Example: Remove one of the configured providers by ID**
 
-Note: see *list-providers* to view the existing cloud providers with IDs.
+Note: see *list-providers* to view the existing providers with IDs.
 ```
 OzetteCmd.exe remove-provider --providerid 1
 ```

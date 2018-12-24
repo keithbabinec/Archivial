@@ -4,6 +4,7 @@ using OzetteLibrary.StorageProviders;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
+using OzetteLibrary.Providers;
 
 namespace OzetteLibrary.Database
 {
@@ -36,16 +37,23 @@ namespace OzetteLibrary.Database
         void RemoveApplicationOption(string OptionName);
 
         /// <summary>
-        /// Commits the storage providers collection to the database.
+        /// Returns a list of all providers defined in the database.
         /// </summary>
-        /// <param name="Providers">A collection of providers.</param>
-        void SetStorageProviders(StorageProvidersCollection Providers);
+        /// <param name="Type">The type of providers to return.</param>
+        /// <returns><c>ProviderCollection</c></returns>
+        ProviderCollection GetProviders(ProviderTypes Type);
 
         /// <summary>
-        /// Returns all of the storage providers defined in the database.
+        /// Removes the specified provider by ID.
         /// </summary>
-        /// <returns>A collection of providers.</returns>
-        StorageProvidersCollection GetStorageProvidersList();
+        /// <param name="ProviderID">Provider ID.</param>
+        void RemoveProvider(int ProviderID);
+
+        /// <summary>
+        /// Adds the specified Provider object to the database.
+        /// </summary>
+        /// <param name="Provider"></param>
+        void AddProvider(Provider Provider);
 
         /// <summary>
         /// Commits the net credentials collection to the database.

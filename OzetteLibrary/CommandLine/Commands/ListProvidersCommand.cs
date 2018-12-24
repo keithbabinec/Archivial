@@ -70,7 +70,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing providers.");
 
-            var allProviders = db.GetStorageProvidersList();
+            var allProviders = db.GetProviders(Providers.ProviderTypes.Any);
 
             Logger.WriteConsole("Number of configured providers: " + allProviders.Count);
 
@@ -78,7 +78,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             foreach (var provider in allProviders)
             {
-                Logger.WriteConsole(string.Format("Provider: ID={0}, Type={1}", provider.ID, provider.Type));
+                Logger.WriteConsole(string.Format("Provider: ID={0}, Type={1}, Name={2}", provider.ID, provider.Type, provider.Name));
             }
         }
     }
