@@ -47,5 +47,25 @@
         /// Option: AzureStorageAccountToken.
         /// </summary>
         public const string AzureStorageAccountToken = "AzureStorageAccountToken";
+
+        /// <summary>
+        /// Option: TwilioAccountID.
+        /// </summary>
+        public const string TwilioAccountID = "TwilioAccountID";
+
+        /// <summary>
+        /// Option: TwilioAuthToken.
+        /// </summary>
+        public const string TwilioAuthToken = "TwilioAuthToken";
+
+        /// <summary>
+        /// Option: TwilioSourcePhone.
+        /// </summary>
+        public const string TwilioSourcePhone = "TwilioSourcePhone";
+
+        /// <summary>
+        /// Option: TwilioDestinationPhones.
+        /// </summary>
+        public const string TwilioDestinationPhones = "TwilioDestinationPhones";
     }
 }

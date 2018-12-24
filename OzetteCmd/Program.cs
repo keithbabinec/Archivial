@@ -194,6 +194,10 @@ namespace OzetteCmd
             {
                 command = new ConfigureAzureCommand(logger);
             }
+            else if (arguments is ConfigureTwilioArguments)
+            {
+                command = new ConfigureTwilioCommand(logger);
+            }
             else if (arguments is ListSourcesArguments)
             {
                 command = new ListSourcesCommand(logger);
