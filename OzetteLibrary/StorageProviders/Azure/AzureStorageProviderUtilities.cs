@@ -6,9 +6,9 @@ using System.Text;
 namespace OzetteLibrary.StorageProviders.Azure
 {
     /// <summary>
-    /// Provides utility functions for the Azure provider.
+    /// Provides utility functions for the Azure storage provider.
     /// </summary>
-    public class AzureProviderUtilities
+    public class AzureStorageProviderUtilities
     {
         /// <summary>
         /// Generates a list base64 encoded block identifiers to commit.

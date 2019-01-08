@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 namespace OzetteLibrary.StorageProviders.Azure
 {
     /// <summary>
-    /// Contains file operations for the Azure cloud storage provider.
+    /// Implements file operations for the Azure cloud storage provider.
     /// </summary>
-    public class AzureProviderFileOperations : IStorageProviderFileOperations
+    public class AzureStorageProviderFileOperations : IStorageProviderFileOperations
     {
         /// <summary>
         /// A reference to the logging utility.
@@ -32,7 +32,7 @@ namespace OzetteLibrary.StorageProviders.Azure
         /// <summary>
         /// A reference to the provider utilities helper instance.
         /// </summary>
-        private AzureProviderUtilities ProviderUtilities;
+        private AzureStorageProviderUtilities ProviderUtilities;
 
         /// <summary>
         /// A reference to the authenticated Azure Storage account.
@@ -50,7 +50,7 @@ namespace OzetteLibrary.StorageProviders.Azure
         /// <param name="logger">A logging utility instance.</param>
         /// <param name="storageAccountName">The azure storage account name.</param>
         /// <param name="storageAccountSASToken">SAS token for accessing the resource.</param>
-        public AzureProviderFileOperations(ILogger logger, string storageAccountName, string storageAccountSASToken)
+        public AzureStorageProviderFileOperations(ILogger logger, string storageAccountName, string storageAccountSASToken)
         {
             if (logger == null)
             {
@@ -67,7 +67,7 @@ namespace OzetteLibrary.StorageProviders.Azure
 
             Logger = logger;
             Hasher = new Hasher(logger);
-            ProviderUtilities = new AzureProviderUtilities();
+            ProviderUtilities = new AzureStorageProviderUtilities();
 
             var storageCredentials = new StorageCredentials(storageAccountName, storageAccountSASToken);
             AzureStorage = new CloudStorageAccount(storageCredentials, true);

@@ -81,6 +81,21 @@
         public const int StoppedStatusEngine = 1014;
 
         /// <summary>
+        /// Event ID: Configuring messaging providers.
+        /// </summary>
+        public const int ConfiguringMessagingProviderConnections = 1015;
+
+        /// <summary>
+        /// Event ID: No messaging providers found.
+        /// </summary>
+        public const int NoMessagingProviderConnections = 1016;
+
+        /// <summary>
+        /// Event ID: Configured messaging providers.
+        /// </summary>
+        public const int ConfiguredMessagingProviderConnections = 1017;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;
@@ -123,7 +138,7 @@
         /// <summary>
         /// Event ID: Failed to configure cloud provider connections.
         /// </summary>
-        public const int FailedToConfigureCloudProviderConnections = 2008;
+        public const int FailedToConfigureStorageProviderConnections = 2008;
 
         /// <summary>
         /// Event ID: Failed to configure cloud provider connections due to missing settings.
@@ -154,5 +169,10 @@
         /// Event ID: Failed status engine.
         /// </summary>
         public const int FailedStatusEngine = 2014;
+
+        /// <summary>
+        /// Event ID: Failed to configure messaging provider connections.
+        /// </summary>
+        public const int FailedToConfigureMessagingProviderConnections = 2015;
     }
 }

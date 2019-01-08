@@ -8,6 +8,7 @@ using OzetteLibrary.StorageProviders;
 using System;
 using System.Threading;
 using OzetteLibrary.Folders;
+using OzetteLibrary.MessagingProviders;
 
 namespace OzetteLibrary.Client
 {
@@ -21,8 +22,9 @@ namespace OzetteLibrary.Client
         /// </summary>
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
-        /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
-        public ScanEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
+        /// <param name="storageProviders">A collection of cloud backup storage provider connections.</param>
+        /// <param name="messagingProviders">A collection of messaging provider connections.</param>
+        public ScanEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection storageProviders, MessagingProviderConnectionsCollection messagingProviders) : base(database, logger, storageProviders, messagingProviders) { }
 
         /// <summary>
         /// Begins to start the scanning engine, returns immediately to the caller.
