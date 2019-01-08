@@ -1,7 +1,6 @@
 ﻿using LiteDB;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
-using OzetteLibrary.StorageProviders;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
@@ -303,9 +302,9 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
+                var optionsCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
 
-                providersCol.Upsert(new ApplicationOption(OptionName, OptionValue));
+                optionsCol.Upsert(new ApplicationOption(OptionName, OptionValue));
             }
         }
 
@@ -326,9 +325,9 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
+                var optionsCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
 
-                var setting = providersCol.FindOne(x => x.Name == OptionName);
+                var setting = optionsCol.FindOne(x => x.Name == OptionName);
 
                 if (setting != null)
                 {
@@ -354,14 +353,14 @@ namespace OzetteLibrary.Database.LiteDB
 
             using (var db = GetLiteDBInstance())
             {
-                var providersCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
+                var optionsCol = db.GetCollection<ApplicationOption>(Constants.Database.ApplicationOptionsTableName);
 
-                var setting = providersCol.Delete(x => x.Name == OptionName);
+                var setting = optionsCol.Delete(x => x.Name == OptionName);
             }
         }
 
         /// <summary>
-        /// Returns a list of all providers defined in the database.
+        /// Returns a list of all providers defined in the database for the specified type.
         /// </summary>
         /// <param name="Type">The type of providers to return.</param>
         /// <returns><c>ProviderCollection</c></returns>

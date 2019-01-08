@@ -2,10 +2,13 @@
 using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
+using OzetteLibrary.MessagingProviders;
+using OzetteLibrary.ServiceCore;
 using OzetteLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Client
 {
@@ -19,8 +22,9 @@ namespace OzetteLibrary.Client
         /// </summary>
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
-        /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
-        public StatusEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection providerConnections) : base(database, logger, providerConnections) { }
+        /// <param name="storageProviders">A collection of cloud backup storage provider connections.</param>
+        /// <param name="messagingProviders">A collection of messaging provider connections.</param>
+        public StatusEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection storageProviders, MessagingProviderConnectionsCollection messagingProviders) : base(database, logger, storageProviders, messagingProviders) { }
 
         /// <summary>
         /// Begins to start the status engine, returns immediately to the caller.
@@ -35,7 +39,7 @@ namespace OzetteLibrary.Client
             Running = true;
             StatusCheckTimes = new Queue<DateTime>();
 
-            Thread pl = new Thread(() => ProcessLoop());
+            Thread pl = new Thread(() => ProcessLoopAsync().RunSynchronously());
             pl.Start();
         }
 
@@ -58,7 +62,7 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Core processing loop.
         /// </summary>
-        private void ProcessLoop()
+        private async Task ProcessLoopAsync()
         {
             try
             {
@@ -66,7 +70,9 @@ namespace OzetteLibrary.Client
                 {
                     if (CanSendStatusUpdate())
                     {
-                        SendStatusUpdate();
+                        Logger.WriteTraceMessage("Querying for backup progress.");
+                        var progress = Database.GetBackupProgress();
+                        await SendStatusUpdateAsync(progress);
                     }
 
                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
@@ -120,9 +126,27 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Sends the status update to the current status provider.
         /// </summary>
-        private void SendStatusUpdate()
+        private async Task SendStatusUpdateAsync(BackupProgress Progress)
         {
-            throw new NotImplementedException();
+            if (MessagingProviders.Count == 0)
+            {
+                Logger.WriteTraceWarning("Unable to send status updates. There are no messaging providers configured/enabled.");
+                return;
+            }
+
+            foreach (var messageProvider in MessagingProviders)
+            {
+                Logger.WriteTraceMessage("Attempting to send status update for messaging provider: " + messageProvider.Key);
+
+                try
+                {
+                    await messageProvider.Value.SendBackupProgressStatusMessageAsync(Progress);
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteTraceError("Failed to send a backup progress update message: " + ex.ToString());
+                }
+            }
         }
     }
 }

@@ -8,11 +8,11 @@
         /// <summary>
         /// Twilio (SMS/Text) messaging provider.
         /// </summary>
-        Twilio = 1,
+        Twilio = 10,
 
         /// <summary>
         /// SendGrid (Email) messaging provider.
         /// </summary>
-        SendGrid = 2
+        SendGrid = 11
     }
 }

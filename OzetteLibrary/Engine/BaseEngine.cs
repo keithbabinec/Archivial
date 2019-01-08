@@ -1,6 +1,7 @@
 ﻿using OzetteLibrary.Database;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
+using OzetteLibrary.MessagingProviders;
 using OzetteLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
@@ -21,9 +22,13 @@ namespace OzetteLibrary.Engine
         /// </summary>
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
-        /// <param name="providerConnections">A collection of cloud backup provider connections.</param>
-        protected BaseEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection providerConnections)
+        /// <param name="storageProviders">A collection of cloud backup storage provider connections.</param>
+        /// <param name="messagingProviders">A collection of messaging provider connections.</param>
+        protected BaseEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection storageProviders, MessagingProviderConnectionsCollection messagingProviders)
         {
+            // note: its ok to have no messaging providers (zero count).
+            // it is not ok to have zero backup providers.
+
             if (database == null)
             {
                 throw new ArgumentNullException(nameof(database));
@@ -32,18 +37,23 @@ namespace OzetteLibrary.Engine
             {
                 throw new ArgumentNullException(nameof(logger));
             }
-            if (providerConnections == null)
+            if (storageProviders == null)
             {
-                throw new ArgumentNullException(nameof(providerConnections));
+                throw new ArgumentNullException(nameof(storageProviders));
             }
-            if (providerConnections.Count == 0)
+            if (storageProviders.Count == 0)
             {
-                throw new ArgumentException(nameof(providerConnections) + " must be provided.");
+                throw new ArgumentException(nameof(storageProviders) + " must be provided.");
+            }
+            if (messagingProviders == null)
+            {
+                throw new ArgumentNullException(nameof(messagingProviders));
             }
 
             Database = database;
             Logger = logger;
-            Providers = providerConnections;
+            StorageProviders = storageProviders;
+            MessagingProviders = messagingProviders;
         }
 
         /// <summary>
@@ -86,9 +96,14 @@ namespace OzetteLibrary.Engine
         protected IClientDatabase Database { get; set; }
 
         /// <summary>
-        /// A reference to the cloud providers.
+        /// A collection of cloud storage providers.
         /// </summary>
-        protected Dictionary<StorageProviderTypes, IStorageProviderFileOperations> Providers { get; set; }
+        protected StorageProviderConnectionsCollection StorageProviders { get; set; }
+
+        /// <summary>
+        /// A collection of messaging providers.
+        /// </summary>
+        protected MessagingProviderConnectionsCollection MessagingProviders { get; set; }
 
         /// <summary>
         /// Sleeps the engine for the specified time, while checking periodically for stop request.

@@ -134,11 +134,14 @@
     <Compile Include="Exceptions\SourceLocationException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidIDException.cs" />
     <Compile Include="Exceptions\SourceLocationsDuplicateIDException.cs" />
+    <Compile Include="MessagingProviders\IMessagingProviderOperations.cs" />
+    <Compile Include="MessagingProviders\MessagingProviderConnectionsCollection.cs" />
     <Compile Include="MessagingProviders\MessagingProviderTypes.cs" />
+    <Compile Include="MessagingProviders\Twilio\TwilioMessagingProviderOperations.cs" />
     <Compile Include="Providers\Provider.cs" />
     <Compile Include="Providers\ProviderCollection.cs" />
     <Compile Include="Providers\ProviderTypes.cs" />
-    <Compile Include="StorageProviders\Azure\AzureProviderUtilities.cs" />
+    <Compile Include="StorageProviders\Azure\AzureStorageProviderUtilities.cs" />
     <Compile Include="StorageProviders\StorageProvider.cs" />
     <Compile Include="StorageProviders\StorageProviderConnectionsCollection.cs" />
     <Compile Include="StorageProviders\StorageProviderHydrationStatus.cs" />
@@ -163,7 +166,7 @@
     <Compile Include="Crypto\Hasher.cs" />
     <Compile Include="Files\BackupFile.cs" />
     <Compile Include="Files\FileStatus.cs" />
-    <Compile Include="StorageProviders\Azure\AzureProviderFileOperations.cs" />
+    <Compile Include="StorageProviders\Azure\AzureStorageProviderFileOperations.cs" />
     <Compile Include="StorageProviders\IStorageProviderFileOperations.cs" />
     <Compile Include="StorageProviders\StorageProviderFileStatus.cs" />
   </ItemGroup>

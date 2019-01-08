@@ -37,7 +37,7 @@ namespace OzetteLibrary.Database
         void RemoveApplicationOption(string OptionName);
 
         /// <summary>
-        /// Returns a list of all providers defined in the database.
+        /// Returns a list of all providers defined in the database for the specified type.
         /// </summary>
         /// <param name="Type">The type of providers to return.</param>
         /// <returns><c>ProviderCollection</c></returns>
