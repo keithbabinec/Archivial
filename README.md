@@ -81,7 +81,7 @@ OzetteCmd.exe configure-azure --azurestorageaccountname "myaccount" --azurestora
 
 **Example: Set Twilio as your messaging provider (SMS/Text message updates).**
 
-You must have a pre-configured Twilio account and Twilio phone number to use this feature. One or more phone numbers can be used for the destination. If using multiple phone numbers, use a semicolon ';' character to seperate the list. The phone number format should include country code and area code, as specified in the below example.
+You must have a pre-configured Twilio account and Twilio phone number to use this feature. One or more phone numbers can be used for the destination. If using multiple phone numbers, use a semicolon ';' character to seperate the list. The phone number(s) should be specified in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, as shown below.
 
 Note: These secrets will be saved as encrypted values in the local database.
 ```
