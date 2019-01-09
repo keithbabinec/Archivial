@@ -89,8 +89,8 @@ namespace OzetteLibrary.MessagingProviders.Twilio
 
             var format = new StringBuilder();
             format.AppendLine("Ozette Backup Status {0} {1}"); // <MachineName> <Overall Percent Completed>
-            format.AppendLine("Completed {2} {3}"); // <Files Completed> <File Size Completed>
-            format.AppendLine("Remaining {4} {5}"); // <Files Remaining> <File Size Remaining>
+            format.AppendLine("Completed {2} / {3}"); // <Files Completed> <File Size Completed>
+            format.AppendLine("Remaining {4} / {5}"); // <Files Remaining> <File Size Remaining>
 
             MessageFormat = format.ToString();
         }
@@ -102,7 +102,7 @@ namespace OzetteLibrary.MessagingProviders.Twilio
         public async Task SendBackupProgressStatusMessageAsync(BackupProgress Progress)
         {
             var finalMessage = string.Format(MessageFormat,
-                Environment.MachineName, Progress.OverallPercentage,
+                Environment.MachineName.ToUpper(), Progress.OverallPercentage,
                 Progress.BackedUpFileCount, Progress.BackedUpFileSize,
                 Progress.RemainingFileCount, Progress.RemainingFileCount);
 
