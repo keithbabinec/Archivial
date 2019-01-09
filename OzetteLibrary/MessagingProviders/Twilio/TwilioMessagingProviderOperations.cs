@@ -11,6 +11,11 @@ namespace OzetteLibrary.MessagingProviders.Twilio
     public class TwilioMessagingProviderOperations : IMessagingProviderOperations
     {
         /// <summary>
+        /// A reference to the logging utility.
+        /// </summary>
+        private ILogger Logger;
+
+        /// <summary>
         /// Constructor that accepts Twilio API connectivity and delivery information.
         /// </summary>
         /// <param name="logger"></param>
@@ -20,7 +25,12 @@ namespace OzetteLibrary.MessagingProviders.Twilio
         /// <param name="destinationPhones"></param>
         public TwilioMessagingProviderOperations(ILogger logger, string twilioAccountID, string twilioAuthToken, string twilioSourcePhone, string destinationPhones)
         {
-            throw new NotImplementedException();
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            Logger = logger;
         }
 
         /// <summary>
