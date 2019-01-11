@@ -36,6 +36,10 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseConfigureAzureArgs(args, out parsed);
             }
+            else if (baseCommand == "configure-twilio")
+            {
+                return ParseConfigureTwilioArgs(args, out parsed);
+            }
             else if (baseCommand == "add-localsource")
             {
                 return ParseAddLocalSourceArgs(args, out parsed);
@@ -144,6 +148,66 @@ namespace OzetteLibrary.CommandLine
             if (map.ContainsKey("azurestorageaccounttoken"))
             {
                 configArgs.AzureStorageAccountToken = map["azurestorageaccounttoken"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            parsed = configArgs;
+            return true;
+        }
+
+        /// <summary>
+        /// Parses the provided arguments into an <c>ConfigureTwilioArguments</c> object.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="parsed"></param>
+        /// <returns></returns>
+        private bool ParseConfigureTwilioArgs(string[] args, out ArgumentBase parsed)
+        {
+            // initialize args object with default
+            var configArgs = new ConfigureTwilioArguments();
+            var map = ExtractArguments(args);
+
+            if (map.ContainsKey("twilioaccountid"))
+            {
+                configArgs.TwilioAccountID = map["twilioaccountid"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            if (map.ContainsKey("twilioauthtoken"))
+            {
+                configArgs.TwilioAuthToken = map["twilioauthtoken"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            if (map.ContainsKey("twiliosourcephone"))
+            {
+                configArgs.TwilioSourcePhone = map["twiliosourcephone"];
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            if (map.ContainsKey("twiliodestinationphones"))
+            {
+                configArgs.TwilioDestinationPhones = map["twiliodestinationphones"];
             }
             else
             {
