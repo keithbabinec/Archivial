@@ -29,7 +29,8 @@ namespace OzetteLibrary.Logging
         /// An example would be things like individual file transfer messages, state changes, etc.
         /// </remarks>
         /// <param name="message"></param>
-        void WriteTraceMessage(string message);
+        /// <param name="engineID"></param>
+        void WriteTraceMessage(string message, int engineID = 0);
 
         /// <summary>
         /// Writes a warning message to the trace log file on disk.
@@ -39,7 +40,8 @@ namespace OzetteLibrary.Logging
         /// An example would be things like individual file transfer messages, state changes, etc.
         /// </remarks>
         /// <param name="message"></param>
-        void WriteTraceWarning(string message);
+        /// <param name="engineID"></param>
+        void WriteTraceWarning(string message, int engineID = 0);
 
         /// <summary>
         /// Writes an error message to the trace log file on disk.
@@ -49,7 +51,8 @@ namespace OzetteLibrary.Logging
         /// An example would be things like individual file transfer messages, state changes, etc.
         /// </remarks>
         /// <param name="message"></param>
-        void WriteTraceError(string message);
+        /// <param name="engineID"></param>
+        void WriteTraceError(string message, int engineID = 0);
 
         /// <summary>
         /// Writes an error message (and exception) to the trace log file on disk.
@@ -61,7 +64,8 @@ namespace OzetteLibrary.Logging
         /// <param name="message"></param>
         /// <param name="exception"></param>
         /// <param name="stackContext"></param>
-        void WriteTraceError(string message, Exception exception, string stackContext);
+        /// <param name="engineID"></param>
+        void WriteTraceError(string message, Exception exception, string stackContext, int engineID = 0);
 
         /// <summary>
         /// Writes a system-level event message.
@@ -75,7 +79,8 @@ namespace OzetteLibrary.Logging
         /// <param name="severity"></param>
         /// <param name="eventID"></param>
         /// <param name="writeToTraceLog"></param>
-        void WriteSystemEvent(string message, EventLogEntryType severity, int eventID, bool writeToTraceLog);
+        /// <param name="engineID"></param>
+        void WriteSystemEvent(string message, EventLogEntryType severity, int eventID, bool writeToTraceLog, int engineID = 0);
 
         /// <summary>
         /// Writes a system-level error message with exception.
@@ -90,14 +95,16 @@ namespace OzetteLibrary.Logging
         /// <param name="stackContext"></param>
         /// <param name="eventID"></param>
         /// <param name="writeToTraceLog"></param>
-        void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID, bool writeToTraceLog);
+        /// <param name="engineID"></param>
+        void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID, bool writeToTraceLog, int engineID = 0);
 
         /// <summary>
         /// Writes a system-level message to the console only.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="severity"></param>
-        void WriteConsole(string message, EventLogEntryType severity);
+        /// <param name="engineID"></param>
+        void WriteConsole(string message, EventLogEntryType severity, int engineID = 0);
 
         /// <summary>
         /// Generates a full stack trace from the current method context.

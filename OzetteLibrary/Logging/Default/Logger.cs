@@ -123,9 +123,11 @@ namespace OzetteLibrary.Logging.Default
         /// A long-running loop/thread to write trace messages to disk.
         /// </summary>
         /// <remarks>
-        /// The general idea here is that when writing to a file on disk there may be write/lock issues.
-        /// They usually crop up from things like antivirus scans. If a single log message fails to write,
-        /// then this shouldn't crash the application. This function is a loop to write with retries and delays.
+        /// A dedicated message writer thread with retry solves two problems:
+        ///  1) We can queue messages for writing- which allows the logging consumers to return immediately and not wait for logging to flush to disk.
+        ///  2) Writing to a file on disk may encounter write/lock issues.
+        ///     They usually crop up from things like antivirus scans. If a single log message fails to write,
+        ///     then this shouldn't crash the application. This function is a loop to write with retries and delays.
         /// </remarks>
         public void TraceMessageWriter()
         {
@@ -179,7 +181,7 @@ namespace OzetteLibrary.Logging.Default
                 }
             }
         }
-        
+
         /// <summary>
         /// Writes an informational message to the trace log file on disk.
         /// </summary>
@@ -188,7 +190,8 @@ namespace OzetteLibrary.Logging.Default
         /// An example would be things like individual file transfer messages, state changes, etc.
         /// </remarks>
         /// <param name="message"></param>
-        public void WriteTraceMessage(string message)
+        /// <param name="engineID"></param>
+        public void WriteTraceMessage(string message, int engineID = 0)
         {
             if (TraceInitialized == false)
             {
@@ -199,7 +202,7 @@ namespace OzetteLibrary.Logging.Default
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
             }
 
-            TraceMessageQueue.Enqueue(PrependMessageWithDateAndSeverity(message, EventLogEntryType.Information));
+            TraceMessageQueue.Enqueue(PrependMessageWithDateAndSeverity(message, EventLogEntryType.Information, engineID));
         }
 
         /// <summary>
@@ -210,7 +213,8 @@ namespace OzetteLibrary.Logging.Default
         /// An example would be things like individual file transfer messages, state changes, etc.
         /// </remarks>
         /// <param name="message"></param>
-        public void WriteTraceWarning(string message)
+        /// <param name="engineID"></param>
+        public void WriteTraceWarning(string message, int engineID = 0)
         {
             if (TraceInitialized == false)
             {
@@ -221,7 +225,7 @@ namespace OzetteLibrary.Logging.Default
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
             }
 
-            TraceMessageQueue.Enqueue(PrependMessageWithDateAndSeverity(message, EventLogEntryType.Warning));
+            TraceMessageQueue.Enqueue(PrependMessageWithDateAndSeverity(message, EventLogEntryType.Warning, engineID));
         }
 
         /// <summary>
@@ -232,7 +236,8 @@ namespace OzetteLibrary.Logging.Default
         /// An example would be things like individual file transfer messages, state changes, etc.
         /// </remarks>
         /// <param name="message"></param>
-        public void WriteTraceError(string message)
+        /// <param name="engineID"></param>
+        public void WriteTraceError(string message, int engineID = 0)
         {
             if (TraceInitialized == false)
             {
@@ -243,7 +248,7 @@ namespace OzetteLibrary.Logging.Default
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
             }
 
-            TraceMessageQueue.Enqueue(PrependMessageWithDateAndSeverity(message, EventLogEntryType.Error));
+            TraceMessageQueue.Enqueue(PrependMessageWithDateAndSeverity(message, EventLogEntryType.Error, engineID));
         }
 
         /// <summary>
@@ -256,7 +261,8 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="message"></param>
         /// <param name="exception"></param>
         /// <param name="stackContext"></param>
-        public void WriteTraceError(string message, Exception exception, string stackContext)
+        /// <param name="engineID"></param>
+        public void WriteTraceError(string message, Exception exception, string stackContext, int engineID = 0)
         {
             if (TraceInitialized == false)
             {
@@ -286,7 +292,8 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="severity"></param>
         /// <param name="eventID"></param>
         /// <param name="writeToTraceLog"></param>
-        public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID, bool writeToTraceLog)
+        /// <param name="engineID"></param>
+        public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID, bool writeToTraceLog, int engineID = 0)
         {
             if (EventLogInitialized == false)
             {
@@ -297,7 +304,7 @@ namespace OzetteLibrary.Logging.Default
                 throw new ArgumentException("Argument cannot be null or empty/whitespace: " + nameof(message));
             }
 
-            var loggableMessage = PrependMessageWithDateAndSeverity(message, severity);
+            var loggableMessage = PrependMessageWithDateAndSeverity(message, severity, engineID);
             EventLog.WriteEntry(LogSource, loggableMessage, severity, eventID);
 
             if (writeToTraceLog && TraceInitialized)
@@ -320,7 +327,8 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="stackContext"></param>
         /// <param name="eventID"></param>
         /// <param name="writeToTraceLog"></param>
-        public void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID, bool writeToTraceLog)
+        /// <param name="engineID"></param>
+        public void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID, bool writeToTraceLog, int engineID = 0)
         {
             if (EventLogInitialized == false)
             {
@@ -350,7 +358,8 @@ namespace OzetteLibrary.Logging.Default
         /// </summary>
         /// <param name="message"></param>
         /// <param name="severity"></param>
-        public void WriteConsole(string message, EventLogEntryType severity = EventLogEntryType.Information)
+        /// <param name="engineID"></param>
+        public void WriteConsole(string message, EventLogEntryType severity = EventLogEntryType.Information, int engineID = 0)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
@@ -359,11 +368,11 @@ namespace OzetteLibrary.Logging.Default
 
             if (severity == EventLogEntryType.Error)
             {
-                Console.Error.WriteLine(PrependMessageWithDateAndSeverity(message, severity));
+                Console.Error.WriteLine(PrependMessageWithDateAndSeverity(message, severity, engineID));
             }
             else
             {
-                Console.WriteLine(PrependMessageWithDateAndSeverity(message, severity));
+                Console.WriteLine(PrependMessageWithDateAndSeverity(message, severity, engineID));
             }
         }
 
@@ -430,11 +439,13 @@ namespace OzetteLibrary.Logging.Default
         /// </summary>
         /// <param name="message"></param>
         /// <param name="severity"></param>
+        /// <param name="engineID"></param>
         /// <returns></returns>
-        private string PrependMessageWithDateAndSeverity(string message, EventLogEntryType severity)
+        private string PrependMessageWithDateAndSeverity(string message, EventLogEntryType severity, int engineID)
         {
-            return string.Format("{0} [{1}]: {2}",
+            return string.Format("{0} [Instance={1}] [{2}]: {3}",
                 DateTime.Now.ToString(Constants.Logging.SortableDateTimeFormat),
+                engineID,
                 severity.ToString(),
                 message
             );
