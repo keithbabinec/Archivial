@@ -445,7 +445,7 @@ namespace OzetteClientAgent
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Connection Engine ({0}) has failed.", e.EngineID),
+                    string.Format("Connection Engine instance {0} has failed.", e.EngineID),
                     e.Exception,
                     CoreLog.GenerateFullContextStackTrace(),
                     OzetteLibrary.Constants.EventIDs.FailedConnectionEngine, true);
@@ -453,7 +453,7 @@ namespace OzetteClientAgent
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Connection Engine ({0}) has stopped.", e.EngineID),
+                    string.Format("Connection Engine instance {0} has stopped.", e.EngineID),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedConnectionEngine, true);
             }
             else
@@ -505,7 +505,7 @@ namespace OzetteClientAgent
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Status Engine ({0}) has failed.", e.EngineID),
+                    string.Format("Status Engine instance {0} has failed.", e.EngineID),
                     e.Exception,
                     CoreLog.GenerateFullContextStackTrace(),
                     OzetteLibrary.Constants.EventIDs.FailedStatusEngine, true);
@@ -513,7 +513,7 @@ namespace OzetteClientAgent
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Status Engine ({0}) has stopped.", e.EngineID),
+                    string.Format("Status Engine instance {0} has stopped.", e.EngineID),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedStatusEngine, true);
             }
             else
@@ -565,7 +565,7 @@ namespace OzetteClientAgent
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Scanning Engine ({0}) has failed.", e.EngineID),
+                    string.Format("Scanning Engine instance {0} has failed.", e.EngineID),
                     e.Exception,
                     CoreLog.GenerateFullContextStackTrace(),
                     OzetteLibrary.Constants.EventIDs.FailedScanEngine, true);
@@ -573,7 +573,7 @@ namespace OzetteClientAgent
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Scanning Engine ({0}) has stopped.", e.EngineID),
+                    string.Format("Scanning Engine instance {0} has stopped.", e.EngineID),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedScanEngine, true);
             }
             else
@@ -636,7 +636,7 @@ namespace OzetteClientAgent
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Backup Engine ({0}) has failed.", e.EngineID),
+                    string.Format("Backup Engine instance {0} has failed.", e.EngineID),
                     e.Exception,
                     CoreLog.GenerateFullContextStackTrace(),
                     OzetteLibrary.Constants.EventIDs.FailedBackupEngine, true);
@@ -644,7 +644,7 @@ namespace OzetteClientAgent
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Backup Engine ({0}) has stopped.", e.EngineID),
+                    string.Format("Backup Engine instance {0} has stopped.", e.EngineID),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedBackupEngine, true);
             }
             else
