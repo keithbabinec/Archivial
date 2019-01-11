@@ -18,6 +18,11 @@ namespace OzetteLibrary.Events
         public EngineStoppedReason Reason { get; set; }
 
         /// <summary>
+        /// The ID of the engine instance.
+        /// </summary>
+        public int EngineID { get; set; }
+
+        /// <summary>
         /// Default/empty constructor.
         /// </summary>
         public EngineStoppedEventArgs()

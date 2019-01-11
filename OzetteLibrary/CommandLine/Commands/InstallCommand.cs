@@ -108,7 +108,7 @@ namespace OzetteLibrary.CommandLine.Commands
             CoreSettings.InstallationDirectory = arguments.InstallDirectory;
             CoreSettings.LogFilesDirectory = Path.Combine(arguments.InstallDirectory, "Logs");
             CoreSettings.EventlogName = "Ozette";
-            CoreSettings.BackupEngineInstances = 4;
+            CoreSettings.BackupEngineInstanceCount = 4;
 
             var dbPath = Path.Combine(arguments.InstallDirectory, "Database\\OzetteCloudBackup.db");
             CoreSettings.DatabaseConnectionString = string.Format("Filename={0};Journal=true;Mode=Shared", dbPath);
@@ -126,7 +126,7 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("LogFilesDirectory=" + CoreSettings.LogFilesDirectory);
             Logger.WriteConsole("EventlogName=" + CoreSettings.EventlogName);
             Logger.WriteConsole("DatabaseConnectionString=" + CoreSettings.DatabaseConnectionString);
-            Logger.WriteConsole("BackupEngineInstancesCount=" + CoreSettings.BackupEngineInstances);
+            Logger.WriteConsole("BackupEngineInstancesCount=" + CoreSettings.BackupEngineInstanceCount);
         }
 
         /// <summary>

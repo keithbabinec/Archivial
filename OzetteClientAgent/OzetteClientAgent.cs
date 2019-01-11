@@ -15,6 +15,7 @@ using System.Threading;
 using OzetteLibrary.Providers;
 using OzetteLibrary.MessagingProviders;
 using OzetteLibrary.MessagingProviders.Twilio;
+using System.Collections.Generic;
 
 namespace OzetteClientAgent
 {
@@ -63,22 +64,22 @@ namespace OzetteClientAgent
         /// <summary>
         /// A reference to the connection engine instance.
         /// </summary>
-        private ConnectionEngine Connection { get; set; }
+        private ConnectionEngine ConnectionEngineInstance { get; set; }
 
         /// <summary>
         /// A reference to the status engine instance.
         /// </summary>
-        private StatusEngine Status { get; set; }
+        private StatusEngine StatusEngineInstance { get; set; }
 
         /// <summary>
         /// A reference to the scanning engine instance.
         /// </summary>
-        private ScanEngine Scan { get; set; }
+        private ScanEngine ScanEngineInstance { get; set; }
 
         /// <summary>
-        /// A reference to the backup engine instance.
+        /// A reference to the backup engine instances.
         /// </summary>
-        private BackupEngine Backup { get; set; }
+        private List<BackupEngine> BackupEngineInstances { get; set; }
 
         /// <summary>
         /// A collection of storage provider connections.
@@ -159,21 +160,24 @@ namespace OzetteClientAgent
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppingService, true);
             }
 
-            if (Scan != null)
+            if (ScanEngineInstance != null)
             {
-                Scan.BeginStop();
+                ScanEngineInstance.BeginStop();
             }
-            if (Backup != null)
+            if (BackupEngineInstances != null)
             {
-                Backup.BeginStop();
+                foreach (var instance in BackupEngineInstances)
+                {
+                    instance.BeginStop();
+                }
             }
-            if (Connection != null)
+            if (ConnectionEngineInstance != null)
             {
-                Connection.BeginStop();
+                ConnectionEngineInstance.BeginStop();
             }
-            if (Status != null)
+            if (StatusEngineInstance != null)
             {
-                Status.BeginStop();
+                StatusEngineInstance.BeginStop();
             }
 
             if (CoreLog != null)
@@ -412,9 +416,9 @@ namespace OzetteClientAgent
                 var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                 db.PrepareDatabase();
 
-                Connection = new ConnectionEngine(db, CoreLog, StorageConnections, MessagingConnections);
-                Connection.Stopped += Connection_Stopped;
-                Connection.BeginStart();
+                ConnectionEngineInstance = new ConnectionEngine(db, CoreLog, StorageConnections, MessagingConnections);
+                ConnectionEngineInstance.Stopped += Connection_Stopped;
+                ConnectionEngineInstance.BeginStart();
 
                 CoreLog.WriteSystemEvent(
                     string.Format("Connection Engine has started."),
@@ -472,9 +476,9 @@ namespace OzetteClientAgent
                 var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                 db.PrepareDatabase();
 
-                Status = new StatusEngine(db, CoreLog, StorageConnections, MessagingConnections);
-                Status.Stopped += Status_Stopped;
-                Status.BeginStart();
+                StatusEngineInstance = new StatusEngine(db, CoreLog, StorageConnections, MessagingConnections);
+                StatusEngineInstance.Stopped += Status_Stopped;
+                StatusEngineInstance.BeginStart();
 
                 CoreLog.WriteSystemEvent(
                     string.Format("Status Engine has started."),
@@ -532,9 +536,9 @@ namespace OzetteClientAgent
                 var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                 db.PrepareDatabase();
 
-                Scan = new ScanEngine(db, ScanEngineLog, StorageConnections, MessagingConnections);
-                Scan.Stopped += Scan_Stopped;
-                Scan.BeginStart();
+                ScanEngineInstance = new ScanEngine(db, ScanEngineLog, StorageConnections, MessagingConnections);
+                ScanEngineInstance.Stopped += Scan_Stopped;
+                ScanEngineInstance.BeginStart();
 
                 CoreLog.WriteSystemEvent(
                     string.Format("Scanning Engine has started."),
@@ -587,18 +591,29 @@ namespace OzetteClientAgent
             // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
             // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
 
+            // each backup engine instance shares the same logger.
+            // this means a single log file for all engine instances- and each engine will prepend its log messages with a context tag.
+
             try
             {
-                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-                db.PrepareDatabase();
+                BackupEngineInstances = new List<BackupEngine>();
+                var instanceCount = CoreSettings.BackupEngineInstanceCount;
 
-                Backup = new BackupEngine(db, BackupEngineLog, StorageConnections, MessagingConnections);
-                Backup.Stopped += Backup_Stopped;
-                Backup.BeginStart();
+                for (int i = 0; i < instanceCount; i++)
+                {
+                    var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
+                    db.PrepareDatabase();
 
-                CoreLog.WriteSystemEvent(
-                    string.Format("Backup Engine has started."),
-                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedBackupEngine, true);
+                    var instance = new BackupEngine(db, BackupEngineLog, StorageConnections, MessagingConnections);
+                    instance.Stopped += Backup_Stopped;
+                    instance.BeginStart();
+
+                    BackupEngineInstances.Add(instance);
+
+                    CoreLog.WriteSystemEvent(
+                        string.Format("Backup Engine instance {0} has started.", i),
+                        EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedBackupEngine, true);
+                }
 
                 return true;
             }

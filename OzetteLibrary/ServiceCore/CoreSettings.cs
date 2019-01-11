@@ -87,7 +87,7 @@ namespace OzetteLibrary.ServiceCore
         /// <summary>
         /// The number of backup engine instances to use.
         /// </summary>
-        public static int BackupEngineInstances
+        public static int BackupEngineInstanceCount
         {
             get
             {
