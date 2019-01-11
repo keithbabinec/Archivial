@@ -50,7 +50,7 @@ Remove-Item -Force -Recurse $home\downloads\OzetteBin*
 
 OzetteCmd.exe is used to configure the Ozette installation. The commands below can be used to add, remove, or list sources (folders you want to backup) and providers (cloud destinations) for an existing Ozette installation.
 
-Note: Once Ozette is installed, OzetteCmd.exe should be available in your system path. This means you can run these configuration commands from any command prompt path location.
+Note: Once Ozette is installed, OzetteCmd.exe should be available in your system path. This means you can run these configuration commands from any command prompt path location. On windows you will need to close and re-open the PowerShell prompt for this change to take effect.
 
 Usage: OzetteCmd.exe &lt;command&gt; --Option1Name Option1Value --Option2Name Option2Value
 
