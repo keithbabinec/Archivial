@@ -445,7 +445,7 @@ namespace OzetteClientAgent
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Connection Engine has failed."),
+                    string.Format("Connection Engine ({0}) has failed.", e.EngineID),
                     e.Exception,
                     CoreLog.GenerateFullContextStackTrace(),
                     OzetteLibrary.Constants.EventIDs.FailedConnectionEngine, true);
@@ -453,7 +453,7 @@ namespace OzetteClientAgent
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Connection Engine has stopped."),
+                    string.Format("Connection Engine ({0}) has stopped.", e.EngineID),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedConnectionEngine, true);
             }
             else
@@ -476,7 +476,7 @@ namespace OzetteClientAgent
                 var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                 db.PrepareDatabase();
 
-                StatusEngineInstance = new StatusEngine(db, CoreLog, StorageConnections, MessagingConnections);
+                StatusEngineInstance = new StatusEngine(db, CoreLog, StorageConnections, MessagingConnections, 0);
                 StatusEngineInstance.Stopped += Status_Stopped;
                 StatusEngineInstance.BeginStart();
 
@@ -505,7 +505,7 @@ namespace OzetteClientAgent
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Status Engine has failed."),
+                    string.Format("Status Engine ({0}) has failed.", e.EngineID),
                     e.Exception,
                     CoreLog.GenerateFullContextStackTrace(),
                     OzetteLibrary.Constants.EventIDs.FailedStatusEngine, true);
@@ -513,7 +513,7 @@ namespace OzetteClientAgent
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Status Engine has stopped."),
+                    string.Format("Status Engine ({0}) has stopped.", e.EngineID),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedStatusEngine, true);
             }
             else
@@ -536,7 +536,7 @@ namespace OzetteClientAgent
                 var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                 db.PrepareDatabase();
 
-                ScanEngineInstance = new ScanEngine(db, ScanEngineLog, StorageConnections, MessagingConnections);
+                ScanEngineInstance = new ScanEngine(db, ScanEngineLog, StorageConnections, MessagingConnections, 0);
                 ScanEngineInstance.Stopped += Scan_Stopped;
                 ScanEngineInstance.BeginStart();
 
@@ -565,7 +565,7 @@ namespace OzetteClientAgent
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Scanning Engine has failed."),
+                    string.Format("Scanning Engine ({0}) has failed.", e.EngineID),
                     e.Exception,
                     CoreLog.GenerateFullContextStackTrace(),
                     OzetteLibrary.Constants.EventIDs.FailedScanEngine, true);
@@ -573,7 +573,7 @@ namespace OzetteClientAgent
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Scanning Engine has stopped."),
+                    string.Format("Scanning Engine ({0}) has stopped.", e.EngineID),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedScanEngine, true);
             }
             else
@@ -604,7 +604,7 @@ namespace OzetteClientAgent
                     var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
                     db.PrepareDatabase();
 
-                    var instance = new BackupEngine(db, BackupEngineLog, StorageConnections, MessagingConnections);
+                    var instance = new BackupEngine(db, BackupEngineLog, StorageConnections, MessagingConnections, i);
                     instance.Stopped += Backup_Stopped;
                     instance.BeginStart();
 
@@ -636,7 +636,7 @@ namespace OzetteClientAgent
             if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.Failed)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Backup Engine has failed."),
+                    string.Format("Backup Engine ({0}) has failed.", e.EngineID),
                     e.Exception,
                     CoreLog.GenerateFullContextStackTrace(),
                     OzetteLibrary.Constants.EventIDs.FailedBackupEngine, true);
@@ -644,7 +644,7 @@ namespace OzetteClientAgent
             else if (e.Reason == OzetteLibrary.Events.EngineStoppedReason.StopRequested)
             {
                 CoreLog.WriteSystemEvent(
-                    string.Format("Backup Engine has stopped."),
+                    string.Format("Backup Engine ({0}) has stopped.", e.EngineID),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedBackupEngine, true);
             }
             else

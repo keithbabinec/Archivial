@@ -33,9 +33,11 @@ namespace OzetteLibrary.Events
         /// Constructor that accepts an <c>EngineStoppedReason</c>.
         /// </summary>
         /// <param name="reason">Reason for stopping.</param>
-        public EngineStoppedEventArgs(EngineStoppedReason reason)
+        /// <param name="engineID">The engine instance ID.</param>
+        public EngineStoppedEventArgs(EngineStoppedReason reason, int engineID)
         {
             Reason = reason;
+            EngineID = engineID;
         }
 
         /// <summary>
@@ -45,10 +47,12 @@ namespace OzetteLibrary.Events
         /// The stop reason is automatically set to 'Failed'.
         /// </remarks>
         /// <param name="reason">Reason for stopping.</param>
-        public EngineStoppedEventArgs(Exception ex)
+        /// <param name="engineID">The engine instance ID.</param>
+        public EngineStoppedEventArgs(Exception ex, int engineID)
         {
             Reason = EngineStoppedReason.Failed;
             Exception = ex;
+            EngineID = engineID;
         }
     }
 }
