@@ -174,5 +174,10 @@
         /// Event ID: Failed to configure messaging provider connections.
         /// </summary>
         public const int FailedToConfigureMessagingProviderConnections = 2015;
+
+        /// <summary>
+        /// Event ID: A core application setting is invalid. 
+        /// </summary>
+        public const int CoreSettingInvalid = 2016;
     }
 }

@@ -96,7 +96,8 @@ namespace OzetteLibrary.Logging.Mock
         /// An example would be things like individual file transfer messages, state changes, etc.
         /// </remarks>
         /// <param name="message"></param>
-        public void WriteTraceMessage(string message)
+        /// <param name="engineID"></param>
+        public void WriteTraceMessage(string message, int engineID = 0)
         {
             WriteTraceMessageHasBeenCalled = true;
             var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Information);
@@ -111,7 +112,8 @@ namespace OzetteLibrary.Logging.Mock
         /// An example would be things like individual file transfer messages, state changes, etc.
         /// </remarks>
         /// <param name="message"></param>
-        public void WriteTraceWarning(string message)
+        /// <param name="engineID"></param>
+        public void WriteTraceWarning(string message, int engineID = 0)
         {
             WriteTraceWarningHasBeenCalled = true;
             var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Warning);
@@ -126,7 +128,8 @@ namespace OzetteLibrary.Logging.Mock
         /// An example would be things like individual file transfer messages, state changes, etc.
         /// </remarks>
         /// <param name="message"></param>
-        public void WriteTraceError(string message)
+        /// <param name="engineID"></param>
+        public void WriteTraceError(string message, int engineID = 0)
         {
             WriteTraceErrorHasBeenCalled = true;
             var loggableMessage = PrependMessageWithDateAndSeverity(message, EventLogEntryType.Error);
@@ -143,7 +146,8 @@ namespace OzetteLibrary.Logging.Mock
         /// <param name="message"></param>
         /// <param name="exception"></param>
         /// <param name="stackContext"></param>
-        public void WriteTraceError(string message, Exception exception, string stackContext)
+        /// <param name="engineID"></param>
+        public void WriteTraceError(string message, Exception exception, string stackContext, int engineID = 0)
         {
             WriteTraceErrorWithExceptionHasBeenCalled = true;
             ExceptionWritten = exception;
@@ -164,7 +168,8 @@ namespace OzetteLibrary.Logging.Mock
         /// <param name="severity"></param>
         /// <param name="eventID"></param>
         /// <param name="writeToTraceLog"></param>
-        public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID, bool writeToTraceLog)
+        /// <param name="engineID"></param>
+        public void WriteSystemEvent(string message, EventLogEntryType severity, int eventID, bool writeToTraceLog, int engineID = 0)
         {
             WriteSystemEventHasBeenCalled = true;
         }
@@ -182,7 +187,8 @@ namespace OzetteLibrary.Logging.Mock
         /// <param name="stackContext"></param>
         /// <param name="eventID"></param>
         /// <param name="writeToTraceLog"></param>
-        public void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID, bool writeToTraceLog)
+        /// <param name="engineID"></param>
+        public void WriteSystemEvent(string message, Exception exception, string stackContext, int eventID, bool writeToTraceLog, int engineID = 0)
         {
             WriteSystemEventWithExceptionHasBeenCalled = true;
         }
@@ -192,7 +198,8 @@ namespace OzetteLibrary.Logging.Mock
         /// </summary>
         /// <param name="message"></param>
         /// <param name="severity"></param>
-        public void WriteConsole(string message, EventLogEntryType severity = EventLogEntryType.Information)
+        /// <param name="engineID"></param>
+        public void WriteConsole(string message, EventLogEntryType severity = EventLogEntryType.Information, int engineID = 0)
         {
             if (string.IsNullOrWhiteSpace(message))
             {

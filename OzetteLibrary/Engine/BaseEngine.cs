@@ -4,7 +4,6 @@ using OzetteLibrary.Logging;
 using OzetteLibrary.MessagingProviders;
 using OzetteLibrary.StorageProviders;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace OzetteLibrary.Engine
@@ -24,7 +23,8 @@ namespace OzetteLibrary.Engine
         /// <param name="logger">A logging instance.</param>
         /// <param name="storageProviders">A collection of cloud backup storage provider connections.</param>
         /// <param name="messagingProviders">A collection of messaging provider connections.</param>
-        protected BaseEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection storageProviders, MessagingProviderConnectionsCollection messagingProviders)
+        /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
+        protected BaseEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection storageProviders, MessagingProviderConnectionsCollection messagingProviders, int instanceID)
         {
             // note: its ok to have no messaging providers (zero count).
             // it is not ok to have zero backup providers.
@@ -49,11 +49,16 @@ namespace OzetteLibrary.Engine
             {
                 throw new ArgumentNullException(nameof(messagingProviders));
             }
+            if (instanceID < 0)
+            {
+                throw new ArgumentException(nameof(instanceID) + " must be a positive integer.");
+            }
 
             Database = database;
             Logger = logger;
             StorageProviders = storageProviders;
             MessagingProviders = messagingProviders;
+            InstanceID = instanceID;
         }
 
         /// <summary>
@@ -84,6 +89,11 @@ namespace OzetteLibrary.Engine
         /// A flag to indicate if the engine is running.
         /// </summary>
         protected volatile bool Running = false;
+
+        /// <summary>
+        /// An instance ID for the engine.
+        /// </summary>
+        protected int InstanceID { get; set; }
 
         /// <summary>
         /// A reference to the logger.

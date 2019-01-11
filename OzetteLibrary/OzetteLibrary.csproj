@@ -124,6 +124,7 @@
     <Compile Include="Database\IClientDatabase.cs" />
     <Compile Include="Database\LiteDB\LiteDBClientDatabase.cs" />
     <Compile Include="Events\EngineStoppedReason.cs" />
+    <Compile Include="Exceptions\ApplicationCoreSettingInvalidValueException.cs" />
     <Compile Include="Exceptions\ApplicationCoreSettingMissingException.cs" />
     <Compile Include="Exceptions\ApplicationSecretMissingException.cs" />
     <Compile Include="Exceptions\MaximumFileRevisionsExceededException.cs" />

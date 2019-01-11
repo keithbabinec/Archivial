@@ -24,7 +24,13 @@ namespace OzetteLibrary.Client
         /// <param name="logger">A logging instance.</param>
         /// <param name="storageProviders">A collection of cloud backup storage provider connections.</param>
         /// <param name="messagingProviders">A collection of messaging provider connections.</param>
-        public ScanEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection storageProviders, MessagingProviderConnectionsCollection messagingProviders) : base(database, logger, storageProviders, messagingProviders) { }
+        /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
+        public ScanEngine(IClientDatabase database,
+                          ILogger logger,
+                          StorageProviderConnectionsCollection storageProviders,
+                          MessagingProviderConnectionsCollection messagingProviders,
+                          int instanceID)
+            : base(database, logger, storageProviders, messagingProviders, instanceID) { }
 
         /// <summary>
         /// Begins to start the scanning engine, returns immediately to the caller.
@@ -152,14 +158,14 @@ namespace OzetteLibrary.Client
 
                     if (Running == false)
                     {
-                        OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
+                        OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested, InstanceID));
                         break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                OnStopped(new EngineStoppedEventArgs(ex));
+                OnStopped(new EngineStoppedEventArgs(ex, InstanceID));
             }
         }
 

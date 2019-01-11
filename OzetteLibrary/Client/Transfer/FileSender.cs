@@ -20,7 +20,8 @@ namespace OzetteLibrary.Client.Transfer
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="providers">A collection of cloud backup providers.</param>
-        public FileSender(IClientDatabase database, ILogger logger, Dictionary<StorageProviderTypes, IStorageProviderFileOperations> providers)
+        /// <param name="instanceID">An engine instance ID.</param>
+        public FileSender(IClientDatabase database, ILogger logger, Dictionary<StorageProviderTypes, IStorageProviderFileOperations> providers, int instanceID)
         {
             if (database == null)
             {
@@ -43,6 +44,7 @@ namespace OzetteLibrary.Client.Transfer
             Logger = logger;
             Providers = providers;
             Hasher = new Hasher(Logger);
+            InstanceID = instanceID;
         }
 
         /// <summary>
@@ -61,6 +63,11 @@ namespace OzetteLibrary.Client.Transfer
         private Hasher Hasher { get; set; }
 
         /// <summary>
+        /// An instance ID for the engine.
+        /// </summary>
+        private int InstanceID { get; set; }
+
+        /// <summary>
         /// A reference to the provider connections.
         /// </summary>
         private Dictionary<StorageProviderTypes, IStorageProviderFileOperations> Providers { get; set; }
@@ -77,7 +84,7 @@ namespace OzetteLibrary.Client.Transfer
                 throw new ArgumentNullException(nameof(File));
             }
 
-            Logger.WriteTraceMessage(string.Format("Starting transfer operation for file: {0}", File.ToString()));
+            Logger.WriteTraceMessage(string.Format("Starting transfer operation for file: {0}", File.ToString()), InstanceID);
 
             try
             {
@@ -87,7 +94,7 @@ namespace OzetteLibrary.Client.Transfer
                 var info = new FileInfo(File.FullSourcePath);
                 if (!info.Exists)
                 {
-                    Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It has been deleted or is no longer accessible since it was scanned.", File.FullSourcePath));
+                    Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It has been deleted or is no longer accessible since it was scanned.", File.FullSourcePath), InstanceID);
                     File.SetFileAsDeleted();
                     Database.UpdateBackupFile(File);
                     return;
@@ -95,7 +102,7 @@ namespace OzetteLibrary.Client.Transfer
 
                 if (info.Length == 0)
                 {
-                    Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It is empty (has no contents).", File.FullSourcePath));
+                    Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It is empty (has no contents).", File.FullSourcePath), InstanceID);
                     File.SetFileAsReadOrBackupFailed();
                     Database.UpdateBackupFile(File);
                     return;
@@ -131,7 +138,7 @@ namespace OzetteLibrary.Client.Transfer
             }
             catch (Exception ex)
             {
-                Logger.WriteTraceError("An error occurred while preparing to transfer a file.", ex, Logger.GenerateFullContextStackTrace());
+                Logger.WriteTraceError("An error occurred while preparing to transfer a file.", ex, Logger.GenerateFullContextStackTrace(), InstanceID);
                 File.SetFileAsReadOrBackupFailed();
                 Database.UpdateBackupFile(File);
             }
@@ -163,7 +170,7 @@ namespace OzetteLibrary.Client.Transfer
                 }
                 catch (Exception ex)
                 {
-                    Logger.WriteTraceError("An error occurred during a file transfer.", ex, Logger.GenerateFullContextStackTrace());
+                    Logger.WriteTraceError("An error occurred during a file transfer.", ex, Logger.GenerateFullContextStackTrace(), InstanceID);
                     file.SetProviderToFailed(providerName);
                 }
                 finally
@@ -197,7 +204,7 @@ namespace OzetteLibrary.Client.Transfer
                     && providerState.SyncStatus == FileStatus.Synced
                     && providerState.Metadata[ProviderMetadata.FileHashKeyName] == file.FileHashString)
                 {
-                    Logger.WriteTraceMessage(string.Format("Found a sync mismatch: this file is already synced at the provider [{0}]. Updating our local status.", provider.Key));
+                    Logger.WriteTraceMessage(string.Format("Found a sync mismatch: this file is already synced at the provider [{0}]. Updating our local status.", provider.Key), InstanceID);
 
                     file.SetProviderToCompleted(provider.Key);
                     Database.UpdateBackupFile(file);

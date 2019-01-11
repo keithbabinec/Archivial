@@ -24,7 +24,13 @@ namespace OzetteLibrary.Client
         /// <param name="logger">A logging instance.</param>
         /// <param name="storageProviders">A collection of cloud backup storage provider connections.</param>
         /// <param name="messagingProviders">A collection of messaging provider connections.</param>
-        public BackupEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection storageProviders, MessagingProviderConnectionsCollection messagingProviders) : base(database, logger, storageProviders, messagingProviders) { }
+        /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
+        public BackupEngine(IClientDatabase database,
+                            ILogger logger,
+                            StorageProviderConnectionsCollection storageProviders,
+                            MessagingProviderConnectionsCollection messagingProviders,
+                            int instanceID)
+            : base(database, logger, storageProviders, messagingProviders, instanceID) { }
 
         /// <summary>
         /// Begins to start the backup engine, returns immediately to the caller.
@@ -37,14 +43,14 @@ namespace OzetteLibrary.Client
             }
 
             Running = true;
-            Sender = new FileSender(Database, Logger, StorageProviders);
+            Sender = new FileSender(Database, Logger, StorageProviders, InstanceID);
 
-            Logger.WriteTraceMessage(string.Format("Backup engine is starting up."));
+            Logger.WriteTraceMessage(string.Format("Backup engine is starting up."), InstanceID);
 
             Thread pl = new Thread(() => ProcessLoop());
             pl.Start();
 
-            Logger.WriteTraceMessage(string.Format("Backup engine is now running."));
+            Logger.WriteTraceMessage(string.Format("Backup engine is now running."), InstanceID);
         }
 
         /// <summary>
@@ -54,7 +60,7 @@ namespace OzetteLibrary.Client
         {
             if (Running == true)
             {
-                Logger.WriteTraceMessage("Backup engine is shutting down.");
+                Logger.WriteTraceMessage("Backup engine is shutting down.", InstanceID);
                 Running = false;
             }
         }
@@ -133,20 +139,20 @@ namespace OzetteLibrary.Client
                         if (LastHeartbeatOrBackupCompleted.HasValue == false || LastHeartbeatOrBackupCompleted.Value < DateTime.Now.Add(TimeSpan.FromMinutes(-1)))
                         {
                             LastHeartbeatOrBackupCompleted = DateTime.Now;
-                            Logger.WriteTraceMessage("Backup engine heartbeat: no recent activity.");
+                            Logger.WriteTraceMessage("Backup engine heartbeat: no recent activity.", InstanceID);
                         }
                     }
 
                     if (Running == false)
                     {
-                        OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested));
+                        OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested, InstanceID));
                         break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                OnStopped(new EngineStoppedEventArgs(ex));
+                OnStopped(new EngineStoppedEventArgs(ex, InstanceID));
             }
         }
 
@@ -166,7 +172,7 @@ namespace OzetteLibrary.Client
             catch (Exception ex)
             {
                 string err = "Failed to capture the next file ready for backup.";
-                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetNextFileToBackup, true);
+                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetNextFileToBackup, true, InstanceID);
 
                 return null;
             }
