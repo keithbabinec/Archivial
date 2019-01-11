@@ -211,7 +211,14 @@ namespace OzetteLibrary.CommandLine.Commands
                 "OzetteClientAgent.exe.config",
                 "OzetteLibrary.dll",
                 "OzetteCmd.exe",
-                "OzetteCmd.exe.config"
+                "OzetteCmd.exe.config",
+                "Microsoft.IdentityModel.Logging.dll",
+                "Microsoft.IdentityModel.Tokens.dll",
+                "Microsoft.IdentityModel.Tokens.xml",
+                "System.IdentityModel.Tokens.Jwt.dll",
+                "System.IdentityModel.Tokens.Jwt.xml",
+                "Twilio.dll",
+                "Twilio.xml"
             };
 
             foreach (var file in fileManifest)
