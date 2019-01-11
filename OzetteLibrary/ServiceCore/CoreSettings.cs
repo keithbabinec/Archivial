@@ -10,86 +10,101 @@ namespace OzetteLibrary.ServiceCore
     public static class CoreSettings
     {
         /// <summary>
-        /// Returns the database connection string.
+        /// The database connection string.
         /// </summary>
         public static string DatabaseConnectionString
         {
             get
             {
-                return GetCoreSetting(BootstrapSettingNames.DatabaseConnectionString);
+                return GetCoreStringSetting(BootstrapSettingNames.DatabaseConnectionString);
             }
             set
             {
-                SetCoreSetting(BootstrapSettingNames.DatabaseConnectionString, value);
+                SetCoreStringSetting(BootstrapSettingNames.DatabaseConnectionString, value);
             }
         }
 
         /// <summary>
-        /// Returns the event log name/source.
+        /// The event log name/source.
         /// </summary>
         public static string EventlogName
         {
             get
             {
-                return GetCoreSetting(BootstrapSettingNames.EventlogName);
+                return GetCoreStringSetting(BootstrapSettingNames.EventlogName);
             }
             set
             {
-                SetCoreSetting(BootstrapSettingNames.EventlogName, value);
+                SetCoreStringSetting(BootstrapSettingNames.EventlogName, value);
             }
         }
 
         /// <summary>
-        /// Returns the log files directory.
+        /// The log files directory.
         /// </summary>
         public static string InstallationDirectory
         {
             get
             {
-                return GetCoreSetting(BootstrapSettingNames.InstallationDirectory);
+                return GetCoreStringSetting(BootstrapSettingNames.InstallationDirectory);
             }
             set
             {
-                SetCoreSetting(BootstrapSettingNames.InstallationDirectory, value);
+                SetCoreStringSetting(BootstrapSettingNames.InstallationDirectory, value);
             }
         }
 
         /// <summary>
-        /// Returns the log files directory.
+        /// The log files directory.
         /// </summary>
         public static string LogFilesDirectory
         {
             get
             {
-                return GetCoreSetting(BootstrapSettingNames.LogFilesDirectory);
+                return GetCoreStringSetting(BootstrapSettingNames.LogFilesDirectory);
             }
             set
             {
-                SetCoreSetting(BootstrapSettingNames.LogFilesDirectory, value);
+                SetCoreStringSetting(BootstrapSettingNames.LogFilesDirectory, value);
             }
         }
 
         /// <summary>
-        /// Returns the encryption IV value.
+        /// The encryption IV value.
         /// </summary>
         public static string ProtectionIv
         {
             get
             {
-                return GetCoreSetting(BootstrapSettingNames.ProtectionIV);
+                return GetCoreStringSetting(BootstrapSettingNames.ProtectionIV);
             }
             set
             {
-                SetCoreSetting(BootstrapSettingNames.ProtectionIV, value);
+                SetCoreStringSetting(BootstrapSettingNames.ProtectionIV, value);
             }
         }
 
         /// <summary>
-        /// Gets a core setting value.
+        /// The number of backup engine instances to use.
+        /// </summary>
+        public static int BackupEngineInstances
+        {
+            get
+            {
+                return GetCoreIntSetting(BootstrapSettingNames.BackupEngineInstancesCount);
+            }
+            set
+            {
+                SetCoreIntSetting(BootstrapSettingNames.BackupEngineInstancesCount, value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Gets a core string setting value.
         /// </summary>
         /// <param name="name">Name of the setting.</param>
         /// <returns>The setting value.</returns>
-        private static string GetCoreSetting(string name)
+        private static string GetCoreStringSetting(string name)
         {
             var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine);
 
@@ -102,11 +117,45 @@ namespace OzetteLibrary.ServiceCore
         }
 
         /// <summary>
-        /// Sets a core setting value.
+        /// Sets a core string setting value.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        private static void SetCoreSetting(string name, string value)
+        private static void SetCoreStringSetting(string name, string value)
+        {
+            Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.Machine);
+        }
+
+        /// <summary>
+        /// Gets a core int setting value.
+        /// </summary>
+        /// <param name="name">Name of the setting.</param>
+        /// <returns>The setting value.</returns>
+        private static int GetCoreIntSetting(string name)
+        {
+            var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine);
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ApplicationCoreSettingMissingException(name);
+            }
+
+            if (int.TryParse(value, out int result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new ApplicationCoreSettingInvalidValueException(name);
+            }
+        }
+
+        /// <summary>
+        /// Sets a core int setting value.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        private static void SetCoreIntSetting(string name, string value)
         {
             Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.Machine);
         }

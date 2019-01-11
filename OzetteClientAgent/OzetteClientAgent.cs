@@ -136,7 +136,7 @@ namespace OzetteClientAgent
                 return;
             }
 
-            if (!StartBackupEngine())
+            if (!StartBackupEngines())
             {
                 Stop();
                 return;
@@ -279,6 +279,13 @@ namespace OzetteClientAgent
 
                 return false;
             }
+            catch (ApplicationCoreSettingInvalidValueException ex)
+            {
+                CoreLog.WriteSystemEvent("A core application setting has an invalid value specified: " + ex.Message,
+                    EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.CoreSettingInvalid, true);
+
+                return false;
+            }
             catch (ApplicationSecretMissingException)
             {
                 CoreLog.WriteSystemEvent("Failed to configure cloud storage provider connections: A cloud storage provider is missing required connection settings.",
@@ -365,6 +372,13 @@ namespace OzetteClientAgent
             {
                 CoreLog.WriteSystemEvent("A core application setting has not been configured yet: " + ex.Message,
                     EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.CoreSettingMissing, true);
+
+                return false;
+            }
+            catch (ApplicationCoreSettingInvalidValueException ex)
+            {
+                CoreLog.WriteSystemEvent("A core application setting has an invalid value specified: " + ex.Message,
+                    EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.CoreSettingInvalid, true);
 
                 return false;
             }
@@ -565,10 +579,10 @@ namespace OzetteClientAgent
         }
 
         /// <summary>
-        /// Starts the backup engine.
+        /// Starts the backup engines.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
-        private bool StartBackupEngine()
+        private bool StartBackupEngines()
         {
             // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
             // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.

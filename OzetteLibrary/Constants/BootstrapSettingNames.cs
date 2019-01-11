@@ -32,5 +32,10 @@
         /// The database connection string name.
         /// </summary>
         public const string DatabaseConnectionString = "OZETTE_DATABASECONNECTIONSTRING";
+
+        /// <summary>
+        /// The number of backup engine instances to run.
+        /// </summary>
+        public const string BackupEngineInstancesCount = "OZETTE_BACKUPENGINEINSTANCESCOUNT";
     }
 }
