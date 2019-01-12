@@ -1,0 +1,5 @@
+﻿CREATE TABLE [dbo].[DirectoryMapItems]
+(
+	[ID] UNIQUEIDENTIFIER NOT NULL,
+	[LocalPath] NVARCHAR(MAX) NOT NULL
+)

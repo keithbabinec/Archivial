@@ -60,4 +60,13 @@
     <Folder Include="Tables" />
     <Folder Include="Stored Procedures" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\ApplicationOptions.sql" />
+    <Build Include="Tables\DirectoryMapItems.sql" />
+    <Build Include="Tables\NetCredentials.sql" />
+    <Build Include="Tables\Providers.sql" />
+    <Build Include="Tables\SourceLocations.sql" />
+    <Build Include="Tables\BackupFiles.sql" />
+    <Build Include="Tables\CopyState.sql" />
+  </ItemGroup>
 </Project>
