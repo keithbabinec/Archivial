@@ -116,13 +116,8 @@ namespace OzetteLibrary.Database
         /// Adds a new client file to the database.
         /// </summary>
         /// <param name="File"><c>BackupFile</c></param>
-        void AddBackupFile(BackupFile File);
-
-        /// <summary>
-        /// Updates an existing client file in the database.
-        /// </summary>
-        /// <param name="File"><c>BackupFile</c></param>
-        void UpdateBackupFile(BackupFile File);
+        /// <param name="UpdateCopyState">Flag to indicate if we should be updating copy state.</param>
+        Task SetBackupFileAsync(BackupFile File, bool UpdateCopyState);
 
         /// <summary>
         /// Gets the next file that needs to be backed up.

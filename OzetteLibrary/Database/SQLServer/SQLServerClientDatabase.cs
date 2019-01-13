@@ -656,18 +656,70 @@ namespace OzetteLibrary.Database.SQLServer
         /// Adds a new client file to the database.
         /// </summary>
         /// <param name="File"><c>BackupFile</c></param>
-        public void AddBackupFile(BackupFile File)
+        /// <param name="ShouldUpdateCopyState">Flag to indicate if we should be updating copy state.</param>
+        public async Task SetBackupFileAsync(BackupFile File, bool ShouldUpdateCopyState)
         {
-            throw new NotImplementedException();
-        }
+            if (File == null)
+            {
+                throw new ArgumentNullException(nameof(File));
+            }
 
-        /// <summary>
-        /// Updates an existing client file in the database.
-        /// </summary>
-        /// <param name="File"><c>BackupFile</c></param>
-        public void UpdateBackupFile(BackupFile File)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.SetBackupFile";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", File.FileID);
+                        cmd.Parameters.AddWithValue("@FileName", File.Filename);
+                        cmd.Parameters.AddWithValue("@Directory", File.Directory);
+                        cmd.Parameters.AddWithValue("@FullSourcePath", File.FullSourcePath);
+                        cmd.Parameters.AddWithValue("@FileSizeBytes", File.FileSizeBytes);
+                        cmd.Parameters.AddWithValue("@LastModified", File.LastModified);
+                        cmd.Parameters.AddWithValue("@TotalFileBlocks", File.TotalFileBlocks);
+                        cmd.Parameters.AddWithValue("@FileHash", File.FileHash);
+                        cmd.Parameters.AddWithValue("@FileHashString", File.FileHashString);
+                        cmd.Parameters.AddWithValue("@Priority", File.Priority);
+                        cmd.Parameters.AddWithValue("@FileRevisionNumber", File.FileRevisionNumber);
+                        cmd.Parameters.AddWithValue("@HashAlgorithmType", File.HashAlgorithmType);
+                        cmd.Parameters.AddWithValue("@LastChecked", File.LastChecked);
+                        cmd.Parameters.AddWithValue("@LastUpdated", File.LastUpdated);
+                        cmd.Parameters.AddWithValue("@OverallState", File.OverallState);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+
+                    if (ShouldUpdateCopyState && File.CopyState != null)
+                    {
+                        foreach (var provider in File.CopyState.Values)
+                        {
+                            using (SqlCommand cmd = new SqlCommand())
+                            {
+                                cmd.Connection = sqlcon;
+                                cmd.CommandText = "dbo.SetCopyState";
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                                cmd.Parameters.AddWithValue("@FileID", File.FileID);
+                                cmd.Parameters.AddWithValue("@StorageProvider", provider.Provider);
+                                cmd.Parameters.AddWithValue("@SyncStatus", provider.SyncStatus);
+                                cmd.Parameters.AddWithValue("@HydrationStatus", provider.HydrationStatus);
+                                cmd.Parameters.AddWithValue("@LastCompletedFileBlockIndex", provider.LastCompletedFileBlockIndex);
+
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
