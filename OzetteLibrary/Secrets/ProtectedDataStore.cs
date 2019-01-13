@@ -57,7 +57,7 @@ namespace OzetteLibrary.Secrets
         {
             // pull encrypted secret from the database.
 
-            var settingValue = Database.GetApplicationOption(SecretName);
+            var settingValue = Database.GetApplicationOptionAsync(SecretName);
 
             if (string.IsNullOrWhiteSpace(settingValue))
             {

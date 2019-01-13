@@ -86,8 +86,8 @@ namespace OzetteLibrary.Client
                 {
                     // first: grab current options from the database
 
-                    var sourcesFilePath = Database.GetApplicationOption(Constants.RuntimeSettingNames.SourcesFilePath);
-                    var providersFilePath = Database.GetApplicationOption(Constants.RuntimeSettingNames.ProvidersFilePath);
+                    var sourcesFilePath = Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.SourcesFilePath);
+                    var providersFilePath = Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.ProvidersFilePath);
                     var scanOptions = GetScanFrequencies(Database);
 
                     // second: check to see if we have any valid sources defined.
@@ -179,13 +179,13 @@ namespace OzetteLibrary.Client
             ScanFrequencies scan = new ScanFrequencies();
 
             scan.LowPriorityScanFrequencyInHours = 
-                Convert.ToInt32(db.GetApplicationOption(Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours));
+                Convert.ToInt32(db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours));
 
             scan.MedPriorityScanFrequencyInHours =
-                Convert.ToInt32(db.GetApplicationOption(Constants.RuntimeSettingNames.MedPriorityScanFrequencyInHours));
+                Convert.ToInt32(db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.MedPriorityScanFrequencyInHours));
 
             scan.HighPriorityScanFrequencyInHours =
-                Convert.ToInt32(db.GetApplicationOption(Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours));
+                Convert.ToInt32(db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours));
 
             return scan;
         }

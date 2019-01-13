@@ -40,7 +40,7 @@ namespace OzetteLibraryTests.Secrets
         public void ProtectedDataStoreGetApplicationSecretThrowsWhenSecretIsNotFound()
         {
             var db = new Mock<IClientDatabase>();
-            db.Setup(x => x.GetApplicationOption(It.IsAny<string>())).Returns((string)null);
+            db.Setup(x => x.GetApplicationOptionAsync(It.IsAny<string>())).Returns((string)null);
 
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;

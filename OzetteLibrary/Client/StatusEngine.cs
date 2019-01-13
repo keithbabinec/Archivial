@@ -104,7 +104,7 @@ namespace OzetteLibrary.Client
         {
             // add the next status check time, if it isn't already in the queue.
 
-            var scheduleString = Database.GetApplicationOption(Constants.RuntimeSettingNames.StatusUpdateSchedule);
+            var scheduleString = Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.StatusUpdateSchedule);
             var schedule = NCrontab.CrontabSchedule.Parse(scheduleString);
             var nextRun = schedule.GetNextOccurrence(DateTime.Now);
 

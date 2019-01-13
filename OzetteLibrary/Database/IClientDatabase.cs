@@ -28,7 +28,7 @@ namespace OzetteLibrary.Database
         /// </remarks>
         /// <param name="OptionName">Option name</param>
         /// <returns>The setting value.</returns>
-        string GetApplicationOption(string OptionName);
+        Task<string> GetApplicationOptionAsync(string OptionName);
 
         /// <summary>
         /// Removes an application setting value from the database.
