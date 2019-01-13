@@ -409,15 +409,6 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
-        /// Returns all of the client files in the database.
-        /// </summary>
-        /// <returns><c>BackupFile</c></returns>
-        public BackupFiles GetAllBackupFiles()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Returns the directory map item for the specified local directory.
         /// </summary>
         /// <remarks>
@@ -434,9 +425,69 @@ namespace OzetteLibrary.Database.SQLServer
         /// Returns all source locations defined in the database.
         /// </summary>
         /// <returns><c>SourceLocations</c></returns>
-        public SourceLocations GetAllSourceLocations()
+        public async Task<SourceLocations> GetSourceLocationsAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.GetSourceLocations";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        var result = new SourceLocations();
+
+                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        {
+                            // local sources
+
+                            while (await rdr.ReadAsync())
+                            {
+                                result.Add(new LocalSourceLocation()
+                                {
+                                    ID = rdr.GetInt32(0),
+                                    Path = rdr.GetString(1),
+                                    FileMatchFilter = rdr.GetString(2),
+                                    Priority = (FileBackupPriority)rdr.GetInt32(3),
+                                    RevisionCount = rdr.GetInt32(4),
+                                    LastCompletedScan = rdr.GetDateTime(5)
+                                });
+                            }
+
+                            // network sources
+
+                            if (await rdr.NextResultAsync())
+                            {
+                                while (await rdr.ReadAsync())
+                                {
+                                    result.Add(new NetworkSourceLocation()
+                                    {
+                                        ID = rdr.GetInt32(0),
+                                        Path = rdr.GetString(1),
+                                        FileMatchFilter = rdr.GetString(2),
+                                        Priority = (FileBackupPriority)rdr.GetInt32(3),
+                                        RevisionCount = rdr.GetInt32(4),
+                                        LastCompletedScan = rdr.GetDateTime(5),
+                                        CredentialName = rdr.GetString(6),
+                                        IsConnected = rdr.GetBoolean(7),
+                                        IsFailed = rdr.GetBoolean(8),
+                                        LastConnectionCheck = rdr.IsDBNull(9) ? (DateTime?)null : rdr.GetDateTime(9)
+                                    });
+                                }
+                            }
+                        }
+
+                        return result;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

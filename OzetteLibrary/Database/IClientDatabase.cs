@@ -84,12 +84,6 @@ namespace OzetteLibrary.Database
         BackupFileLookup GetBackupFile(string FullFilePath, long FileSizeBytes, DateTime FileLastModified);
 
         /// <summary>
-        /// Returns all of the client files in the database.
-        /// </summary>
-        /// <returns><c>BackupFile</c></returns>
-        BackupFiles GetAllBackupFiles();
-
-        /// <summary>
         /// Returns the directory map item for the specified local directory.
         /// </summary>
         /// <remarks>
@@ -103,7 +97,7 @@ namespace OzetteLibrary.Database
         /// Returns all source locations defined in the database.
         /// </summary>
         /// <returns><c>SourceLocations</c></returns>
-        SourceLocations GetAllSourceLocations();
+        Task<SourceLocations> GetSourceLocationsAsync();
 
         /// <summary>
         /// Sets a new source locations collection in the database (this will wipe out existing sources).

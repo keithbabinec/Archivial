@@ -152,6 +152,7 @@
     <Compile Include="Folders\LocalSourceLocation.cs" />
     <Compile Include="Folders\NetworkSourceLocation.cs" />
     <Compile Include="Folders\ScanFrequencies.cs" />
+    <Compile Include="Folders\SourceLocationType.cs" />
     <Compile Include="Logging\Default\Logger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Mock\MockLogger.cs" />

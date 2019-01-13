@@ -66,7 +66,7 @@
     <Build Include="Tables\DirectoryMapItems.sql" />
     <Build Include="Tables\NetCredentials.sql" />
     <Build Include="Tables\Providers.sql" />
-    <Build Include="Tables\SourceLocations.sql" />
+    <Build Include="Tables\LocalSourceLocations.sql" />
     <Build Include="Tables\BackupFiles.sql" />
     <Build Include="Tables\CopyState.sql" />
     <Build Include="Stored Procedures\SetApplicationOption.sql" />
@@ -78,6 +78,8 @@
     <Build Include="Stored Procedures\AddNetCredential.sql" />
     <Build Include="Stored Procedures\RemoveNetCredential.sql" />
     <Build Include="Stored Procedures\GetNetCredentials.sql" />
+    <Build Include="Tables\NetworkSourceLocations.sql" />
+    <Build Include="Stored Procedures\GetSourceLocations.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
