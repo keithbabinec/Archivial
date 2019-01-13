@@ -1,23 +1,26 @@
-﻿using OzetteLibrary.Files;
+﻿using System;
+using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
+using OzetteLibrary.Providers;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
-using System;
-using OzetteLibrary.Providers;
 
-namespace OzetteLibrary.Database
+namespace OzetteLibrary.Database.SQLServer
 {
     /// <summary>
-    /// A generic database interface for the client database.
+    /// A SQL Server implementation of the client database. 
     /// </summary>
-    public interface IClientDatabase
+    public class SQLServerClientDatabase : IClientDatabase
     {
         /// <summary>
         /// Saves an application setting to the database.
         /// </summary>
         /// <param name="OptionName">Option name</param>
         /// <param name="OptionValue">Option value</param>
-        void SetApplicationOption(string OptionName, string OptionValue);
+        public void SetApplicationOption(string OptionName, string OptionValue)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Retrieves an application setting value from the database.
@@ -27,44 +30,65 @@ namespace OzetteLibrary.Database
         /// </remarks>
         /// <param name="OptionName">Option name</param>
         /// <returns>The setting value.</returns>
-        string GetApplicationOption(string OptionName);
+        public string GetApplicationOption(string OptionName)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Removes an application setting value from the database.
         /// </summary>
         /// <param name="OptionName">Option name</param>
-        void RemoveApplicationOption(string OptionName);
+        public void RemoveApplicationOption(string OptionName)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Returns a list of all providers defined in the database for the specified type.
         /// </summary>
         /// <param name="Type">The type of providers to return.</param>
         /// <returns><c>ProviderCollection</c></returns>
-        ProviderCollection GetProviders(ProviderTypes Type);
+        public ProviderCollection GetProviders(ProviderTypes Type)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Removes the specified provider by ID.
         /// </summary>
         /// <param name="ProviderID">Provider ID.</param>
-        void RemoveProvider(int ProviderID);
+        public void RemoveProvider(int ProviderID)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Adds the specified Provider object to the database.
         /// </summary>
         /// <param name="Provider"></param>
-        void AddProvider(Provider Provider);
+        public void AddProvider(Provider Provider)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Commits the net credentials collection to the database.
         /// </summary>
         /// <param name="Credentials">A collection of net credentials.</param>
-        void SetNetCredentialsList(NetCredentialsCollection Credentials);
+        public void SetNetCredentialsList(NetCredentialsCollection Credentials)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Returns all of the net credentials defined in the database.
         /// </summary>
         /// <returns>A collection of net credentials.</returns>
-        NetCredentialsCollection GetNetCredentialsList();
+        public NetCredentialsCollection GetNetCredentialsList()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Checks the index for a file matching the provided name, path, filesize, and lastmodified date.
@@ -73,13 +97,19 @@ namespace OzetteLibrary.Database
         /// <param name="FileSizeBytes">File size in bytes</param>
         /// <param name="FileLastModified">File last modified timestamp</param>
         /// <returns></returns>
-        BackupFileLookup GetBackupFile(string FullFilePath, long FileSizeBytes, DateTime FileLastModified);
+        public BackupFileLookup GetBackupFile(string FullFilePath, long FileSizeBytes, DateTime FileLastModified)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Returns all of the client files in the database.
         /// </summary>
         /// <returns><c>BackupFile</c></returns>
-        BackupFiles GetAllBackupFiles();
+        public BackupFiles GetAllBackupFiles()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Returns the directory map item for the specified local directory.
@@ -89,37 +119,55 @@ namespace OzetteLibrary.Database
         /// </remarks>
         /// <param name="DirectoryPath">Local directory path. Ex: 'C:\bin\programs'</param>
         /// <returns><c>DirectoryMapItem</c></returns>
-        DirectoryMapItem GetDirectoryMapItem(string DirectoryPath);
+        public DirectoryMapItem GetDirectoryMapItem(string DirectoryPath)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Returns all source locations defined in the database.
         /// </summary>
         /// <returns><c>SourceLocations</c></returns>
-        SourceLocations GetAllSourceLocations();
+        public SourceLocations GetAllSourceLocations()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Sets a new source locations collection in the database (this will wipe out existing sources).
         /// </summary>
         /// <param name="Locations"><c>SourceLocations</c></param>
-        void SetSourceLocations(SourceLocations Locations);
+        public void SetSourceLocations(SourceLocations Locations)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Updates a single source location with the specified source.
         /// </summary>
         /// <param name="Location"><c>SourceLocation</c></param>
-        void UpdateSourceLocation(SourceLocation Location);
+        public void UpdateSourceLocation(SourceLocation Location)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Adds a new client file to the database.
         /// </summary>
         /// <param name="File"><c>BackupFile</c></param>
-        void AddBackupFile(BackupFile File);
+        public void AddBackupFile(BackupFile File)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Updates an existing client file in the database.
         /// </summary>
         /// <param name="File"><c>BackupFile</c></param>
-        void UpdateBackupFile(BackupFile File);
+        public void UpdateBackupFile(BackupFile File)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Gets the next file that needs to be backed up.
@@ -128,12 +176,18 @@ namespace OzetteLibrary.Database
         /// If no files need to be backed up, return null.
         /// </remarks>
         /// <returns><c>BackupFile</c></returns>
-        BackupFile GetNextFileToBackup();
+        public BackupFile GetNextFileToBackup()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Calculates and returns the overall backup progress.
         /// </summary>
         /// <returns></returns>
-        BackupProgress GetBackupProgress();
+        public BackupProgress GetBackupProgress()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
