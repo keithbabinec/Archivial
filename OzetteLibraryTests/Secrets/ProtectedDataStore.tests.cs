@@ -1,4 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using OzetteLibrary.Database;
 using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Secrets;
@@ -37,11 +39,13 @@ namespace OzetteLibraryTests.Secrets
         [ExpectedException(typeof(ApplicationSecretMissingException))]
         public void ProtectedDataStoreGetApplicationSecretThrowsWhenSecretIsNotFound()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new Mock<IClientDatabase>();
+            db.Setup(x => x.GetApplicationOption(It.IsAny<string>())).Returns((string)null);
+
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
-            ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
+            ProtectedDataStore pds = new ProtectedDataStore(db.Object, scope, entropy);
 
             pds.GetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
         }
@@ -70,56 +74,6 @@ namespace OzetteLibraryTests.Secrets
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
             pds.SetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "");
-        }
-
-        [TestMethod]
-        public void ProtectedDataStoreSetApplicationSecretShouldSaveEncryptedSecretUserScope()
-        {
-            var db = new SQLServerClientDatabase(TestConnectionString);
-            var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
-            var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
-
-            ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
-
-            pds.SetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "test-account");
-
-            // check the underlying database entry
-            // it should be encrypted.
-
-            var optionValue = db.GetApplicationOption(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
-
-            // the actual value of the encrypted string is going to vary by machine scope
-            // for consistency in testing just verify the string has been transformed.
-
-            Assert.IsNotNull(optionValue);
-            Assert.AreNotEqual("test-account", optionValue);
-            Assert.IsFalse(optionValue.Contains("test-account"));
-            Assert.IsTrue(optionValue.Length > "test-account".Length);
-        }
-
-        [TestMethod]
-        public void ProtectedDataStoreSetApplicationSecretShouldSaveEncryptedSecretMachineScope()
-        {
-            var db = new SQLServerClientDatabase(TestConnectionString);
-            var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
-            var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
-
-            ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
-
-            pds.SetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "test-account");
-
-            // check the underlying database entry
-            // it should be encrypted.
-
-            var optionValue = db.GetApplicationOption(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
-
-            // the actual value of the encrypted string is going to vary by machine scope
-            // for consistency in testing just verify the string has been transformed.
-
-            Assert.IsNotNull(optionValue);
-            Assert.AreNotEqual("test-account", optionValue);
-            Assert.IsFalse(optionValue.Contains("test-account"));
-            Assert.IsTrue(optionValue.Length > "test-account".Length);
         }
     }
 }

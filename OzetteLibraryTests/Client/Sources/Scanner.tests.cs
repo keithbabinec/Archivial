@@ -1,8 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using OzetteLibrary.Database;
 using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging.Mock;
+using OzetteLibrary.Providers;
 using System;
 
 namespace OzetteLibraryTests.Client.Sources
@@ -68,10 +71,16 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerSignalsCompleteAfterScanHasCompleted()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+
+            var db = new Mock<IClientDatabase>();
+
+            db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
+                .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
+
+            db.Setup(x => x.GetProviders(ProviderTypes.Storage)).Returns(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
+                new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
 
             var source = new LocalSourceLocation()
             {
@@ -93,10 +102,16 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerCanScanSuccessfullyAfterCompletingAnEarlierScan()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+
+            var db = new Mock<IClientDatabase>();
+
+            db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
+                .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
+
+            db.Setup(x => x.GetProviders(ProviderTypes.Storage)).Returns(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
+                new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
 
             var source = new LocalSourceLocation()
             {
@@ -125,10 +140,16 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerCanAddClientFilesToDatabaseWithCorrectMetadata()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+
+            var db = new Mock<IClientDatabase>();
+
+            db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
+                .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
+
+            db.Setup(x => x.GetProviders(ProviderTypes.Storage)).Returns(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
+                new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
 
             var source = new LocalSourceLocation()
             {
@@ -145,33 +166,23 @@ namespace OzetteLibraryTests.Client.Sources
             Assert.IsTrue(completeSignaled);
             Assert.IsTrue(iasync.IsCompleted);
 
-            // now check the database. 
-            // do we have client objects correctly populated?
-
-            var clients = db.GetAllBackupFiles();
-
-            Assert.IsTrue(clients != null);
-            Assert.IsTrue(clients.Count > 0);
-
-            foreach (var client in clients)
-            {
-                Assert.IsFalse(string.IsNullOrEmpty(client.Directory));
-                Assert.IsFalse(string.IsNullOrEmpty(client.Filename));
-                Assert.IsFalse(string.IsNullOrEmpty(client.FullSourcePath));
-                Assert.IsNotNull(client.GetLastCheckedTimeStamp());
-                Assert.IsNotNull(client.CopyState);
-                Assert.IsFalse(client.FileID == Guid.Empty);
-            }
+            db.Verify(x => x.AddBackupFile(It.IsAny<BackupFile>()), Times.AtLeast(10));
         }
 
         [TestMethod]
         public void TraceMessagesAreWrittenToTheTraceLogDuringScanning()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+
+            var db = new Mock<IClientDatabase>();
+
+            db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
+                .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
+
+            db.Setup(x => x.GetProviders(ProviderTypes.Storage)).Returns(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
+                new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
 
             var source = new LocalSourceLocation()
             {
