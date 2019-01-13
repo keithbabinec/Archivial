@@ -80,6 +80,8 @@
     <Build Include="Stored Procedures\GetNetCredentials.sql" />
     <Build Include="Tables\NetworkSourceLocations.sql" />
     <Build Include="Stored Procedures\GetSourceLocations.sql" />
+    <Build Include="Stored Procedures\SetLocalSourceLocation.sql" />
+    <Build Include="Stored Procedures\SetNetworkSourceLocation.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

@@ -491,21 +491,77 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
-        /// Sets a new source locations collection in the database (this will wipe out existing sources).
+        /// Adds or updates a single source location.
         /// </summary>
-        /// <param name="Locations"><c>SourceLocations</c></param>
-        public void SetSourceLocations(SourceLocations Locations)
+        /// <param name="Location"><c>SourceLocation</c></param>
+        public async Task SetSourceLocationAsync(SourceLocation Location)
         {
-            throw new NotImplementedException();
+            if (Location == null)
+            {
+                throw new ArgumentNullException(nameof(Location));
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+
+                        if (Location is LocalSourceLocation)
+                        {
+                            cmd.CommandText = "dbo.SetLocalSourceLocation";
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                            var lsl = Location as LocalSourceLocation;
+
+                            cmd.Parameters.AddWithValue("@Path", lsl.Path);
+                            cmd.Parameters.AddWithValue("@FileMatchFilter", lsl.FileMatchFilter);
+                            cmd.Parameters.AddWithValue("@Priority", lsl.Priority);
+                            cmd.Parameters.AddWithValue("@RevisionCount", lsl.RevisionCount);
+                            cmd.Parameters.AddWithValue("@LastCompletedScan", lsl.LastCompletedScan);
+                        }
+                        else if (Location is NetworkSourceLocation)
+                        {
+                            cmd.CommandText = "dbo.SetNetworkSourceLocation";
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                            var nsl = Location as NetworkSourceLocation;
+
+                            cmd.Parameters.AddWithValue("@Path", nsl.Path);
+                            cmd.Parameters.AddWithValue("@FileMatchFilter", nsl.FileMatchFilter);
+                            cmd.Parameters.AddWithValue("@Priority", nsl.Priority);
+                            cmd.Parameters.AddWithValue("@RevisionCount", nsl.RevisionCount);
+                            cmd.Parameters.AddWithValue("@LastCompletedScan", nsl.LastCompletedScan);
+                            cmd.Parameters.AddWithValue("@CredentialName", nsl.CredentialName);
+                            cmd.Parameters.AddWithValue("@IsConnected", nsl.IsConnected);
+                            cmd.Parameters.AddWithValue("@IsFailed", nsl.IsFailed);
+                            cmd.Parameters.AddWithValue("@LastConnectionCheck", nsl.LastConnectionCheck);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException("Unexpected source location type: " + Location.GetType().FullName);
+                        }
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
-        /// Updates a single source location with the specified source.
+        /// Removes a single source location.
         /// </summary>
-        /// <param name="Location"><c>SourceLocation</c></param>
-        public void UpdateSourceLocation(SourceLocation Location)
+        /// <param name="Location"></param>
+        /// <returns></returns>
+        public async Task RemoveSourceLocationAsync(SourceLocation Location)
         {
-            throw new NotImplementedException();
         }
 
         /// <summary>

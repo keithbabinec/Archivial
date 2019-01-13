@@ -100,16 +100,17 @@ namespace OzetteLibrary.Database
         Task<SourceLocations> GetSourceLocationsAsync();
 
         /// <summary>
-        /// Sets a new source locations collection in the database (this will wipe out existing sources).
-        /// </summary>
-        /// <param name="Locations"><c>SourceLocations</c></param>
-        void SetSourceLocations(SourceLocations Locations);
-
-        /// <summary>
-        /// Updates a single source location with the specified source.
+        /// Adds or updates a single source location.
         /// </summary>
         /// <param name="Location"><c>SourceLocation</c></param>
-        void UpdateSourceLocation(SourceLocation Location);
+        Task SetSourceLocationAsync(SourceLocation Location);
+
+        /// <summary>
+        /// Removes a single source location.
+        /// </summary>
+        /// <param name="Location"></param>
+        /// <returns></returns>
+        Task RemoveSourceLocationAsync(SourceLocation Location);
 
         /// <summary>
         /// Adds a new client file to the database.
