@@ -1,5 +1,4 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.StorageProviders;
 using OzetteLibrary.Secrets;
@@ -8,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using OzetteLibrary.Providers;
+using OzetteLibrary.Database.SQLServer;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -82,8 +82,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
             Logger.WriteConsole("Fetching current providers configuration from the database.");
 
@@ -118,8 +117,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
             Logger.WriteConsole("Initializing protected data store.");
 

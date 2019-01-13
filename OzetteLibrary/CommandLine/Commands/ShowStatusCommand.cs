@@ -1,10 +1,9 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
-using System.Text;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -66,8 +65,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
             Logger.WriteConsole("Checking backup file status...");
 

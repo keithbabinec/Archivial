@@ -1,5 +1,5 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Providers;
 using OzetteLibrary.ServiceCore;
@@ -72,8 +72,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
             Logger.WriteConsole("Querying for existing cloud providers to see if the specified provider exists.");
 

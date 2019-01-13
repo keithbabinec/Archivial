@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Secrets;
 using System;
@@ -10,6 +10,8 @@ namespace OzetteLibraryTests.Secrets
     [TestClass]
     public class ProtectedDataStoreTests
     {
+        private const string TestConnectionString = "fakedb";
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ProtectedDataStoreConstructorThrowsOnNullDatabase()
@@ -24,9 +26,7 @@ namespace OzetteLibraryTests.Secrets
         [ExpectedException(typeof(ArgumentException))]
         public void ProtectedDataStoreConstructorThrowsOnNoEntropy()
         {
-            var ms = new MemoryStream();
-            var db = new LiteDBClientDatabase(ms);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
             var entropy = new byte[] { };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
@@ -37,9 +37,7 @@ namespace OzetteLibraryTests.Secrets
         [ExpectedException(typeof(ApplicationSecretMissingException))]
         public void ProtectedDataStoreGetApplicationSecretThrowsWhenSecretIsNotFound()
         {
-            var ms = new MemoryStream();
-            var db = new LiteDBClientDatabase(ms);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
@@ -52,9 +50,7 @@ namespace OzetteLibraryTests.Secrets
         [ExpectedException(typeof(ArgumentException))]
         public void ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionNameIsProvided()
         {
-            var ms = new MemoryStream();
-            var db = new LiteDBClientDatabase(ms);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
@@ -67,9 +63,7 @@ namespace OzetteLibraryTests.Secrets
         [ExpectedException(typeof(ArgumentException))]
         public void ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionValueIsProvided()
         {
-            var ms = new MemoryStream();
-            var db = new LiteDBClientDatabase(ms);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
@@ -81,9 +75,7 @@ namespace OzetteLibraryTests.Secrets
         [TestMethod]
         public void ProtectedDataStoreSetApplicationSecretShouldSaveEncryptedSecretUserScope()
         {
-            var ms = new MemoryStream();
-            var db = new LiteDBClientDatabase(ms);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
@@ -108,9 +100,7 @@ namespace OzetteLibraryTests.Secrets
         [TestMethod]
         public void ProtectedDataStoreSetApplicationSecretShouldSaveEncryptedSecretMachineScope()
         {
-            var ms = new MemoryStream();
-            var db = new LiteDBClientDatabase(ms);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
 

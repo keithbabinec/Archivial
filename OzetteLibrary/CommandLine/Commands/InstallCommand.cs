@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.ServiceProcess;
 using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 
@@ -246,8 +246,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Preparing database now.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
             Logger.WriteConsole("Database successfully prepared.");
         }

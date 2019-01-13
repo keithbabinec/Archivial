@@ -1,5 +1,5 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
@@ -74,8 +74,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
             Logger.WriteConsole("Fetching current network credentials from the database.");
 
@@ -105,8 +104,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
             Logger.WriteConsole("Initializing protected data store.");
 

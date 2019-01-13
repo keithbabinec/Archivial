@@ -1,16 +1,17 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging.Mock;
 using System;
-using System.IO;
 
 namespace OzetteLibraryTests.Client.Sources
 {
     [TestClass]
     public class ScannerTests
     {
+        private const string TestConnectionString = "fakedb";
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScannerConstructorThrowsExceptionWhenNoDatabaseIsProvided()
@@ -23,20 +24,20 @@ namespace OzetteLibraryTests.Client.Sources
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScannerConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
+            var db = new SQLServerClientDatabase(TestConnectionString);
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, null);
+                new OzetteLibrary.Client.Sources.SourceScanner(db, null);
         }
 
         [TestMethod]
         public void ScannerConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
+            var db = new SQLServerClientDatabase(TestConnectionString);
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
+                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
 
             Assert.IsNotNull(scanner);
         }
@@ -46,12 +47,10 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerThrowsWhenBeginScanIsCalledAfterScanHasAlreadyStarted()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
-
-            inMemoryDB.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
+                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
 
             var source = new LocalSourceLocation()
             {
@@ -69,12 +68,10 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerSignalsCompleteAfterScanHasCompleted()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
-
-            inMemoryDB.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
+                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
 
             var source = new LocalSourceLocation()
             {
@@ -96,12 +93,10 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerCanScanSuccessfullyAfterCompletingAnEarlierScan()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
-
-            inMemoryDB.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
+                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
 
             var source = new LocalSourceLocation()
             {
@@ -130,12 +125,10 @@ namespace OzetteLibraryTests.Client.Sources
         public void ScannerCanAddClientFilesToDatabaseWithCorrectMetadata()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
-
-            inMemoryDB.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
+                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
 
             var source = new LocalSourceLocation()
             {
@@ -155,7 +148,7 @@ namespace OzetteLibraryTests.Client.Sources
             // now check the database. 
             // do we have client objects correctly populated?
 
-            var clients = inMemoryDB.GetAllBackupFiles();
+            var clients = db.GetAllBackupFiles();
 
             Assert.IsTrue(clients != null);
             Assert.IsTrue(clients.Count > 0);
@@ -175,12 +168,10 @@ namespace OzetteLibraryTests.Client.Sources
         public void TraceMessagesAreWrittenToTheTraceLogDuringScanning()
         {
             var logger = new MockLogger();
-            var inMemoryDB = new LiteDBClientDatabase(new MemoryStream());
-
-            inMemoryDB.PrepareDatabase();
+            var db = new SQLServerClientDatabase(TestConnectionString);
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(inMemoryDB, logger);
+                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
 
             var source = new LocalSourceLocation()
             {

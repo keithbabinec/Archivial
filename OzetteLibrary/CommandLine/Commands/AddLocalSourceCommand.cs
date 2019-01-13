@@ -1,5 +1,5 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging.Default;
@@ -75,8 +75,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
             Logger.WriteConsole("Querying for existing scan sources to check for duplicates.");
 
