@@ -317,7 +317,41 @@ namespace OzetteLibrary.Database.SQLServer
             }
         }
 
-        
+        /// <summary>
+        /// Removes the specified net credential by Name.
+        /// </summary>
+        /// <param name="CredentialName">Provider name.</param>
+        public async Task RemoveNetCredentialAsync(string CredentialName)
+        {
+            if (string.IsNullOrWhiteSpace(CredentialName))
+            {
+                throw new ArgumentException(nameof(CredentialName) + " must be provided.");
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.RemoveNetCredential";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Name", CredentialName);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
         /// <summary>
         /// Returns all of the net credentials defined in the database.
         /// </summary>

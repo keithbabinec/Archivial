@@ -63,6 +63,12 @@ namespace OzetteLibrary.Database
         Task AddNetCredentialAsync(NetCredential Credential);
 
         /// <summary>
+        /// Removes the specified net credential by Name.
+        /// </summary>
+        /// <param name="CredentialName">Provider name.</param>
+        Task RemoveNetCredentialAsync(string CredentialName);
+
+        /// <summary>
         /// Returns all of the net credentials defined in the database.
         /// </summary>
         /// <returns>A collection of net credentials.</returns>
