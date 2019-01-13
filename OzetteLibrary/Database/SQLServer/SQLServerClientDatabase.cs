@@ -416,9 +416,53 @@ namespace OzetteLibrary.Database.SQLServer
         /// </remarks>
         /// <param name="DirectoryPath">Local directory path. Ex: 'C:\bin\programs'</param>
         /// <returns><c>DirectoryMapItem</c></returns>
-        public DirectoryMapItem GetDirectoryMapItem(string DirectoryPath)
+        public async Task<DirectoryMapItem> GetDirectoryMapItemAsync(string DirectoryPath)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(DirectoryPath))
+            {
+                throw new ArgumentException(nameof(DirectoryPath) + " must be provided.");
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.GetDirectoryMapItem";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@DirectoryPath", DirectoryPath.ToLower());
+
+                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        {
+                            if (rdr.HasRows)
+                            {
+                                // should only be exactly one row.
+                                await rdr.ReadAsync();
+
+                                var item = new DirectoryMapItem()
+                                {
+                                    ID = rdr.GetGuid(0),
+                                    LocalPath = rdr.GetString(1)
+                                };
+
+                                return item;
+                            }
+                            else
+                            {
+                                throw new Exception("Failed to generate a directory map item. No output was returned from the database.");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
