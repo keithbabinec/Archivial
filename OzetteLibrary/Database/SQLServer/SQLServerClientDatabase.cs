@@ -206,12 +206,37 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
-        /// Removes the specified provider by ID.
+        /// Removes the specified provider by name.
         /// </summary>
-        /// <param name="ProviderID">Provider ID.</param>
-        public void RemoveProvider(int ProviderID)
+        /// <param name="ProviderName">Provider name.</param>
+        public async Task RemoveProviderAsync(string ProviderName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(ProviderName))
+            {
+                throw new ArgumentException(nameof(ProviderName) + " must be provided.");
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.RemoveProvider";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Name", ProviderName);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

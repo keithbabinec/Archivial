@@ -44,10 +44,10 @@ namespace OzetteLibrary.Database
         Task<ProviderCollection> GetProvidersAsync(ProviderTypes Type);
 
         /// <summary>
-        /// Removes the specified provider by ID.
+        /// Removes the specified provider by Name.
         /// </summary>
-        /// <param name="ProviderID">Provider ID.</param>
-        void RemoveProvider(int ProviderID);
+        /// <param name="ProviderName">Provider name.</param>
+        Task RemoveProviderAsync(string ProviderName);
 
         /// <summary>
         /// Adds the specified Provider object to the database.
