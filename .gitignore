@@ -4,6 +4,10 @@
 *.userosscache
 *.sln.docstates
 
+# SQL files
+*.dbmdl
+*.jfm
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
