@@ -4,5 +4,6 @@
 	[Name] NVARCHAR(2048) NOT NULL,
 	[Value] NVARCHAR(MAX) NOT NULL,
 
-	CONSTRAINT PK_ApplicationOptions_ID PRIMARY KEY ([ID])
+	CONSTRAINT PK_ApplicationOptions_ID PRIMARY KEY ([ID]),
+	INDEX IDX_ApplicationOptions_Name ([Name])
 )

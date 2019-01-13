@@ -8,5 +8,6 @@
 	[RevisionCount] INT NOT NULL,
 	[LastCompletedScan] DATETIME NOT NULL,
 
-	CONSTRAINT PK_SourceLocations_ID PRIMARY KEY ([ID])
+	CONSTRAINT PK_SourceLocations_ID PRIMARY KEY ([ID]),
+	INDEX IDX_SourceLocations_Path ([Path])
 )

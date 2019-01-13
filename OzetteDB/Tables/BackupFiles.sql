@@ -16,5 +16,8 @@
 	[LastUpdated] DATETIME NOT NULL,
 	[OverallState] INT NOT NULL,
 
-	CONSTRAINT PK_BackupFiles_ID PRIMARY KEY ([ID])
+	CONSTRAINT PK_BackupFiles_ID PRIMARY KEY ([ID]),
+	INDEX IDX_BackupFiles_FileName ([FileName]),
+	INDEX IDX_BackupFiles_FullSourcePath ([FullSourcePath]),
+	INDEX IDX_BackupFiles_FileHashString ([FileHashString])
 )
