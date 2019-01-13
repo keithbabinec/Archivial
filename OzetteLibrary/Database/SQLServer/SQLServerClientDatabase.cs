@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
@@ -39,9 +41,39 @@ namespace OzetteLibrary.Database.SQLServer
         /// </summary>
         /// <param name="OptionName">Option name</param>
         /// <param name="OptionValue">Option value</param>
-        public void SetApplicationOption(string OptionName, string OptionValue)
+        public async Task SetApplicationOptionAsync(string OptionName, string OptionValue)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(OptionName))
+            {
+                throw new ArgumentException(nameof(OptionName) + " must be provided.");
+            }
+            if (string.IsNullOrWhiteSpace(OptionValue))
+            {
+                throw new ArgumentException(nameof(OptionValue) + " must be provided.");
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.SetApplicationOption";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Name", OptionName);
+                        cmd.Parameters.AddWithValue("@Value", OptionValue);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

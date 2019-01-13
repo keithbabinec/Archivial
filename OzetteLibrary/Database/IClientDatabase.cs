@@ -4,6 +4,7 @@ using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
 using OzetteLibrary.Providers;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Database
 {
@@ -17,7 +18,7 @@ namespace OzetteLibrary.Database
         /// </summary>
         /// <param name="OptionName">Option name</param>
         /// <param name="OptionValue">Option value</param>
-        void SetApplicationOption(string OptionName, string OptionValue);
+        Task SetApplicationOptionAsync(string OptionName, string OptionValue);
 
         /// <summary>
         /// Retrieves an application setting value from the database.

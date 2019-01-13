@@ -16,25 +16,25 @@ RAISERROR ('Starting database post-deployment script.', 0, 1) WITH NOWAIT
 
 RAISERROR ('Adding core application option defaults.', 0, 1) WITH NOWAIT
 
-IF (NOT EXISTS(SELECT [ID] FROM [dbo].[ApplicationOptions] WHERE [Name] = 'LowPriorityScanFrequencyInHours'))
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'LowPriorityScanFrequencyInHours'))
 BEGIN
     INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
 	VALUES ( 'LowPriorityScanFrequencyInHours', '48' )
 END
 
-IF (NOT EXISTS(SELECT [ID] FROM [dbo].[ApplicationOptions] WHERE [Name] = 'MedPriorityScanFrequencyInHours'))
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'MedPriorityScanFrequencyInHours'))
 BEGIN
     INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
 	VALUES ( 'MedPriorityScanFrequencyInHours', '12' )
 END
 
-IF (NOT EXISTS(SELECT [ID] FROM [dbo].[ApplicationOptions] WHERE [Name] = 'HighPriorityScanFrequencyInHours'))
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'HighPriorityScanFrequencyInHours'))
 BEGIN
     INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
 	VALUES ( 'HighPriorityScanFrequencyInHours', '1' )
 END
 
-IF (NOT EXISTS(SELECT [ID] FROM [dbo].[ApplicationOptions] WHERE [Name] = 'StatusUpdateSchedule'))
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'StatusUpdateSchedule'))
 BEGIN
     INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
 	VALUES ( 'StatusUpdateSchedule', '0 8 * * *' )

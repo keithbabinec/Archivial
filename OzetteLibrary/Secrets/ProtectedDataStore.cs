@@ -97,7 +97,7 @@ namespace OzetteLibrary.Secrets
 
             // store secret in configuration
 
-            Database.SetApplicationOption(SecretName, encryptedString);
+            Database.SetApplicationOptionAsync(SecretName, encryptedString);
         }
     }
 }
