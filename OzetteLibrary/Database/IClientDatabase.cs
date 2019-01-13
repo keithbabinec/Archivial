@@ -91,7 +91,7 @@ namespace OzetteLibrary.Database
         /// </remarks>
         /// <param name="DirectoryPath">Local directory path. Ex: 'C:\bin\programs'</param>
         /// <returns><c>DirectoryMapItem</c></returns>
-        DirectoryMapItem GetDirectoryMapItem(string DirectoryPath);
+        Task<DirectoryMapItem> GetDirectoryMapItemAsync(string DirectoryPath);
 
         /// <summary>
         /// Returns all source locations defined in the database.

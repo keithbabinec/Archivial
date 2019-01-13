@@ -562,6 +562,49 @@ namespace OzetteLibrary.Database.SQLServer
         /// <returns></returns>
         public async Task RemoveSourceLocationAsync(SourceLocation Location)
         {
+            if (Location == null)
+            {
+                throw new ArgumentNullException(nameof(Location));
+            }
+            if (Location.ID <= 0)
+            {
+                throw new ArgumentException(nameof(Location.ID) + " must be provided.");
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+
+                        if (Location is LocalSourceLocation)
+                        {
+                            cmd.CommandText = "dbo.RemoveLocalSourceLocation";
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@ID", Location.ID);
+                        }
+                        else if (Location is NetworkSourceLocation)
+                        {
+                            cmd.CommandText = "dbo.RemoveNetworkSourceLocation";
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@ID", Location.ID);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException("Unexpected source location type: " + Location.GetType().FullName);
+                        }
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

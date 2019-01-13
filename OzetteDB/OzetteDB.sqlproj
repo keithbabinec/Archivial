@@ -82,6 +82,8 @@
     <Build Include="Stored Procedures\GetSourceLocations.sql" />
     <Build Include="Stored Procedures\SetLocalSourceLocation.sql" />
     <Build Include="Stored Procedures\SetNetworkSourceLocation.sql" />
+    <Build Include="Stored Procedures\RemoveLocalSourceLocation.sql" />
+    <Build Include="Stored Procedures\RemoveNetworkSourceLocation.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
