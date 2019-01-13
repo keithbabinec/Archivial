@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Threading.Tasks;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
@@ -685,9 +686,62 @@ namespace OzetteLibrary.Database.SQLServer
         /// Calculates and returns the overall backup progress.
         /// </summary>
         /// <returns></returns>
-        public BackupProgress GetBackupProgress()
+        public async Task<BackupProgress> GetBackupProgressAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.GetBackupProgress";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        {
+                            if (rdr.HasRows)
+                            {
+                                // should only be exactly one row.
+                                await rdr.ReadAsync();
+
+                                var item = new BackupProgress()
+                                {
+                                    TotalFileCount = rdr.GetInt64(0),
+                                    TotalFileSizeBytes = rdr.GetInt64(1),
+                                    BackedUpFileCount = rdr.GetInt64(2),
+                                    BackedUpFileSizeBytes = rdr.GetInt64(3),
+                                    RemainingFileCount = rdr.GetInt64(4),
+                                    RemainingFileSizeBytes = rdr.GetInt64(5),
+                                    FailedFileCount = rdr.GetInt64(6),
+                                    FailedFileSizeBytes = rdr.GetInt64(7)
+                                };
+
+                                // set the overall completion rate
+                                if (item.TotalFileSizeBytes != 0)
+                                {
+                                    item.OverallPercentage = ((double)item.BackedUpFileSizeBytes / item.TotalFileSizeBytes).ToString("P2", CultureInfo.CreateSpecificCulture("US"));
+                                }
+                                else
+                                {
+                                    item.OverallPercentage = "0.00 %";
+                                }
+
+                                return item;
+                            }
+                            else
+                            {
+                                throw new Exception("Failed to generate the backup progress. No output was returned from the database.");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

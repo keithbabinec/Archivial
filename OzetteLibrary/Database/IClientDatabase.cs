@@ -137,6 +137,6 @@ namespace OzetteLibrary.Database
         /// Calculates and returns the overall backup progress.
         /// </summary>
         /// <returns></returns>
-        BackupProgress GetBackupProgress();
+        Task<BackupProgress> GetBackupProgressAsync();
     }
 }

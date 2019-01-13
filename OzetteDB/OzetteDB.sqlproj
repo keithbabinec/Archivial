@@ -85,6 +85,7 @@
     <Build Include="Stored Procedures\RemoveLocalSourceLocation.sql" />
     <Build Include="Stored Procedures\RemoveNetworkSourceLocation.sql" />
     <Build Include="Stored Procedures\GetDirectoryMapItem.sql" />
+    <Build Include="Stored Procedures\GetBackupProgress.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
