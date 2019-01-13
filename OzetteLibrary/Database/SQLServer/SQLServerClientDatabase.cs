@@ -243,9 +243,39 @@ namespace OzetteLibrary.Database.SQLServer
         /// Adds the specified Provider object to the database.
         /// </summary>
         /// <param name="Provider"></param>
-        public void AddProvider(Provider Provider)
+        public async Task AddProviderAsync(Provider Provider)
         {
-            throw new NotImplementedException();
+            if (Provider == null)
+            {
+                throw new ArgumentNullException(nameof(Provider));
+            }
+            if (string.IsNullOrWhiteSpace(Provider.Name))
+            {
+                throw new ArgumentException(nameof(Provider.Name) + " must be provided.");
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.AddProvider";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Name", Provider.Name);
+                        cmd.Parameters.AddWithValue("@Type", Provider.Type);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

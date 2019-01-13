@@ -99,7 +99,7 @@ namespace OzetteLibrary.CommandLine.Commands
                         Name = nameof(StorageProviderTypes.Azure)
                     };
 
-                db.AddProvider(newProvider);
+                db.AddProviderAsync(newProvider);
 
                 Logger.WriteConsole("Successfully configured Azure as a cloud backup provider.");
             }

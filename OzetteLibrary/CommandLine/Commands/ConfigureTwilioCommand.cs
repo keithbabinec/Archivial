@@ -99,7 +99,7 @@ namespace OzetteLibrary.CommandLine.Commands
                         Name = nameof(MessagingProviderTypes.Twilio)
                     };
 
-                db.AddProvider(newProvider);
+                db.AddProviderAsync(newProvider);
 
                 Logger.WriteConsole("Successfully configured Twilio as a messaging provider.");
             }

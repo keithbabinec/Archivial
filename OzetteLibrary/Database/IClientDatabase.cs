@@ -53,7 +53,7 @@ namespace OzetteLibrary.Database
         /// Adds the specified Provider object to the database.
         /// </summary>
         /// <param name="Provider"></param>
-        void AddProvider(Provider Provider);
+        Task AddProviderAsync(Provider Provider);
 
         /// <summary>
         /// Commits the net credentials collection to the database.
