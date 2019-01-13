@@ -1,5 +1,4 @@
 ﻿using OzetteLibrary.Client;
-using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Logging.Default;
@@ -16,6 +15,7 @@ using OzetteLibrary.Providers;
 using OzetteLibrary.MessagingProviders;
 using OzetteLibrary.MessagingProviders.Twilio;
 using System.Collections.Generic;
+using OzetteLibrary.Database.SQLServer;
 
 namespace OzetteClientAgent
 {
@@ -96,11 +96,6 @@ namespace OzetteClientAgent
         /// </summary>
         private void CoreStart()
         {
-            // in the client agent the core loop consists of two pieces.
-            // first is the scan engine, and the second is the backup engine.
-            // each one lives under it's own long-running thread and class.
-            // prepare the database and then start both engines.
-
             StartLoggers();
 
             CoreLog.WriteSystemEvent(
@@ -226,8 +221,7 @@ namespace OzetteClientAgent
             {
                 // establish the database and protected store.
 
-                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-                db.PrepareDatabase();
+                var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
                 var ivEncodedString = CoreSettings.ProtectionIv;
                 var ivBytes = Convert.FromBase64String(ivEncodedString);
@@ -320,8 +314,7 @@ namespace OzetteClientAgent
             {
                 // establish the database and protected store.
 
-                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-                db.PrepareDatabase();
+                var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
                 var ivEncodedString = CoreSettings.ProtectionIv;
                 var ivBytes = Convert.FromBase64String(ivEncodedString);
@@ -408,13 +401,9 @@ namespace OzetteClientAgent
         /// <returns>True if successful, otherwise false.</returns>
         private bool StartConnectionEngine()
         {
-            // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
-            // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
-
             try
             {
-                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-                db.PrepareDatabase();
+                var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
                 ConnectionEngineInstance = new ConnectionEngine(db, CoreLog, StorageConnections, MessagingConnections);
                 ConnectionEngineInstance.Stopped += Connection_Stopped;
@@ -468,13 +457,9 @@ namespace OzetteClientAgent
         /// <returns>True if successful, otherwise false.</returns>
         private bool StartStatusEngine()
         {
-            // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
-            // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
-
             try
             {
-                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-                db.PrepareDatabase();
+                var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
                 StatusEngineInstance = new StatusEngine(db, CoreLog, StorageConnections, MessagingConnections, 0);
                 StatusEngineInstance.Stopped += Status_Stopped;
@@ -528,13 +513,9 @@ namespace OzetteClientAgent
         /// <returns>True if successful, otherwise false.</returns>
         private bool StartScanEngine()
         {
-            // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
-            // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
-
             try
             {
-                var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-                db.PrepareDatabase();
+                var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
                 ScanEngineInstance = new ScanEngine(db, ScanEngineLog, StorageConnections, MessagingConnections, 0);
                 ScanEngineInstance.Stopped += Scan_Stopped;
@@ -588,9 +569,6 @@ namespace OzetteClientAgent
         /// <returns>True if successful, otherwise false.</returns>
         private bool StartBackupEngines()
         {
-            // note: each engine can get it's own instance of the LiteDBClientDatabase wrapper.
-            // LiteDB is thread safe, but the wrapper is not; so give threads their own DB wrappers.
-
             // each backup engine instance shares the same logger.
             // this means a single log file for all engine instances- and each engine will prepend its log messages with a context tag.
 
@@ -601,8 +579,7 @@ namespace OzetteClientAgent
 
                 for (int i = 0; i < instanceCount; i++)
                 {
-                    var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-                    db.PrepareDatabase();
+                    var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
 
                     var instance = new BackupEngine(db, BackupEngineLog, StorageConnections, MessagingConnections, i);
                     instance.Stopped += Backup_Stopped;

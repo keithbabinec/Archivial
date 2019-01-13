@@ -13,6 +13,28 @@ namespace OzetteLibrary.Database.SQLServer
     public class SQLServerClientDatabase : IClientDatabase
     {
         /// <summary>
+        /// Instantiates a client DB from database connection string.
+        /// </summary>
+        /// <param name="connectionString"></param>
+        public SQLServerClientDatabase(string connectionString)
+        {
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentException(nameof(connectionString));
+            }
+
+            DatabaseConnectionString = connectionString;
+        }
+
+        /// <summary>
+        /// The database connection string.
+        /// </summary>
+        /// <remarks>
+        /// A memory stream or database file is used, but not both.
+        /// </remarks>
+        private string DatabaseConnectionString;
+
+        /// <summary>
         /// Saves an application setting to the database.
         /// </summary>
         /// <param name="OptionName">Option name</param>
