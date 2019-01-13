@@ -59,6 +59,7 @@
     <Folder Include="Properties" />
     <Folder Include="Tables" />
     <Folder Include="Stored Procedures" />
+    <Folder Include="Scripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\ApplicationOptions.sql" />
@@ -68,5 +69,8 @@
     <Build Include="Tables\SourceLocations.sql" />
     <Build Include="Tables\BackupFiles.sql" />
     <Build Include="Tables\CopyState.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>
