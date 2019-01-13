@@ -77,7 +77,7 @@ namespace OzetteLibraryTests.Client.Sources
             db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
                 .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
 
-            db.Setup(x => x.GetProviders(ProviderTypes.Storage)).Returns(new ProviderCollection());
+            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).Returns(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
@@ -108,7 +108,7 @@ namespace OzetteLibraryTests.Client.Sources
             db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
                 .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
 
-            db.Setup(x => x.GetProviders(ProviderTypes.Storage)).Returns(new ProviderCollection());
+            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).Returns(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
@@ -146,7 +146,7 @@ namespace OzetteLibraryTests.Client.Sources
             db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
                 .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
 
-            db.Setup(x => x.GetProviders(ProviderTypes.Storage)).Returns(new ProviderCollection());
+            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).Returns(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
@@ -179,7 +179,7 @@ namespace OzetteLibraryTests.Client.Sources
             db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
                 .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
 
-            db.Setup(x => x.GetProviders(ProviderTypes.Storage)).Returns(new ProviderCollection());
+            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).Returns(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);

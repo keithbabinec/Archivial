@@ -231,7 +231,7 @@ namespace OzetteClientAgent
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
 
-                var providersList = db.GetProviders(ProviderTypes.Storage);
+                var providersList = db.GetProvidersAsync(ProviderTypes.Storage);
 
                 foreach (var provider in providersList)
                 {
@@ -324,7 +324,7 @@ namespace OzetteClientAgent
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
 
-                var providersList = db.GetProviders(ProviderTypes.Messaging);
+                var providersList = db.GetProvidersAsync(ProviderTypes.Messaging);
 
                 foreach (var provider in providersList)
                 {

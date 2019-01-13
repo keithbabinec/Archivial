@@ -86,7 +86,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Fetching current providers configuration from the database.");
 
-            var existingProviders = db.GetProviders(ProviderTypes.Storage);
+            var existingProviders = db.GetProvidersAsync(ProviderTypes.Storage);
 
             if (existingProviders.Any(x => x.Name == nameof(StorageProviderTypes.Azure)) == false)
             {

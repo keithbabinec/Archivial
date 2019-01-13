@@ -19,7 +19,8 @@ BEGIN
 	
 	BEGIN TRY
 		
-		SELECT [Value] FROM [dbo].[ApplicationOptions] WHERE [Name] = @Name
+		SELECT	[dbo].[ApplicationOptions].[Value]
+		FROM	[dbo].[ApplicationOptions] WHERE [Name] = @Name
 
 	END TRY
 	BEGIN CATCH

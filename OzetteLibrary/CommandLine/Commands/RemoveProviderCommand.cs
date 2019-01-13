@@ -76,7 +76,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing cloud providers to see if the specified provider exists.");
 
-            var allProviders = db.GetProviders(ProviderTypes.Any);
+            var allProviders = db.GetProvidersAsync(ProviderTypes.Any);
             var providerToRemove = allProviders.FirstOrDefault(x => x.ID == arguments.ProviderID);
 
             if (providerToRemove == null)

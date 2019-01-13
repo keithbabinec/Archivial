@@ -72,6 +72,7 @@
     <Build Include="Stored Procedures\SetApplicationOption.sql" />
     <Build Include="Stored Procedures\GetApplicationOption.sql" />
     <Build Include="Stored Procedures\RemoveApplicationOption.sql" />
+    <Build Include="Stored Procedures\GetProviders.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

@@ -41,7 +41,7 @@ namespace OzetteLibrary.Database
         /// </summary>
         /// <param name="Type">The type of providers to return.</param>
         /// <returns><c>ProviderCollection</c></returns>
-        ProviderCollection GetProviders(ProviderTypes Type);
+        Task<ProviderCollection> GetProvidersAsync(ProviderTypes Type);
 
         /// <summary>
         /// Removes the specified provider by ID.

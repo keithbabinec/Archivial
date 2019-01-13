@@ -86,7 +86,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Fetching current providers configuration from the database.");
 
-            var existingProviders = db.GetProviders(ProviderTypes.Messaging);
+            var existingProviders = db.GetProvidersAsync(ProviderTypes.Messaging);
 
             if (existingProviders.Any(x => x.Name == nameof(MessagingProviderTypes.Twilio)) == false)
             {

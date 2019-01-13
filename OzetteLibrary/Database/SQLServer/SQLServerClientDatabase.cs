@@ -162,9 +162,47 @@ namespace OzetteLibrary.Database.SQLServer
         /// </summary>
         /// <param name="Type">The type of providers to return.</param>
         /// <returns><c>ProviderCollection</c></returns>
-        public ProviderCollection GetProviders(ProviderTypes Type)
+        public async Task<ProviderCollection> GetProvidersAsync(ProviderTypes Type)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.GetProviders";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Type", Type);
+
+                        var result = new ProviderCollection();
+
+                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        {
+                            if (rdr.HasRows)
+                            {
+                                while (await rdr.ReadAsync())
+                                {
+                                    result.Add(new Provider()
+                                    {
+                                        ID = rdr.GetInt32(0),
+                                        Name = rdr.GetString(1),
+                                        Type = (ProviderTypes)rdr.GetInt32(2)
+                                    });
+                                }
+                            }
+                        }
+
+                        return result;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
