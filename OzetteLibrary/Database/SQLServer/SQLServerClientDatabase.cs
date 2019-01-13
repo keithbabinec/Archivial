@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
+using OzetteLibrary.StorageProviders;
 
 namespace OzetteLibrary.Database.SQLServer
 {
@@ -812,9 +814,81 @@ namespace OzetteLibrary.Database.SQLServer
         /// If no files need to be backed up, return null.
         /// </remarks>
         /// <returns><c>BackupFile</c></returns>
-        public BackupFile GetNextFileToBackup()
+        public async Task<BackupFile> FindNextFileToBackupAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.FindNextFileToBackup";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        {
+                            if (rdr.HasRows)
+                            {
+                                await rdr.ReadAsync();
+
+                                var file = new BackupFile()
+                                {
+                                    FileID = rdr.GetGuid(0),
+                                    Filename = rdr.GetString(1),
+                                    Directory = rdr.GetString(2),
+                                    FullSourcePath = rdr.GetString(3),
+                                    FileSizeBytes = rdr.GetInt64(4),
+                                    LastModified = rdr.GetDateTime(5),
+                                    TotalFileBlocks = rdr.GetInt32(6),
+                                    FileHash = (byte[])rdr["FileHash"], // special handling for varbinary column
+                                    FileHashString = rdr.GetString(8),
+                                    Priority = (FileBackupPriority)rdr.GetInt32(9),
+                                    FileRevisionNumber = rdr.GetInt32(10),
+                                    HashAlgorithmType = rdr.GetString(11),
+                                    LastChecked = rdr.GetDateTime(12),
+                                    LastUpdated = rdr.GetDateTime(13),
+                                    OverallState = (FileStatus)rdr.GetInt32(14),
+                                    CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
+                                };
+
+                                if (await rdr.NextResultAsync())
+                                {
+                                    while (await rdr.ReadAsync())
+                                    {
+                                        file.CopyState.Add(
+                                            (StorageProviderTypes)rdr.GetInt32(0), 
+                                            new StorageProviderFileStatus()
+                                            {
+                                                Provider = (StorageProviderTypes)rdr.GetInt32(0),
+                                                SyncStatus = (FileStatus)rdr.GetInt32(1),
+                                                HydrationStatus = (StorageProviderHydrationStatus)rdr.GetInt32(2),
+                                                LastCompletedFileBlockIndex = rdr.GetInt32(3)
+                                            });
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception("Failed to lookup next backup file. No copystate output was returned from the database.");
+                                }
+
+                                return file;
+                            }
+                            else
+                            {
+                                // no backup file is a valid output.
+                                // this means all files are backed up (or in a failed state), so there is nothing to transfer.
+                                return null;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

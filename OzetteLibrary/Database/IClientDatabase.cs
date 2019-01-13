@@ -126,7 +126,7 @@ namespace OzetteLibrary.Database
         /// If no files need to be backed up, return null.
         /// </remarks>
         /// <returns><c>BackupFile</c></returns>
-        BackupFile GetNextFileToBackup();
+        Task<BackupFile> FindNextFileToBackupAsync();
 
         /// <summary>
         /// Calculates and returns the overall backup progress.
