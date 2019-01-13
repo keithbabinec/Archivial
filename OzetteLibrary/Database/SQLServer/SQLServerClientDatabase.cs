@@ -279,14 +279,45 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
-        /// Commits the net credentials collection to the database.
+        /// Adds a net credential to the database.
         /// </summary>
-        /// <param name="Credentials">A collection of net credentials.</param>
-        public void SetNetCredentialsList(NetCredentialsCollection Credentials)
+        /// <param name="Credential"></param>
+        /// <returns></returns>
+        public async Task AddNetCredentialAsync(NetCredential Credential)
         {
-            throw new NotImplementedException();
+            if (Credential == null)
+            {
+                throw new ArgumentNullException(nameof(Credential));
+            }
+            if (string.IsNullOrWhiteSpace(Credential.CredentialName))
+            {
+                throw new ArgumentException(nameof(Credential.CredentialName) + " must be provided.");
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.AddNetCredential";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Name", Credential.CredentialName);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
+        
         /// <summary>
         /// Returns all of the net credentials defined in the database.
         /// </summary>

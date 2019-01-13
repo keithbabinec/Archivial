@@ -74,6 +74,8 @@
     <Build Include="Stored Procedures\RemoveApplicationOption.sql" />
     <Build Include="Stored Procedures\GetProviders.sql" />
     <Build Include="Stored Procedures\RemoveProvider.sql" />
+    <Build Include="Stored Procedures\AddProvider.sql" />
+    <Build Include="Stored Procedures\AddNetCredential.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

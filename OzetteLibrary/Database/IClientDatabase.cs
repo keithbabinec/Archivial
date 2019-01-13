@@ -56,10 +56,11 @@ namespace OzetteLibrary.Database
         Task AddProviderAsync(Provider Provider);
 
         /// <summary>
-        /// Commits the net credentials collection to the database.
+        /// Adds a net credential to the database.
         /// </summary>
-        /// <param name="Credentials">A collection of net credentials.</param>
-        void SetNetCredentialsList(NetCredentialsCollection Credentials);
+        /// <param name="Credential"></param>
+        /// <returns></returns>
+        Task AddNetCredentialAsync(NetCredential Credential);
 
         /// <summary>
         /// Returns all of the net credentials defined in the database.
