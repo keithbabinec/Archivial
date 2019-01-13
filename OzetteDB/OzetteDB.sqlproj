@@ -71,6 +71,7 @@
     <Build Include="Tables\CopyState.sql" />
     <Build Include="Stored Procedures\SetApplicationOption.sql" />
     <Build Include="Stored Procedures\GetApplicationOption.sql" />
+    <Build Include="Stored Procedures\RemoveApplicationOption.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

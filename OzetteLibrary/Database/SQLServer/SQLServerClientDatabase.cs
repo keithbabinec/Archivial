@@ -127,9 +127,34 @@ namespace OzetteLibrary.Database.SQLServer
         /// Removes an application setting value from the database.
         /// </summary>
         /// <param name="OptionName">Option name</param>
-        public void RemoveApplicationOption(string OptionName)
+        public async Task RemoveApplicationOptionAsync(string OptionName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(OptionName))
+            {
+                throw new ArgumentException(nameof(OptionName) + " must be provided.");
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.RemoveApplicationOption";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Name", OptionName);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

@@ -34,7 +34,7 @@ namespace OzetteLibrary.Database
         /// Removes an application setting value from the database.
         /// </summary>
         /// <param name="OptionName">Option name</param>
-        void RemoveApplicationOption(string OptionName);
+        Task RemoveApplicationOptionAsync(string OptionName);
 
         /// <summary>
         /// Returns a list of all providers defined in the database for the specified type.

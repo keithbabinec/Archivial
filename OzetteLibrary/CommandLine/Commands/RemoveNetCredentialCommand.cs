@@ -90,8 +90,8 @@ namespace OzetteLibrary.CommandLine.Commands
             db.SetNetCredentialsList(allCredentialsList);
 
             // remove provider specific secrets
-            db.RemoveApplicationOption(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, credToRemove.CredentialName));
-            db.RemoveApplicationOption(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, credToRemove.CredentialName));
+            db.RemoveApplicationOptionAsync(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, credToRemove.CredentialName));
+            db.RemoveApplicationOptionAsync(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, credToRemove.CredentialName));
 
             Logger.WriteConsole("Successfully removed the credential from the database.");
         }
