@@ -356,9 +356,44 @@ namespace OzetteLibrary.Database.SQLServer
         /// Returns all of the net credentials defined in the database.
         /// </summary>
         /// <returns>A collection of net credentials.</returns>
-        public NetCredentialsCollection GetNetCredentialsList()
+        public async Task<NetCredentialsCollection> GetNetCredentialsAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.GetNetCredentials";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        var result = new NetCredentialsCollection();
+
+                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        {
+                            if (rdr.HasRows)
+                            {
+                                while (await rdr.ReadAsync())
+                                {
+                                    result.Add(new NetCredential()
+                                    {
+                                        ID = rdr.GetInt32(0),
+                                        CredentialName = rdr.GetString(1),
+                                    });
+                                }
+                            }
+                        }
+
+                        return result;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

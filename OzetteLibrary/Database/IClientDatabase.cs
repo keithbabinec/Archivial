@@ -72,7 +72,7 @@ namespace OzetteLibrary.Database
         /// Returns all of the net credentials defined in the database.
         /// </summary>
         /// <returns>A collection of net credentials.</returns>
-        NetCredentialsCollection GetNetCredentialsList();
+        Task<NetCredentialsCollection> GetNetCredentialsAsync();
 
         /// <summary>
         /// Checks the index for a file matching the provided name, path, filesize, and lastmodified date.
