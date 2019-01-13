@@ -14,5 +14,7 @@
 	[HashAlgorithmType] NVARCHAR(1024) NOT NULL,
 	[LastChecked] DATETIME NOT NULL,
 	[LastUpdated] DATETIME NOT NULL,
-	[OverallState] INT NOT NULL
+	[OverallState] INT NOT NULL,
+
+	CONSTRAINT PK_BackupFiles_ID PRIMARY KEY ([ID])
 )
