@@ -88,6 +88,7 @@
     <Build Include="Stored Procedures\GetBackupProgress.sql" />
     <Build Include="Stored Procedures\SetBackupFile.sql" />
     <Build Include="Stored Procedures\SetCopyState.sql" />
+    <Build Include="Stored Procedures\FindBackupFile.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

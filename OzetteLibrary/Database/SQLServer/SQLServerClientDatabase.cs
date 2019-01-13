@@ -404,9 +404,92 @@ namespace OzetteLibrary.Database.SQLServer
         /// <param name="FileSizeBytes">File size in bytes</param>
         /// <param name="FileLastModified">File last modified timestamp</param>
         /// <returns></returns>
-        public BackupFileLookup GetBackupFile(string FullFilePath, long FileSizeBytes, DateTime FileLastModified)
+        public async Task<BackupFileLookup> FindBackupFileAsync(string FullFilePath, long FileSizeBytes, DateTime FileLastModified)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(FullFilePath))
+            {
+                throw new ArgumentException(nameof(FullFilePath) + " must be provided.");
+            }
+            if (FileSizeBytes <= 0)
+            {
+                throw new ArgumentException(nameof(FileSizeBytes) + " must be provided.");
+            }
+            if (FileLastModified == DateTime.MinValue)
+            {
+                throw new ArgumentException(nameof(FileLastModified) + " must be provided.");
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.FindBackupFile";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@FullFilePath", FullFilePath);
+                        cmd.Parameters.AddWithValue("@FileSizeBytes", FileSizeBytes);
+                        cmd.Parameters.AddWithValue("@FileLastModified", FileLastModified);
+
+                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        {
+                            if (rdr.HasRows)
+                            {
+                                // first result set is the lookup result value (new, updated, or existing)
+
+                                await rdr.ReadAsync();
+
+                                var item = new BackupFileLookup()
+                                {
+                                    Result = (BackupFileLookupResult)rdr.GetInt32(0)
+                                };
+
+                                // second result set, if available, is the resulting found file.
+
+                                if (await rdr.NextResultAsync())
+                                {
+                                    if (rdr.HasRows)
+                                    {
+                                        await rdr.ReadAsync();
+
+                                        item.File = new BackupFile()
+                                        {
+                                            FileID = rdr.GetGuid(0),
+                                            Filename = rdr.GetString(1),
+                                            Directory = rdr.GetString(2),
+                                            FullSourcePath = rdr.GetString(3),
+                                            FileSizeBytes = rdr.GetInt64(4),
+                                            LastModified = rdr.GetDateTime(5),
+                                            TotalFileBlocks = rdr.GetInt32(6),
+                                            FileHash = (byte[])rdr["FileHash"], // special handling for varbinary column
+                                            FileHashString = rdr.GetString(8),
+                                            Priority = (FileBackupPriority)rdr.GetInt32(9),
+                                            FileRevisionNumber = rdr.GetInt32(10),
+                                            HashAlgorithmType = rdr.GetString(11),
+                                            LastChecked = rdr.GetDateTime(12),
+                                            LastUpdated = rdr.GetDateTime(13),
+                                            OverallState = (FileStatus)rdr.GetInt32(14)
+                                        };
+                                    }
+                                }
+
+                                return item;
+                            }
+                            else
+                            {
+                                throw new Exception("Failed to search for the backup file. No output was returned from the database.");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
