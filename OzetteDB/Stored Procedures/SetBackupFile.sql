@@ -105,7 +105,15 @@ BEGIN
 		
 		BEGIN TRANSACTION
 
-		IF NOT EXISTS (SELECT 1 FROM [dbo].[BackupFiles] WHERE [ID] = @ID)
+		DECLARE @DbFileModified DATETIME
+		DECLARE @DbFileHashString NVARCHAR(4096)
+
+		SELECT	@DbFileModified = [dbo].[BackupFiles].[LastModified],
+				@DbFileHashString = [dbo].[BackupFiles].[FileHashString]
+		FROM	[dbo].[BackupFiles]
+		WHERE	[dbo].[BackupFiles].[ID] = @ID
+
+		IF (@@ROWCOUNT = 0)
 		BEGIN
 			INSERT INTO [dbo].[BackupFiles]
 			(
@@ -143,6 +151,19 @@ BEGIN
 				@LastUpdated,
 				@OverallState
 			)
+
+			-- new file- add it to the backup queue.
+
+			INSERT INTO [dbo].[BackupQueue]
+			(
+				[FileID],
+				[AssignedInstanceID]
+			)
+			VALUES
+			(
+				@ID,
+				-1 -- unassigned.
+			)
 		END
 		ELSE
 		BEGIN
@@ -162,6 +183,39 @@ BEGIN
 					[dbo].[BackupFiles].[LastUpdated] = @LastUpdated,
 					[dbo].[BackupFiles].[OverallState] = @OverallState
 			WHERE	[dbo].[BackupFiles].[ID] = @ID
+
+			IF (@OverallState = 3 OR @OverallState = 4)
+			BEGIN
+				-- file state is completed or failed.
+				-- ensure that this file isn't in the backup queue.
+
+				DELETE FROM		[dbo].[BackupQueue]
+				WHERE			[dbo].[BackupQueue].[FileID] = @ID
+			END
+			ELSE
+			BEGIN
+				-- file state is being updated.
+				-- if the actual file hash or date modified has changed, then add to the backup queue.
+				-- but don't insert if there is already a backup queue record.
+				
+				IF (@FileHashString != @DbFileHashString OR @LastModified != @DbFileModified)
+				BEGIN
+					IF NOT EXISTS (SELECT 1 FROM [dbo].[BackupQueue] WHERE [FileID] = @ID)
+					BEGIN
+						INSERT INTO [dbo].[BackupQueue]
+						(
+							[FileID],
+							[AssignedInstanceID]
+						)
+						VALUES
+						(
+							@ID,
+							-1 -- unassigned.
+						)
+					END
+				END
+			END
+
 		END
 
 		COMMIT TRANSACTION
