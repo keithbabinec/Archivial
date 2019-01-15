@@ -9,6 +9,7 @@ using System;
 using System.Threading;
 using OzetteLibrary.Folders;
 using OzetteLibrary.MessagingProviders;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Client
 {
@@ -47,7 +48,7 @@ namespace OzetteLibrary.Client
 
             Logger.WriteTraceMessage("Scan engine is starting up.");
 
-            Thread pl = new Thread(() => ProcessLoop());
+            Thread pl = new Thread(() => ProcessLoopAsync().RunSynchronously());
             pl.Start();
 
             Logger.WriteTraceMessage("Scan engine is now running.");
@@ -78,7 +79,7 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Core processing loop.
         /// </summary>
-        private void ProcessLoop()
+        private async Task ProcessLoopAsync()
         {
             try
             {
@@ -86,14 +87,14 @@ namespace OzetteLibrary.Client
                 {
                     // first: grab current options from the database
 
-                    var sourcesFilePath = Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.SourcesFilePath);
-                    var providersFilePath = Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.ProvidersFilePath);
-                    var scanOptions = GetScanFrequencies(Database);
+                    var sourcesFilePath = await Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.SourcesFilePath);
+                    var providersFilePath = await Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.ProvidersFilePath);
+                    var scanOptions = await GetScanFrequenciesAsync(Database);
 
                     // second: check to see if we have any valid sources defined.
                     // the sources found are returned in the order they should be scanned.
 
-                    var sources = SafeImportSources();
+                    var sources = await SafeImportSourcesAsync();
 
                     if (sources != null)
                     {
@@ -135,7 +136,7 @@ namespace OzetteLibrary.Client
                                 {
                                     // the scan completed successfully (no cancel)
                                     // update the last scanned timestamp.
-                                    UpdateLastScannedTimeStamp(source);
+                                    await UpdateLastScannedTimeStamp(source);
                                 }
                             }
 
@@ -174,18 +175,18 @@ namespace OzetteLibrary.Client
         /// </summary>
         /// <param name="db"></param>
         /// <returns></returns>
-        private ScanFrequencies GetScanFrequencies(IClientDatabase db)
+        private async Task<ScanFrequencies> GetScanFrequenciesAsync(IClientDatabase db)
         {
             ScanFrequencies scan = new ScanFrequencies();
 
             scan.LowPriorityScanFrequencyInHours = 
-                Convert.ToInt32(db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours));
+                Convert.ToInt32(await db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours));
 
             scan.MedPriorityScanFrequencyInHours =
-                Convert.ToInt32(db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.MedPriorityScanFrequencyInHours));
+                Convert.ToInt32(await db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.MedPriorityScanFrequencyInHours));
 
             scan.HighPriorityScanFrequencyInHours =
-                Convert.ToInt32(db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours));
+                Convert.ToInt32(await db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours));
 
             return scan;
         }
@@ -197,12 +198,12 @@ namespace OzetteLibrary.Client
         /// This function is marked as safe and should not throw exceptions.
         /// </remarks>
         /// <returns></returns>
-        private SourceLocations SafeImportSources()
+        private async Task<SourceLocations> SafeImportSourcesAsync()
         {
             try
             {
                 // grab the current copy from DB (this includes last scanned timestamp)
-                var dbSources = GetSourceLocationsFromDatabase();
+                var dbSources = await GetSourceLocationsFromDatabaseAsync();
 
                 if (dbSources == null || dbSources.Count == 0)
                 {
@@ -225,18 +226,18 @@ namespace OzetteLibrary.Client
         /// Updates the last completed scan timestamp in the database for the specified source.
         /// </summary>
         /// <param name="source"></param>
-        private void UpdateLastScannedTimeStamp(SourceLocation source)
+        private async Task UpdateLastScannedTimeStamp(SourceLocation source)
         {
             source.LastCompletedScan = DateTime.Now;
-            Database.UpdateSourceLocation(source);
+            await Database.SetSourceLocationAsync(source);
         }
 
         /// <summary>
         /// Gets a copy of the source locations from the database.
         /// </summary>
-        private SourceLocations GetSourceLocationsFromDatabase()
+        private async Task<SourceLocations> GetSourceLocationsFromDatabaseAsync()
         {
-            return Database.GetAllSourceLocations();
+            return await Database.GetSourceLocationsAsync();
         }
 
         /// <summary>

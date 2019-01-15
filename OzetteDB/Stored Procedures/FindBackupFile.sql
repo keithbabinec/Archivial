@@ -90,7 +90,7 @@ BEGIN
 
 		IF @FileID IS NOT NULL
 		BEGIN
-			-- File exists and is unchanged.
+			-- File exists and is modified.
 
 			SELECT @BackupFileLookupResultUpdated AS [Result]
 

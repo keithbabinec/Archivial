@@ -47,7 +47,7 @@ namespace OzetteLibrary.Client
 
             Logger.WriteTraceMessage(string.Format("Backup engine is starting up."), InstanceID);
 
-            Thread pl = new Thread(() => ProcessLoop());
+            Thread pl = new Thread(() => ProcessLoopAsync().RunSynchronously());
             pl.Start();
 
             Logger.WriteTraceMessage(string.Format("Backup engine is now running."), InstanceID);
@@ -78,7 +78,7 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Core processing loop.
         /// </summary>
-        private void ProcessLoop()
+        private async Task ProcessLoopAsync()
         {
             try
             {
@@ -87,7 +87,7 @@ namespace OzetteLibrary.Client
                     // check to see if we have any files to backup.
                     // return the next one to backup.
 
-                    BackupFile nextFileToBackup = SafeGetNextFileToBackup();
+                    BackupFile nextFileToBackup = await SafeGetNextFileToBackupAsync();
 
                     if (nextFileToBackup != null)
                     {
@@ -163,11 +163,11 @@ namespace OzetteLibrary.Client
         /// This function is marked as safe and should not throw exceptions.
         /// </remarks>
         /// <returns></returns>
-        private BackupFile SafeGetNextFileToBackup()
+        private async Task<BackupFile> SafeGetNextFileToBackupAsync()
         {
             try
             {
-                return Database.GetNextFileToBackup();
+                return await Database.FindNextFileToBackupAsync();
             }
             catch (Exception ex)
             {

@@ -96,7 +96,7 @@ namespace OzetteLibrary.Client.Transfer
                 {
                     Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It has been deleted or is no longer accessible since it was scanned.", File.FullSourcePath), InstanceID);
                     File.SetFileAsDeleted();
-                    Database.UpdateBackupFile(File);
+                    await Database.SetBackupFileAsync(File, false);
                     return;
                 }
 
@@ -104,7 +104,7 @@ namespace OzetteLibrary.Client.Transfer
                 {
                     Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It is empty (has no contents).", File.FullSourcePath), InstanceID);
                     File.SetFileAsReadOrBackupFailed();
-                    Database.UpdateBackupFile(File);
+                    await Database.SetBackupFileAsync(File, false);
                     return;
                 }
 
@@ -116,7 +116,7 @@ namespace OzetteLibrary.Client.Transfer
                 {
                     // step 3: calculate and save the hash.
 
-                    UpdateFileHashInDatabase(File, fs);
+                    await UpdateFileHashInDatabaseAsync(File, fs);
 
                     // step 4: see if this file is already on the destination target provider(s).
                     // this avoids resending the file if for some reason the client DB/states got wiped out.
@@ -140,7 +140,7 @@ namespace OzetteLibrary.Client.Transfer
             {
                 Logger.WriteTraceError("An error occurred while preparing to transfer a file.", ex, Logger.GenerateFullContextStackTrace(), InstanceID);
                 File.SetFileAsReadOrBackupFailed();
-                Database.UpdateBackupFile(File);
+                await Database.SetBackupFileAsync(File, false);
             }
         }
 
@@ -152,7 +152,7 @@ namespace OzetteLibrary.Client.Transfer
         /// <returns></returns>
         private async Task SendTransferPayloadToFileTargetsAsync(BackupFile file, TransferPayload payload)
         {
-            var directory = Database.GetDirectoryMapItem(file.Directory);
+            var directory = await Database.GetDirectoryMapItemAsync(file.Directory);
 
             foreach (var providerName in payload.DestinationProviders)
             {
@@ -176,7 +176,7 @@ namespace OzetteLibrary.Client.Transfer
                 finally
                 {
                     // commit the status changes to the local state database.
-                    Database.UpdateBackupFile(file);
+                    await Database.SetBackupFileAsync(file, true);
                 }
             }
         }
@@ -194,7 +194,7 @@ namespace OzetteLibrary.Client.Transfer
 
             foreach (var provider in Providers)
             {
-                var directory = Database.GetDirectoryMapItem(file.Directory);
+                var directory = await Database.GetDirectoryMapItemAsync(file.Directory);
                 var providerState = await provider.Value.GetFileStatusAsync(file, directory);
 
                 // mismatch: the provider file is synced, but our local state does not reflect this.
@@ -207,7 +207,7 @@ namespace OzetteLibrary.Client.Transfer
                     Logger.WriteTraceMessage(string.Format("Found a sync mismatch: this file is already synced at the provider [{0}]. Updating our local status.", provider.Key), InstanceID);
 
                     file.SetProviderToCompleted(provider.Key);
-                    Database.UpdateBackupFile(file);
+                    await Database.SetBackupFileAsync(file, true);
                 }
             }
         }
@@ -217,7 +217,7 @@ namespace OzetteLibrary.Client.Transfer
         /// </summary>
         /// <param name="File"></param>
         /// <param name="Stream"></param>
-        private void UpdateFileHashInDatabase(BackupFile File, FileStream Stream)
+        private async Task UpdateFileHashInDatabaseAsync(BackupFile File, FileStream Stream)
         {
             if (File == null)
             {
@@ -235,7 +235,7 @@ namespace OzetteLibrary.Client.Transfer
             {
                 File.SetFileHashWithAlgorithm(currentHash, hashAlgo);
                 File.SetLastCheckedTimeStamp();
-                Database.UpdateBackupFile(File);
+                await Database.SetBackupFileAsync(File, false);
             }
             else
             {

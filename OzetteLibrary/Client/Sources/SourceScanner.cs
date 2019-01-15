@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Client.Sources
 {
@@ -39,47 +40,6 @@ namespace OzetteLibrary.Client.Sources
         }
 
         /// <summary>
-        /// Starts asynchronously scanning a source.
-        /// </summary>
-        /// <param name="source">The source definition</param>
-        public AsyncResult BeginScan(SourceLocation source)
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-            if (ScanInProgress)
-            {
-                throw new InvalidOperationException("Cannot start the scan. It is already in progress.");
-            }
-
-            ScanInProgress = true;
-            ScanStopRequested = false;
-
-            Logger.WriteTraceMessage(string.Format("Starting scan for source: {0}", source.ToString()));
-
-            AsyncResult resultState = new AsyncResult();
-            Thread scanThread = new Thread(() => Scan(source, resultState));
-            
-            scanThread.Start();
-
-            return resultState;
-        }
-
-        /// <summary>
-        /// Stops scanning a source if it is in-progress.
-        /// </summary>
-        public void StopScan()
-        {
-            Logger.WriteTraceMessage("Stopping the in-progress scan by request.");
-
-            if (ScanInProgress)
-            {
-                ScanStopRequested = true;
-            }
-        }
-
-        /// <summary>
         /// A reference to the database.
         /// </summary>
         private IClientDatabase Database { get; set; }
@@ -95,24 +55,20 @@ namespace OzetteLibrary.Client.Sources
         private Hasher Hasher { get; set; }
 
         /// <summary>
-        /// Flag to indicate if the scan is already in progress.
-        /// </summary>
-        private volatile bool ScanInProgress = false;
-
-        /// <summary>
-        /// Flag to indicate if the scan stop has been requested.
-        /// </summary>
-        private volatile bool ScanStopRequested = false;
-
-        /// <summary>
         /// Performs a scan of a source location.
         /// </summary>
         /// <param name="source">The local source definition</param>
         /// <param name="asyncState">The async result state</param>
-        private void Scan(SourceLocation source, AsyncResult asyncState)
+        public async Task ScanAsync(SourceLocation source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            Logger.WriteTraceMessage(string.Format("Starting scan for source: {0}", source.ToString()));
+
             var results = new ScanResults();
-            bool canceled = false;
 
             // note: constructing DirectoryInfo objects with non-existent paths will not throw exceptions.
             // however calling EnumerateFiles() or EnumerateDirectories() will throw exceptions, so these are wrapped.
@@ -122,13 +78,6 @@ namespace OzetteLibrary.Client.Sources
 
             while (directoriesToScan.Count > 0)
             {
-                // check if we need to quit (1)
-                if (ScanStopRequested)
-                {
-                    canceled = true;
-                    break;
-                }
-
                 var currentDirectory = directoriesToScan.Dequeue();
 
                 Logger.WriteTraceMessage(string.Format("Scanning directory: {0}", currentDirectory.FullName));
@@ -142,26 +91,12 @@ namespace OzetteLibrary.Client.Sources
                     }
                 }
 
-                // check if we need to quit (2)
-                if (ScanStopRequested)
-                {
-                    canceled = true;
-                    break;
-                }
-
                 var foundFiles = SafeEnumerateFiles(currentDirectory, source.FileMatchFilter);
                 if (foundFiles != null)
                 {
                     foreach (var foundFile in foundFiles)
                     {
-                        // check if we need to quit (3)
-                        if (ScanStopRequested)
-                        {
-                            canceled = true;
-                            break;
-                        }
-
-                        ScanFile(results, foundFile, source);
+                        await ScanFileAsync(results, foundFile, source);
                     }
                 }
 
@@ -169,18 +104,6 @@ namespace OzetteLibrary.Client.Sources
             }
 
             WriteScanResultsToLog(results, source);
-
-            ScanInProgress = false;
-            ScanStopRequested = false;
-
-            if (canceled)
-            {
-                asyncState.Cancel();
-            }
-            else
-            {
-                asyncState.Complete();
-            }
         }
 
         /// <summary>
@@ -269,7 +192,7 @@ namespace OzetteLibrary.Client.Sources
         /// <param name="fileHash">The computed hash</param>
         /// <param name="algorithm">Hash algorithm used to compute the hash</param>
         /// <param name="source">The source definition</param>
-        private void ScanFile(ScanResults results, FileInfo fileInfo, SourceLocation source)
+        private async Task ScanFileAsync(ScanResults results, FileInfo fileInfo, SourceLocation source)
         {
             if (fileInfo.Length == 0)
             {
@@ -296,23 +219,23 @@ namespace OzetteLibrary.Client.Sources
             // do a simple file lookup, based on the name/path, size, and date modified
             // do not hash yet-- we dont need it until backup time.
 
-            var fileIndexLookup = Database.GetBackupFile(fileInfo.FullName, fileInfo.Length, fileInfo.LastWriteTime);
+            var fileIndexLookup = await Database.FindBackupFileAsync(fileInfo.FullName, fileInfo.Length, fileInfo.LastWriteTime);
 
             if (fileIndexLookup.Result == BackupFileLookupResult.New)
             {
-                ProcessNewFile(fileInfo, source.Priority);
+                await ProcessNewFileAsync(fileInfo, source.Priority);
                 results.NewFilesFound++;
                 results.NewBytesFound += (ulong)fileInfo.Length;
             }
             else if (fileIndexLookup.Result == BackupFileLookupResult.Updated)
             {
-                ProcessUpdatedFile(fileIndexLookup, fileInfo);
+                await ProcessUpdatedFileAsync(fileIndexLookup, fileInfo);
                 results.UpdatedFilesFound++;
                 results.UpdatedBytesFound += (ulong)fileInfo.Length;
             }
             else if (fileIndexLookup.Result == BackupFileLookupResult.Existing)
             {
-                ProcessExistingFile(fileIndexLookup, fileInfo);
+                await ProcessExistingFileAsync(fileIndexLookup, fileInfo);
             }
             else
             {
@@ -328,16 +251,16 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         /// <param name="fileInfo">FileInfo details</param>
         /// <param name="priority">The source priority</param>
-        private void ProcessNewFile(FileInfo fileInfo, FileBackupPriority priority)
+        private async Task ProcessNewFileAsync(FileInfo fileInfo, FileBackupPriority priority)
         {
             Logger.WriteTraceMessage(string.Format("New File: {0}", fileInfo.FullName));
 
             // brand new file
             var backupFile = new BackupFile(fileInfo, priority);
-            backupFile.ResetCopyState(Database.GetProvidersAsync(Providers.ProviderTypes.Storage));
+            backupFile.ResetCopyState(await Database.GetProvidersAsync(Providers.ProviderTypes.Storage));
             backupFile.SetLastCheckedTimeStamp();
 
-            Database.AddBackupFile(backupFile);
+            await Database.SetBackupFileAsync(backupFile, true);
         }
 
         /// <summary>
@@ -345,16 +268,16 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         /// <param name="fileLookup">File index lookup result</param>
         /// <param name="fileInfo">FileInfo details</param>
-        private void ProcessUpdatedFile(BackupFileLookup fileLookup, FileInfo fileInfo)
+        private async Task ProcessUpdatedFileAsync(BackupFileLookup fileLookup, FileInfo fileInfo)
         {
             Logger.WriteTraceMessage(string.Format("Updated File: {0}", fileInfo.FullName));
 
             // updated file
-            fileLookup.File.ResetCopyState(Database.GetProvidersAsync(Providers.ProviderTypes.Storage));
+            fileLookup.File.ResetCopyState(await Database.GetProvidersAsync(Providers.ProviderTypes.Storage));
             fileLookup.File.SetLastCheckedTimeStamp();
             fileLookup.File.IncrementFileRevision();
 
-            Database.UpdateBackupFile(fileLookup.File);
+            await Database.SetBackupFileAsync(fileLookup.File, true);
         }
 
         /// <summary>
@@ -362,7 +285,7 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         /// <param name="fileLookup">File index lookup result</param>
         /// <param name="fileInfo">FileInfo details</param>
-        private void ProcessExistingFile(BackupFileLookup fileLookup, FileInfo fileInfo)
+        private async Task ProcessExistingFileAsync(BackupFileLookup fileLookup, FileInfo fileInfo)
         {
             // do not write trace messages for unchanged files
             // it becomes too noisy in the logs.
@@ -370,7 +293,7 @@ namespace OzetteLibrary.Client.Sources
             // existing file
             // should update the last checked flag
             fileLookup.File.SetLastCheckedTimeStamp();
-            Database.UpdateBackupFile(fileLookup.File);
+            await Database.SetBackupFileAsync(fileLookup.File, false);
         }
     }
 }

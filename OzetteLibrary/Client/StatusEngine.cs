@@ -74,10 +74,10 @@ namespace OzetteLibrary.Client
             {
                 while (true)
                 {
-                    if (CanSendStatusUpdate())
+                    if (await CanSendStatusUpdateAsync())
                     {
                         Logger.WriteTraceMessage("Querying for backup progress.");
-                        var progress = Database.GetBackupProgress();
+                        var progress = await Database.GetBackupProgressAsync();
                         await SendStatusUpdateAsync(progress);
                     }
 
@@ -100,11 +100,11 @@ namespace OzetteLibrary.Client
         /// Checks to see if we can send the current status to the status provider.
         /// </summary>
         /// <returns></returns>
-        private bool CanSendStatusUpdate()
+        private async Task<bool> CanSendStatusUpdateAsync()
         {
             // add the next status check time, if it isn't already in the queue.
 
-            var scheduleString = Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.StatusUpdateSchedule);
+            var scheduleString = await Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.StatusUpdateSchedule);
             var schedule = NCrontab.CrontabSchedule.Parse(scheduleString);
             var nextRun = schedule.GetNextOccurrence(DateTime.Now);
 
