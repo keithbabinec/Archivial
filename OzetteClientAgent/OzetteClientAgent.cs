@@ -16,6 +16,7 @@ using OzetteLibrary.MessagingProviders;
 using OzetteLibrary.MessagingProviders.Twilio;
 using System.Collections.Generic;
 using OzetteLibrary.Database.SQLServer;
+using System.Threading.Tasks;
 
 namespace OzetteClientAgent
 {
@@ -94,7 +95,7 @@ namespace OzetteClientAgent
         /// <summary>
         /// Core application start.
         /// </summary>
-        private void CoreStart()
+        private async Task CoreStart()
         {
             StartLoggers();
 
@@ -102,13 +103,13 @@ namespace OzetteClientAgent
                 string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName),
                 EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService, true);
 
-            if (!ConfigureStorageProviderConnections())
+            if (!(await ConfigureStorageProviderConnectionsAsync()))
             {
                 Stop();
                 return;
             }
 
-            if (!ConfigureMessagingProviderConnections())
+            if (!(await ConfigureMessagingProviderConnectionsAsync()))
             {
                 Stop();
                 return;
@@ -211,7 +212,7 @@ namespace OzetteClientAgent
         /// Configures the cloud storage provider connections.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
-        private bool ConfigureStorageProviderConnections()
+        private async Task<bool> ConfigureStorageProviderConnectionsAsync()
         {
             CoreLog.WriteSystemEvent("Configuring cloud storage provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguringCloudProviderConnections, true);
 
@@ -231,7 +232,7 @@ namespace OzetteClientAgent
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
 
-                var providersList = db.GetProvidersAsync(ProviderTypes.Storage);
+                var providersList = await db.GetProvidersAsync(ProviderTypes.Storage);
 
                 foreach (var provider in providersList)
                 {
@@ -242,8 +243,8 @@ namespace OzetteClientAgent
                         case nameof(StorageProviderTypes.Azure):
                             {
                                 CoreLog.WriteTraceMessage("Checking for Azure cloud storage provider connection settings.");
-                                string storageAccountName = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
-                                string storageAccountToken = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountToken);
+                                string storageAccountName = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
+                                string storageAccountToken = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountToken);
 
                                 CoreLog.WriteTraceMessage("Initializing Azure cloud storage provider.");
                                 var azureConnection = new AzureStorageProviderFileOperations(BackupEngineLog, storageAccountName, storageAccountToken);
@@ -304,7 +305,7 @@ namespace OzetteClientAgent
         /// Configures the messaging provider connections.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
-        private bool ConfigureMessagingProviderConnections()
+        private async Task<bool> ConfigureMessagingProviderConnectionsAsync()
         {
             CoreLog.WriteSystemEvent("Configuring messaging provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguringMessagingProviderConnections, true);
 
@@ -324,7 +325,7 @@ namespace OzetteClientAgent
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
 
-                var providersList = db.GetProvidersAsync(ProviderTypes.Messaging);
+                var providersList = await db.GetProvidersAsync(ProviderTypes.Messaging);
 
                 foreach (var provider in providersList)
                 {
@@ -335,10 +336,10 @@ namespace OzetteClientAgent
                         case nameof(MessagingProviderTypes.Twilio):
                             {
                                 CoreLog.WriteTraceMessage("Checking for Twilio messaging provider connection settings.");
-                                string accountID = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAccountID);
-                                string authToken = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAuthToken);
-                                string sourcePhone = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.TwilioSourcePhone);
-                                string destPhones = protectedStore.GetApplicationSecret(OzetteLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones);
+                                string accountID = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAccountID);
+                                string authToken = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAuthToken);
+                                string sourcePhone = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioSourcePhone);
+                                string destPhones = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones);
 
                                 CoreLog.WriteTraceMessage("Initializing Twilio messaging provider.");
                                 var twilioConnection = new TwilioMessagingProviderOperations(CoreLog, accountID, authToken, sourcePhone, destPhones);

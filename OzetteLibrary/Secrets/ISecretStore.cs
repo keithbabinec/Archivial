@@ -1,4 +1,6 @@
-﻿namespace OzetteLibrary.Secrets
+﻿using System.Threading.Tasks;
+
+namespace OzetteLibrary.Secrets
 {
     /// <summary>
     /// A generic interface for interacting with application secrets.
@@ -10,13 +12,13 @@
         /// </summary>
         /// <param name="SecretID">ID of the secret</param>
         /// <returns>The secret value</returns>
-        string GetApplicationSecret(string SecretName);
+        Task<string> GetApplicationSecretAsync(string SecretName);
 
         /// <summary>
         /// Sets the specified secret into the secret store.
         /// </summary>
         /// <param name="SecretName"></param>
         /// <param name="SecretValue"></param>
-        void SetApplicationSecret(string SecretName, string SecretValue);
+        Task SetApplicationSecretAsync(string SecretName, string SecretValue);
     }
 }

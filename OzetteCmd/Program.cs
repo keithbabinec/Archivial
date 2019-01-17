@@ -32,7 +32,7 @@ namespace OzetteCmd
                     return 2;
                 }
 
-                if (command.Run(argumentObj))
+                if (command.RunAsync(argumentObj))
                 {
                     // command completed successfully
                     return 0;

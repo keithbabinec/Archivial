@@ -113,31 +113,12 @@ namespace OzetteLibrary.Client
                                     continue;
                                 }
 
-                                // begin-invoke the asynchronous scan operation.
-                                // watch the IAsyncResult status object to check for status updates
-                                // and wait until the scan has completed.
+                                // invoke the scan
+                                await Scanner.ScanAsync(source);
 
-                                AsyncResult state = Scanner.BeginScan(source);
-                                while (state.IsCompleted == false)
-                                {
-                                    ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(2));
-                                    if (Running == false)
-                                    {
-                                        // stop was requested.
-                                        // stop the currently in-progress scanning operation.
-                                        Scanner.StopScan();
-                                        break;
-                                    }
-                                }
-
+                                // update the last scanned timestamp.
                                 LastHeartbeatOrScanCompleted = DateTime.Now;
-
-                                if (state.IsCanceled == false)
-                                {
-                                    // the scan completed successfully (no cancel)
-                                    // update the last scanned timestamp.
-                                    await UpdateLastScannedTimeStamp(source);
-                                }
+                                await UpdateLastScannedTimeStamp(source);
                             }
 
                             if (Running == false)

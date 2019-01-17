@@ -4,6 +4,7 @@ using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -36,7 +37,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(ArgumentBase arguments)
+        public async Task<bool> RunAsync(ArgumentBase arguments)
         {
             // arguments is required from the interface definition, but there are no additional parameter arguments for this command.
             // so just ignore it, no validation required here.
@@ -46,7 +47,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup status check");
 
                 Logger.WriteConsole("--- Step 1: Querying database for backup status.");
-                PrintStatus();
+                await PrintStatusAsync();
 
                 return true;
             }
@@ -61,7 +62,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Prints the backup status.
         /// </summary>
-        private void PrintStatus()
+        private async Task PrintStatusAsync()
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -69,7 +70,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Checking backup file status...");
 
-            var progress = db.GetBackupProgress();
+            var progress = await db.GetBackupProgressAsync();
 
             Console.WriteLine("------------------------------------------------");
             Console.WriteLine("Completion Percentage");

@@ -3,6 +3,7 @@ using OzetteLibrary.Exceptions;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Secrets
 {
@@ -53,11 +54,11 @@ namespace OzetteLibrary.Secrets
         /// </summary>
         /// <param name="SecretID">ID of the secret</param>
         /// <returns>The secret value</returns>
-        public string GetApplicationSecret(string SecretName)
+        public async Task<string> GetApplicationSecretAsync(string SecretName)
         {
             // pull encrypted secret from the database.
 
-            var settingValue = Database.GetApplicationOptionAsync(SecretName);
+            var settingValue = await Database.GetApplicationOptionAsync(SecretName);
 
             if (string.IsNullOrWhiteSpace(settingValue))
             {
@@ -78,7 +79,7 @@ namespace OzetteLibrary.Secrets
         /// </summary>
         /// <param name="SecretName"></param>
         /// <param name="SecretValue"></param>
-        public void SetApplicationSecret(string SecretName, string SecretValue)
+        public async Task SetApplicationSecretAsync(string SecretName, string SecretValue)
         {
             if (string.IsNullOrWhiteSpace(SecretName))
             {
@@ -97,7 +98,7 @@ namespace OzetteLibrary.Secrets
 
             // store secret in configuration
 
-            Database.SetApplicationOptionAsync(SecretName, encryptedString);
+            await Database.SetApplicationOptionAsync(SecretName, encryptedString);
         }
     }
 }

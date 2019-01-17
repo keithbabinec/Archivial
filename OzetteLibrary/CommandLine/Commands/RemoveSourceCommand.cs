@@ -5,6 +5,7 @@ using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -34,7 +35,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(ArgumentBase arguments)
+        public async Task<bool> RunAsync(ArgumentBase arguments)
         {
             var removeSrcArgs = arguments as RemoveSourceArguments;
 
@@ -48,7 +49,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup source configuration");
 
                 Logger.WriteConsole("--- Step 1: Remove the source from the database.");
-                RemoveSource(removeSrcArgs);
+                await RemoveSourceAsync(removeSrcArgs);
 
                 Logger.WriteConsole("--- Source configuration completed successfully.");
 
@@ -66,7 +67,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Removes the specified source.
         /// </summary>
         /// <param name="arguments"></param>
-        private void RemoveSource(RemoveSourceArguments arguments)
+        private async Task RemoveSourceAsync(RemoveSourceArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -74,7 +75,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing scan sources to see if the specified source exists.");
 
-            var allSources = db.GetAllSourceLocations();
+            var allSources = await db.GetSourceLocationsAsync();
             var sourceToRemove = allSources.FirstOrDefault(x => x.ID == arguments.SourceID);
 
             if (sourceToRemove == null)
@@ -86,8 +87,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Found a matching backup source, removing it now.");
 
-            allSources.Remove(sourceToRemove);
-            db.SetSourceLocations(allSources);
+            await db.RemoveSourceLocationAsync(sourceToRemove);
 
             Logger.WriteConsole("Successfully removed the source from the database.");
         }

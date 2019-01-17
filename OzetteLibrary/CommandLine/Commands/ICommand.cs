@@ -1,4 +1,5 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -12,6 +13,6 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments">An arguments object.</param>
         /// <returns>True if successful, otherwise false.</returns>
-        bool Run(ArgumentBase arguments);
+        Task<bool> RunAsync(ArgumentBase arguments);
     }
 }

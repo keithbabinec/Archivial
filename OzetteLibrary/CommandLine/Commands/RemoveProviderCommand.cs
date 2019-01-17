@@ -7,6 +7,7 @@ using OzetteLibrary.StorageProviders;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -36,7 +37,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(ArgumentBase arguments)
+        public async Task<bool> RunAsync(ArgumentBase arguments)
         {
             var removeProviderArgs = arguments as RemoveProviderArguments;
 
@@ -50,7 +51,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup provider configuration");
 
                 Logger.WriteConsole("--- Step 1: Remove the provider from the database.");
-                RemoveProvider(removeProviderArgs);
+                await RemoveProviderAsync(removeProviderArgs);
 
                 Logger.WriteConsole("--- Provider configuration completed successfully.");
 
@@ -68,7 +69,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Removes the specified provider.
         /// </summary>
         /// <param name="arguments"></param>
-        private void RemoveProvider(RemoveProviderArguments arguments)
+        private async Task RemoveProviderAsync(RemoveProviderArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -76,7 +77,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing cloud providers to see if the specified provider exists.");
 
-            var allProviders = db.GetProvidersAsync(ProviderTypes.Any);
+            var allProviders = await db.GetProvidersAsync(ProviderTypes.Any);
             var providerToRemove = allProviders.FirstOrDefault(x => x.ID == arguments.ProviderID);
 
             if (providerToRemove == null)
@@ -87,13 +88,13 @@ namespace OzetteLibrary.CommandLine.Commands
             }
 
             Logger.WriteConsole("Found a matching provider, removing it now.");
-            db.RemoveProvider(arguments.ProviderID);
+            await db.RemoveProviderAsync(providerToRemove.Name);
 
             if (providerToRemove.Name == nameof(StorageProviderTypes.Azure))
             {
                 // remove provider specific secrets
-                db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountName);
-                db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountToken);
+                await db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountName);
+                await db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountToken);
             }
             else
             {

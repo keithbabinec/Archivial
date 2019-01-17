@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using OzetteLibrary.Providers;
 using OzetteLibrary.Database.SQLServer;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -44,7 +45,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(ArgumentBase arguments)
+        public async Task<bool> RunAsync(ArgumentBase arguments)
         {
             var configAzArgs = arguments as ConfigureAzureArguments;
 
@@ -58,10 +59,10 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup Azure configuration");
 
                 Logger.WriteConsole("--- Step 1: Encrypt and save Azure settings.");
-                EncryptAndSave(configAzArgs);
+                await EncryptAndSaveAsync(configAzArgs);
 
                 Logger.WriteConsole("--- Step 2: Configure providers list.");
-                ConfigureProviders();
+                await ConfigureProvidersAsync();
 
                 Logger.WriteConsole("--- Azure configuration completed successfully.");
 
@@ -78,7 +79,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Configures the providers in the client database.
         /// </summary>
-        private void ConfigureProviders()
+        private async Task ConfigureProvidersAsync()
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -86,7 +87,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Fetching current providers configuration from the database.");
 
-            var existingProviders = db.GetProvidersAsync(ProviderTypes.Storage);
+            var existingProviders = await db.GetProvidersAsync(ProviderTypes.Storage);
 
             if (existingProviders.Any(x => x.Name == nameof(StorageProviderTypes.Azure)) == false)
             {
@@ -99,7 +100,7 @@ namespace OzetteLibrary.CommandLine.Commands
                         Name = nameof(StorageProviderTypes.Azure)
                     };
 
-                db.AddProviderAsync(newProvider);
+                await db.AddProviderAsync(newProvider);
 
                 Logger.WriteConsole("Successfully configured Azure as a cloud backup provider.");
             }
@@ -113,7 +114,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Encrypts and saves the Azure configuration settings.
         /// </summary>
         /// <param name="arguments"></param>
-        private void EncryptAndSave(ConfigureAzureArguments arguments)
+        private async Task EncryptAndSaveAsync(ConfigureAzureArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -127,11 +128,11 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Saving encrypted Azure configuration setting: AzureStorageAccountName.");
 
-            pds.SetApplicationSecret(Constants.RuntimeSettingNames.AzureStorageAccountName, arguments.AzureStorageAccountName);
+            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.AzureStorageAccountName, arguments.AzureStorageAccountName);
 
             Logger.WriteConsole("Saving encrypted Azure configuration setting: AzureStorageAccountToken.");
 
-            pds.SetApplicationSecret(Constants.RuntimeSettingNames.AzureStorageAccountToken, arguments.AzureStorageAccountToken);
+            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.AzureStorageAccountToken, arguments.AzureStorageAccountToken);
         }
     }
 }

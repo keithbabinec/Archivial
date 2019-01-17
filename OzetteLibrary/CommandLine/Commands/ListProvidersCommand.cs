@@ -4,6 +4,7 @@ using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -36,7 +37,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(ArgumentBase arguments)
+        public async Task<bool> RunAsync(ArgumentBase arguments)
         {
             // arguments is required from the interface definition, but there are no additional parameter arguments for this command.
             // so just ignore it, no validation required here.
@@ -46,7 +47,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup configuration check");
 
                 Logger.WriteConsole("--- Step 1: Query database for the list of configured providers.");
-                PrintProviderNames();
+                await PrintProviderNamesAsync();
 
                 return true;
             }
@@ -61,7 +62,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Prints the providers.
         /// </summary>
-        private void PrintProviderNames()
+        private async Task PrintProviderNamesAsync()
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -69,7 +70,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing providers.");
 
-            var allProviders = db.GetProvidersAsync(Providers.ProviderTypes.Any);
+            var allProviders = await db.GetProvidersAsync(Providers.ProviderTypes.Any);
 
             Logger.WriteConsole("Number of configured providers: " + allProviders.Count);
 

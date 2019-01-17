@@ -270,8 +270,8 @@ namespace OzetteLibrary.Client
                 var pds = new ProtectedDataStore(Database, scope, ivkey);
 
                 var result = new Tuple<string, string>(
-                    pds.GetApplicationSecret(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, foundCred.CredentialName)),
-                    pds.GetApplicationSecret(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, foundCred.CredentialName))
+                    await pds.GetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, foundCred.CredentialName)),
+                    await pds.GetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, foundCred.CredentialName))
                 );
 
                 return result;

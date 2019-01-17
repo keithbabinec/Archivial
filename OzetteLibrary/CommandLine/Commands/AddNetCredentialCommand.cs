@@ -6,6 +6,7 @@ using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -35,7 +36,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(ArgumentBase arguments)
+        public async Task<bool> RunAsync(ArgumentBase arguments)
         {
             var addNetCredArgs = arguments as AddNetCredentialArguments;
 
@@ -49,10 +50,10 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup credential configuration");
 
                 Logger.WriteConsole("--- Step 1: Adds the network credential name to the database.");
-                AddNetCred(addNetCredArgs);
+                await AddNetCredAsync(addNetCredArgs);
 
                 Logger.WriteConsole("--- Step 2: Encrypt and save credential username and password settings.");
-                EncryptAndSave(addNetCredArgs);
+                await EncryptAndSaveAsync(addNetCredArgs);
 
                 Logger.WriteConsole("--- Credential configuration completed successfully.");
 
@@ -70,7 +71,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Adds the specified credential.
         /// </summary>
         /// <param name="arguments"></param>
-        private void AddNetCred(AddNetCredentialArguments arguments)
+        private async Task AddNetCredAsync(AddNetCredentialArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -78,15 +79,15 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Fetching current network credentials from the database.");
 
-            var existingCredsList = db.GetNetCredentialsList();
+            var existingCredsList = await db.GetNetCredentialsAsync();
 
             if (existingCredsList.Any(x => x.CredentialName == arguments.CredentialName) == false)
             {
                 Logger.WriteConsole("The specified credential is not configured in the client database. Adding it now.");
 
-                existingCredsList.Add(new NetCredential() { CredentialName = arguments.CredentialName });
+                var newcreds = new NetCredential() { CredentialName = arguments.CredentialName };
 
-                db.SetNetCredentialsList(existingCredsList);
+                await db.AddNetCredentialAsync(newcreds);
 
                 Logger.WriteConsole("Successfully added the network credential.");
             }
@@ -100,7 +101,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Encrypts and saves the net credential settings.
         /// </summary>
         /// <param name="arguments"></param>
-        private void EncryptAndSave(AddNetCredentialArguments arguments)
+        private async Task EncryptAndSaveAsync(AddNetCredentialArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 
@@ -114,11 +115,11 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Saving encrypted username setting.");
 
-            pds.SetApplicationSecret(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, arguments.CredentialName), arguments.ShareUser);
+            await pds.SetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, arguments.CredentialName), arguments.ShareUser);
 
             Logger.WriteConsole("Saving encrypted password setting.");
 
-            pds.SetApplicationSecret(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, arguments.CredentialName), arguments.SharePassword);
+            await pds.SetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, arguments.CredentialName), arguments.SharePassword);
         }
     }
 }
