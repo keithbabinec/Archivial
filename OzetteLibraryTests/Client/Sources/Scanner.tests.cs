@@ -7,6 +7,7 @@ using OzetteLibrary.Folders;
 using OzetteLibrary.Logging.Mock;
 using OzetteLibrary.Providers;
 using System;
+using System.Threading.Tasks;
 
 namespace OzetteLibraryTests.Client.Sources
 {
@@ -46,38 +47,16 @@ namespace OzetteLibraryTests.Client.Sources
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void ScannerThrowsWhenBeginScanIsCalledAfterScanHasAlreadyStarted()
-        {
-            var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
-
-            OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db, logger);
-
-            var source = new LocalSourceLocation()
-            {
-                Path = Environment.CurrentDirectory,
-                FileMatchFilter = "*.*",
-                Priority = OzetteLibrary.Files.FileBackupPriority.Low,
-                RevisionCount = 1
-            };
-
-            scanner.BeginScan(source);
-            scanner.BeginScan(source);
-        }
-
-        [TestMethod]
-        public void ScannerSignalsCompleteAfterScanHasCompleted()
+        public async Task ScannerCanCallScanAsync()
         {
             var logger = new MockLogger();
 
             var db = new Mock<IClientDatabase>();
 
-            db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
-                .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
+            db.Setup(x => x.FindBackupFileAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
+                .ReturnsAsync(new BackupFileLookup() { Result = BackupFileLookupResult.New });
 
-            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).Returns(new ProviderCollection());
+            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).ReturnsAsync(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
@@ -90,25 +69,20 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            var iasync = scanner.BeginScan(source);
-
-            bool completeSignaled = iasync.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5));
-
-            Assert.IsTrue(completeSignaled);
-            Assert.IsTrue(iasync.IsCompleted);
+            await scanner.ScanAsync(source);
         }
 
         [TestMethod]
-        public void ScannerCanScanSuccessfullyAfterCompletingAnEarlierScan()
+        public async Task ScannerCanScanSuccessfullyAfterCompletingAnEarlierScan()
         {
             var logger = new MockLogger();
 
             var db = new Mock<IClientDatabase>();
 
-            db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
-                .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
+            db.Setup(x => x.FindBackupFileAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
+                .ReturnsAsync(new BackupFileLookup() { Result = BackupFileLookupResult.New });
 
-            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).Returns(new ProviderCollection());
+            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).ReturnsAsync(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
@@ -121,32 +95,21 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            var iasync = scanner.BeginScan(source);
-
-            bool completeSignaled = iasync.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5));
-
-            Assert.IsTrue(completeSignaled);
-            Assert.IsTrue(iasync.IsCompleted);
-
-            var iasync2 = scanner.BeginScan(source);
-
-            bool completeSignaled2 = iasync2.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5));
-
-            Assert.IsTrue(completeSignaled2);
-            Assert.IsTrue(iasync2.IsCompleted);
+            await scanner.ScanAsync(source);
+            await scanner.ScanAsync(source);
         }
 
         [TestMethod]
-        public void ScannerCanAddClientFilesToDatabaseWithCorrectMetadata()
+        public async Task ScannerCanAddClientFilesToDatabase()
         {
             var logger = new MockLogger();
 
             var db = new Mock<IClientDatabase>();
 
-            db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
-                .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
+            db.Setup(x => x.FindBackupFileAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
+                .ReturnsAsync(new BackupFileLookup() { Result = BackupFileLookupResult.New });
 
-            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).Returns(new ProviderCollection());
+            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).ReturnsAsync(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
@@ -159,27 +122,22 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            var iasync = scanner.BeginScan(source);
+            await scanner.ScanAsync(source);
 
-            bool completeSignaled = iasync.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5));
-
-            Assert.IsTrue(completeSignaled);
-            Assert.IsTrue(iasync.IsCompleted);
-
-            db.Verify(x => x.AddBackupFile(It.IsAny<BackupFile>()), Times.AtLeast(10));
+            db.Verify(x => x.SetBackupFileAsync(It.IsAny<BackupFile>(), It.IsAny<bool>()), Times.AtLeast(10));
         }
 
         [TestMethod]
-        public void TraceMessagesAreWrittenToTheTraceLogDuringScanning()
+        public async Task TraceMessagesAreWrittenToTheTraceLogDuringScanning()
         {
             var logger = new MockLogger();
 
             var db = new Mock<IClientDatabase>();
 
-            db.Setup(x => x.GetBackupFile(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
-                .Returns(new BackupFileLookup() { Result = BackupFileLookupResult.New });
+            db.Setup(x => x.FindBackupFileAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>()))
+                .ReturnsAsync(new BackupFileLookup() { Result = BackupFileLookupResult.New });
 
-            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).Returns(new ProviderCollection());
+            db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).ReturnsAsync(new ProviderCollection());
 
             OzetteLibrary.Client.Sources.SourceScanner scanner =
                 new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger);
@@ -192,12 +150,7 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            var iasync = scanner.BeginScan(source);
-
-            bool completeSignaled = iasync.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5));
-
-            Assert.IsTrue(completeSignaled);
-            Assert.IsTrue(iasync.IsCompleted);
+            await scanner.ScanAsync(source);
 
             Assert.IsTrue(logger.WriteTraceMessageHasBeenCalled);
         }

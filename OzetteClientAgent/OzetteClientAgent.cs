@@ -43,7 +43,7 @@ namespace OzetteClientAgent
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            Thread t = new Thread(() => CoreStart());
+            Thread t = new Thread(() => (Task.Run(() => CoreStartAsync())).Wait());
             t.Start();
         }
 
@@ -95,7 +95,7 @@ namespace OzetteClientAgent
         /// <summary>
         /// Core application start.
         /// </summary>
-        private async Task CoreStart()
+        private async Task CoreStartAsync()
         {
             StartLoggers();
 

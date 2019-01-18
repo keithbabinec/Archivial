@@ -5,6 +5,7 @@ using OzetteLibrary.Logging.Default;
 using System;
 using System.Security.Principal;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OzetteCmd
 {
@@ -32,7 +33,10 @@ namespace OzetteCmd
                     return 2;
                 }
 
-                if (command.RunAsync(argumentObj))
+                Task<bool> task = Task.Run(() => command.RunAsync(argumentObj));
+                task.Wait();
+
+                if (task.Result)
                 {
                     // command completed successfully
                     return 0;

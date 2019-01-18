@@ -5,7 +5,7 @@ using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Secrets;
 using System;
-using System.IO;
+using System.Threading.Tasks;
 
 namespace OzetteLibraryTests.Secrets
 {
@@ -37,22 +37,22 @@ namespace OzetteLibraryTests.Secrets
 
         [TestMethod]
         [ExpectedException(typeof(ApplicationSecretMissingException))]
-        public void ProtectedDataStoreGetApplicationSecretThrowsWhenSecretIsNotFound()
+        public async Task ProtectedDataStoreGetApplicationSecretThrowsWhenSecretIsNotFound()
         {
             var db = new Mock<IClientDatabase>();
-            db.Setup(x => x.GetApplicationOptionAsync(It.IsAny<string>())).Returns((string)null);
+            db.Setup(x => x.GetApplicationOptionAsync(It.IsAny<string>())).ReturnsAsync((string)null);
 
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
             ProtectedDataStore pds = new ProtectedDataStore(db.Object, scope, entropy);
 
-            pds.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
+            await pds.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionNameIsProvided()
+        public async Task ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionNameIsProvided()
         {
             var db = new SQLServerClientDatabase(TestConnectionString);
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
@@ -60,12 +60,12 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            pds.SetApplicationSecretAsync("", "test-account");
+            await pds.SetApplicationSecretAsync("", "test-account");
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionValueIsProvided()
+        public async Task ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionValueIsProvided()
         {
             var db = new SQLServerClientDatabase(TestConnectionString);
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
@@ -73,7 +73,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "");
+            await pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "");
         }
     }
 }
