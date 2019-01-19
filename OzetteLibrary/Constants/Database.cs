@@ -6,33 +6,13 @@
     public static class Database
     {
         /// <summary>
-        /// A string constant for the backup files table name.
+        /// A string constant for the name of the database.
         /// </summary>
-        public const string FilesTableName = "BackupFiles";
+        public const string DatabaseName = "OzetteDB";
 
         /// <summary>
-        /// A string constant for the directory map table name.
+        /// A string constant for the localdb default instance.
         /// </summary>
-        public const string DirectoryMapTableName = "DirectoryMap";
-
-        /// <summary>
-        /// A string constant for the providers table name.
-        /// </summary>
-        public const string ProvidersTableName = "Providers";
-
-        /// <summary>
-        /// A string constant for the source locations table name.
-        /// </summary>
-        public const string SourceLocationsTableName = "SourceLocations";
-
-        /// <summary>
-        /// A string constant for the service options table name.
-        /// </summary>
-        public const string ApplicationOptionsTableName = "ApplicationOptions";
-
-        /// <summary>
-        /// A string constant for the net credentials table name.
-        /// </summary>
-        public const string NetCredentialsTableName = "NetCredentials";
+        public const string DefaultLocalDBInstanceConnectionString = "Data Source=(LocalDb)\\MSSQLLocalDB;";
     }
 }

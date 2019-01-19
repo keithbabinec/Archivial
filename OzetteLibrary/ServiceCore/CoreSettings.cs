@@ -70,6 +70,21 @@ namespace OzetteLibrary.ServiceCore
         }
 
         /// <summary>
+        /// The database directory.
+        /// </summary>
+        public static string DatabaseDirectory
+        {
+            get
+            {
+                return GetCoreStringSetting(BootstrapSettingNames.DatabaseDirectory);
+            }
+            set
+            {
+                SetCoreStringSetting(BootstrapSettingNames.DatabaseDirectory, value);
+            }
+        }
+
+        /// <summary>
         /// The encryption IV value.
         /// </summary>
         public static string ProtectionIv

@@ -5,6 +5,7 @@ using OzetteLibrary.ServiceCore;
 using System;
 using OzetteLibrary.Providers;
 using System.Threading.Tasks;
+using OzetteLibrary.Logging;
 
 namespace OzetteLibrary.Database
 {
@@ -13,6 +14,13 @@ namespace OzetteLibrary.Database
     /// </summary>
     public interface IClientDatabase
     {
+        /// <summary>
+        /// Prepares the database.
+        /// </summary>
+        /// <remarks>Instance of the logger.</remarks>
+        /// <returns></returns>
+        Task PrepareDatabaseAsync(ILogger logger);
+
         /// <summary>
         /// Saves an application setting to the database.
         /// </summary>

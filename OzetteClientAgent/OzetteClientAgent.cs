@@ -17,6 +17,7 @@ using OzetteLibrary.MessagingProviders.Twilio;
 using System.Collections.Generic;
 using OzetteLibrary.Database.SQLServer;
 using System.Threading.Tasks;
+using OzetteLibrary.Database;
 
 namespace OzetteClientAgent
 {
@@ -63,6 +64,11 @@ namespace OzetteClientAgent
         private ILogger ScanEngineLog { get; set; }
 
         /// <summary>
+        /// A reference to the client database instance.
+        /// </summary>
+        private IClientDatabase ClientDatabase { get; set; }
+
+        /// <summary>
         /// A reference to the connection engine instance.
         /// </summary>
         private ConnectionEngine ConnectionEngineInstance { get; set; }
@@ -102,6 +108,12 @@ namespace OzetteClientAgent
             CoreLog.WriteSystemEvent(
                 string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName),
                 EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService, true);
+
+            if (!(await ConfigureDatabaseAsync()))
+            {
+                Stop();
+                return;
+            }
 
             if (!(await ConfigureStorageProviderConnectionsAsync()))
             {
@@ -209,6 +221,28 @@ namespace OzetteClientAgent
         }
 
         /// <summary>
+        /// Configures the database instance.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> ConfigureDatabaseAsync()
+        {
+            try
+            {
+                ClientDatabase = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
+                await ClientDatabase.PrepareDatabaseAsync(CoreLog);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var message = "Failed to configure client database.";
+                var context = CoreLog.GenerateFullContextStackTrace();
+                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedToPrepareClientDatabase, true);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Configures the cloud storage provider connections.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
@@ -220,19 +254,16 @@ namespace OzetteClientAgent
 
             try
             {
-                // establish the database and protected store.
-
-                var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
-
+                // establish the protected store.
                 var ivEncodedString = CoreSettings.ProtectionIv;
                 var ivBytes = Convert.FromBase64String(ivEncodedString);
 
-                ProtectedDataStore protectedStore = new ProtectedDataStore(db, DataProtectionScope.LocalMachine, ivBytes);
+                ProtectedDataStore protectedStore = new ProtectedDataStore(ClientDatabase, DataProtectionScope.LocalMachine, ivBytes);
 
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
 
-                var providersList = await db.GetProvidersAsync(ProviderTypes.Storage);
+                var providersList = await ClientDatabase.GetProvidersAsync(ProviderTypes.Storage);
 
                 foreach (var provider in providersList)
                 {
@@ -314,18 +345,15 @@ namespace OzetteClientAgent
             try
             {
                 // establish the database and protected store.
-
-                var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
-
                 var ivEncodedString = CoreSettings.ProtectionIv;
                 var ivBytes = Convert.FromBase64String(ivEncodedString);
 
-                ProtectedDataStore protectedStore = new ProtectedDataStore(db, DataProtectionScope.LocalMachine, ivBytes);
+                ProtectedDataStore protectedStore = new ProtectedDataStore(ClientDatabase, DataProtectionScope.LocalMachine, ivBytes);
 
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
 
-                var providersList = await db.GetProvidersAsync(ProviderTypes.Messaging);
+                var providersList = await ClientDatabase.GetProvidersAsync(ProviderTypes.Messaging);
 
                 foreach (var provider in providersList)
                 {
@@ -404,9 +432,7 @@ namespace OzetteClientAgent
         {
             try
             {
-                var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
-
-                ConnectionEngineInstance = new ConnectionEngine(db, CoreLog, StorageConnections, MessagingConnections);
+                ConnectionEngineInstance = new ConnectionEngine(ClientDatabase, CoreLog, StorageConnections, MessagingConnections);
                 ConnectionEngineInstance.Stopped += Connection_Stopped;
                 ConnectionEngineInstance.BeginStart();
 
@@ -460,9 +486,7 @@ namespace OzetteClientAgent
         {
             try
             {
-                var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
-
-                StatusEngineInstance = new StatusEngine(db, CoreLog, StorageConnections, MessagingConnections, 0);
+                StatusEngineInstance = new StatusEngine(ClientDatabase, CoreLog, StorageConnections, MessagingConnections, 0);
                 StatusEngineInstance.Stopped += Status_Stopped;
                 StatusEngineInstance.BeginStart();
 
@@ -516,9 +540,7 @@ namespace OzetteClientAgent
         {
             try
             {
-                var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
-
-                ScanEngineInstance = new ScanEngine(db, ScanEngineLog, StorageConnections, MessagingConnections, 0);
+                ScanEngineInstance = new ScanEngine(ClientDatabase, ScanEngineLog, StorageConnections, MessagingConnections, 0);
                 ScanEngineInstance.Stopped += Scan_Stopped;
                 ScanEngineInstance.BeginStart();
 
@@ -580,9 +602,7 @@ namespace OzetteClientAgent
 
                 for (int i = 0; i < instanceCount; i++)
                 {
-                    var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
-
-                    var instance = new BackupEngine(db, BackupEngineLog, StorageConnections, MessagingConnections, i);
+                    var instance = new BackupEngine(ClientDatabase, BackupEngineLog, StorageConnections, MessagingConnections, i);
                     instance.Stopped += Backup_Stopped;
                     instance.BeginStart();
 

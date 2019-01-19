@@ -19,6 +19,11 @@
         public const string LogFilesDirectory = "OZETTE_LOGFILESDIRECTORY";
 
         /// <summary>
+        /// The database directory path setting.
+        /// </summary>
+        public const string DatabaseDirectory = "OZETTE_DATABASEDIRECTORY";
+
+        /// <summary>
         /// The installation directory path.
         /// </summary>
         public const string InstallationDirectory = "OZETTE_INSTALLATIONDIRECTORY";

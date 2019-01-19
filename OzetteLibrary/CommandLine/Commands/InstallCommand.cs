@@ -4,13 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.AccessControl;
 using System.Security.Cryptography;
-using System.Security.Principal;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 
@@ -74,13 +71,10 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Step 4: Copying installation files.");
                 CopyProgramFiles();
 
-                Logger.WriteConsole("--- Step 5: Preparing database.");
-                await PrepareDatabaseAsync();
-
-                Logger.WriteConsole("--- Step 6: Creating Ozette Client Service.");
+                Logger.WriteConsole("--- Step 5: Creating Ozette Client Service.");
                 CreateClientService();
 
-                Logger.WriteConsole("--- Step 7: Add installation directory to system path variable.");
+                Logger.WriteConsole("--- Step 6: Add installation directory to system path variable.");
                 AddSystemPath();
 
                 Logger.WriteConsole("--- Installation completed successfully.");
@@ -105,11 +99,13 @@ namespace OzetteLibrary.CommandLine.Commands
 
             CoreSettings.InstallationDirectory = arguments.InstallDirectory;
             CoreSettings.LogFilesDirectory = Path.Combine(arguments.InstallDirectory, "Logs");
+            CoreSettings.DatabaseDirectory = Path.Combine(arguments.InstallDirectory, "Database");
             CoreSettings.EventlogName = "Ozette";
             CoreSettings.BackupEngineInstanceCount = 1;
 
-            var dbPath = Path.Combine(arguments.InstallDirectory, "Database\\OzetteCloudBackup.db");
-            CoreSettings.DatabaseConnectionString = string.Format("Filename={0};Journal=true;Mode=Shared", dbPath);
+            var dbName = "OzetteDB";
+            var dbConnectionString = string.Format("Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog={0};Integrated Security=SSPI;", dbName);
+            CoreSettings.DatabaseConnectionString = dbConnectionString;
 
             // this entropy/iv key is used only for saving/retrieving app secrets (like storage config tokens).
             // it is not used for encrypting files in the cloud.
@@ -122,6 +118,7 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("Core settings successfully applied.");
             Logger.WriteConsole("InstallationDirectory=" + CoreSettings.InstallationDirectory);
             Logger.WriteConsole("LogFilesDirectory=" + CoreSettings.LogFilesDirectory);
+            Logger.WriteConsole("DatabaseDirectory=" + CoreSettings.DatabaseDirectory);
             Logger.WriteConsole("EventlogName=" + CoreSettings.EventlogName);
             Logger.WriteConsole("DatabaseConnectionString=" + CoreSettings.DatabaseConnectionString);
             Logger.WriteConsole("BackupEngineInstancesCount=" + CoreSettings.BackupEngineInstanceCount);
@@ -160,11 +157,10 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("Target installation directory already exists, skipping step.");
             }
 
-            var dbDirectory = Path.Combine(CoreSettings.InstallationDirectory, "Database");
-            if (Directory.Exists(dbDirectory) == false)
+            if (Directory.Exists(CoreSettings.DatabaseDirectory) == false)
             {
                 Logger.WriteConsole("Target database directory was not found, creating it now.");
-                Directory.CreateDirectory(dbDirectory);
+                Directory.CreateDirectory(CoreSettings.DatabaseDirectory);
                 Logger.WriteConsole("Successfully created target database directory.");
             }
             else
@@ -196,10 +192,20 @@ namespace OzetteLibrary.CommandLine.Commands
             // expected file manifest
             var fileManifest = new List<string>()
             {
-                "LiteDB.dll",
-                "LiteDB.xml",
                 "Microsoft.Azure.KeyVault.Core.dll",
                 "Microsoft.Azure.KeyVault.Core.xml",
+                "Microsoft.Data.Tools.Schema.Sql.dll",
+                "Microsoft.Data.Tools.Utilities.dll",
+                "Microsoft.IdentityModel.Logging.dll",
+                "Microsoft.IdentityModel.Tokens.dll",
+                "Microsoft.IdentityModel.Tokens.xml",
+                "Microsoft.SqlServer.Dac.dll",
+                "Microsoft.SqlServer.Dac.xml",
+                "Microsoft.SqlServer.Dac.Extensions.dll",
+                "Microsoft.SqlServer.Dac.Extensions.xml",
+                "Microsoft.SqlServer.TransactSql.ScriptDom.dll",
+                "Microsoft.SqlServer.TransactSql.ScriptDom.xml",
+                "Microsoft.SqlServer.Types.dll",
                 "Microsoft.WindowsAzure.Storage.dll",
                 "Microsoft.WindowsAzure.Storage.xml",
                 "NCrontab.dll",
@@ -210,9 +216,6 @@ namespace OzetteLibrary.CommandLine.Commands
                 "OzetteLibrary.dll",
                 "OzetteCmd.exe",
                 "OzetteCmd.exe.config",
-                "Microsoft.IdentityModel.Logging.dll",
-                "Microsoft.IdentityModel.Tokens.dll",
-                "Microsoft.IdentityModel.Tokens.xml",
                 "System.IdentityModel.Tokens.Jwt.dll",
                 "System.IdentityModel.Tokens.Jwt.xml",
                 "Twilio.dll",
@@ -235,11 +238,6 @@ namespace OzetteLibrary.CommandLine.Commands
             }
 
             Logger.WriteConsole("Successfully copied files.");
-        }
-
-        private async Task PrepareDatabaseAsync()
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

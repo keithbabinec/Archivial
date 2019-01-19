@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
+using OzetteLibrary.Logging;
 using OzetteLibrary.Providers;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
@@ -38,6 +39,71 @@ namespace OzetteLibrary.Database.SQLServer
         /// A memory stream or database file is used, but not both.
         /// </remarks>
         private string DatabaseConnectionString;
+
+        /// <summary>
+        /// Prepares the database.
+        /// </summary>
+        /// <remarks>Instance of the logger.</remarks>
+        /// <returns></returns>
+        public async Task PrepareDatabaseAsync(ILogger logger)
+        {
+            logger.WriteTraceMessage("Attempting to connect to the database engine.");
+            logger.WriteTraceMessage("Instance: " + Constants.Database.DefaultLocalDBInstanceConnectionString);
+
+            using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultLocalDBInstanceConnectionString))
+            {
+                await sqlcon.OpenAsync();
+
+                logger.WriteTraceMessage("Successfully connected to the database engine.");
+                logger.WriteTraceMessage(string.Format("Checking if database ({0}) is present.", Constants.Database.DatabaseName));
+
+                bool databasePresent = false;
+
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = sqlcon;
+                    cmd.CommandText = string.Format("SELECT 1 FROM sys.databases WHERE [Name] = '{0}'", Constants.Database.DatabaseName);
+                    cmd.CommandType = System.Data.CommandType.Text;
+
+                    using (var rdr = await cmd.ExecuteReaderAsync())
+                    {
+                        if (rdr.HasRows)
+                        {
+                            databasePresent = true;
+                            logger.WriteTraceMessage("Database was found.");
+                        }
+                        else
+                        {
+                            logger.WriteTraceMessage("Database was not found.");
+                        }
+                    }
+                }
+
+                if (databasePresent == false)
+                {
+                    logger.WriteTraceMessage("Attempting to create the database.");
+
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+
+                        var fileName = string.Format("{0}\\{1}.mdf", CoreSettings.DatabaseDirectory, Constants.Database.DatabaseName);
+
+                        logger.WriteTraceMessage("Database File: " + fileName);
+
+                        var createDbCommand = string.Format(
+                            "CREATE DATABASE {0} ON ( NAME='{0}', FILENAME='{1}' )", Constants.Database.DatabaseName, fileName);
+
+                        cmd.CommandText = createDbCommand;
+                        cmd.CommandType = System.Data.CommandType.Text;
+
+                        await cmd.ExecuteNonQueryAsync();
+
+                        logger.WriteTraceMessage("Database was created successfully.");
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Saves an application setting to the database.
