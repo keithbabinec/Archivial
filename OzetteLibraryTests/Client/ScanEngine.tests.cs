@@ -44,7 +44,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScanEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
             
             OzetteLibrary.Client.ScanEngine engine =
                 new OzetteLibrary.Client.ScanEngine(db, null, GenerateMockStorageProviders(), GenerateMockMessagingProviders(), 0);
@@ -54,7 +54,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScanEngineConstructorThrowsExceptionWhenNullStorageProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ScanEngine engine =
                 new OzetteLibrary.Client.ScanEngine(db, new MockLogger(), null, GenerateMockMessagingProviders(), 0);
@@ -64,7 +64,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentException))]
         public void ScanEngineConstructorThrowsExceptionWhenNoStorageProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             var providers = GenerateMockStorageProviders();
             providers.Clear(); // a valid collection, but empty
@@ -77,7 +77,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScanEngineConstructorThrowsExceptionWhenNullMessagingProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ScanEngine engine =
                 new OzetteLibrary.Client.ScanEngine(db, new MockLogger(), GenerateMockStorageProviders(), null, 0);
@@ -86,7 +86,7 @@ namespace OzetteLibraryTests.Client
         [TestMethod]
         public void ScanEngineConstructorDoesNotThrowExceptionWhenNoMessagingProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             // a valid (empty) collection -- should not throw.
             var msgProviders = new MessagingProviderConnectionsCollection();
@@ -99,7 +99,7 @@ namespace OzetteLibraryTests.Client
         public void ScanEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ScanEngine engine =
                 new OzetteLibrary.Client.ScanEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders(), 0);
@@ -111,7 +111,7 @@ namespace OzetteLibraryTests.Client
         public void ScanEngineCanStartAndStop()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ScanEngine engine =
                 new OzetteLibrary.Client.ScanEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders(), 0);
@@ -124,7 +124,7 @@ namespace OzetteLibraryTests.Client
         public void ScanEngineTriggersStoppedEventWhenEngineHasStopped()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ScanEngine engine =
                 new OzetteLibrary.Client.ScanEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders(), 0);
@@ -145,7 +145,7 @@ namespace OzetteLibraryTests.Client
         public void ScanEngineThrowsExceptionWhenEngineIsStartedTwice()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ScanEngine engine =
                 new OzetteLibrary.Client.ScanEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders(), 0);

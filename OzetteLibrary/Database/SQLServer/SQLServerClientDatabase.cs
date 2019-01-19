@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Threading.Tasks;
+using Microsoft.SqlServer.Dac;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
@@ -21,15 +22,21 @@ namespace OzetteLibrary.Database.SQLServer
         /// <summary>
         /// Instantiates a client DB from database connection string.
         /// </summary>
+        /// <remarks>Instance of the logger.</remarks>
         /// <param name="connectionString"></param>
-        public SQLServerClientDatabase(string connectionString)
+        public SQLServerClientDatabase(string connectionString, ILogger logger)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new ArgumentException(nameof(connectionString));
             }
-
+            if (logger == null)
+            {
+                throw new ArgumentException(nameof(logger));
+            }
+            
             DatabaseConnectionString = connectionString;
+            Logger = logger;
         }
 
         /// <summary>
@@ -41,21 +48,25 @@ namespace OzetteLibrary.Database.SQLServer
         private string DatabaseConnectionString;
 
         /// <summary>
+        /// An instance of the logger.
+        /// </summary>
+        private ILogger Logger;
+
+        /// <summary>
         /// Prepares the database.
         /// </summary>
-        /// <remarks>Instance of the logger.</remarks>
         /// <returns></returns>
-        public async Task PrepareDatabaseAsync(ILogger logger)
+        public async Task PrepareDatabaseAsync()
         {
-            logger.WriteTraceMessage("Attempting to connect to the database engine.");
-            logger.WriteTraceMessage("Instance: " + Constants.Database.DefaultLocalDBInstanceConnectionString);
+            Logger.WriteTraceMessage("Attempting to connect to the database engine.");
+            Logger.WriteTraceMessage("Instance: " + Constants.Database.DefaultLocalDBInstanceConnectionString);
 
             using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultLocalDBInstanceConnectionString))
             {
                 await sqlcon.OpenAsync();
 
-                logger.WriteTraceMessage("Successfully connected to the database engine.");
-                logger.WriteTraceMessage(string.Format("Checking if database ({0}) is present.", Constants.Database.DatabaseName));
+                Logger.WriteTraceMessage("Successfully connected to the database engine.");
+                Logger.WriteTraceMessage(string.Format("Checking if database ({0}) is present.", Constants.Database.DatabaseName));
 
                 bool databasePresent = false;
 
@@ -70,18 +81,20 @@ namespace OzetteLibrary.Database.SQLServer
                         if (rdr.HasRows)
                         {
                             databasePresent = true;
-                            logger.WriteTraceMessage("Database was found.");
+                            Logger.WriteTraceMessage("Database was found.");
                         }
                         else
                         {
-                            logger.WriteTraceMessage("Database was not found.");
+                            Logger.WriteTraceMessage("Database was not found.");
                         }
                     }
                 }
 
+                // create the database, if missing.
+
                 if (databasePresent == false)
                 {
-                    logger.WriteTraceMessage("Attempting to create the database.");
+                    Logger.WriteTraceMessage("Attempting to create the database.");
 
                     using (SqlCommand cmd = new SqlCommand())
                     {
@@ -89,7 +102,7 @@ namespace OzetteLibrary.Database.SQLServer
 
                         var fileName = string.Format("{0}\\{1}.mdf", CoreSettings.DatabaseDirectory, Constants.Database.DatabaseName);
 
-                        logger.WriteTraceMessage("Database File: " + fileName);
+                        Logger.WriteTraceMessage("Database File: " + fileName);
 
                         var createDbCommand = string.Format(
                             "CREATE DATABASE {0} ON ( NAME='{0}', FILENAME='{1}' )", Constants.Database.DatabaseName, fileName);
@@ -99,10 +112,46 @@ namespace OzetteLibrary.Database.SQLServer
 
                         await cmd.ExecuteNonQueryAsync();
 
-                        logger.WriteTraceMessage("Database was created successfully.");
+                        Logger.WriteTraceMessage("Database was created successfully.");
                     }
                 }
             }
+
+            // publish the database package (.dacpac)
+            // but only if we need to-- according to the publish flag.
+
+            if (CoreSettings.DatabasePublishIsRequired)
+            {
+                Logger.WriteTraceMessage("Database publish is required, starting publish now.");
+
+                var packagePath = string.Format("{0}\\{1}.dacpac", CoreSettings.InstallationDirectory, Constants.Database.DatabaseName);
+
+                Logger.WriteTraceMessage("Database package file: " + packagePath);
+
+                using (DacPackage package = DacPackage.Load(packagePath, DacSchemaModelStorageType.Memory))
+                {
+                    DacServices services = new DacServices(Constants.Database.DefaultLocalDBInstanceConnectionString);
+                    services.Message += dacMessages_Received;
+                    services.Deploy(package, Constants.Database.DatabaseName);
+
+                    CoreSettings.DatabasePublishIsRequired = false;
+                    Logger.WriteTraceMessage("Database publish completed.");
+                }
+            }
+            else
+            {
+                Logger.WriteTraceMessage("Database publish is not required.");
+            }
+        }
+
+        /// <summary>
+        /// An event handler for receiving DAC services messages.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dacMessages_Received(object sender, DacMessageEventArgs e)
+        {
+            Logger.WriteTraceMessage(string.Format("[DATABASE]: {0}", e.Message.ToString()));
         }
 
         /// <summary>

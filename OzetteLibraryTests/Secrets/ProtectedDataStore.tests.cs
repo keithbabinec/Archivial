@@ -3,6 +3,7 @@ using Moq;
 using OzetteLibrary.Database;
 using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Exceptions;
+using OzetteLibrary.Logging.Mock;
 using OzetteLibrary.Secrets;
 using System;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace OzetteLibraryTests.Secrets
         [ExpectedException(typeof(ArgumentException))]
         public void ProtectedDataStoreConstructorThrowsOnNoEntropy()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
             var entropy = new byte[] { };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
@@ -54,7 +55,7 @@ namespace OzetteLibraryTests.Secrets
         [ExpectedException(typeof(ArgumentException))]
         public async Task ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionNameIsProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
@@ -67,7 +68,7 @@ namespace OzetteLibraryTests.Secrets
         [ExpectedException(typeof(ArgumentException))]
         public async Task ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionValueIsProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 

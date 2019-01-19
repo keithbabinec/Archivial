@@ -75,7 +75,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString, Logger);
 
             Logger.WriteConsole("Fetching current network credentials from the database.");
 
@@ -105,7 +105,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString, Logger);
 
             Logger.WriteConsole("Initializing protected data store.");
 

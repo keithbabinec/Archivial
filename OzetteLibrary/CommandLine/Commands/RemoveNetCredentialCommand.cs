@@ -71,7 +71,7 @@ namespace OzetteLibrary.CommandLine.Commands
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString, Logger);
 
             Logger.WriteConsole("Querying for existing network credentials to see if the specified credential exists.");
 

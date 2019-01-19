@@ -228,8 +228,8 @@ namespace OzetteClientAgent
         {
             try
             {
-                ClientDatabase = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString);
-                await ClientDatabase.PrepareDatabaseAsync(CoreLog);
+                ClientDatabase = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString, CoreLog);
+                await ClientDatabase.PrepareDatabaseAsync();
 
                 return true;
             }

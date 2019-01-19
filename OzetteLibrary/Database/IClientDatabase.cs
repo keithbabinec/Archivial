@@ -17,9 +17,8 @@ namespace OzetteLibrary.Database
         /// <summary>
         /// Prepares the database.
         /// </summary>
-        /// <remarks>Instance of the logger.</remarks>
         /// <returns></returns>
-        Task PrepareDatabaseAsync(ILogger logger);
+        Task PrepareDatabaseAsync();
 
         /// <summary>
         /// Saves an application setting to the database.

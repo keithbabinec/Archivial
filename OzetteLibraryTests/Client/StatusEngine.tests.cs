@@ -44,7 +44,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void StatusEngineConstructorThrowsExceptionWhenNullStorageProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.StatusEngine engine =
                 new OzetteLibrary.Client.StatusEngine(db, new MockLogger(), null, GenerateMockMessagingProviders(), 0);
@@ -54,7 +54,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentException))]
         public void StatusEngineConstructorThrowsExceptionWhenNoStorageProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             var providers = GenerateMockStorageProviders();
             providers.Clear(); // a valid collection, but empty
@@ -67,7 +67,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void StatusEngineConstructorThrowsExceptionWhenNullMessagingProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.StatusEngine engine =
                 new OzetteLibrary.Client.StatusEngine(db, new MockLogger(), GenerateMockStorageProviders(), null, 0);
@@ -76,7 +76,7 @@ namespace OzetteLibraryTests.Client
         [TestMethod]
         public void StatusEngineConstructorDoesNotThrowExceptionWhenNoMessagingProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             // a valid (empty) collection -- should not throw.
             var msgProviders = new MessagingProviderConnectionsCollection();
@@ -89,7 +89,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void StatusEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.StatusEngine engine =
                 new OzetteLibrary.Client.StatusEngine(db, null, GenerateMockStorageProviders(), GenerateMockMessagingProviders(), 0);
@@ -99,7 +99,7 @@ namespace OzetteLibraryTests.Client
         public void StatusEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.StatusEngine engine =
                 new OzetteLibrary.Client.StatusEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders(), 0);
@@ -111,7 +111,7 @@ namespace OzetteLibraryTests.Client
         public void StatusEngineCanStartAndStop()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.StatusEngine engine =
                 new OzetteLibrary.Client.StatusEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders(), 0);
@@ -124,7 +124,7 @@ namespace OzetteLibraryTests.Client
         public void StatusEngineTriggersStoppedEventWhenEngineHasStopped()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.StatusEngine engine =
                 new OzetteLibrary.Client.StatusEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders(), 0);
@@ -145,7 +145,7 @@ namespace OzetteLibraryTests.Client
         public void StatusEngineThrowsExceptionWhenEngineIsStartedTwice()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.StatusEngine engine =
                 new OzetteLibrary.Client.StatusEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders(), 0);

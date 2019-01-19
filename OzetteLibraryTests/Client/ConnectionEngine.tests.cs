@@ -44,7 +44,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void ConnectionEngineConstructorThrowsExceptionWhenNullStorageProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ConnectionEngine engine =
                 new OzetteLibrary.Client.ConnectionEngine(db, new MockLogger(), null, GenerateMockMessagingProviders());
@@ -54,7 +54,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentException))]
         public void ConnectionEngineConstructorThrowsExceptionWhenNoStorageProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             var providers = GenerateMockStorageProviders();
             providers.Clear(); // a valid collection, but empty
@@ -67,7 +67,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void ConnectionEngineConstructorThrowsExceptionWhenNullMessagingProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ConnectionEngine engine =
                 new OzetteLibrary.Client.ConnectionEngine(db, new MockLogger(), GenerateMockStorageProviders(), null);
@@ -76,7 +76,7 @@ namespace OzetteLibraryTests.Client
         [TestMethod]
         public void ConnectionEngineConstructorDoesNotThrowExceptionWhenNoMessagingProvidersAreProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             // a valid (empty) collection -- should not throw.
             var msgProviders = new MessagingProviderConnectionsCollection();
@@ -89,7 +89,7 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void ConnectionEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ConnectionEngine engine =
                 new OzetteLibrary.Client.ConnectionEngine(db, null, GenerateMockStorageProviders(), GenerateMockMessagingProviders());
@@ -99,7 +99,7 @@ namespace OzetteLibraryTests.Client
         public void ConnectionEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ConnectionEngine engine =
                 new OzetteLibrary.Client.ConnectionEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders());
@@ -111,7 +111,7 @@ namespace OzetteLibraryTests.Client
         public void ConnectionEngineCanStartAndStop()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ConnectionEngine engine =
                 new OzetteLibrary.Client.ConnectionEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders());
@@ -124,7 +124,7 @@ namespace OzetteLibraryTests.Client
         public void ConnectionEngineTriggersStoppedEventWhenEngineHasStopped()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ConnectionEngine engine =
                 new OzetteLibrary.Client.ConnectionEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders());
@@ -145,7 +145,7 @@ namespace OzetteLibraryTests.Client
         public void ConnectionEngineThrowsExceptionWhenEngineIsStartedTwice()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString);
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
             OzetteLibrary.Client.ConnectionEngine engine =
                 new OzetteLibrary.Client.ConnectionEngine(db, logger, GenerateMockStorageProviders(), GenerateMockMessagingProviders());
