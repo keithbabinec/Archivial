@@ -132,7 +132,7 @@ namespace OzetteLibrary.Database.SQLServer
                 {
                     DacServices services = new DacServices(Constants.Database.DefaultLocalDBInstanceConnectionString);
                     services.Message += dacMessages_Received;
-                    services.Deploy(package, Constants.Database.DatabaseName);
+                    services.Deploy(package, Constants.Database.DatabaseName, true);
 
                     CoreSettings.DatabasePublishIsRequired = false;
                     Logger.WriteTraceMessage("Database publish completed.");
