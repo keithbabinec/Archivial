@@ -14,5 +14,10 @@
         /// A string constant for the sqlexpress default instance.
         /// </summary>
         public const string DefaultSqlExpressInstanceConnectionString = "Data Source=.\\SQLExpress;Initial Catalog=Master;Integrated Security=SSPI;";
+
+        /// <summary>
+        /// A string constant for the sqlexpress user account.
+        /// </summary>
+        public const string DefaultSqlExpressUserAccount = "NT SERVICE\\MSSQL$SQLEXPRESS";
     }
 }

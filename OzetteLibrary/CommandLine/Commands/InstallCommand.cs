@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using OzetteLibrary.CommandLine.Arguments;
@@ -163,7 +165,26 @@ namespace OzetteLibrary.CommandLine.Commands
             {
                 Logger.WriteConsole("Target database directory was not found, creating it now.");
                 Directory.CreateDirectory(CoreSettings.DatabaseDirectory);
+
                 Logger.WriteConsole("Successfully created target database directory.");
+                Logger.WriteConsole("Applying SQLExpress account permissions to database folder.");
+
+                var dirInfo = new DirectoryInfo(CoreSettings.DatabaseDirectory);
+                var dirSecurity = dirInfo.GetAccessControl();
+
+                dirSecurity.AddAccessRule(
+                    new FileSystemAccessRule(
+                        Constants.Database.DefaultSqlExpressUserAccount,
+                        FileSystemRights.FullControl,
+                        InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit,
+                        PropagationFlags.None,
+                        AccessControlType.Allow
+                    )
+                );
+
+                dirInfo.SetAccessControl(dirSecurity);
+
+                Logger.WriteConsole("NTFS permissions applied successfully.");
             }
             else
             {
