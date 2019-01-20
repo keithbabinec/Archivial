@@ -106,7 +106,7 @@ namespace OzetteLibrary.CommandLine.Commands
             // setting this flag indicates publish is required on next service startup.
             CoreSettings.DatabasePublishIsRequired = true;
 
-            var dbConnectionString = string.Format("Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog={0};Integrated Security=SSPI;", Constants.Database.DatabaseName);
+            var dbConnectionString = string.Format("Data Source=.\\SQLExpress;Initial Catalog={0};Integrated Security=SSPI;", Constants.Database.DatabaseName);
             CoreSettings.DatabaseConnectionString = dbConnectionString;
 
             // this entropy/iv key is used only for saving/retrieving app secrets (like storage config tokens).

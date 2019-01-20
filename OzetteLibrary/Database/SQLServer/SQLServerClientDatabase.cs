@@ -59,9 +59,9 @@ namespace OzetteLibrary.Database.SQLServer
         public async Task PrepareDatabaseAsync()
         {
             Logger.WriteTraceMessage("Attempting to connect to the database engine.");
-            Logger.WriteTraceMessage("Instance: " + Constants.Database.DefaultLocalDBInstanceConnectionString);
+            Logger.WriteTraceMessage("Instance: " + Constants.Database.DefaultSqlExpressInstanceConnectionString);
 
-            using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultLocalDBInstanceConnectionString))
+            using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultSqlExpressInstanceConnectionString))
             {
                 await sqlcon.OpenAsync();
 
@@ -130,7 +130,7 @@ namespace OzetteLibrary.Database.SQLServer
 
                 using (DacPackage package = DacPackage.Load(packagePath, DacSchemaModelStorageType.Memory))
                 {
-                    DacServices services = new DacServices(Constants.Database.DefaultLocalDBInstanceConnectionString);
+                    DacServices services = new DacServices(Constants.Database.DefaultSqlExpressInstanceConnectionString);
                     services.Message += dacMessages_Received;
                     services.Deploy(package, Constants.Database.DatabaseName, true);
 

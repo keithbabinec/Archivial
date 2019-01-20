@@ -11,8 +11,8 @@
         public const string DatabaseName = "OzetteDB";
 
         /// <summary>
-        /// A string constant for the localdb default instance.
+        /// A string constant for the sqlexpress default instance.
         /// </summary>
-        public const string DefaultLocalDBInstanceConnectionString = "Data Source=(LocalDb)\\MSSQLLocalDB;";
+        public const string DefaultSqlExpressInstanceConnectionString = "Data Source=.\\SQLExpress;Initial Catalog=Master;Integrated Security=SSPI;";
     }
 }
