@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[GetDirectoryMapItem]
 (
-	@DirectoryPath			NVARCHAR(MAX)
+	@DirectoryPath			NVARCHAR(1024)
 )
 AS
 BEGIN

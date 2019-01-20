@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[AddProvider]
 (
-	@Name			NVARCHAR(2048),
+	@Name			NVARCHAR(256),
 	@Type			INT
 )
 AS

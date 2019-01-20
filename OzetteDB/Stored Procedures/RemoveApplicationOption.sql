@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[RemoveApplicationOption]
 (
-	@Name			NVARCHAR(2048)
+	@Name			NVARCHAR(512)
 )
 AS
 BEGIN

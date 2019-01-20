@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[AddNetCredential]
 (
-	@Name			NVARCHAR(2048)
+	@Name			NVARCHAR(256)
 )
 AS
 BEGIN

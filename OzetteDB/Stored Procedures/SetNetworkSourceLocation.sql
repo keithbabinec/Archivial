@@ -1,11 +1,11 @@
 ﻿CREATE PROCEDURE [dbo].[SetNetworkSourceLocation]
 (
-	@Path					NVARCHAR(MAX),
-	@FileMatchFilter		NVARCHAR(2048),
+	@Path					NVARCHAR(1024),
+	@FileMatchFilter		NVARCHAR(256),
 	@Priority				INT,
 	@RevisionCount			INT,
 	@LastCompletedScan		DATETIME,
-	@CredentialName			NVARCHAR(2048),
+	@CredentialName			NVARCHAR(256),
 	@IsConnected			BIT,
 	@IsFailed				BIT,
 	@LastConnectionCheck	DATETIME NULL

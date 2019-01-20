@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[SetApplicationOption]
 (
-	@Name			NVARCHAR(2048),
+	@Name			NVARCHAR(512),
 	@Value			NVARCHAR(MAX)
 )
 AS

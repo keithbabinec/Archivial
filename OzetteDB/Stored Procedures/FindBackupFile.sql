@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[FindBackupFile]
 (
-	@FullFilePath			NVARCHAR(MAX),
+	@FullFilePath			NVARCHAR(1024),
 	@FileSizeBytes			BIGINT,
 	@FileLastModified		DATETIME
 )

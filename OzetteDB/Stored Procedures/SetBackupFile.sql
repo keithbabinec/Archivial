@@ -1,17 +1,17 @@
 ﻿CREATE PROCEDURE [dbo].[SetBackupFile]
 (
 	@ID							UNIQUEIDENTIFIER,
-	@FileName					NVARCHAR(MAX),
-	@Directory					NVARCHAR(MAX),
-	@FullSourcePath				NVARCHAR(MAX),
+	@FileName					NVARCHAR(512),
+	@Directory					NVARCHAR(1024),
+	@FullSourcePath				NVARCHAR(1024),
 	@FileSizeBytes				BIGINT,
 	@LastModified				DATETIME,
 	@TotalFileBlocks			INT,
-	@FileHash					VARBINARY(4096),
-	@FileHashString				NVARCHAR(4096),
+	@FileHash					VARBINARY(512),
+	@FileHashString				NVARCHAR(512),
 	@Priority					INT,
 	@FileRevisionNumber			INT,
-	@HashAlgorithmType			NVARCHAR(1024),
+	@HashAlgorithmType			NVARCHAR(512),
 	@LastChecked				DATETIME,
 	@LastUpdated				DATETIME,
 	@OverallState				INT
@@ -106,7 +106,7 @@ BEGIN
 		BEGIN TRANSACTION
 
 		DECLARE @DbFileModified DATETIME
-		DECLARE @DbFileHashString NVARCHAR(4096)
+		DECLARE @DbFileHashString NVARCHAR(512)
 
 		SELECT	@DbFileModified = [dbo].[BackupFiles].[LastModified],
 				@DbFileHashString = [dbo].[BackupFiles].[FileHashString]

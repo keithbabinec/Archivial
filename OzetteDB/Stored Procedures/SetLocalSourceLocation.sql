@@ -1,7 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[SetLocalSourceLocation]
 (
-	@Path					NVARCHAR(MAX),
-	@FileMatchFilter		NVARCHAR(2048),
+	@Path					NVARCHAR(1024),
+	@FileMatchFilter		NVARCHAR(256),
 	@Priority				INT,
 	@RevisionCount			INT,
 	@LastCompletedScan		DATETIME
