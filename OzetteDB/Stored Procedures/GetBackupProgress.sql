@@ -22,26 +22,27 @@ BEGIN
 		DECLARE @TotalFileCount BIGINT
 		DECLARE @TotalFileSizeBytes BIGINT
 
-		SELECT	@TotalFileSizeBytes = SUM([dbo].[BackupFiles].[FileSizeBytes])
+		SELECT	@TotalFileSizeBytes = ISNULL(SUM([dbo].[BackupFiles].[FileSizeBytes]),0),
+				@TotalFileCount = COUNT(*)
 		FROM	[dbo].[BackupFiles]
-		SET		@TotalFileCount = @@ROWCOUNT
 
 		-- synced files
 
 		DECLARE @BackedUpFileCount BIGINT
 		DECLARE @BackedUpFileSizeBytes BIGINT
 
-		SELECT	@BackedUpFileSizeBytes = SUM([dbo].[BackupFiles].[FileSizeBytes])
+		SELECT	@BackedUpFileSizeBytes = ISNULL(SUM([dbo].[BackupFiles].[FileSizeBytes]),0),
+				@BackedUpFileCount = COUNT(*)
 		FROM	[dbo].[BackupFiles]
 		WHERE	[dbo].[BackupFiles].[OverallState] = @SyncedConstant
-		SET		@BackedUpFileCount = @@ROWCOUNT
 
 		-- in-progress files
 
 		DECLARE @RemainingFileCount BIGINT
 		DECLARE @RemainingFileSizeBytes BIGINT
 
-		SELECT	@RemainingFileSizeBytes = SUM([dbo].[BackupFiles].[FileSizeBytes])
+		SELECT	@RemainingFileSizeBytes = ISNULL(SUM([dbo].[BackupFiles].[FileSizeBytes]),0),
+				@RemainingFileCount = COUNT(*)
 		FROM	[dbo].[BackupFiles]
 		WHERE	[dbo].[BackupFiles].[OverallState] IN
 				(
@@ -49,17 +50,16 @@ BEGIN
 					@OutOfDateConstant,
 					@InProgressConstant
 				)
-		SET		@RemainingFileCount = @@ROWCOUNT
 
 		-- failed files
 
 		DECLARE @FailedFileCount BIGINT
 		DECLARE @FailedFileSizeBytes BIGINT
 
-		SELECT	@FailedFileSizeBytes = SUM([dbo].[BackupFiles].[FileSizeBytes])
+		SELECT	@FailedFileSizeBytes = ISNULL(SUM([dbo].[BackupFiles].[FileSizeBytes]),0),
+				@FailedFileCount = COUNT(*)
 		FROM	[dbo].[BackupFiles]
 		WHERE	[dbo].[BackupFiles].[OverallState] = @ProviderErrorConstant
-		SET		@FailedFileCount = @@ROWCOUNT
 
 		-- return results
 
