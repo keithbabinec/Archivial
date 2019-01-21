@@ -167,7 +167,7 @@ namespace OzetteLibrary.Client
         {
             try
             {
-                return await Database.FindNextFileToBackupAsync();
+                return await Database.FindNextFileToBackupAsync(InstanceID);
             }
             catch (Exception ex)
             {

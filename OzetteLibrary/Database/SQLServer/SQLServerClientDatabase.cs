@@ -928,8 +928,9 @@ namespace OzetteLibrary.Database.SQLServer
         /// <remarks>
         /// If no files need to be backed up, return null.
         /// </remarks>
+        /// <param name="EngineInstanceID">The engine instance.</param>
         /// <returns><c>BackupFile</c></returns>
-        public async Task<BackupFile> FindNextFileToBackupAsync()
+        public async Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID)
         {
             try
             {
@@ -941,6 +942,8 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Connection = sqlcon;
                         cmd.CommandText = "dbo.FindNextFileToBackup";
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@EngineInstanceID", EngineInstanceID);
 
                         using (var rdr = await cmd.ExecuteReaderAsync())
                         {
