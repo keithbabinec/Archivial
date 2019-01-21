@@ -878,76 +878,6 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
-        /// Adds a new client file to the database.
-        /// </summary>
-        /// <param name="File"><c>BackupFile</c></param>
-        /// <param name="ShouldUpdateCopyState">Flag to indicate if we should be updating copy state.</param>
-        public async Task SetBackupFileAsync(BackupFile File, bool ShouldUpdateCopyState)
-        {
-            if (File == null)
-            {
-                throw new ArgumentNullException(nameof(File));
-            }
-
-            try
-            {
-                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
-                {
-                    await sqlcon.OpenAsync();
-                    using (SqlCommand cmd = new SqlCommand())
-                    {
-                        cmd.Connection = sqlcon;
-                        cmd.CommandText = "dbo.SetBackupFile";
-                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                        cmd.Parameters.AddWithValue("@ID", File.FileID);
-                        cmd.Parameters.AddWithValue("@FileName", File.Filename);
-                        cmd.Parameters.AddWithValue("@Directory", File.Directory);
-                        cmd.Parameters.AddWithValue("@FullSourcePath", File.FullSourcePath);
-                        cmd.Parameters.AddWithValue("@FileSizeBytes", File.FileSizeBytes);
-                        cmd.Parameters.AddWithValue("@LastModified", File.LastModified);
-                        cmd.Parameters.AddWithValue("@TotalFileBlocks", File.TotalFileBlocks);
-                        cmd.Parameters.AddWithValue("@FileHash", File.FileHash);
-                        cmd.Parameters.AddWithValue("@FileHashString", File.FileHashString);
-                        cmd.Parameters.AddWithValue("@Priority", File.Priority);
-                        cmd.Parameters.AddWithValue("@FileRevisionNumber", File.FileRevisionNumber);
-                        cmd.Parameters.AddWithValue("@HashAlgorithmType", File.HashAlgorithmType);
-                        cmd.Parameters.AddWithValue("@LastChecked", File.LastChecked);
-                        cmd.Parameters.AddWithValue("@LastUpdated", File.LastUpdated);
-                        cmd.Parameters.AddWithValue("@OverallState", File.OverallState);
-
-                        await cmd.ExecuteNonQueryAsync();
-                    }
-
-                    if (ShouldUpdateCopyState && File.CopyState != null)
-                    {
-                        foreach (var provider in File.CopyState.Values)
-                        {
-                            using (SqlCommand cmd = new SqlCommand())
-                            {
-                                cmd.Connection = sqlcon;
-                                cmd.CommandText = "dbo.SetCopyState";
-                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                                cmd.Parameters.AddWithValue("@FileID", File.FileID);
-                                cmd.Parameters.AddWithValue("@StorageProvider", provider.Provider);
-                                cmd.Parameters.AddWithValue("@SyncStatus", provider.SyncStatus);
-                                cmd.Parameters.AddWithValue("@HydrationStatus", provider.HydrationStatus);
-                                cmd.Parameters.AddWithValue("@LastCompletedFileBlockIndex", provider.LastCompletedFileBlockIndex);
-
-                                await cmd.ExecuteNonQueryAsync();
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
         /// Gets the next file that needs to be backed up.
         /// </summary>
         /// <remarks>
@@ -1087,6 +1017,233 @@ namespace OzetteLibrary.Database.SQLServer
                                 throw new Exception("Failed to generate the backup progress. No output was returned from the database.");
                             }
                         }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Adds a new file to the database.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        public async Task AddBackupFileAsync(BackupFile File)
+        {
+            if (File == null)
+            {
+                throw new ArgumentNullException(nameof(File));
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.AddBackupFile";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", File.FileID);
+                        cmd.Parameters.AddWithValue("@FileName", File.Filename);
+                        cmd.Parameters.AddWithValue("@Directory", File.Directory);
+                        cmd.Parameters.AddWithValue("@FullSourcePath", File.FullSourcePath);
+                        cmd.Parameters.AddWithValue("@FileSizeBytes", File.FileSizeBytes);
+                        cmd.Parameters.AddWithValue("@LastModified", File.LastModified);
+                        cmd.Parameters.AddWithValue("@TotalFileBlocks", File.TotalFileBlocks);
+                        cmd.Parameters.AddWithValue("@Priority", File.Priority);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+
+                    foreach (var provider in await GetProvidersAsync(ProviderTypes.Storage))
+                    {
+                        using (SqlCommand cmd = new SqlCommand())
+                        {
+                            cmd.Connection = sqlcon;
+                            cmd.CommandText = "dbo.SetCopyState";
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                            cmd.Parameters.AddWithValue("@FileID", File.FileID);
+                            cmd.Parameters.AddWithValue("@StorageProvider", provider.Type);
+                            cmd.Parameters.AddWithValue("@SyncStatus", FileStatus.Unsynced);
+                            cmd.Parameters.AddWithValue("@HydrationStatus", StorageProviderHydrationStatus.None);
+                            cmd.Parameters.AddWithValue("@LastCompletedFileBlockIndex", -1);
+
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Resets the copy state of a backup file back to unsynced.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        public async Task ResetBackupFileStateAsync(BackupFile File)
+        {
+            if (File == null)
+            {
+                throw new ArgumentNullException(nameof(File));
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.ResetBackupFile";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", File.FileID);
+                        cmd.Parameters.AddWithValue("@FileSizeBytes", File.FileSizeBytes);
+                        cmd.Parameters.AddWithValue("@LastModified", File.LastModified);
+                        cmd.Parameters.AddWithValue("@TotalFileBlocks", File.TotalFileBlocks);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+
+                    foreach (var provider in await GetProvidersAsync(ProviderTypes.Storage))
+                    {
+                        using (SqlCommand cmd = new SqlCommand())
+                        {
+                            cmd.Connection = sqlcon;
+                            cmd.CommandText = "dbo.SetCopyState";
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                            cmd.Parameters.AddWithValue("@FileID", File.FileID);
+                            cmd.Parameters.AddWithValue("@StorageProvider", provider.Type);
+                            cmd.Parameters.AddWithValue("@SyncStatus", FileStatus.Unsynced);
+                            cmd.Parameters.AddWithValue("@HydrationStatus", StorageProviderHydrationStatus.None);
+                            cmd.Parameters.AddWithValue("@LastCompletedFileBlockIndex", -1);
+
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Resets the last scanned date of a backup file.
+        /// </summary>
+        /// <param name="FileID"></param>
+        /// <returns></returns>
+        public async Task SetBackupFileLastScannedAsync(Guid FileID)
+        {
+            if (FileID == Guid.Empty)
+            {
+                throw new ArgumentException(nameof(FileID));
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.SetBackupFileLastScanned";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", FileID);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Deletes the backup file from the backup files table/index.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        public async Task DeleteBackupFileAsync(BackupFile File)
+        {
+            if (File == null)
+            {
+                throw new ArgumentException(nameof(File));
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.DeleteBackupFile";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", File.FileID);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Flags a backup file as failed state.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <param name="Message"></param>
+        /// <returns></returns>
+        public async Task SetBackupFileAsFailedAsync(BackupFile File, string Message)
+        {
+            if (File == null)
+            {
+                throw new ArgumentException(nameof(File));
+            }
+            if (string.IsNullOrEmpty(Message))
+            {
+                throw new ArgumentException(nameof(Message));
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.SetBackupFileAsFailed";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", File.FileID);
+                        cmd.Parameters.AddWithValue("@Message", Message);
+
+                        await cmd.ExecuteNonQueryAsync();
                     }
                 }
             }

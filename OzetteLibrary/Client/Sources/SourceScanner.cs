@@ -257,10 +257,7 @@ namespace OzetteLibrary.Client.Sources
 
             // brand new file
             var backupFile = new BackupFile(fileInfo, priority);
-            backupFile.ResetCopyState(await Database.GetProvidersAsync(Providers.ProviderTypes.Storage));
-            backupFile.SetLastCheckedTimeStamp();
-
-            await Database.SetBackupFileAsync(backupFile, true);
+            await Database.AddBackupFileAsync(backupFile);
         }
 
         /// <summary>
@@ -272,12 +269,7 @@ namespace OzetteLibrary.Client.Sources
         {
             Logger.WriteTraceMessage(string.Format("Updated File: {0}", fileInfo.FullName));
 
-            // updated file
-            fileLookup.File.ResetCopyState(await Database.GetProvidersAsync(Providers.ProviderTypes.Storage));
-            fileLookup.File.SetLastCheckedTimeStamp();
-            fileLookup.File.IncrementFileRevision();
-
-            await Database.SetBackupFileAsync(fileLookup.File, true);
+            await Database.ResetBackupFileStateAsync(fileLookup.File);
         }
 
         /// <summary>
@@ -292,8 +284,7 @@ namespace OzetteLibrary.Client.Sources
 
             // existing file
             // should update the last checked flag
-            fileLookup.File.SetLastCheckedTimeStamp();
-            await Database.SetBackupFileAsync(fileLookup.File, false);
+            await Database.SetBackupFileLastScannedAsync(fileLookup.File.FileID);
         }
     }
 }

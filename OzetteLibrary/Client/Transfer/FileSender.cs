@@ -95,16 +95,15 @@ namespace OzetteLibrary.Client.Transfer
                 if (!info.Exists)
                 {
                     Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It has been deleted or is no longer accessible since it was scanned.", File.FullSourcePath), InstanceID);
-                    File.SetFileAsDeleted();
-                    await Database.SetBackupFileAsync(File, false);
+                    await Database.DeleteBackupFileAsync(File);
                     return;
                 }
 
                 if (info.Length == 0)
                 {
-                    Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It is empty (has no contents).", File.FullSourcePath), InstanceID);
-                    File.SetFileAsReadOrBackupFailed();
-                    await Database.SetBackupFileAsync(File, false);
+                    var message = string.Format("Unable to backup file ({0}). It is empty (has no contents).", File.FullSourcePath);
+                    Logger.WriteTraceMessage(message, InstanceID);
+                    await Database.SetBackupFileAsFailedAsync(File, message);
                     return;
                 }
 
@@ -138,9 +137,9 @@ namespace OzetteLibrary.Client.Transfer
             }
             catch (Exception ex)
             {
-                Logger.WriteTraceError("An error occurred while preparing to transfer a file.", ex, Logger.GenerateFullContextStackTrace(), InstanceID);
-                File.SetFileAsReadOrBackupFailed();
-                await Database.SetBackupFileAsync(File, false);
+                var message = "An error occurred while preparing to transfer a file. ";
+                Logger.WriteTraceError(message, ex, Logger.GenerateFullContextStackTrace(), InstanceID);
+                await Database.SetBackupFileAsFailedAsync(File, (message + ex.ToString()));
             }
         }
 
@@ -208,6 +207,8 @@ namespace OzetteLibrary.Client.Transfer
 
                     file.SetProviderToCompleted(provider.Key);
                     await Database.SetBackupFileAsync(file, true);
+
+                    // TODO: update to SetBackupFileProviderStatus() // sets the copy state.
                 }
             }
         }
@@ -236,6 +237,8 @@ namespace OzetteLibrary.Client.Transfer
                 File.SetFileHashWithAlgorithm(currentHash, hashAlgo);
                 File.SetLastCheckedTimeStamp();
                 await Database.SetBackupFileAsync(File, false);
+
+                // TODO: update to SetBackupFileHash() // sets the hash, hashstring, and hashalgo.
             }
             else
             {

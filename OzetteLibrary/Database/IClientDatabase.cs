@@ -120,13 +120,6 @@ namespace OzetteLibrary.Database
         Task RemoveSourceLocationAsync(SourceLocation Location);
 
         /// <summary>
-        /// Adds a new client file to the database.
-        /// </summary>
-        /// <param name="File"><c>BackupFile</c></param>
-        /// <param name="UpdateCopyState">Flag to indicate if we should be updating copy state.</param>
-        Task SetBackupFileAsync(BackupFile File, bool UpdateCopyState);
-
-        /// <summary>
         /// Gets the next file that needs to be backed up.
         /// </summary>
         /// <remarks>
@@ -141,5 +134,41 @@ namespace OzetteLibrary.Database
         /// </summary>
         /// <returns></returns>
         Task<BackupProgress> GetBackupProgressAsync();
+
+        /// <summary>
+        /// Adds a new file to the database.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task AddBackupFileAsync(BackupFile File);
+
+        /// <summary>
+        /// Resets the copy state of a backup file back to unsynced.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task ResetBackupFileStateAsync(BackupFile File);
+
+        /// <summary>
+        /// Resets the last scanned date of a backup file.
+        /// </summary>
+        /// <param name="FileID"></param>
+        /// <returns></returns>
+        Task SetBackupFileLastScannedAsync(Guid FileID);
+
+        /// <summary>
+        /// Deletes the backup file from the backup files table/index.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task DeleteBackupFileAsync(BackupFile File);
+
+        /// <summary>
+        /// Flags a backup file as failed state.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <param name="Message"></param>
+        /// <returns></returns>
+        Task SetBackupFileAsFailedAsync(BackupFile File, string Message);
     }
 }

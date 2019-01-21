@@ -198,44 +198,6 @@ namespace OzetteLibrary.Files
         }
 
         /// <summary>
-        /// Increments the file revision number by 1.
-        /// </summary>
-        /// <remarks>
-        /// For use when an updated file revision is detected.
-        /// </remarks>
-        public void IncrementFileRevision()
-        {
-            if (FileRevisionNumber == int.MaxValue)
-            {
-                // if we exceed the maximum value of an integer, this is likely a bug or a bad situation.
-                // throw an error because undesirable things may happen on int overflow of the revision number.
-                throw new MaximumFileRevisionsExceededException(FullSourcePath);
-            }
-
-            FileRevisionNumber++;
-        }
-
-        /// <summary>
-        /// Resets existing copy progress state with the specified providers.
-        /// </summary>
-        /// <param name="providers"></param>
-        public void ResetCopyState(ProviderCollection providers)
-        {
-            CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>();
-
-            foreach (var provider in providers)
-            {
-                if (provider.Type == ProviderTypes.Storage)
-                {
-                    var item = new StorageProviderFileStatus(provider.Name);
-                    CopyState.Add(item.Provider, item);
-                }
-            }
-
-            SetOverallStateFromCopyState();
-        }
-
-        /// <summary>
         /// Sets the OverallState from the current CopyState.
         /// </summary>
         private void SetOverallStateFromCopyState()
@@ -591,32 +553,6 @@ namespace OzetteLibrary.Files
             }
 
             SetOverallStateFromCopyState();
-        }
-
-        /// <summary>
-        /// Sets the file read-error state.
-        /// </summary>
-        public void SetFileAsReadOrBackupFailed()
-        {
-            LastChecked = DateTime.Now;
-            ErrorDetected = DateTime.Now;
-        }
-
-        /// <summary>
-        /// Sets the file as deleted.
-        /// </summary>
-        public void SetFileAsDeleted()
-        {
-            LastChecked = DateTime.Now;
-            WasDeleted = DateTime.Now;
-        }
-
-        /// <summary>
-        /// Sets the last checked timestamp to the current time.
-        /// </summary>
-        public void SetLastCheckedTimeStamp()
-        {
-            LastChecked = DateTime.Now;
         }
 
         /// <summary>
