@@ -93,7 +93,7 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("Found a matching provider, removing it now.");
             await db.RemoveProviderAsync(providerToRemove.Name);
 
-            if (providerToRemove.Name == nameof(StorageProviderTypes.Azure))
+            if (providerToRemove.Name == StorageProviderTypes.Azure.ToString())
             {
                 // remove provider specific secrets
                 await db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountName);
