@@ -4,7 +4,7 @@
 	@FileMatchFilter		NVARCHAR(256),
 	@Priority				INT,
 	@RevisionCount			INT,
-	@LastCompletedScan		DATETIME,
+	@LastCompletedScan		DATETIME NULL,
 	@CredentialName			NVARCHAR(256),
 	@IsConnected			BIT,
 	@IsFailed				BIT,
@@ -36,11 +36,6 @@ BEGIN
 	IF @RevisionCount IS NULL
 	BEGIN
 		;THROW 50000, 'RevisionCount must be populated.', 0
-	END
-
-	IF @LastCompletedScan IS NULL
-	BEGIN
-		;THROW 50000, 'LastCompletedScan must be populated.', 0
 	END
 
 	IF @CredentialName IS NULL

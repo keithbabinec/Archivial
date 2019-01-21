@@ -113,28 +113,6 @@ namespace OzetteLibraryTests.Folders
         }
 
         [TestMethod]
-        [ExpectedException(typeof(SourceLocationInvalidIDException))]
-        public void SourceLocationValidateThrowsExceptionWhenInvalidIDProvided()
-        {
-            var loc = new LocalSourceLocation();
-            loc.Path = Environment.CurrentDirectory;
-            loc.RevisionCount = 1;
-            loc.ID = 0;
-            loc.ValidateParameters();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(SourceLocationInvalidIDException))]
-        public void SourceLocationValidateThrowsExceptionWhenInvalidIDProvided2()
-        {
-            var loc = new LocalSourceLocation();
-            loc.Path = Environment.CurrentDirectory;
-            loc.RevisionCount = 1;
-            loc.ID = -10;
-            loc.ValidateParameters();
-        }
-
-        [TestMethod]
         public void SourceLocationValidatePassesValidExample1()
         {
             var loc = new LocalSourceLocation();
@@ -607,25 +585,6 @@ namespace OzetteLibraryTests.Folders
             loc1.Path = Environment.CurrentDirectory;
             loc1.RevisionCount = 1;
             loc1.ID = 1;
-            loc1.FileMatchFilter = "*";
-
-            var locations = new OzetteLibrary.Folders.SourceLocations();
-            locations.Add(loc1);
-
-            // should throw
-            locations.Validate();
-
-            Assert.IsTrue(true);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(SourceLocationInvalidIDException))]
-        public void SourceLocationsValidateDoesThrowOnSingleInvalidSource()
-        {
-            var loc1 = new LocalSourceLocation();
-            loc1.Path = Environment.CurrentDirectory;
-            loc1.RevisionCount = 1;
-            loc1.ID = 0;
             loc1.FileMatchFilter = "*";
 
             var locations = new OzetteLibrary.Folders.SourceLocations();

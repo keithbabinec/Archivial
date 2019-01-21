@@ -766,7 +766,15 @@ namespace OzetteLibrary.Database.SQLServer
                             cmd.Parameters.AddWithValue("@FileMatchFilter", lsl.FileMatchFilter);
                             cmd.Parameters.AddWithValue("@Priority", lsl.Priority);
                             cmd.Parameters.AddWithValue("@RevisionCount", lsl.RevisionCount);
-                            cmd.Parameters.AddWithValue("@LastCompletedScan", lsl.LastCompletedScan);
+
+                            if (lsl.LastCompletedScan == null)
+                            {
+                                cmd.Parameters.AddWithValue("@LastCompletedScan", DBNull.Value);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@LastCompletedScan", lsl.LastCompletedScan);
+                            }
                         }
                         else if (Location is NetworkSourceLocation)
                         {
@@ -779,11 +787,28 @@ namespace OzetteLibrary.Database.SQLServer
                             cmd.Parameters.AddWithValue("@FileMatchFilter", nsl.FileMatchFilter);
                             cmd.Parameters.AddWithValue("@Priority", nsl.Priority);
                             cmd.Parameters.AddWithValue("@RevisionCount", nsl.RevisionCount);
-                            cmd.Parameters.AddWithValue("@LastCompletedScan", nsl.LastCompletedScan);
+
+                            if (nsl.LastCompletedScan == null)
+                            {
+                                cmd.Parameters.AddWithValue("@LastCompletedScan", DBNull.Value);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@LastCompletedScan", nsl.LastCompletedScan);
+                            }
+
                             cmd.Parameters.AddWithValue("@CredentialName", nsl.CredentialName);
                             cmd.Parameters.AddWithValue("@IsConnected", nsl.IsConnected);
                             cmd.Parameters.AddWithValue("@IsFailed", nsl.IsFailed);
-                            cmd.Parameters.AddWithValue("@LastConnectionCheck", nsl.LastConnectionCheck);
+
+                            if (nsl.LastConnectionCheck == null)
+                            {
+                                cmd.Parameters.AddWithValue("@LastConnectionCheck", DBNull.Value);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@LastConnectionCheck", nsl.LastConnectionCheck);
+                            }
                         }
                         else
                         {
