@@ -45,7 +45,7 @@ namespace OzetteLibrary.Client
             Running = true;
             StatusCheckTimes = new Queue<DateTime>();
 
-            Thread pl = new Thread(() => ProcessLoopAsync().RunSynchronously());
+            Thread pl = new Thread(() => ProcessLoopAsync().Wait());
             pl.Start();
         }
 

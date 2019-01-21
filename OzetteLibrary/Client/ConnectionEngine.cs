@@ -48,7 +48,7 @@ namespace OzetteLibrary.Client
 
             Running = true;
 
-            Thread pl = new Thread(() => ProcessLoopAsync().RunSynchronously());
+            Thread pl = new Thread(() => ProcessLoopAsync().Wait());
             pl.Start();
         }
 

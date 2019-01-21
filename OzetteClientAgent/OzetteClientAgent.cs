@@ -44,7 +44,7 @@ namespace OzetteClientAgent
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            Thread t = new Thread(() => (Task.Run(() => CoreStartAsync())).Wait());
+            Thread t = new Thread(() => CoreStart());
             t.Start();
         }
 
@@ -101,7 +101,7 @@ namespace OzetteClientAgent
         /// <summary>
         /// Core application start.
         /// </summary>
-        private async Task CoreStartAsync()
+        private void CoreStart()
         {
             StartLoggers();
 
@@ -109,19 +109,28 @@ namespace OzetteClientAgent
                 string.Format("Starting {0} client service.", OzetteLibrary.Constants.Logging.AppName),
                 EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartingService, true);
 
-            if (!(await ConfigureDatabaseAsync()))
+            var dbTask = ConfigureDatabaseAsync();
+            dbTask.Wait();
+            
+            if (!dbTask.Result)
             {
                 Stop();
                 return;
             }
 
-            if (!(await ConfigureStorageProviderConnectionsAsync()))
+            var spTask = ConfigureStorageProviderConnectionsAsync();
+            spTask.Wait();
+
+            if (!spTask.Result)
             {
                 Stop();
                 return;
             }
 
-            if (!(await ConfigureMessagingProviderConnectionsAsync()))
+            var mpTask = ConfigureMessagingProviderConnectionsAsync();
+            mpTask.Wait();
+
+            if (!mpTask.Result)
             {
                 Stop();
                 return;

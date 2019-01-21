@@ -47,7 +47,7 @@ namespace OzetteLibrary.Client
 
             Logger.WriteTraceMessage(string.Format("Backup engine is starting up."), InstanceID);
 
-            Thread pl = new Thread(() => ProcessLoopAsync().RunSynchronously());
+            Thread pl = new Thread(() => ProcessLoopAsync().Wait());
             pl.Start();
 
             Logger.WriteTraceMessage(string.Format("Backup engine is now running."), InstanceID);

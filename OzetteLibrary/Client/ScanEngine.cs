@@ -48,7 +48,7 @@ namespace OzetteLibrary.Client
 
             Logger.WriteTraceMessage("Scan engine is starting up.");
 
-            Thread pl = new Thread(() => ProcessLoopAsync().RunSynchronously());
+            Thread pl = new Thread(() => ProcessLoopAsync().Wait());
             pl.Start();
 
             Logger.WriteTraceMessage("Scan engine is now running.");
