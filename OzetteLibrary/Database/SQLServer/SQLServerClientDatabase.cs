@@ -698,7 +698,7 @@ namespace OzetteLibrary.Database.SQLServer
                                     FileMatchFilter = rdr.GetString(2),
                                     Priority = (FileBackupPriority)rdr.GetInt32(3),
                                     RevisionCount = rdr.GetInt32(4),
-                                    LastCompletedScan = rdr.GetDateTime(5)
+                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5) 
                                 });
                             }
 
@@ -715,7 +715,7 @@ namespace OzetteLibrary.Database.SQLServer
                                         FileMatchFilter = rdr.GetString(2),
                                         Priority = (FileBackupPriority)rdr.GetInt32(3),
                                         RevisionCount = rdr.GetInt32(4),
-                                        LastCompletedScan = rdr.GetDateTime(5),
+                                        LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5),
                                         CredentialName = rdr.GetString(6),
                                         IsConnected = rdr.GetBoolean(7),
                                         IsFailed = rdr.GetBoolean(8),
