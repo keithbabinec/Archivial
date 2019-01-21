@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
+    /// <summary>
+    /// A command for removing a stored local or network source.
+    /// </summary>
     public class RemoveSourceCommand : ICommand
     {
         /// <summary>

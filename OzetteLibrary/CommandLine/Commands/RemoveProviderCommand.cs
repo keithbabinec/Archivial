@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
+    /// <summary>
+    /// A command for removing a stored provider.
+    /// </summary>
     public class RemoveProviderCommand : ICommand
     {
         /// <summary>
