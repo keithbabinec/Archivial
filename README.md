@@ -134,11 +134,18 @@ OzetteCmd.exe add-netsource --uncpath "\\networkshare\private\docs\taxes" --cred
 OzetteCmd.exe list-sources
 ```
 
-**Example: Remove one of the source folders by ID**
+**Example: Remove one of the local source folders by ID**
 
 Note: see *list-sources* to view the existing sources with IDs.
 ```
-OzetteCmd.exe remove-source --sourceid 1
+OzetteCmd.exe remove-source --sourceid 1 --sourcetype 'Local'
+```
+
+**Example: Remove one of the network source folders by ID**
+
+Note: see *list-sources* to view the existing sources with IDs.
+```
+OzetteCmd.exe remove-source --sourceid 1 --sourcetype 'Network'
 ```
 
 **Example: List the stored network credentials you have configured**

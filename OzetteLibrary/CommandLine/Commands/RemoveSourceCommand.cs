@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
 using OzetteLibrary.Database.SQLServer;
+using OzetteLibrary.Folders;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 using System;
@@ -79,12 +80,30 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("Querying for existing scan sources to see if the specified source exists.");
 
             var allSources = await db.GetSourceLocationsAsync();
-            var sourceToRemove = allSources.FirstOrDefault(x => x.ID == arguments.SourceID);
+
+            SourceLocation sourceToRemove = null;
+
+            foreach (var src in allSources)
+            {
+                if (src.ID == arguments.SourceID)
+                {
+                    if (src is LocalSourceLocation && arguments.SourceType == SourceLocationType.Local)
+                    {
+                        sourceToRemove = src;
+                        break;
+                    }
+                    if (src is NetworkSourceLocation && arguments.SourceType == SourceLocationType.Network)
+                    {
+                        sourceToRemove = src;
+                        break;
+                    }
+                }
+            }
 
             if (sourceToRemove == null)
             {
                 // the source doesn't exist. nothing to do.
-                Logger.WriteConsole("No source was found with the specified ID. Nothing to remove.");
+                Logger.WriteConsole("No source was found with the specified ID and type. Nothing to remove.");
                 return;
             }
 

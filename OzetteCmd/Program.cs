@@ -159,6 +159,7 @@ namespace OzetteCmd
             help.AppendLine("\tRemoves a backup source with specified ID. Run list-sources to see the current sources with IDs.");
             help.AppendLine("  Arguments:");
             help.AppendLine("\t--sourceid\tThe ID of the backup source to remove.");
+            help.AppendLine("\t--sourcetype\tThe type of backup source to remove (specify 'Local' or 'Network').");
             help.AppendLine();
             help.AppendLine("OzetteCmd.exe show-status");
             help.AppendLine();
