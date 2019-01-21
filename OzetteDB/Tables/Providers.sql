@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Providers]
 (
-	[ID] INT NOT NULL,
+	[ID] INT NOT NULL IDENTITY(1,1),
 	[Type] INT NOT NULL,
 	[Name] NVARCHAR(256) NOT NULL,
 
