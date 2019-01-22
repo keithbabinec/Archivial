@@ -22,8 +22,7 @@ This project is under active development and not fully usuable yet. Breaking cha
 ## Prerequisites
 
 * A Windows Operating System running .NET 4.6.1 (or later).
-* SQL Server 2017 Express (or later).
-** Express edition is available for free from Microsoft at [this link](https://www.microsoft.com/en-us/sql-server/sql-server-editions-express).
+* SQL Server 2017 Express (or later). Express edition is available for free from Microsoft at [this link](https://www.microsoft.com/en-us/sql-server/sql-server-editions-express).
 
 ## Install Ozette
 
