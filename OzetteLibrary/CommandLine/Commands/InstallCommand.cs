@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
-using System.Security.Principal;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using OzetteLibrary.CommandLine.Arguments;
@@ -78,6 +77,9 @@ namespace OzetteLibrary.CommandLine.Commands
 
                 Logger.WriteConsole("--- Step 6: Add installation directory to system path variable.");
                 AddSystemPath();
+
+                Logger.WriteConsole("--- Step 7: Start Ozette Client Service.");
+                StartClientService();
 
                 Logger.WriteConsole("--- Installation completed successfully.");
 
@@ -327,6 +329,33 @@ namespace OzetteLibrary.CommandLine.Commands
             else
             {
                 Logger.WriteConsole("Windows service already exists, skipping step.");
+            }
+        }
+
+        /// <summary>
+        /// Starts the client service.
+        /// </summary>
+        private void StartClientService()
+        {
+            Logger.WriteConsole("Starting Ozette Client windows service.");
+
+            Process startService = new Process();
+            startService.StartInfo = new ProcessStartInfo()
+            {
+                FileName = "sc.exe",
+                Arguments = "start OzetteCloudBackup"
+            };
+
+            startService.Start();
+            startService.WaitForExit();
+
+            if (startService.ExitCode == 0)
+            {
+                Logger.WriteConsole("Successfully started the windows service.");
+            }
+            else
+            {
+                throw new Exception("Failed to start the windows service. Sc.exe returned an error code: " + startService.ExitCode);
             }
         }
 
