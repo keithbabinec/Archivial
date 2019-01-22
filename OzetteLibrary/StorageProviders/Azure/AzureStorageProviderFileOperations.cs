@@ -200,13 +200,33 @@ namespace OzetteLibrary.StorageProviders.Azure
 
             if (!await container.ExistsAsync(RequestOptions, null).ConfigureAwait(false))
             {
-                Logger.WriteTraceMessage(string.Format("Azure container [{0}] does not exist. Creating it now.", containerName));
+                try
+                {
+                    Logger.WriteTraceMessage(string.Format("Azure container [{0}] does not exist. Creating it now.", containerName));
 
-                await container.CreateAsync(BlobContainerPublicAccessType.Off, RequestOptions, null).ConfigureAwait(false);
+                    await container.CreateAsync(BlobContainerPublicAccessType.Off, RequestOptions, null).ConfigureAwait(false);
 
-                container.Metadata[ProviderMetadata.ContainerLocalFolderPathKeyName] = System.Web.HttpUtility.UrlEncode(directory.LocalPath);
-                container.Metadata[ProviderMetadata.LocalHostNameKeyName] = Environment.MachineName;
-                await container.SetMetadataAsync(null, RequestOptions, null).ConfigureAwait(false);
+                    container.Metadata[ProviderMetadata.ContainerLocalFolderPathKeyName] = System.Web.HttpUtility.UrlEncode(directory.LocalPath);
+                    container.Metadata[ProviderMetadata.LocalHostNameKeyName] = Environment.MachineName;
+                    await container.SetMetadataAsync(null, RequestOptions, null).ConfigureAwait(false);
+                }
+                catch (StorageException ex)
+                {
+                    // special case handling.
+                    // if multiple backup files start transferring at the same moment, and those files have the same folder, and that folder
+                    // hasn't had a container created yet, then there is a race condition to create the container.
+                    // not much we can do here but ignore this particular error but ignore it and continue.
+
+                    if (ex.RequestInformation.HttpStatusCode == 409) // 409 == Conflict
+                    {
+                        Logger.WriteTraceMessage("Azure container has been created already.");
+                    }
+                    else
+                    {
+                        // wasn't a 409 (should re-throw).
+                        throw;
+                    }
+                }
             }
         }
 
