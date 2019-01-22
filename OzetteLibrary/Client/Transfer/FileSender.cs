@@ -96,6 +96,7 @@ namespace OzetteLibrary.Client.Transfer
                 {
                     Logger.WriteTraceMessage(string.Format("Unable to backup file ({0}). It has been deleted or is no longer accessible since it was scanned.", File.FullSourcePath), InstanceID);
                     await Database.DeleteBackupFileAsync(File).ConfigureAwait(false);
+                    await Database.RemoveFileFromBackupQueueAsync(File).ConfigureAwait(false);
                     return;
                 }
 
@@ -104,6 +105,7 @@ namespace OzetteLibrary.Client.Transfer
                     var message = string.Format("Unable to backup file ({0}). It is empty (has no contents).", File.FullSourcePath);
                     Logger.WriteTraceMessage(message, InstanceID);
                     await Database.SetBackupFileAsFailedAsync(File, message).ConfigureAwait(false);
+                    await Database.RemoveFileFromBackupQueueAsync(File).ConfigureAwait(false);
                     return;
                 }
 
@@ -133,6 +135,9 @@ namespace OzetteLibrary.Client.Transfer
                         // step 5B: send the transfer payload.
                         await SendTransferPayloadToFileTargetsAsync(File, payload).ConfigureAwait(false);
                     }
+
+                    // no more data to transfer, remove the file from the backup queue.
+                    await Database.RemoveFileFromBackupQueueAsync(File).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -140,6 +145,7 @@ namespace OzetteLibrary.Client.Transfer
                 var message = "An error occurred while preparing to transfer a file. ";
                 Logger.WriteTraceError(message, ex, Logger.GenerateFullContextStackTrace(), InstanceID);
                 await Database.SetBackupFileAsFailedAsync(File, (message + ex.ToString())).ConfigureAwait(false);
+                await Database.RemoveFileFromBackupQueueAsync(File).ConfigureAwait(false);
             }
         }
 

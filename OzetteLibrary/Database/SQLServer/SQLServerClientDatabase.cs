@@ -1347,5 +1347,40 @@ namespace OzetteLibrary.Database.SQLServer
                 throw;
             }
         }
+
+        /// <summary>
+        /// Removes a file from the backup file queue.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        public async Task RemoveFileFromBackupQueueAsync(BackupFile File)
+        {
+            if (File == null)
+            {
+                throw new ArgumentException(nameof(File));
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.RemoveFileFromBackupQueue";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", File.FileID);
+
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

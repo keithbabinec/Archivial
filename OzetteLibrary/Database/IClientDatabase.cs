@@ -184,5 +184,12 @@ namespace OzetteLibrary.Database
         /// <param name="File"></param>
         /// <returns></returns>
         Task UpdateBackupFileCopyStateAsync(BackupFile File);
+
+        /// <summary>
+        /// Removes a file from the backup file queue.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task RemoveFileFromBackupQueueAsync(BackupFile File);
     }
 }
