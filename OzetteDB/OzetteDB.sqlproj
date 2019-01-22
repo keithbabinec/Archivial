@@ -95,6 +95,8 @@
     <Build Include="Stored Procedures\SetBackupFileLastScanned.sql" />
     <Build Include="Stored Procedures\DeleteBackupFile.sql" />
     <Build Include="Stored Procedures\SetBackupFileAsFailed.sql" />
+    <Build Include="Stored Procedures\SetBackupFileHash.sql" />
+    <Build Include="Stored Procedures\SetBackupFileOverallState.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

@@ -175,7 +175,7 @@ namespace OzetteLibrary.Client.Transfer
                 finally
                 {
                     // commit the status changes to the local state database.
-                    await Database.SetBackupFileAsync(file, true);
+                    await Database.UpdateBackupFileCopyStateAsync(file);
                 }
             }
         }
@@ -206,9 +206,7 @@ namespace OzetteLibrary.Client.Transfer
                     Logger.WriteTraceMessage(string.Format("Found a sync mismatch: this file is already synced at the provider [{0}]. Updating our local status.", provider.Key), InstanceID);
 
                     file.SetProviderToCompleted(provider.Key);
-                    await Database.SetBackupFileAsync(file, true);
-
-                    // TODO: update to SetBackupFileProviderStatus() // sets the copy state.
+                    await Database.UpdateBackupFileCopyStateAsync(file);
                 }
             }
         }
@@ -235,10 +233,7 @@ namespace OzetteLibrary.Client.Transfer
             if (currentHash.Length != 0)
             {
                 File.SetFileHashWithAlgorithm(currentHash, hashAlgo);
-                File.SetLastCheckedTimeStamp();
-                await Database.SetBackupFileAsync(File, false);
-
-                // TODO: update to SetBackupFileHash() // sets the hash, hashstring, and hashalgo.
+                await Database.SetBackupFileHashAsync(File);
             }
             else
             {

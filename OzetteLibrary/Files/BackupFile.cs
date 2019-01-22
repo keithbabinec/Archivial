@@ -198,6 +198,26 @@ namespace OzetteLibrary.Files
         }
 
         /// <summary>
+        /// Resets existing copy progress state with the specified providers.
+        /// </summary>
+        /// <param name="providers"></param>
+        public void ResetCopyState(ProviderCollection providers)
+        {
+            CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>();
+
+            foreach (var provider in providers)
+            {
+                if (provider.Type == ProviderTypes.Storage)
+                {
+                    var item = new StorageProviderFileStatus(provider.Name);
+                    CopyState.Add(item.Provider, item);
+                }
+            }
+
+            SetOverallStateFromCopyState();
+        }
+
+        /// <summary>
         /// Sets the OverallState from the current CopyState.
         /// </summary>
         private void SetOverallStateFromCopyState()

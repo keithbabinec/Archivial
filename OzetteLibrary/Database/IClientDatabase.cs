@@ -170,5 +170,19 @@ namespace OzetteLibrary.Database
         /// <param name="Message"></param>
         /// <returns></returns>
         Task SetBackupFileAsFailedAsync(BackupFile File, string Message);
+
+        /// <summary>
+        /// Updates the backup file hash.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task SetBackupFileHashAsync(BackupFile File);
+
+        /// <summary>
+        /// Updates the backup files copy state.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task UpdateBackupFileCopyStateAsync(BackupFile File);
     }
 }

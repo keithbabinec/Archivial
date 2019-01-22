@@ -124,7 +124,7 @@ namespace OzetteLibraryTests.Client.Sources
 
             await scanner.ScanAsync(source);
 
-            db.Verify(x => x.SetBackupFileAsync(It.IsAny<BackupFile>(), It.IsAny<bool>()), Times.AtLeast(10));
+            db.Verify(x => x.AddBackupFileAsync(It.IsAny<BackupFile>()), Times.AtLeast(10));
         }
 
         [TestMethod]
