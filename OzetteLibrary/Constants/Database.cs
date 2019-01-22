@@ -6,33 +6,18 @@
     public static class Database
     {
         /// <summary>
-        /// A string constant for the backup files table name.
+        /// A string constant for the name of the database.
         /// </summary>
-        public const string FilesTableName = "BackupFiles";
+        public const string DatabaseName = "OzetteDB";
 
         /// <summary>
-        /// A string constant for the directory map table name.
+        /// A string constant for the sqlexpress default instance.
         /// </summary>
-        public const string DirectoryMapTableName = "DirectoryMap";
+        public const string DefaultSqlExpressInstanceConnectionString = "Data Source=.\\SQLExpress;Initial Catalog=Master;Integrated Security=SSPI;";
 
         /// <summary>
-        /// A string constant for the providers table name.
+        /// A string constant for the sqlexpress user account.
         /// </summary>
-        public const string ProvidersTableName = "Providers";
-
-        /// <summary>
-        /// A string constant for the source locations table name.
-        /// </summary>
-        public const string SourceLocationsTableName = "SourceLocations";
-
-        /// <summary>
-        /// A string constant for the service options table name.
-        /// </summary>
-        public const string ApplicationOptionsTableName = "ApplicationOptions";
-
-        /// <summary>
-        /// A string constant for the net credentials table name.
-        /// </summary>
-        public const string NetCredentialsTableName = "NetCredentials";
+        public const string DefaultSqlExpressUserAccount = "NT SERVICE\\MSSQL$SQLEXPRESS";
     }
 }

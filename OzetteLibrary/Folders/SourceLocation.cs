@@ -128,16 +128,5 @@ namespace OzetteLibrary.Folders
                 throw new SourceLocationInvalidRevisionCountException(this.ToString());
             }
         }
-
-        /// <summary>
-        /// Validates that a source location ID is valid/usable.
-        /// </summary>
-        internal void ValidateID()
-        {
-            if (ID <= 0)
-            {
-                throw new SourceLocationInvalidIDException(this.ToString());
-            }
-        }
     }
 }

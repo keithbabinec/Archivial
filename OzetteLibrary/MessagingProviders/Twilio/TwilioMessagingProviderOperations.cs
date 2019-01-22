@@ -116,7 +116,7 @@ namespace OzetteLibrary.MessagingProviders.Twilio
                         body: finalMessage,
                         from: new PhoneNumber(SourcePhone),
                         to: new PhoneNumber(destPhone)
-                    );
+                    ).ConfigureAwait(false);
 
                     Logger.WriteTraceMessage(string.Format("Twilio message {0} delivery attempt result: {1}", message.Sid, message.Status));
                 }

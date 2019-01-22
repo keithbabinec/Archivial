@@ -29,7 +29,6 @@ namespace OzetteLibrary.Folders
             ValidateFolderPath();
             ValidateFileMatchFilter();
             ValidateRevisionCount();
-            ValidateID();
         }
 
         /// <summary>

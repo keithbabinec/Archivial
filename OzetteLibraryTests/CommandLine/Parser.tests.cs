@@ -2,6 +2,7 @@
 using OzetteLibrary.CommandLine;
 using OzetteLibrary.CommandLine.Arguments;
 using OzetteLibrary.Exceptions;
+using OzetteLibrary.Folders;
 
 namespace OzetteLibraryTests.CommandLine
 {
@@ -338,6 +339,19 @@ namespace OzetteLibraryTests.CommandLine
         }
 
         [TestMethod]
+        [ExpectedException(typeof(SourceLocationException))]
+        public void ParserReturnsFalseWhenRemoveSourceWhenInvalidTypePassed()
+        {
+            string[] arguments = { "remove-source", "--sourceid", "1", "--sourcetype", "invalid" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsFalse(parser.Parse(arguments, out parsed));
+            Assert.IsNull(parsed);
+        }
+
+        [TestMethod]
         public void ParserCanParseRemoveProviderCommandWithExpectedArgs()
         {
             string[] arguments = { "remove-provider", "--providerid", "1" };
@@ -352,9 +366,9 @@ namespace OzetteLibraryTests.CommandLine
         }
 
         [TestMethod]
-        public void ParserCanParseRemoveSourceCommandWithExpectedArgs()
+        public void ParserCanParseRemoveSourceCommandWithExpectedArgsForLocalSource()
         {
-            string[] arguments = { "remove-source", "--sourceid", "3" };
+            string[] arguments = { "remove-source", "--sourceid", "3", "--sourcetype", "local" };
             ArgumentBase parsed;
 
             var parser = new Parser();
@@ -363,6 +377,22 @@ namespace OzetteLibraryTests.CommandLine
             Assert.IsNotNull(parsed);
             Assert.IsInstanceOfType(parsed, typeof(RemoveSourceArguments));
             Assert.AreEqual(3, (parsed as RemoveSourceArguments).SourceID);
+            Assert.AreEqual(SourceLocationType.Local, (parsed as RemoveSourceArguments).SourceType);
+        }
+
+        [TestMethod]
+        public void ParserCanParseRemoveSourceCommandWithExpectedArgsForNetworkSource()
+        {
+            string[] arguments = { "remove-source", "--sourceid", "2", "--sourcetype", "network" };
+            ArgumentBase parsed;
+
+            var parser = new Parser();
+
+            Assert.IsTrue(parser.Parse(arguments, out parsed));
+            Assert.IsNotNull(parsed);
+            Assert.IsInstanceOfType(parsed, typeof(RemoveSourceArguments));
+            Assert.AreEqual(2, (parsed as RemoveSourceArguments).SourceID);
+            Assert.AreEqual(SourceLocationType.Network, (parsed as RemoveSourceArguments).SourceType);
         }
 
         [TestMethod]

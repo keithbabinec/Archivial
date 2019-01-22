@@ -1,7 +1,4 @@
-﻿using OzetteLibrary.StorageProviders;
-using System.Collections.Generic;
-
-namespace OzetteLibrary.ServiceCore
+﻿namespace OzetteLibrary.ServiceCore
 {
     /// <summary>
     /// Describes the overall backup progress status.

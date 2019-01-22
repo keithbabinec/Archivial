@@ -179,5 +179,10 @@
         /// Event ID: A core application setting is invalid. 
         /// </summary>
         public const int CoreSettingInvalid = 2016;
+
+        /// <summary>
+        /// Event ID: Failed to setup/prepare the client database.
+        /// </summary>
+        public const int FailedToPrepareClientDatabase = 2017;
     }
 }

@@ -4,11 +4,10 @@ using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Exceptions;
-using OzetteLibrary.StorageProviders;
 using System;
 using System.Threading;
 using OzetteLibrary.Folders;
-using OzetteLibrary.MessagingProviders;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Client
 {
@@ -22,15 +21,11 @@ namespace OzetteLibrary.Client
         /// </summary>
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
-        /// <param name="storageProviders">A collection of cloud backup storage provider connections.</param>
-        /// <param name="messagingProviders">A collection of messaging provider connections.</param>
         /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
         public ScanEngine(IClientDatabase database,
                           ILogger logger,
-                          StorageProviderConnectionsCollection storageProviders,
-                          MessagingProviderConnectionsCollection messagingProviders,
                           int instanceID)
-            : base(database, logger, storageProviders, messagingProviders, instanceID) { }
+            : base(database, logger, instanceID) { }
 
         /// <summary>
         /// Begins to start the scanning engine, returns immediately to the caller.
@@ -47,7 +42,7 @@ namespace OzetteLibrary.Client
 
             Logger.WriteTraceMessage("Scan engine is starting up.");
 
-            Thread pl = new Thread(() => ProcessLoop());
+            Thread pl = new Thread(() => ProcessLoopAsync().Wait());
             pl.Start();
 
             Logger.WriteTraceMessage("Scan engine is now running.");
@@ -78,7 +73,7 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Core processing loop.
         /// </summary>
-        private void ProcessLoop()
+        private async Task ProcessLoopAsync()
         {
             try
             {
@@ -86,14 +81,14 @@ namespace OzetteLibrary.Client
                 {
                     // first: grab current options from the database
 
-                    var sourcesFilePath = Database.GetApplicationOption(Constants.RuntimeSettingNames.SourcesFilePath);
-                    var providersFilePath = Database.GetApplicationOption(Constants.RuntimeSettingNames.ProvidersFilePath);
-                    var scanOptions = GetScanFrequencies(Database);
+                    var sourcesFilePath = await Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.SourcesFilePath).ConfigureAwait(false);
+                    var providersFilePath = await Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.ProvidersFilePath).ConfigureAwait(false);
+                    var scanOptions = await GetScanFrequenciesAsync(Database).ConfigureAwait(false);
 
                     // second: check to see if we have any valid sources defined.
                     // the sources found are returned in the order they should be scanned.
 
-                    var sources = SafeImportSources();
+                    var sources = await SafeImportSourcesAsync().ConfigureAwait(false);
 
                     if (sources != null)
                     {
@@ -112,31 +107,12 @@ namespace OzetteLibrary.Client
                                     continue;
                                 }
 
-                                // begin-invoke the asynchronous scan operation.
-                                // watch the IAsyncResult status object to check for status updates
-                                // and wait until the scan has completed.
+                                // invoke the scan
+                                await Scanner.ScanAsync(source).ConfigureAwait(false);
 
-                                AsyncResult state = Scanner.BeginScan(source);
-                                while (state.IsCompleted == false)
-                                {
-                                    ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(2));
-                                    if (Running == false)
-                                    {
-                                        // stop was requested.
-                                        // stop the currently in-progress scanning operation.
-                                        Scanner.StopScan();
-                                        break;
-                                    }
-                                }
-
+                                // update the last scanned timestamp.
                                 LastHeartbeatOrScanCompleted = DateTime.Now;
-
-                                if (state.IsCanceled == false)
-                                {
-                                    // the scan completed successfully (no cancel)
-                                    // update the last scanned timestamp.
-                                    UpdateLastScannedTimeStamp(source);
-                                }
+                                await UpdateLastScannedTimeStamp(source).ConfigureAwait(false);
                             }
 
                             if (Running == false)
@@ -174,18 +150,18 @@ namespace OzetteLibrary.Client
         /// </summary>
         /// <param name="db"></param>
         /// <returns></returns>
-        private ScanFrequencies GetScanFrequencies(IClientDatabase db)
+        private async Task<ScanFrequencies> GetScanFrequenciesAsync(IClientDatabase db)
         {
             ScanFrequencies scan = new ScanFrequencies();
 
             scan.LowPriorityScanFrequencyInHours = 
-                Convert.ToInt32(db.GetApplicationOption(Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours));
+                Convert.ToInt32(await db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours).ConfigureAwait(false));
 
             scan.MedPriorityScanFrequencyInHours =
-                Convert.ToInt32(db.GetApplicationOption(Constants.RuntimeSettingNames.MedPriorityScanFrequencyInHours));
+                Convert.ToInt32(await db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.MedPriorityScanFrequencyInHours).ConfigureAwait(false));
 
             scan.HighPriorityScanFrequencyInHours =
-                Convert.ToInt32(db.GetApplicationOption(Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours));
+                Convert.ToInt32(await db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours).ConfigureAwait(false));
 
             return scan;
         }
@@ -197,12 +173,12 @@ namespace OzetteLibrary.Client
         /// This function is marked as safe and should not throw exceptions.
         /// </remarks>
         /// <returns></returns>
-        private SourceLocations SafeImportSources()
+        private async Task<SourceLocations> SafeImportSourcesAsync()
         {
             try
             {
                 // grab the current copy from DB (this includes last scanned timestamp)
-                var dbSources = GetSourceLocationsFromDatabase();
+                var dbSources = await GetSourceLocationsFromDatabaseAsync().ConfigureAwait(false);
 
                 if (dbSources == null || dbSources.Count == 0)
                 {
@@ -225,18 +201,18 @@ namespace OzetteLibrary.Client
         /// Updates the last completed scan timestamp in the database for the specified source.
         /// </summary>
         /// <param name="source"></param>
-        private void UpdateLastScannedTimeStamp(SourceLocation source)
+        private async Task UpdateLastScannedTimeStamp(SourceLocation source)
         {
             source.LastCompletedScan = DateTime.Now;
-            Database.UpdateSourceLocation(source);
+            await Database.SetSourceLocationAsync(source).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Gets a copy of the source locations from the database.
         /// </summary>
-        private SourceLocations GetSourceLocationsFromDatabase()
+        private async Task<SourceLocations> GetSourceLocationsFromDatabaseAsync()
         {
-            return Database.GetAllSourceLocations();
+            return await Database.GetSourceLocationsAsync().ConfigureAwait(false);
         }
 
         /// <summary>

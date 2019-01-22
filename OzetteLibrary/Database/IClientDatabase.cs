@@ -1,10 +1,11 @@
 ﻿using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
-using OzetteLibrary.StorageProviders;
 using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
 using OzetteLibrary.Providers;
+using System.Threading.Tasks;
+using OzetteLibrary.Logging;
 
 namespace OzetteLibrary.Database
 {
@@ -14,11 +15,17 @@ namespace OzetteLibrary.Database
     public interface IClientDatabase
     {
         /// <summary>
+        /// Prepares the database.
+        /// </summary>
+        /// <returns></returns>
+        Task PrepareDatabaseAsync();
+
+        /// <summary>
         /// Saves an application setting to the database.
         /// </summary>
         /// <param name="OptionName">Option name</param>
         /// <param name="OptionValue">Option value</param>
-        void SetApplicationOption(string OptionName, string OptionValue);
+        Task SetApplicationOptionAsync(string OptionName, string OptionValue);
 
         /// <summary>
         /// Retrieves an application setting value from the database.
@@ -28,44 +35,51 @@ namespace OzetteLibrary.Database
         /// </remarks>
         /// <param name="OptionName">Option name</param>
         /// <returns>The setting value.</returns>
-        string GetApplicationOption(string OptionName);
+        Task<string> GetApplicationOptionAsync(string OptionName);
 
         /// <summary>
         /// Removes an application setting value from the database.
         /// </summary>
         /// <param name="OptionName">Option name</param>
-        void RemoveApplicationOption(string OptionName);
+        Task RemoveApplicationOptionAsync(string OptionName);
 
         /// <summary>
         /// Returns a list of all providers defined in the database for the specified type.
         /// </summary>
         /// <param name="Type">The type of providers to return.</param>
         /// <returns><c>ProviderCollection</c></returns>
-        ProviderCollection GetProviders(ProviderTypes Type);
+        Task<ProviderCollection> GetProvidersAsync(ProviderTypes Type);
 
         /// <summary>
-        /// Removes the specified provider by ID.
+        /// Removes the specified provider by Name.
         /// </summary>
-        /// <param name="ProviderID">Provider ID.</param>
-        void RemoveProvider(int ProviderID);
+        /// <param name="ProviderName">Provider name.</param>
+        Task RemoveProviderAsync(string ProviderName);
 
         /// <summary>
         /// Adds the specified Provider object to the database.
         /// </summary>
         /// <param name="Provider"></param>
-        void AddProvider(Provider Provider);
+        Task AddProviderAsync(Provider Provider);
 
         /// <summary>
-        /// Commits the net credentials collection to the database.
+        /// Adds a net credential to the database.
         /// </summary>
-        /// <param name="Credentials">A collection of net credentials.</param>
-        void SetNetCredentialsList(NetCredentialsCollection Credentials);
+        /// <param name="Credential"></param>
+        /// <returns></returns>
+        Task AddNetCredentialAsync(NetCredential Credential);
+
+        /// <summary>
+        /// Removes the specified net credential by Name.
+        /// </summary>
+        /// <param name="CredentialName">Provider name.</param>
+        Task RemoveNetCredentialAsync(string CredentialName);
 
         /// <summary>
         /// Returns all of the net credentials defined in the database.
         /// </summary>
         /// <returns>A collection of net credentials.</returns>
-        NetCredentialsCollection GetNetCredentialsList();
+        Task<NetCredentialsCollection> GetNetCredentialsAsync();
 
         /// <summary>
         /// Checks the index for a file matching the provided name, path, filesize, and lastmodified date.
@@ -74,13 +88,7 @@ namespace OzetteLibrary.Database
         /// <param name="FileSizeBytes">File size in bytes</param>
         /// <param name="FileLastModified">File last modified timestamp</param>
         /// <returns></returns>
-        BackupFileLookup GetBackupFile(string FullFilePath, long FileSizeBytes, DateTime FileLastModified);
-
-        /// <summary>
-        /// Returns all of the client files in the database.
-        /// </summary>
-        /// <returns><c>BackupFile</c></returns>
-        BackupFiles GetAllBackupFiles();
+        Task<BackupFileLookup> FindBackupFileAsync(string FullFilePath, long FileSizeBytes, DateTime FileLastModified);
 
         /// <summary>
         /// Returns the directory map item for the specified local directory.
@@ -90,37 +98,26 @@ namespace OzetteLibrary.Database
         /// </remarks>
         /// <param name="DirectoryPath">Local directory path. Ex: 'C:\bin\programs'</param>
         /// <returns><c>DirectoryMapItem</c></returns>
-        DirectoryMapItem GetDirectoryMapItem(string DirectoryPath);
+        Task<DirectoryMapItem> GetDirectoryMapItemAsync(string DirectoryPath);
 
         /// <summary>
         /// Returns all source locations defined in the database.
         /// </summary>
         /// <returns><c>SourceLocations</c></returns>
-        SourceLocations GetAllSourceLocations();
+        Task<SourceLocations> GetSourceLocationsAsync();
 
         /// <summary>
-        /// Sets a new source locations collection in the database (this will wipe out existing sources).
-        /// </summary>
-        /// <param name="Locations"><c>SourceLocations</c></param>
-        void SetSourceLocations(SourceLocations Locations);
-
-        /// <summary>
-        /// Updates a single source location with the specified source.
+        /// Adds or updates a single source location.
         /// </summary>
         /// <param name="Location"><c>SourceLocation</c></param>
-        void UpdateSourceLocation(SourceLocation Location);
+        Task SetSourceLocationAsync(SourceLocation Location);
 
         /// <summary>
-        /// Adds a new client file to the database.
+        /// Removes a single source location.
         /// </summary>
-        /// <param name="File"><c>BackupFile</c></param>
-        void AddBackupFile(BackupFile File);
-
-        /// <summary>
-        /// Updates an existing client file in the database.
-        /// </summary>
-        /// <param name="File"><c>BackupFile</c></param>
-        void UpdateBackupFile(BackupFile File);
+        /// <param name="Location"></param>
+        /// <returns></returns>
+        Task RemoveSourceLocationAsync(SourceLocation Location);
 
         /// <summary>
         /// Gets the next file that needs to be backed up.
@@ -128,13 +125,71 @@ namespace OzetteLibrary.Database
         /// <remarks>
         /// If no files need to be backed up, return null.
         /// </remarks>
+        /// <param name="EngineInstanceID">The engine instance.</param>
         /// <returns><c>BackupFile</c></returns>
-        BackupFile GetNextFileToBackup();
+        Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID);
 
         /// <summary>
         /// Calculates and returns the overall backup progress.
         /// </summary>
         /// <returns></returns>
-        BackupProgress GetBackupProgress();
+        Task<BackupProgress> GetBackupProgressAsync();
+
+        /// <summary>
+        /// Adds a new file to the database.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task AddBackupFileAsync(BackupFile File);
+
+        /// <summary>
+        /// Resets the copy state of a backup file back to unsynced.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task ResetBackupFileStateAsync(BackupFile File);
+
+        /// <summary>
+        /// Resets the last scanned date of a backup file.
+        /// </summary>
+        /// <param name="FileID"></param>
+        /// <returns></returns>
+        Task SetBackupFileLastScannedAsync(Guid FileID);
+
+        /// <summary>
+        /// Deletes the backup file from the backup files table/index.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task DeleteBackupFileAsync(BackupFile File);
+
+        /// <summary>
+        /// Flags a backup file as failed state.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <param name="Message"></param>
+        /// <returns></returns>
+        Task SetBackupFileAsFailedAsync(BackupFile File, string Message);
+
+        /// <summary>
+        /// Updates the backup file hash.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task SetBackupFileHashAsync(BackupFile File);
+
+        /// <summary>
+        /// Updates the backup files copy state.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task UpdateBackupFileCopyStateAsync(BackupFile File);
+
+        /// <summary>
+        /// Removes a file from the backup file queue.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task RemoveFileFromBackupQueueAsync(BackupFile File);
     }
 }

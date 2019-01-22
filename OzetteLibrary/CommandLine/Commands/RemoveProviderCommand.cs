@@ -1,5 +1,5 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.Providers;
 using OzetteLibrary.ServiceCore;
@@ -7,9 +7,13 @@ using OzetteLibrary.StorageProviders;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
+    /// <summary>
+    /// A command for removing a stored provider.
+    /// </summary>
     public class RemoveProviderCommand : ICommand
     {
         /// <summary>
@@ -36,7 +40,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(ArgumentBase arguments)
+        public async Task<bool> RunAsync(ArgumentBase arguments)
         {
             var removeProviderArgs = arguments as RemoveProviderArguments;
 
@@ -50,7 +54,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup provider configuration");
 
                 Logger.WriteConsole("--- Step 1: Remove the provider from the database.");
-                RemoveProvider(removeProviderArgs);
+                await RemoveProviderAsync(removeProviderArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Provider configuration completed successfully.");
 
@@ -68,16 +72,15 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Removes the specified provider.
         /// </summary>
         /// <param name="arguments"></param>
-        private void RemoveProvider(RemoveProviderArguments arguments)
+        private async Task RemoveProviderAsync(RemoveProviderArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString, Logger);
 
             Logger.WriteConsole("Querying for existing cloud providers to see if the specified provider exists.");
 
-            var allProviders = db.GetProviders(ProviderTypes.Any);
+            var allProviders = await db.GetProvidersAsync(ProviderTypes.Any).ConfigureAwait(false);
             var providerToRemove = allProviders.FirstOrDefault(x => x.ID == arguments.ProviderID);
 
             if (providerToRemove == null)
@@ -88,13 +91,13 @@ namespace OzetteLibrary.CommandLine.Commands
             }
 
             Logger.WriteConsole("Found a matching provider, removing it now.");
-            db.RemoveProvider(arguments.ProviderID);
+            await db.RemoveProviderAsync(providerToRemove.Name).ConfigureAwait(false);
 
-            if (providerToRemove.Name == nameof(StorageProviderTypes.Azure))
+            if (providerToRemove.Name == StorageProviderTypes.Azure.ToString())
             {
                 // remove provider specific secrets
-                db.RemoveApplicationOption(Constants.RuntimeSettingNames.AzureStorageAccountName);
-                db.RemoveApplicationOption(Constants.RuntimeSettingNames.AzureStorageAccountToken);
+                await db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountName).ConfigureAwait(false);
+                await db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountToken).ConfigureAwait(false);
             }
             else
             {

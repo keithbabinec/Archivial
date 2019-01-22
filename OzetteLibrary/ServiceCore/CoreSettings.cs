@@ -70,6 +70,21 @@ namespace OzetteLibrary.ServiceCore
         }
 
         /// <summary>
+        /// The database directory.
+        /// </summary>
+        public static string DatabaseDirectory
+        {
+            get
+            {
+                return GetCoreStringSetting(BootstrapSettingNames.DatabaseDirectory);
+            }
+            set
+            {
+                SetCoreStringSetting(BootstrapSettingNames.DatabaseDirectory, value);
+            }
+        }
+
+        /// <summary>
         /// The encryption IV value.
         /// </summary>
         public static string ProtectionIv
@@ -96,6 +111,21 @@ namespace OzetteLibrary.ServiceCore
             set
             {
                 SetCoreIntSetting(BootstrapSettingNames.BackupEngineInstancesCount, value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// A flag to indicate if the database needs to be published.
+        /// </summary>
+        public static bool DatabasePublishIsRequired
+        {
+            get
+            {
+                return GetCoreBoolSetting(BootstrapSettingNames.DatabasePublishIsRequired);
+            }
+            set
+            {
+                SetCoreBoolSetting(BootstrapSettingNames.DatabasePublishIsRequired, value.ToString());
             }
         }
 
@@ -156,6 +186,40 @@ namespace OzetteLibrary.ServiceCore
         /// <param name="name"></param>
         /// <param name="value"></param>
         private static void SetCoreIntSetting(string name, string value)
+        {
+            Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.Machine);
+        }
+
+        /// <summary>
+        /// Gets a core boolean setting value.
+        /// </summary>
+        /// <param name="name">Name of the setting.</param>
+        /// <returns>The setting value.</returns>
+        private static bool GetCoreBoolSetting(string name)
+        {
+            var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine);
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ApplicationCoreSettingMissingException(name);
+            }
+
+            if (bool.TryParse(value, out bool result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new ApplicationCoreSettingInvalidValueException(name);
+            }
+        }
+
+        /// <summary>
+        /// Sets a core boolean setting value.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        private static void SetCoreBoolSetting(string name, string value)
         {
             Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.Machine);
         }

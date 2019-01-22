@@ -19,6 +19,11 @@
         public const string LogFilesDirectory = "OZETTE_LOGFILESDIRECTORY";
 
         /// <summary>
+        /// The database directory path setting.
+        /// </summary>
+        public const string DatabaseDirectory = "OZETTE_DATABASEDIRECTORY";
+
+        /// <summary>
         /// The installation directory path.
         /// </summary>
         public const string InstallationDirectory = "OZETTE_INSTALLATIONDIRECTORY";
@@ -37,5 +42,10 @@
         /// The number of backup engine instances to run.
         /// </summary>
         public const string BackupEngineInstancesCount = "OZETTE_BACKUPENGINEINSTANCESCOUNT";
+
+        /// <summary>
+        /// A flag to indicate if the database needs to be published.
+        /// </summary>
+        public const string DatabasePublishIsRequired = "OZETTE_DATABASEPUBLISHREQUIRED";
     }
 }

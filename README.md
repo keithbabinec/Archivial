@@ -19,6 +19,14 @@ This project is under active development and not fully usuable yet. Breaking cha
 
 # Installation
 
+## Prerequisites
+
+* A Windows Operating System running .NET 4.6.1 (or later).
+* SQL Server 2017 Express (or later).
+** Express edition is available for free from Microsoft at [this link](https://www.microsoft.com/en-us/sql-server/sql-server-editions-express).
+
+## Install Ozette
+
 1. Open an elevated (Run-As Administrator) PowerShell prompt.
 2. Download latest binaries from [Releases](https://github.com/keithbabinec/Ozette/releases):
 ```
@@ -134,11 +142,18 @@ OzetteCmd.exe add-netsource --uncpath "\\networkshare\private\docs\taxes" --cred
 OzetteCmd.exe list-sources
 ```
 
-**Example: Remove one of the source folders by ID**
+**Example: Remove one of the local source folders by ID**
 
 Note: see *list-sources* to view the existing sources with IDs.
 ```
-OzetteCmd.exe remove-source --sourceid 1
+OzetteCmd.exe remove-source --sourceid 1 --sourcetype 'Local'
+```
+
+**Example: Remove one of the network source folders by ID**
+
+Note: see *list-sources* to view the existing sources with IDs.
+```
+OzetteCmd.exe remove-source --sourceid 1 --sourcetype 'Network'
 ```
 
 **Example: List the stored network credentials you have configured**

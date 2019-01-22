@@ -6,10 +6,9 @@ using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
-using System.Security.Principal;
 using System.ServiceProcess;
+using System.Threading.Tasks;
 using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.LiteDB;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 
@@ -48,7 +47,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(ArgumentBase arguments)
+        public async Task<bool> RunAsync(ArgumentBase arguments)
         {
             var installArgs = arguments as InstallationArguments;
 
@@ -73,17 +72,14 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Step 4: Copying installation files.");
                 CopyProgramFiles();
 
-                Logger.WriteConsole("--- Step 5: Creating initial database.");
-                CreateInitialDatabase();
-
-                Logger.WriteConsole("--- Step 6: Creating Ozette Client Service.");
+                Logger.WriteConsole("--- Step 5: Creating Ozette Client Service.");
                 CreateClientService();
 
-                Logger.WriteConsole("--- Step 7: Add installation directory to system path variable.");
+                Logger.WriteConsole("--- Step 6: Add installation directory to system path variable.");
                 AddSystemPath();
 
-                Logger.WriteConsole("--- Step 8: Set database file permissions.");
-                SetDbFilePermissions();
+                Logger.WriteConsole("--- Step 7: Start Ozette Client Service.");
+                StartClientService();
 
                 Logger.WriteConsole("--- Installation completed successfully.");
 
@@ -107,11 +103,15 @@ namespace OzetteLibrary.CommandLine.Commands
 
             CoreSettings.InstallationDirectory = arguments.InstallDirectory;
             CoreSettings.LogFilesDirectory = Path.Combine(arguments.InstallDirectory, "Logs");
+            CoreSettings.DatabaseDirectory = Path.Combine(arguments.InstallDirectory, "Database");
             CoreSettings.EventlogName = "Ozette";
-            CoreSettings.BackupEngineInstanceCount = 1;
+            CoreSettings.BackupEngineInstanceCount = 4;
 
-            var dbPath = Path.Combine(arguments.InstallDirectory, "Database\\OzetteCloudBackup.db");
-            CoreSettings.DatabaseConnectionString = string.Format("Filename={0};Journal=true;Mode=Shared", dbPath);
+            // setting this flag indicates publish is required on next service startup.
+            CoreSettings.DatabasePublishIsRequired = true;
+
+            var dbConnectionString = string.Format("Data Source=.\\SQLExpress;Initial Catalog={0};Integrated Security=SSPI;", Constants.Database.DatabaseName);
+            CoreSettings.DatabaseConnectionString = dbConnectionString;
 
             // this entropy/iv key is used only for saving/retrieving app secrets (like storage config tokens).
             // it is not used for encrypting files in the cloud.
@@ -124,6 +124,7 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("Core settings successfully applied.");
             Logger.WriteConsole("InstallationDirectory=" + CoreSettings.InstallationDirectory);
             Logger.WriteConsole("LogFilesDirectory=" + CoreSettings.LogFilesDirectory);
+            Logger.WriteConsole("DatabaseDirectory=" + CoreSettings.DatabaseDirectory);
             Logger.WriteConsole("EventlogName=" + CoreSettings.EventlogName);
             Logger.WriteConsole("DatabaseConnectionString=" + CoreSettings.DatabaseConnectionString);
             Logger.WriteConsole("BackupEngineInstancesCount=" + CoreSettings.BackupEngineInstanceCount);
@@ -162,12 +163,30 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("Target installation directory already exists, skipping step.");
             }
 
-            var dbDirectory = Path.Combine(CoreSettings.InstallationDirectory, "Database");
-            if (Directory.Exists(dbDirectory) == false)
+            if (Directory.Exists(CoreSettings.DatabaseDirectory) == false)
             {
                 Logger.WriteConsole("Target database directory was not found, creating it now.");
-                Directory.CreateDirectory(dbDirectory);
+                Directory.CreateDirectory(CoreSettings.DatabaseDirectory);
+
                 Logger.WriteConsole("Successfully created target database directory.");
+                Logger.WriteConsole("Applying SQLExpress account permissions to database folder.");
+
+                var dirInfo = new DirectoryInfo(CoreSettings.DatabaseDirectory);
+                var dirSecurity = dirInfo.GetAccessControl();
+
+                dirSecurity.AddAccessRule(
+                    new FileSystemAccessRule(
+                        Constants.Database.DefaultSqlExpressUserAccount,
+                        FileSystemRights.FullControl,
+                        InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit,
+                        PropagationFlags.None,
+                        AccessControlType.Allow
+                    )
+                );
+
+                dirInfo.SetAccessControl(dirSecurity);
+
+                Logger.WriteConsole("NTFS permissions applied successfully.");
             }
             else
             {
@@ -198,10 +217,20 @@ namespace OzetteLibrary.CommandLine.Commands
             // expected file manifest
             var fileManifest = new List<string>()
             {
-                "LiteDB.dll",
-                "LiteDB.xml",
                 "Microsoft.Azure.KeyVault.Core.dll",
                 "Microsoft.Azure.KeyVault.Core.xml",
+                "Microsoft.Data.Tools.Schema.Sql.dll",
+                "Microsoft.Data.Tools.Utilities.dll",
+                "Microsoft.IdentityModel.Logging.dll",
+                "Microsoft.IdentityModel.Tokens.dll",
+                "Microsoft.IdentityModel.Tokens.xml",
+                "Microsoft.SqlServer.Dac.dll",
+                "Microsoft.SqlServer.Dac.xml",
+                "Microsoft.SqlServer.Dac.Extensions.dll",
+                "Microsoft.SqlServer.Dac.Extensions.xml",
+                "Microsoft.SqlServer.TransactSql.ScriptDom.dll",
+                "Microsoft.SqlServer.TransactSql.ScriptDom.xml",
+                "Microsoft.SqlServer.Types.dll",
                 "Microsoft.WindowsAzure.Storage.dll",
                 "Microsoft.WindowsAzure.Storage.xml",
                 "NCrontab.dll",
@@ -209,12 +238,11 @@ namespace OzetteLibrary.CommandLine.Commands
                 "Newtonsoft.Json.xml",
                 "OzetteClientAgent.exe",
                 "OzetteClientAgent.exe.config",
-                "OzetteLibrary.dll",
                 "OzetteCmd.exe",
                 "OzetteCmd.exe.config",
-                "Microsoft.IdentityModel.Logging.dll",
-                "Microsoft.IdentityModel.Tokens.dll",
-                "Microsoft.IdentityModel.Tokens.xml",
+                "OzetteDB.dacpac",
+                "OzetteDB.dll",
+                "OzetteLibrary.dll",
                 "System.IdentityModel.Tokens.Jwt.dll",
                 "System.IdentityModel.Tokens.Jwt.xml",
                 "Twilio.dll",
@@ -237,19 +265,6 @@ namespace OzetteLibrary.CommandLine.Commands
             }
 
             Logger.WriteConsole("Successfully copied files.");
-        }
-
-        /// <summary>
-        /// Creates the initial database.
-        /// </summary>
-        private void CreateInitialDatabase()
-        {
-            Logger.WriteConsole("Preparing database now.");
-
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
-
-            Logger.WriteConsole("Database successfully prepared.");
         }
 
         /// <summary>
@@ -318,6 +333,33 @@ namespace OzetteLibrary.CommandLine.Commands
         }
 
         /// <summary>
+        /// Starts the client service.
+        /// </summary>
+        private void StartClientService()
+        {
+            Logger.WriteConsole("Starting Ozette Client windows service.");
+
+            Process startService = new Process();
+            startService.StartInfo = new ProcessStartInfo()
+            {
+                FileName = "sc.exe",
+                Arguments = "start OzetteCloudBackup"
+            };
+
+            startService.Start();
+            startService.WaitForExit();
+
+            if (startService.ExitCode == 0)
+            {
+                Logger.WriteConsole("Successfully started the windows service.");
+            }
+            else
+            {
+                throw new Exception("Failed to start the windows service. Sc.exe returned an error code: " + startService.ExitCode);
+            }
+        }
+
+        /// <summary>
         /// Adds the installation directory to the system's path variable.
         /// </summary>
         private void AddSystemPath()
@@ -338,49 +380,6 @@ namespace OzetteLibrary.CommandLine.Commands
             else
             {
                 Logger.WriteConsole("System path variable is already configured with the installation path.");
-            }
-        }
-
-        /// <summary>
-        /// Sets the database file permissions.
-        /// </summary>
-        private void SetDbFilePermissions()
-        {
-            Logger.WriteConsole("Querying for existing database file permissions.");
-
-            var dbPath = Path.Combine(CoreSettings.InstallationDirectory, "Database\\OzetteCloudBackup.db");
-
-            var dbfileInfo = new FileInfo(dbPath);
-            var securityInfo = dbfileInfo.GetAccessControl();
-            var accessRules = securityInfo.GetAccessRules(true, true, typeof(SecurityIdentifier));
-            var builtInUsersIdentity = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
-
-            // find out if rule already exists
-
-            bool permissionHasBeenSet = false;
-
-            foreach (FileSystemAccessRule rule in accessRules)
-            {
-                if (rule.IdentityReference == builtInUsersIdentity 
-                    && rule.FileSystemRights.HasFlag(FileSystemRights.Modify)
-                    && rule.AccessControlType.HasFlag(AccessControlType.Allow))
-                {
-                    permissionHasBeenSet = true;
-                }
-            }
-
-            if (permissionHasBeenSet)
-            {
-                Logger.WriteConsole("Database file permissions are already set correctly.");
-            }
-            else
-            {
-                Logger.WriteConsole("Database file permissions are not set. Setting them now.");
-
-                securityInfo.AddAccessRule(new FileSystemAccessRule(builtInUsersIdentity, FileSystemRights.Modify, AccessControlType.Allow));
-                File.SetAccessControl(dbPath, securityInfo);
-
-                Logger.WriteConsole("Successfully set the database file permissions.");
             }
         }
     }

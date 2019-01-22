@@ -1,9 +1,10 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -36,7 +37,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(ArgumentBase arguments)
+        public async Task<bool> RunAsync(ArgumentBase arguments)
         {
             // arguments is required from the interface definition, but there are no additional parameter arguments for this command.
             // so just ignore it, no validation required here.
@@ -46,7 +47,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup configuration check");
 
                 Logger.WriteConsole("--- Step 1: Query database for the list of configured backup sources.");
-                PrintBackupSources();
+                await PrintBackupSourcesAsync().ConfigureAwait(false);
 
                 return true;
             }
@@ -61,16 +62,15 @@ namespace OzetteLibrary.CommandLine.Commands
         /// <summary>
         /// Prints the providers.
         /// </summary>
-        private void PrintBackupSources()
+        private async Task PrintBackupSourcesAsync()
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString, Logger);
 
             Logger.WriteConsole("Querying for existing backup sources.");
 
-            var allSources = db.GetAllSourceLocations();
+            var allSources = await db.GetSourceLocationsAsync().ConfigureAwait(false);
 
             Logger.WriteConsole("Number of configured backup sources: " + allSources.Count);
 

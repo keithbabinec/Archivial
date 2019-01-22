@@ -1,9 +1,10 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
-using OzetteLibrary.Database.LiteDB;
+using OzetteLibrary.Database.SQLServer;
 using OzetteLibrary.Logging.Default;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.CommandLine.Commands
 {
@@ -33,7 +34,7 @@ namespace OzetteLibrary.CommandLine.Commands
         /// </summary>
         /// <param name="arguments"></param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool Run(ArgumentBase arguments)
+        public async Task<bool> RunAsync(ArgumentBase arguments)
         {
             var listCredsArgs = arguments as ListNetCredentialsArguments;
 
@@ -47,7 +48,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup credential configuration");
 
                 Logger.WriteConsole("--- Step 1: List the network credentials from the database.");
-                ListNetCreds(listCredsArgs);
+                await ListNetCredsAsync(listCredsArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Credential configuration completed successfully.");
 
@@ -65,16 +66,15 @@ namespace OzetteLibrary.CommandLine.Commands
         /// Lists net credentials
         /// </summary>
         /// <param name="arguments"></param>
-        private void ListNetCreds(ListNetCredentialsArguments arguments)
+        private async Task ListNetCredsAsync(ListNetCredentialsArguments arguments)
         {
             Logger.WriteConsole("Initializing a database connection.");
 
-            var db = new LiteDBClientDatabase(CoreSettings.DatabaseConnectionString);
-            db.PrepareDatabase();
+            var db = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString, Logger);
 
             Logger.WriteConsole("Querying for existing network credentials.");
 
-            var allNetCreds = db.GetNetCredentialsList();
+            var allNetCreds = await db.GetNetCredentialsAsync().ConfigureAwait(false);
 
             Logger.WriteConsole("Number of configured credentials: " + allNetCreds.Count);
 

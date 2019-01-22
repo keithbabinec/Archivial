@@ -51,7 +51,6 @@ namespace OzetteLibrary.Folders
             ValidateUncPath();
             ValidateFileMatchFilter();
             ValidateRevisionCount();
-            ValidateID();
         }
 
         /// <summary>

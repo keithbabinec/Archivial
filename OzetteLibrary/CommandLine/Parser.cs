@@ -1,6 +1,7 @@
 ﻿using OzetteLibrary.CommandLine.Arguments;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Files;
+using OzetteLibrary.Folders;
 using System;
 using System.Collections.Generic;
 
@@ -486,6 +487,28 @@ namespace OzetteLibrary.CommandLine
                     // required argument was not valid.
                     parsed = null;
                     return false;
+                }
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            if (map.ContainsKey("sourcetype"))
+            {
+                var sourceType = map["sourcetype"];
+                SourceLocationType parsedLocationType;
+
+                if (Enum.TryParse(sourceType, true, out parsedLocationType))
+                {
+                    remSrcArgs.SourceType = parsedLocationType;
+                }
+                else
+                {
+                    // an optional argument was specified, but was not given a valid value.
+                    throw new SourceLocationException("Invalid source type value.");
                 }
             }
             else
