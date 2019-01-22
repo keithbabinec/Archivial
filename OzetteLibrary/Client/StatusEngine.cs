@@ -3,8 +3,8 @@ using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using OzetteLibrary.MessagingProviders;
+using OzetteLibrary.Providers;
 using OzetteLibrary.ServiceCore;
-using OzetteLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -22,15 +22,11 @@ namespace OzetteLibrary.Client
         /// </summary>
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
-        /// <param name="storageProviders">A collection of cloud backup storage provider connections.</param>
-        /// <param name="messagingProviders">A collection of messaging provider connections.</param>
         /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
         public StatusEngine(IClientDatabase database,
                             ILogger logger,
-                            StorageProviderConnectionsCollection storageProviders,
-                            MessagingProviderConnectionsCollection messagingProviders,
                             int instanceID)
-            : base(database, logger, storageProviders, messagingProviders, instanceID) { }
+            : base(database, logger, instanceID) { }
 
         /// <summary>
         /// Begins to start the status engine, returns immediately to the caller.
@@ -66,6 +62,11 @@ namespace OzetteLibrary.Client
         private Queue<DateTime> StatusCheckTimes { get; set; }
 
         /// <summary>
+        /// A collection of messaging provider connections.
+        /// </summary>
+        private MessagingProviderConnectionsCollection MessagingConnections { get; set; }
+
+        /// <summary>
         /// Core processing loop.
         /// </summary>
         private async Task ProcessLoopAsync()
@@ -74,11 +75,14 @@ namespace OzetteLibrary.Client
             {
                 while (true)
                 {
-                    if (await CanSendStatusUpdateAsync().ConfigureAwait(false))
+                    if (await MessagingProvidersAreConfiguredAsync())
                     {
-                        Logger.WriteTraceMessage("Querying for backup progress.");
-                        var progress = await Database.GetBackupProgressAsync().ConfigureAwait(false);
-                        await SendStatusUpdateAsync(progress).ConfigureAwait(false);
+                        if (await CanSendStatusUpdateAsync().ConfigureAwait(false))
+                        {
+                            Logger.WriteTraceMessage("Querying for backup progress.");
+                            var progress = await Database.GetBackupProgressAsync().ConfigureAwait(false);
+                            await SendStatusUpdateAsync(progress).ConfigureAwait(false);
+                        }
                     }
 
                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
@@ -93,6 +97,56 @@ namespace OzetteLibrary.Client
             catch (Exception ex)
             {
                 OnStopped(new EngineStoppedEventArgs(ex, InstanceID));
+            }
+        }
+
+        /// <summary>
+        /// Checks to see if messaging providers are configured.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> MessagingProvidersAreConfiguredAsync()
+        {
+            try
+            {
+                if (MessagingConnections != null && MessagingConnections.Count > 0)
+                {
+                    // if we have already setup the connections, then we are configured.
+                    return true;
+                }
+                else
+                {
+                    // otherwise check the database to see if we have any providers.
+
+                    var messagingProviders = await Database.GetProvidersAsync(Providers.ProviderTypes.Messaging);
+
+                    if (messagingProviders.Count > 0)
+                    {
+                        // attemp to configure the providers.
+                        var connections = new ProviderConnections(Database);
+                        var messageProviderConnections = await connections.ConfigureMessagingProviderConnectionsAsync(Logger);
+
+                        if (messageProviderConnections != null)
+                        {
+                            MessagingConnections = messageProviderConnections;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        // no providers setup yet.
+                        Logger.WriteTraceMessage("No messaging providers have been configured yet. The status engine won't work until these have been configured.");
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteTraceError("Failed to lookup or configure messaging providers.", ex, Logger.GenerateFullContextStackTrace());
+                return false;
             }
         }
 
@@ -134,13 +188,13 @@ namespace OzetteLibrary.Client
         /// </summary>
         private async Task SendStatusUpdateAsync(BackupProgress Progress)
         {
-            if (MessagingProviders.Count == 0)
+            if (MessagingConnections.Count == 0)
             {
                 Logger.WriteTraceWarning("Unable to send status updates. There are no messaging providers configured/enabled.");
                 return;
             }
 
-            foreach (var messageProvider in MessagingProviders)
+            foreach (var messageProvider in MessagingConnections)
             {
                 Logger.WriteTraceMessage("Attempting to send status update for messaging provider: " + messageProvider.Key);
 

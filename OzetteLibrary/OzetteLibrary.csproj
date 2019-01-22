@@ -170,6 +170,7 @@
     <Compile Include="MessagingProviders\Twilio\TwilioMessagingProviderOperations.cs" />
     <Compile Include="Providers\Provider.cs" />
     <Compile Include="Providers\ProviderCollection.cs" />
+    <Compile Include="Providers\ProviderConnections.cs" />
     <Compile Include="Providers\ProviderTypes.cs" />
     <Compile Include="StorageProviders\Azure\AzureStorageProviderUtilities.cs" />
     <Compile Include="StorageProviders\StorageProvider.cs" />

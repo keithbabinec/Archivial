@@ -1,19 +1,11 @@
 ﻿using OzetteLibrary.Client;
-using OzetteLibrary.Exceptions;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Logging.Default;
-using OzetteLibrary.StorageProviders;
-using OzetteLibrary.StorageProviders.Azure;
-using OzetteLibrary.Secrets;
 using OzetteLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
-using System.Security.Cryptography;
 using System.ServiceProcess;
 using System.Threading;
-using OzetteLibrary.Providers;
-using OzetteLibrary.MessagingProviders;
-using OzetteLibrary.MessagingProviders.Twilio;
 using System.Collections.Generic;
 using OzetteLibrary.Database.SQLServer;
 using System.Threading.Tasks;
@@ -56,11 +48,6 @@ namespace OzetteClientAgent
         /// <summary>
         /// A reference to the backup engine log.
         /// </summary>
-        private ILogger BackupEngineLog { get; set; }
-
-        /// <summary>
-        /// A reference to the backup engine log.
-        /// </summary>
         private ILogger ScanEngineLog { get; set; }
 
         /// <summary>
@@ -89,16 +76,6 @@ namespace OzetteClientAgent
         private List<BackupEngine> BackupEngineInstances { get; set; }
 
         /// <summary>
-        /// A collection of storage provider connections.
-        /// </summary>
-        private StorageProviderConnectionsCollection StorageConnections { get; set; }
-
-        /// <summary>
-        /// A collection of messaging provider connections.
-        /// </summary>
-        private MessagingProviderConnectionsCollection MessagingConnections { get; set; }
-
-        /// <summary>
         /// Core application start.
         /// </summary>
         private void CoreStart()
@@ -113,24 +90,6 @@ namespace OzetteClientAgent
             dbTask.Wait();
             
             if (!dbTask.Result)
-            {
-                Stop();
-                return;
-            }
-
-            var spTask = ConfigureStorageProviderConnectionsAsync();
-            spTask.Wait();
-
-            if (!spTask.Result)
-            {
-                Stop();
-                return;
-            }
-
-            var mpTask = ConfigureMessagingProviderConnectionsAsync();
-            mpTask.Wait();
-
-            if (!mpTask.Result)
             {
                 Stop();
                 return;
@@ -216,12 +175,6 @@ namespace OzetteClientAgent
                 CoreSettings.EventlogName,
                 CoreSettings.LogFilesDirectory);
 
-            BackupEngineLog = new Logger(OzetteLibrary.Constants.Logging.BackupComponentName);
-            BackupEngineLog.Start(
-                CoreSettings.EventlogName,
-                CoreSettings.EventlogName,
-                CoreSettings.LogFilesDirectory);
-
             ScanEngineLog = new Logger(OzetteLibrary.Constants.Logging.ScanningComponentName);
             ScanEngineLog.Start(
                 CoreSettings.EventlogName,
@@ -252,188 +205,6 @@ namespace OzetteClientAgent
         }
 
         /// <summary>
-        /// Configures the cloud storage provider connections.
-        /// </summary>
-        /// <returns>True if successful, otherwise false.</returns>
-        private async Task<bool> ConfigureStorageProviderConnectionsAsync()
-        {
-            CoreLog.WriteSystemEvent("Configuring cloud storage provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguringCloudProviderConnections, true);
-
-            StorageConnections = new StorageProviderConnectionsCollection();
-
-            try
-            {
-                // establish the protected store.
-                var ivEncodedString = CoreSettings.ProtectionIv;
-                var ivBytes = Convert.FromBase64String(ivEncodedString);
-
-                ProtectedDataStore protectedStore = new ProtectedDataStore(ClientDatabase, DataProtectionScope.LocalMachine, ivBytes);
-
-                // configure the provider implementation instances.
-                // add each to the collection of providers.
-
-                var providersList = await ClientDatabase.GetProvidersAsync(ProviderTypes.Storage).ConfigureAwait(false);
-
-                foreach (var provider in providersList)
-                {
-                    CoreLog.WriteTraceMessage(string.Format("A storage provider was found in the configuration database: Name: {0}", provider.Name));
-
-                    switch (provider.Name)
-                    {
-                        case nameof(StorageProviderTypes.Azure):
-                            {
-                                CoreLog.WriteTraceMessage("Checking for Azure cloud storage provider connection settings.");
-                                string storageAccountName = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName).ConfigureAwait(false);
-                                string storageAccountToken = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountToken).ConfigureAwait(false);
-
-                                CoreLog.WriteTraceMessage("Initializing Azure cloud storage provider.");
-                                var azureConnection = new AzureStorageProviderFileOperations(BackupEngineLog, storageAccountName, storageAccountToken);
-                                StorageConnections.Add(StorageProviderTypes.Azure, azureConnection);
-                                CoreLog.WriteTraceMessage("Successfully initialized the cloud storage provider.");
-
-                                break;
-                            }
-                        default:
-                            {
-                                throw new NotImplementedException("Unexpected provider type specified: " + provider.Type.ToString());
-                            }
-                    }
-                }
-
-                if (StorageConnections.Count == 0)
-                {
-                    CoreLog.WriteSystemEvent("Failed to configure cloud storage provider connections: No storage providers were listed in the database.",
-                        EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.FailedToConfigureProvidersNotFound, true);
-
-                    return false;
-                }
-
-                CoreLog.WriteSystemEvent("Successfully configured cloud storage provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguredCloudProviderConnections, true);
-                return true;
-            }
-            catch (ApplicationCoreSettingMissingException ex)
-            {
-                CoreLog.WriteSystemEvent("A core application setting has not been configured yet: " + ex.Message,
-                    EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.CoreSettingMissing, true);
-
-                return false;
-            }
-            catch (ApplicationCoreSettingInvalidValueException ex)
-            {
-                CoreLog.WriteSystemEvent("A core application setting has an invalid value specified: " + ex.Message,
-                    EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.CoreSettingInvalid, true);
-
-                return false;
-            }
-            catch (ApplicationSecretMissingException)
-            {
-                CoreLog.WriteSystemEvent("Failed to configure cloud storage provider connections: A cloud storage provider is missing required connection settings.",
-                    EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.FailedToConfigureProvidersMissingSettings, true);
-
-                return false;
-            }
-            catch (Exception ex)
-            {
-                var message = "Failed to configure cloud storage provider connections.";
-                var context = CoreLog.GenerateFullContextStackTrace();
-                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedToConfigureStorageProviderConnections, true);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Configures the messaging provider connections.
-        /// </summary>
-        /// <returns>True if successful, otherwise false.</returns>
-        private async Task<bool> ConfigureMessagingProviderConnectionsAsync()
-        {
-            CoreLog.WriteSystemEvent("Configuring messaging provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguringMessagingProviderConnections, true);
-
-            MessagingConnections = new MessagingProviderConnectionsCollection();
-
-            try
-            {
-                // establish the database and protected store.
-                var ivEncodedString = CoreSettings.ProtectionIv;
-                var ivBytes = Convert.FromBase64String(ivEncodedString);
-
-                ProtectedDataStore protectedStore = new ProtectedDataStore(ClientDatabase, DataProtectionScope.LocalMachine, ivBytes);
-
-                // configure the provider implementation instances.
-                // add each to the collection of providers.
-
-                var providersList = await ClientDatabase.GetProvidersAsync(ProviderTypes.Messaging).ConfigureAwait(false);
-
-                foreach (var provider in providersList)
-                {
-                    CoreLog.WriteTraceMessage(string.Format("A messaging provider was found in the configuration database: Name: {0}", provider.Name));
-
-                    switch (provider.Name)
-                    {
-                        case nameof(MessagingProviderTypes.Twilio):
-                            {
-                                CoreLog.WriteTraceMessage("Checking for Twilio messaging provider connection settings.");
-                                string accountID = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAccountID).ConfigureAwait(false);
-                                string authToken = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAuthToken).ConfigureAwait(false);
-                                string sourcePhone = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioSourcePhone).ConfigureAwait(false);
-                                string destPhones = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones).ConfigureAwait(false);
-
-                                CoreLog.WriteTraceMessage("Initializing Twilio messaging provider.");
-                                var twilioConnection = new TwilioMessagingProviderOperations(CoreLog, accountID, authToken, sourcePhone, destPhones);
-                                MessagingConnections.Add(MessagingProviderTypes.Twilio, twilioConnection);
-                                CoreLog.WriteTraceMessage("Successfully initialized the messaging provider.");
-
-                                break;
-                            }
-                        default:
-                            {
-                                throw new NotImplementedException("Unexpected provider type specified: " + provider.Type.ToString());
-                            }
-                    }
-                }
-
-                if (MessagingConnections.Count == 0)
-                {
-                    CoreLog.WriteSystemEvent("No messaging providers are configured. This isn't a problem, but they are nice to have.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.NoMessagingProviderConnections, true);
-                    return true;
-                }
-                else
-                {
-                    CoreLog.WriteSystemEvent("Successfully configured messaging provider connections.", EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.ConfiguredMessagingProviderConnections, true);
-                    return true;
-                }
-            }
-            catch (ApplicationCoreSettingMissingException ex)
-            {
-                CoreLog.WriteSystemEvent("A core application setting has not been configured yet: " + ex.Message,
-                    EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.CoreSettingMissing, true);
-
-                return false;
-            }
-            catch (ApplicationCoreSettingInvalidValueException ex)
-            {
-                CoreLog.WriteSystemEvent("A core application setting has an invalid value specified: " + ex.Message,
-                    EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.CoreSettingInvalid, true);
-
-                return false;
-            }
-            catch (ApplicationSecretMissingException)
-            {
-                CoreLog.WriteSystemEvent("Failed to configure messaging provider connections: A messaging provider is missing required connection settings.",
-                    EventLogEntryType.Error, OzetteLibrary.Constants.EventIDs.FailedToConfigureProvidersMissingSettings, true);
-
-                return false;
-            }
-            catch (Exception ex)
-            {
-                var message = "Failed to configure messaging provider connections.";
-                var context = CoreLog.GenerateFullContextStackTrace();
-                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedToConfigureMessagingProviderConnections, true);
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Starts the connection engine.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
@@ -441,7 +212,7 @@ namespace OzetteClientAgent
         {
             try
             {
-                ConnectionEngineInstance = new ConnectionEngine(ClientDatabase, CoreLog, StorageConnections, MessagingConnections);
+                ConnectionEngineInstance = new ConnectionEngine(ClientDatabase, CoreLog);
                 ConnectionEngineInstance.Stopped += Connection_Stopped;
                 ConnectionEngineInstance.BeginStart();
 
@@ -495,7 +266,7 @@ namespace OzetteClientAgent
         {
             try
             {
-                StatusEngineInstance = new StatusEngine(ClientDatabase, CoreLog, StorageConnections, MessagingConnections, 0);
+                StatusEngineInstance = new StatusEngine(ClientDatabase, CoreLog, 0);
                 StatusEngineInstance.Stopped += Status_Stopped;
                 StatusEngineInstance.BeginStart();
 
@@ -549,7 +320,7 @@ namespace OzetteClientAgent
         {
             try
             {
-                ScanEngineInstance = new ScanEngine(ClientDatabase, ScanEngineLog, StorageConnections, MessagingConnections, 0);
+                ScanEngineInstance = new ScanEngine(ClientDatabase, ScanEngineLog, 0);
                 ScanEngineInstance.Stopped += Scan_Stopped;
                 ScanEngineInstance.BeginStart();
 
@@ -611,7 +382,13 @@ namespace OzetteClientAgent
 
                 for (int i = 0; i < instanceCount; i++)
                 {
-                    var instance = new BackupEngine(ClientDatabase, BackupEngineLog, StorageConnections, MessagingConnections, i);
+                    var engineLog = new Logger(string.Format("{0}-{1}", OzetteLibrary.Constants.Logging.BackupComponentName, i));
+                    engineLog.Start(
+                        CoreSettings.EventlogName,
+                        CoreSettings.EventlogName,
+                        CoreSettings.LogFilesDirectory);
+
+                    var instance = new BackupEngine(ClientDatabase, engineLog, i);
                     instance.Stopped += Backup_Stopped;
                     instance.BeginStart();
 

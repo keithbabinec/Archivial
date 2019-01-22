@@ -1,7 +1,6 @@
 ﻿using System;
 using OzetteLibrary.Database;
 using OzetteLibrary.Logging;
-using System.Collections.Generic;
 using System.Threading;
 using OzetteLibrary.Crypto;
 using System.IO;
@@ -21,7 +20,7 @@ namespace OzetteLibrary.Client.Transfer
         /// <param name="logger">A logging instance.</param>
         /// <param name="providers">A collection of cloud backup providers.</param>
         /// <param name="instanceID">An engine instance ID.</param>
-        public FileSender(IClientDatabase database, ILogger logger, Dictionary<StorageProviderTypes, IStorageProviderFileOperations> providers, int instanceID)
+        public FileSender(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection providers, int instanceID)
         {
             if (database == null)
             {
@@ -70,7 +69,7 @@ namespace OzetteLibrary.Client.Transfer
         /// <summary>
         /// A reference to the provider connections.
         /// </summary>
-        private Dictionary<StorageProviderTypes, IStorageProviderFileOperations> Providers { get; set; }
+        private StorageProviderConnectionsCollection Providers { get; set; }
 
         /// <summary>
         /// Performs a transfer of the specified file to the target providers.

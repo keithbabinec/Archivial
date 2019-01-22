@@ -21,10 +21,8 @@ namespace OzetteLibrary.Engine
         /// </summary>
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
-        /// <param name="storageProviders">A collection of cloud backup storage provider connections.</param>
-        /// <param name="messagingProviders">A collection of messaging provider connections.</param>
         /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
-        protected BaseEngine(IClientDatabase database, ILogger logger, StorageProviderConnectionsCollection storageProviders, MessagingProviderConnectionsCollection messagingProviders, int instanceID)
+        protected BaseEngine(IClientDatabase database, ILogger logger, int instanceID)
         {
             // note: its ok to have no messaging providers (zero count).
             // it is not ok to have zero backup providers.
@@ -37,18 +35,6 @@ namespace OzetteLibrary.Engine
             {
                 throw new ArgumentNullException(nameof(logger));
             }
-            if (storageProviders == null)
-            {
-                throw new ArgumentNullException(nameof(storageProviders));
-            }
-            if (storageProviders.Count == 0)
-            {
-                throw new ArgumentException(nameof(storageProviders) + " must be provided.");
-            }
-            if (messagingProviders == null)
-            {
-                throw new ArgumentNullException(nameof(messagingProviders));
-            }
             if (instanceID < 0)
             {
                 throw new ArgumentException(nameof(instanceID) + " must be a positive integer.");
@@ -56,8 +42,6 @@ namespace OzetteLibrary.Engine
 
             Database = database;
             Logger = logger;
-            StorageProviders = storageProviders;
-            MessagingProviders = messagingProviders;
             InstanceID = instanceID;
         }
 
@@ -104,16 +88,6 @@ namespace OzetteLibrary.Engine
         /// A reference to the database.
         /// </summary>
         protected IClientDatabase Database { get; set; }
-
-        /// <summary>
-        /// A collection of cloud storage providers.
-        /// </summary>
-        protected StorageProviderConnectionsCollection StorageProviders { get; set; }
-
-        /// <summary>
-        /// A collection of messaging providers.
-        /// </summary>
-        protected MessagingProviderConnectionsCollection MessagingProviders { get; set; }
 
         /// <summary>
         /// Sleeps the engine for the specified time, while checking periodically for stop request.

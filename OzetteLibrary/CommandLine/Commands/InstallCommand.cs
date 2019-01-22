@@ -105,7 +105,7 @@ namespace OzetteLibrary.CommandLine.Commands
             CoreSettings.LogFilesDirectory = Path.Combine(arguments.InstallDirectory, "Logs");
             CoreSettings.DatabaseDirectory = Path.Combine(arguments.InstallDirectory, "Database");
             CoreSettings.EventlogName = "Ozette";
-            CoreSettings.BackupEngineInstanceCount = 1;
+            CoreSettings.BackupEngineInstanceCount = 4;
 
             // setting this flag indicates publish is required on next service startup.
             CoreSettings.DatabasePublishIsRequired = true;
