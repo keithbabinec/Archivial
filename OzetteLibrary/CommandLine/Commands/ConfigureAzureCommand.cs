@@ -59,10 +59,10 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup Azure configuration");
 
                 Logger.WriteConsole("--- Step 1: Encrypt and save Azure settings.");
-                await EncryptAndSaveAsync(configAzArgs);
+                await EncryptAndSaveAsync(configAzArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Step 2: Configure providers list.");
-                await ConfigureProvidersAsync();
+                await ConfigureProvidersAsync().ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Azure configuration completed successfully.");
 
@@ -87,7 +87,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Fetching current providers configuration from the database.");
 
-            var existingProviders = await db.GetProvidersAsync(ProviderTypes.Storage);
+            var existingProviders = await db.GetProvidersAsync(ProviderTypes.Storage).ConfigureAwait(false);
 
             if (existingProviders.Any(x => x.Name == nameof(StorageProviderTypes.Azure)) == false)
             {
@@ -100,7 +100,7 @@ namespace OzetteLibrary.CommandLine.Commands
                         Name = nameof(StorageProviderTypes.Azure)
                     };
 
-                await db.AddProviderAsync(newProvider);
+                await db.AddProviderAsync(newProvider).ConfigureAwait(false);
 
                 Logger.WriteConsole("Successfully configured Azure as a cloud backup provider.");
             }
@@ -128,11 +128,11 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Saving encrypted Azure configuration setting: AzureStorageAccountName.");
 
-            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.AzureStorageAccountName, arguments.AzureStorageAccountName);
+            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.AzureStorageAccountName, arguments.AzureStorageAccountName).ConfigureAwait(false);
 
             Logger.WriteConsole("Saving encrypted Azure configuration setting: AzureStorageAccountToken.");
 
-            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.AzureStorageAccountToken, arguments.AzureStorageAccountToken);
+            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.AzureStorageAccountToken, arguments.AzureStorageAccountToken).ConfigureAwait(false);
         }
     }
 }

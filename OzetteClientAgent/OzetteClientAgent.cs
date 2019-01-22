@@ -238,7 +238,7 @@ namespace OzetteClientAgent
             try
             {
                 ClientDatabase = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString, CoreLog);
-                await ClientDatabase.PrepareDatabaseAsync();
+                await ClientDatabase.PrepareDatabaseAsync().ConfigureAwait(false);
 
                 return true;
             }
@@ -272,7 +272,7 @@ namespace OzetteClientAgent
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
 
-                var providersList = await ClientDatabase.GetProvidersAsync(ProviderTypes.Storage);
+                var providersList = await ClientDatabase.GetProvidersAsync(ProviderTypes.Storage).ConfigureAwait(false);
 
                 foreach (var provider in providersList)
                 {
@@ -283,8 +283,8 @@ namespace OzetteClientAgent
                         case nameof(StorageProviderTypes.Azure):
                             {
                                 CoreLog.WriteTraceMessage("Checking for Azure cloud storage provider connection settings.");
-                                string storageAccountName = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
-                                string storageAccountToken = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountToken);
+                                string storageAccountName = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName).ConfigureAwait(false);
+                                string storageAccountToken = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountToken).ConfigureAwait(false);
 
                                 CoreLog.WriteTraceMessage("Initializing Azure cloud storage provider.");
                                 var azureConnection = new AzureStorageProviderFileOperations(BackupEngineLog, storageAccountName, storageAccountToken);
@@ -362,7 +362,7 @@ namespace OzetteClientAgent
                 // configure the provider implementation instances.
                 // add each to the collection of providers.
 
-                var providersList = await ClientDatabase.GetProvidersAsync(ProviderTypes.Messaging);
+                var providersList = await ClientDatabase.GetProvidersAsync(ProviderTypes.Messaging).ConfigureAwait(false);
 
                 foreach (var provider in providersList)
                 {
@@ -373,10 +373,10 @@ namespace OzetteClientAgent
                         case nameof(MessagingProviderTypes.Twilio):
                             {
                                 CoreLog.WriteTraceMessage("Checking for Twilio messaging provider connection settings.");
-                                string accountID = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAccountID);
-                                string authToken = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAuthToken);
-                                string sourcePhone = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioSourcePhone);
-                                string destPhones = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones);
+                                string accountID = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAccountID).ConfigureAwait(false);
+                                string authToken = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAuthToken).ConfigureAwait(false);
+                                string sourcePhone = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioSourcePhone).ConfigureAwait(false);
+                                string destPhones = await protectedStore.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones).ConfigureAwait(false);
 
                                 CoreLog.WriteTraceMessage("Initializing Twilio messaging provider.");
                                 var twilioConnection = new TwilioMessagingProviderOperations(CoreLog, accountID, authToken, sourcePhone, destPhones);

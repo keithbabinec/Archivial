@@ -54,7 +54,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup provider configuration");
 
                 Logger.WriteConsole("--- Step 1: Remove the provider from the database.");
-                await RemoveProviderAsync(removeProviderArgs);
+                await RemoveProviderAsync(removeProviderArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Provider configuration completed successfully.");
 
@@ -80,7 +80,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing cloud providers to see if the specified provider exists.");
 
-            var allProviders = await db.GetProvidersAsync(ProviderTypes.Any);
+            var allProviders = await db.GetProvidersAsync(ProviderTypes.Any).ConfigureAwait(false);
             var providerToRemove = allProviders.FirstOrDefault(x => x.ID == arguments.ProviderID);
 
             if (providerToRemove == null)
@@ -91,13 +91,13 @@ namespace OzetteLibrary.CommandLine.Commands
             }
 
             Logger.WriteConsole("Found a matching provider, removing it now.");
-            await db.RemoveProviderAsync(providerToRemove.Name);
+            await db.RemoveProviderAsync(providerToRemove.Name).ConfigureAwait(false);
 
             if (providerToRemove.Name == StorageProviderTypes.Azure.ToString())
             {
                 // remove provider specific secrets
-                await db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountName);
-                await db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountToken);
+                await db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountName).ConfigureAwait(false);
+                await db.RemoveApplicationOptionAsync(Constants.RuntimeSettingNames.AzureStorageAccountToken).ConfigureAwait(false);
             }
             else
             {

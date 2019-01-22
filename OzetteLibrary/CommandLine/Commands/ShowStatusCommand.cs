@@ -47,7 +47,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup status check");
 
                 Logger.WriteConsole("--- Step 1: Querying database for backup status.");
-                await PrintStatusAsync();
+                await PrintStatusAsync().ConfigureAwait(false);
 
                 return true;
             }
@@ -70,7 +70,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Checking backup file status...");
 
-            var progress = await db.GetBackupProgressAsync();
+            var progress = await db.GetBackupProgressAsync().ConfigureAwait(false);
 
             Console.WriteLine("------------------------------------------------");
             Console.WriteLine("Completion Percentage");

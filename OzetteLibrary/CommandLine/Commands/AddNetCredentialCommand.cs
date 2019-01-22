@@ -50,10 +50,10 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup credential configuration");
 
                 Logger.WriteConsole("--- Step 1: Adds the network credential name to the database.");
-                await AddNetCredAsync(addNetCredArgs);
+                await AddNetCredAsync(addNetCredArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Step 2: Encrypt and save credential username and password settings.");
-                await EncryptAndSaveAsync(addNetCredArgs);
+                await EncryptAndSaveAsync(addNetCredArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Credential configuration completed successfully.");
 
@@ -79,7 +79,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Fetching current network credentials from the database.");
 
-            var existingCredsList = await db.GetNetCredentialsAsync();
+            var existingCredsList = await db.GetNetCredentialsAsync().ConfigureAwait(false);
 
             if (existingCredsList.Any(x => x.CredentialName == arguments.CredentialName) == false)
             {
@@ -115,11 +115,11 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Saving encrypted username setting.");
 
-            await pds.SetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, arguments.CredentialName), arguments.ShareUser);
+            await pds.SetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, arguments.CredentialName), arguments.ShareUser).ConfigureAwait(false);
 
             Logger.WriteConsole("Saving encrypted password setting.");
 
-            await pds.SetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, arguments.CredentialName), arguments.SharePassword);
+            await pds.SetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, arguments.CredentialName), arguments.SharePassword).ConfigureAwait(false);
         }
     }
 }

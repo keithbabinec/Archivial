@@ -180,7 +180,7 @@ namespace OzetteLibrary.StorageProviders.Azure
                 {
                     // set blob tier access.
                     // we only need to set this one time, at the time the upload is completed.
-                    await blob.SetStandardBlobTierAsync(StandardBlobTier.Archive, null, RequestOptions, null);
+                    await blob.SetStandardBlobTierAsync(StandardBlobTier.Archive, null, RequestOptions, null).ConfigureAwait(false);
                 }
 
                 Logger.WriteTraceMessage("File successfully uploaded to Azure storage: " + file.FullSourcePath);
@@ -206,7 +206,7 @@ namespace OzetteLibrary.StorageProviders.Azure
 
                 container.Metadata[ProviderMetadata.ContainerLocalFolderPathKeyName] = System.Web.HttpUtility.UrlEncode(directory.LocalPath);
                 container.Metadata[ProviderMetadata.LocalHostNameKeyName] = Environment.MachineName;
-                await container.SetMetadataAsync(null, RequestOptions, null);
+                await container.SetMetadataAsync(null, RequestOptions, null).ConfigureAwait(false);
             }
         }
 

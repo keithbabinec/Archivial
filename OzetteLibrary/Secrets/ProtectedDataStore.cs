@@ -58,7 +58,7 @@ namespace OzetteLibrary.Secrets
         {
             // pull encrypted secret from the database.
 
-            var settingValue = await Database.GetApplicationOptionAsync(SecretName);
+            var settingValue = await Database.GetApplicationOptionAsync(SecretName).ConfigureAwait(false);
 
             if (string.IsNullOrWhiteSpace(settingValue))
             {
@@ -98,7 +98,7 @@ namespace OzetteLibrary.Secrets
 
             // store secret in configuration
 
-            await Database.SetApplicationOptionAsync(SecretName, encryptedString);
+            await Database.SetApplicationOptionAsync(SecretName, encryptedString).ConfigureAwait(false);
         }
     }
 }

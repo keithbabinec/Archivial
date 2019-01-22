@@ -73,7 +73,7 @@ namespace OzetteLibrary.Client
                 while (true)
                 {
                     // query source locations from the database.
-                    var sources = await SafeGetSourcesAsync();
+                    var sources = await SafeGetSourcesAsync().ConfigureAwait(false);
                     if (sources != null && sources.Count > 0)
                     {
                         foreach (var source in sources)
@@ -82,7 +82,7 @@ namespace OzetteLibrary.Client
                             // ensure it is connected or re-established as needed.
                             if (source is NetworkSourceLocation)
                             {
-                                await SafeVerifyNetSourceConnectionState(source as NetworkSourceLocation);
+                                await SafeVerifyNetSourceConnectionStateAsync(source as NetworkSourceLocation).ConfigureAwait(false);
                             }
                         }
                     }
@@ -113,7 +113,7 @@ namespace OzetteLibrary.Client
         {
             try
             {
-                return await Database.GetSourceLocationsAsync();
+                return await Database.GetSourceLocationsAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -132,14 +132,14 @@ namespace OzetteLibrary.Client
         /// </remarks>
         /// <param name="netSource"></param>
         /// <returns></returns>
-        private async Task SafeVerifyNetSourceConnectionState(NetworkSourceLocation netSource)
+        private async Task SafeVerifyNetSourceConnectionStateAsync(NetworkSourceLocation netSource)
         {
             var dir = new DirectoryInfo(netSource.Path);
             if (dir.Exists)
             {
                 // we are already connected or have access.
                 // this is either an unauthenticated location or we have already establish a connection through net use.
-                await UpdateNetSourceConnectionStateAsync(netSource, true, false);
+                await UpdateNetSourceConnectionStateAsync(netSource, true, false).ConfigureAwait(false);
                 return;
             }
 
@@ -147,7 +147,7 @@ namespace OzetteLibrary.Client
 
             Logger.WriteTraceMessage("Attempting to connect to network source location: " + netSource.Path);
 
-            var creds = await GetNetSourceCredentialsAsync(netSource.CredentialName);
+            var creds = await GetNetSourceCredentialsAsync(netSource.CredentialName).ConfigureAwait(false);
 
             if (creds == null)
             {
@@ -155,7 +155,7 @@ namespace OzetteLibrary.Client
                     "Unable to connect to network source location: {0}. The specified credential ({1}) was not found in the stored credentials.", 
                     netSource.Path, netSource.CredentialName));
 
-                await UpdateNetSourceConnectionStateAsync(netSource, false, true);
+                await UpdateNetSourceConnectionStateAsync(netSource, false, true).ConfigureAwait(false);
                 return;
             }
 
@@ -163,7 +163,7 @@ namespace OzetteLibrary.Client
 
             if (!TryConnectNetUse(netSource, creds.Item1, creds.Item2))
             {
-                await UpdateNetSourceConnectionStateAsync(netSource, false, true);
+                await UpdateNetSourceConnectionStateAsync(netSource, false, true).ConfigureAwait(false);
                 return;
             }
 
@@ -174,12 +174,12 @@ namespace OzetteLibrary.Client
             if (freshDir.Exists)
             {
                 Logger.WriteTraceMessage("Successfully connected to network source location: " + netSource.Path);
-                await UpdateNetSourceConnectionStateAsync(netSource, true, false);
+                await UpdateNetSourceConnectionStateAsync(netSource, true, false).ConfigureAwait(false);
             }
             else
             {
                 Logger.WriteTraceMessage("Failed to connect to network source location. The directory is still not accessible after running NET USE command: " + netSource.Path);
-                await UpdateNetSourceConnectionStateAsync(netSource, false, true);
+                await UpdateNetSourceConnectionStateAsync(netSource, false, true).ConfigureAwait(false);
             }
         }
 
@@ -254,7 +254,7 @@ namespace OzetteLibrary.Client
         /// <returns></returns>
         private async Task<Tuple<string,string>> GetNetSourceCredentialsAsync(string credentialName)
         {
-            var dbCredNames = await Database.GetNetCredentialsAsync();
+            var dbCredNames = await Database.GetNetCredentialsAsync().ConfigureAwait(false);
 
             var foundCred = dbCredNames.FirstOrDefault(x => string.Equals(x.CredentialName, credentialName, StringComparison.CurrentCultureIgnoreCase));
 
@@ -270,8 +270,8 @@ namespace OzetteLibrary.Client
                 var pds = new ProtectedDataStore(Database, scope, ivkey);
 
                 var result = new Tuple<string, string>(
-                    await pds.GetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, foundCred.CredentialName)),
-                    await pds.GetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, foundCred.CredentialName))
+                    await pds.GetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, foundCred.CredentialName)).ConfigureAwait(false),
+                    await pds.GetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, foundCred.CredentialName)).ConfigureAwait(false)
                 );
 
                 return result;
@@ -299,7 +299,7 @@ namespace OzetteLibrary.Client
                 netSource.IsFailed = isFailed;
                 netSource.LastConnectionCheck = DateTime.Now;
 
-                await Database.SetSourceLocationAsync(netSource);
+                await Database.SetSourceLocationAsync(netSource).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

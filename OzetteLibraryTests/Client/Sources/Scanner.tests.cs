@@ -69,7 +69,7 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            await scanner.ScanAsync(source);
+            await scanner.ScanAsync(source).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -95,8 +95,8 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            await scanner.ScanAsync(source);
-            await scanner.ScanAsync(source);
+            await scanner.ScanAsync(source).ConfigureAwait(false);
+            await scanner.ScanAsync(source).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -122,7 +122,7 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            await scanner.ScanAsync(source);
+            await scanner.ScanAsync(source).ConfigureAwait(false);
 
             db.Verify(x => x.AddBackupFileAsync(It.IsAny<BackupFile>()), Times.AtLeast(10));
         }
@@ -150,7 +150,7 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            await scanner.ScanAsync(source);
+            await scanner.ScanAsync(source).ConfigureAwait(false);
 
             Assert.IsTrue(logger.WriteTraceMessageHasBeenCalled);
         }

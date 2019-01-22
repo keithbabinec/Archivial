@@ -48,7 +48,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup credential configuration");
 
                 Logger.WriteConsole("--- Step 1: List the network credentials from the database.");
-                await ListNetCredsAsync(listCredsArgs);
+                await ListNetCredsAsync(listCredsArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Credential configuration completed successfully.");
 
@@ -74,7 +74,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing network credentials.");
 
-            var allNetCreds = await db.GetNetCredentialsAsync();
+            var allNetCreds = await db.GetNetCredentialsAsync().ConfigureAwait(false);
 
             Logger.WriteConsole("Number of configured credentials: " + allNetCreds.Count);
 

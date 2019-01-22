@@ -48,7 +48,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db.Object, scope, entropy);
 
-            await pds.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
+            await pds.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -61,7 +61,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            await pds.SetApplicationSecretAsync("", "test-account");
+            await pds.SetApplicationSecretAsync("", "test-account").ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -74,7 +74,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            await pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "");
+            await pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "").ConfigureAwait(false);
         }
     }
 }

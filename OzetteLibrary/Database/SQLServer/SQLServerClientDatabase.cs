@@ -63,7 +63,7 @@ namespace OzetteLibrary.Database.SQLServer
 
             using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultSqlExpressInstanceConnectionString))
             {
-                await sqlcon.OpenAsync();
+                await sqlcon.OpenAsync().ConfigureAwait(false);
 
                 Logger.WriteTraceMessage("Successfully connected to the database engine.");
                 Logger.WriteTraceMessage(string.Format("Checking if database ({0}) is present.", Constants.Database.DatabaseName));
@@ -76,7 +76,7 @@ namespace OzetteLibrary.Database.SQLServer
                     cmd.CommandText = string.Format("SELECT 1 FROM sys.databases WHERE [Name] = '{0}'", Constants.Database.DatabaseName);
                     cmd.CommandType = System.Data.CommandType.Text;
 
-                    using (var rdr = await cmd.ExecuteReaderAsync())
+                    using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                     {
                         if (rdr.HasRows)
                         {
@@ -110,7 +110,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.CommandText = createDbCommand;
                         cmd.CommandType = System.Data.CommandType.Text;
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
                         Logger.WriteTraceMessage("Database was created successfully.");
                     }
@@ -174,7 +174,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -184,7 +184,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@Name", OptionName);
                         cmd.Parameters.AddWithValue("@Value", OptionValue);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -213,7 +213,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -222,7 +222,7 @@ namespace OzetteLibrary.Database.SQLServer
 
                         cmd.Parameters.AddWithValue("@Name", OptionName);
 
-                        var value = await cmd.ExecuteScalarAsync();
+                        var value = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
 
                         if (value != null)
                         {
@@ -256,7 +256,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -265,7 +265,7 @@ namespace OzetteLibrary.Database.SQLServer
 
                         cmd.Parameters.AddWithValue("@Name", OptionName);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -286,7 +286,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -297,11 +297,11 @@ namespace OzetteLibrary.Database.SQLServer
 
                         var result = new ProviderCollection();
 
-                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                         {
                             if (rdr.HasRows)
                             {
-                                while (await rdr.ReadAsync())
+                                while (await rdr.ReadAsync().ConfigureAwait(false))
                                 {
                                     result.Add(new Provider()
                                     {
@@ -338,7 +338,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -347,7 +347,7 @@ namespace OzetteLibrary.Database.SQLServer
 
                         cmd.Parameters.AddWithValue("@Name", ProviderName);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -376,7 +376,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -386,7 +386,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@Name", Provider.Name);
                         cmd.Parameters.AddWithValue("@Type", Provider.Type);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -416,7 +416,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -425,7 +425,7 @@ namespace OzetteLibrary.Database.SQLServer
 
                         cmd.Parameters.AddWithValue("@Name", Credential.CredentialName);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -450,7 +450,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -459,7 +459,7 @@ namespace OzetteLibrary.Database.SQLServer
 
                         cmd.Parameters.AddWithValue("@Name", CredentialName);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -480,7 +480,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -489,11 +489,11 @@ namespace OzetteLibrary.Database.SQLServer
 
                         var result = new NetCredentialsCollection();
 
-                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                         {
                             if (rdr.HasRows)
                             {
-                                while (await rdr.ReadAsync())
+                                while (await rdr.ReadAsync().ConfigureAwait(false))
                                 {
                                     result.Add(new NetCredential()
                                     {
@@ -540,7 +540,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -551,7 +551,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@FileSizeBytes", FileSizeBytes);
                         cmd.Parameters.AddWithValue("@FileLastModified", FileLastModified);
 
-                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                         {
                             if (rdr.HasRows)
                             {
@@ -566,11 +566,11 @@ namespace OzetteLibrary.Database.SQLServer
 
                                 // second result set, if available, is the resulting found file.
 
-                                if (await rdr.NextResultAsync())
+                                if (await rdr.NextResultAsync().ConfigureAwait(false))
                                 {
                                     if (rdr.HasRows)
                                     {
-                                        await rdr.ReadAsync();
+                                        await rdr.ReadAsync().ConfigureAwait(false);
 
                                         item.File = new BackupFile()
                                         {
@@ -581,11 +581,11 @@ namespace OzetteLibrary.Database.SQLServer
                                             FileSizeBytes = rdr.GetInt64(4),
                                             LastModified = rdr.GetDateTime(5),
                                             TotalFileBlocks = rdr.GetInt32(6),
-                                            FileHash = (byte[])rdr["FileHash"], // special handling for varbinary column
-                                            FileHashString = rdr.GetString(8),
+                                            FileHash = rdr.IsDBNull(7) ? null : (byte[])rdr["FileHash"], // special handling for varbinary column
+                                            FileHashString = rdr.IsDBNull(8) ? null : rdr.GetString(8),
                                             Priority = (FileBackupPriority)rdr.GetInt32(9),
                                             FileRevisionNumber = rdr.GetInt32(10),
-                                            HashAlgorithmType = rdr.GetString(11),
+                                            HashAlgorithmType = rdr.IsDBNull(11) ? null : rdr.GetString(11),
                                             LastChecked = rdr.GetDateTime(12),
                                             LastUpdated = rdr.GetDateTime(13),
                                             OverallState = (FileStatus)rdr.GetInt32(14)
@@ -628,7 +628,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -637,12 +637,12 @@ namespace OzetteLibrary.Database.SQLServer
 
                         cmd.Parameters.AddWithValue("@DirectoryPath", DirectoryPath.ToLower());
 
-                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                         {
                             if (rdr.HasRows)
                             {
                                 // should only be exactly one row.
-                                await rdr.ReadAsync();
+                                await rdr.ReadAsync().ConfigureAwait(false);
 
                                 var item = new DirectoryMapItem()
                                 {
@@ -676,7 +676,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -685,11 +685,11 @@ namespace OzetteLibrary.Database.SQLServer
 
                         var result = new SourceLocations();
 
-                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                         {
                             // local sources
 
-                            while (await rdr.ReadAsync())
+                            while (await rdr.ReadAsync().ConfigureAwait(false))
                             {
                                 result.Add(new LocalSourceLocation()
                                 {
@@ -704,9 +704,9 @@ namespace OzetteLibrary.Database.SQLServer
 
                             // network sources
 
-                            if (await rdr.NextResultAsync())
+                            if (await rdr.NextResultAsync().ConfigureAwait(false))
                             {
-                                while (await rdr.ReadAsync())
+                                while (await rdr.ReadAsync().ConfigureAwait(false))
                                 {
                                     result.Add(new NetworkSourceLocation()
                                     {
@@ -750,7 +750,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -815,7 +815,7 @@ namespace OzetteLibrary.Database.SQLServer
                             throw new NotImplementedException("Unexpected source location type: " + Location.GetType().FullName);
                         }
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -845,7 +845,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -867,7 +867,7 @@ namespace OzetteLibrary.Database.SQLServer
                             throw new NotImplementedException("Unexpected source location type: " + Location.GetType().FullName);
                         }
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -891,7 +891,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -900,11 +900,11 @@ namespace OzetteLibrary.Database.SQLServer
 
                         cmd.Parameters.AddWithValue("@EngineInstanceID", EngineInstanceID);
 
-                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                         {
                             if (rdr.HasRows)
                             {
-                                await rdr.ReadAsync();
+                                await rdr.ReadAsync().ConfigureAwait(false);
 
                                 var file = new BackupFile()
                                 {
@@ -915,20 +915,20 @@ namespace OzetteLibrary.Database.SQLServer
                                     FileSizeBytes = rdr.GetInt64(4),
                                     LastModified = rdr.GetDateTime(5),
                                     TotalFileBlocks = rdr.GetInt32(6),
-                                    FileHash = (byte[])rdr["FileHash"], // special handling for varbinary column
-                                    FileHashString = rdr.GetString(8),
+                                    FileHash = rdr.IsDBNull(7) ? null : (byte[])rdr["FileHash"], // special handling for varbinary column
+                                    FileHashString = rdr.IsDBNull(8) ? null : rdr.GetString(8),
                                     Priority = (FileBackupPriority)rdr.GetInt32(9),
                                     FileRevisionNumber = rdr.GetInt32(10),
-                                    HashAlgorithmType = rdr.GetString(11),
+                                    HashAlgorithmType = rdr.IsDBNull(11) ? null : rdr.GetString(11),
                                     LastChecked = rdr.GetDateTime(12),
                                     LastUpdated = rdr.GetDateTime(13),
                                     OverallState = (FileStatus)rdr.GetInt32(14),
                                     CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
                                 };
 
-                                if (await rdr.NextResultAsync())
+                                if (await rdr.NextResultAsync().ConfigureAwait(false))
                                 {
-                                    while (await rdr.ReadAsync())
+                                    while (await rdr.ReadAsync().ConfigureAwait(false))
                                     {
                                         file.CopyState.Add(
                                             (StorageProviderTypes)rdr.GetInt32(0), 
@@ -974,19 +974,19 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
                         cmd.CommandText = "dbo.GetBackupProgress";
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                        using (var rdr = await cmd.ExecuteReaderAsync())
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                         {
                             if (rdr.HasRows)
                             {
                                 // should only be exactly one row.
-                                await rdr.ReadAsync();
+                                await rdr.ReadAsync().ConfigureAwait(false);
 
                                 var item = new BackupProgress()
                                 {
@@ -1042,7 +1042,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -1058,10 +1058,10 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@TotalFileBlocks", File.TotalFileBlocks);
                         cmd.Parameters.AddWithValue("@Priority", File.Priority);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
 
-                    foreach (var provider in await GetProvidersAsync(ProviderTypes.Storage))
+                    foreach (var provider in await GetProvidersAsync(ProviderTypes.Storage).ConfigureAwait(false))
                     {
                         using (SqlCommand cmd = new SqlCommand())
                         {
@@ -1075,7 +1075,7 @@ namespace OzetteLibrary.Database.SQLServer
                             cmd.Parameters.AddWithValue("@HydrationStatus", StorageProviderHydrationStatus.None);
                             cmd.Parameters.AddWithValue("@LastCompletedFileBlockIndex", -1);
 
-                            await cmd.ExecuteNonQueryAsync();
+                            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -1102,7 +1102,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -1114,7 +1114,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@LastModified", File.LastModified);
                         cmd.Parameters.AddWithValue("@TotalFileBlocks", File.TotalFileBlocks);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
 
                     foreach (var provider in await GetProvidersAsync(ProviderTypes.Storage))
@@ -1131,7 +1131,7 @@ namespace OzetteLibrary.Database.SQLServer
                             cmd.Parameters.AddWithValue("@HydrationStatus", StorageProviderHydrationStatus.None);
                             cmd.Parameters.AddWithValue("@LastCompletedFileBlockIndex", -1);
 
-                            await cmd.ExecuteNonQueryAsync();
+                            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -1158,7 +1158,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -1167,7 +1167,7 @@ namespace OzetteLibrary.Database.SQLServer
 
                         cmd.Parameters.AddWithValue("@ID", FileID);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -1193,7 +1193,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -1202,7 +1202,7 @@ namespace OzetteLibrary.Database.SQLServer
 
                         cmd.Parameters.AddWithValue("@ID", File.FileID);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -1233,7 +1233,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -1243,7 +1243,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@ID", File.FileID);
                         cmd.Parameters.AddWithValue("@Message", Message);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -1269,7 +1269,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -1281,7 +1281,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@FileHashString", File.FileHashString);
                         cmd.Parameters.AddWithValue("@HashAlgorithm", File.HashAlgorithmType);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -1307,7 +1307,7 @@ namespace OzetteLibrary.Database.SQLServer
             {
                 using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
                 {
-                    await sqlcon.OpenAsync();
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
                     using (SqlCommand cmd = new SqlCommand())
                     {
                         cmd.Connection = sqlcon;
@@ -1317,7 +1317,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@ID", File.FileID);
                         cmd.Parameters.AddWithValue("@OverallState", File.OverallState);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
 
                     if (File.CopyState != null)
@@ -1336,7 +1336,7 @@ namespace OzetteLibrary.Database.SQLServer
                                 cmd.Parameters.AddWithValue("@HydrationStatus", provider.Value.HydrationStatus);
                                 cmd.Parameters.AddWithValue("@LastCompletedFileBlockIndex", provider.Value.LastCompletedFileBlockIndex);
 
-                                await cmd.ExecuteNonQueryAsync();
+                                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                             }
                         }
                     }

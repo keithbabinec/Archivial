@@ -74,11 +74,11 @@ namespace OzetteLibrary.Client
             {
                 while (true)
                 {
-                    if (await CanSendStatusUpdateAsync())
+                    if (await CanSendStatusUpdateAsync().ConfigureAwait(false))
                     {
                         Logger.WriteTraceMessage("Querying for backup progress.");
-                        var progress = await Database.GetBackupProgressAsync();
-                        await SendStatusUpdateAsync(progress);
+                        var progress = await Database.GetBackupProgressAsync().ConfigureAwait(false);
+                        await SendStatusUpdateAsync(progress).ConfigureAwait(false);
                     }
 
                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
@@ -104,7 +104,7 @@ namespace OzetteLibrary.Client
         {
             // add the next status check time, if it isn't already in the queue.
 
-            var scheduleString = await Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.StatusUpdateSchedule);
+            var scheduleString = await Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.StatusUpdateSchedule).ConfigureAwait(false);
             var schedule = NCrontab.CrontabSchedule.Parse(scheduleString);
             var nextRun = schedule.GetNextOccurrence(DateTime.Now);
 
@@ -146,7 +146,7 @@ namespace OzetteLibrary.Client
 
                 try
                 {
-                    await messageProvider.Value.SendBackupProgressStatusMessageAsync(Progress);
+                    await messageProvider.Value.SendBackupProgressStatusMessageAsync(Progress).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

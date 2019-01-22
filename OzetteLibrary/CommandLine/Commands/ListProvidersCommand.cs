@@ -47,7 +47,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup configuration check");
 
                 Logger.WriteConsole("--- Step 1: Query database for the list of configured providers.");
-                await PrintProviderNamesAsync();
+                await PrintProviderNamesAsync().ConfigureAwait(false);
 
                 return true;
             }
@@ -70,7 +70,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing providers.");
 
-            var allProviders = await db.GetProvidersAsync(Providers.ProviderTypes.Any);
+            var allProviders = await db.GetProvidersAsync(Providers.ProviderTypes.Any).ConfigureAwait(false);
 
             Logger.WriteConsole("Number of configured providers: " + allProviders.Count);
 

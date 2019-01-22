@@ -96,7 +96,7 @@ namespace OzetteLibrary.Client.Sources
                 {
                     foreach (var foundFile in foundFiles)
                     {
-                        await ScanFileAsync(results, foundFile, source);
+                        await ScanFileAsync(results, foundFile, source).ConfigureAwait(false);
                     }
                 }
 
@@ -219,7 +219,7 @@ namespace OzetteLibrary.Client.Sources
             // do a simple file lookup, based on the name/path, size, and date modified
             // do not hash yet-- we dont need it until backup time.
 
-            var fileIndexLookup = await Database.FindBackupFileAsync(fileInfo.FullName, fileInfo.Length, fileInfo.LastWriteTime);
+            var fileIndexLookup = await Database.FindBackupFileAsync(fileInfo.FullName, fileInfo.Length, fileInfo.LastWriteTime).ConfigureAwait(false);
 
             if (fileIndexLookup.Result == BackupFileLookupResult.New)
             {
@@ -229,13 +229,13 @@ namespace OzetteLibrary.Client.Sources
             }
             else if (fileIndexLookup.Result == BackupFileLookupResult.Updated)
             {
-                await ProcessUpdatedFileAsync(fileIndexLookup, fileInfo);
+                await ProcessUpdatedFileAsync(fileIndexLookup, fileInfo).ConfigureAwait(false);
                 results.UpdatedFilesFound++;
                 results.UpdatedBytesFound += (ulong)fileInfo.Length;
             }
             else if (fileIndexLookup.Result == BackupFileLookupResult.Existing)
             {
-                await ProcessExistingFileAsync(fileIndexLookup, fileInfo);
+                await ProcessExistingFileAsync(fileIndexLookup, fileInfo).ConfigureAwait(false);
             }
             else
             {
@@ -257,7 +257,7 @@ namespace OzetteLibrary.Client.Sources
 
             // brand new file
             var backupFile = new BackupFile(fileInfo, priority);
-            await Database.AddBackupFileAsync(backupFile);
+            await Database.AddBackupFileAsync(backupFile).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace OzetteLibrary.Client.Sources
         {
             Logger.WriteTraceMessage(string.Format("Updated File: {0}", fileInfo.FullName));
 
-            await Database.ResetBackupFileStateAsync(fileLookup.File);
+            await Database.ResetBackupFileStateAsync(fileLookup.File).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace OzetteLibrary.Client.Sources
 
             // existing file
             // should update the last checked flag
-            await Database.SetBackupFileLastScannedAsync(fileLookup.File.FileID);
+            await Database.SetBackupFileLastScannedAsync(fileLookup.File.FileID).ConfigureAwait(false);
         }
     }
 }

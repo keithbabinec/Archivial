@@ -59,10 +59,10 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup Twilio Provider configuration");
 
                 Logger.WriteConsole("--- Step 1: Encrypt and save Twilio provider settings.");
-                await EncryptAndSaveAsync(configTwilioArgs);
+                await EncryptAndSaveAsync(configTwilioArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Step 2: Configure providers list.");
-                await ConfigureProvidersAsync();
+                await ConfigureProvidersAsync().ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Twilio configuration completed successfully.");
 
@@ -87,7 +87,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Fetching current providers configuration from the database.");
 
-            var existingProviders = await db.GetProvidersAsync(ProviderTypes.Messaging);
+            var existingProviders = await db.GetProvidersAsync(ProviderTypes.Messaging).ConfigureAwait(false);
 
             if (existingProviders.Any(x => x.Name == nameof(MessagingProviderTypes.Twilio)) == false)
             {
@@ -100,7 +100,7 @@ namespace OzetteLibrary.CommandLine.Commands
                         Name = nameof(MessagingProviderTypes.Twilio)
                     };
 
-                await db.AddProviderAsync(newProvider);
+                await db.AddProviderAsync(newProvider).ConfigureAwait(false);
 
                 Logger.WriteConsole("Successfully configured Twilio as a messaging provider.");
             }
@@ -127,16 +127,16 @@ namespace OzetteLibrary.CommandLine.Commands
             var pds = new ProtectedDataStore(db, scope, ivkey);
 
             Logger.WriteConsole("Saving encrypted Twilio configuration setting: TwilioAccountID.");
-            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.TwilioAccountID, arguments.TwilioAccountID);
+            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.TwilioAccountID, arguments.TwilioAccountID).ConfigureAwait(false);
 
             Logger.WriteConsole("Saving encrypted Twilio configuration setting: TwilioAuthToken.");
-            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.TwilioAuthToken, arguments.TwilioAuthToken);
+            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.TwilioAuthToken, arguments.TwilioAuthToken).ConfigureAwait(false);
 
             Logger.WriteConsole("Saving encrypted Twilio configuration setting: TwilioSourcePhone.");
-            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.TwilioSourcePhone, arguments.TwilioSourcePhone);
+            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.TwilioSourcePhone, arguments.TwilioSourcePhone).ConfigureAwait(false);
 
             Logger.WriteConsole("Saving encrypted Twilio configuration setting: TwilioDestinationPhones.");
-            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.TwilioDestinationPhones, arguments.TwilioDestinationPhones);
+            await pds.SetApplicationSecretAsync(Constants.RuntimeSettingNames.TwilioDestinationPhones, arguments.TwilioDestinationPhones).ConfigureAwait(false);
         }
     }
 }

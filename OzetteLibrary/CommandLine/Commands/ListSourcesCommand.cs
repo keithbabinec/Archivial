@@ -47,7 +47,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup configuration check");
 
                 Logger.WriteConsole("--- Step 1: Query database for the list of configured backup sources.");
-                await PrintBackupSourcesAsync();
+                await PrintBackupSourcesAsync().ConfigureAwait(false);
 
                 return true;
             }
@@ -70,7 +70,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing backup sources.");
 
-            var allSources = await db.GetSourceLocationsAsync();
+            var allSources = await db.GetSourceLocationsAsync().ConfigureAwait(false);
 
             Logger.WriteConsole("Number of configured backup sources: " + allSources.Count);
 

@@ -87,7 +87,7 @@ namespace OzetteLibrary.Client
                     // check to see if we have any files to backup.
                     // return the next one to backup.
 
-                    BackupFile nextFileToBackup = await SafeGetNextFileToBackupAsync();
+                    BackupFile nextFileToBackup = await SafeGetNextFileToBackupAsync().ConfigureAwait(false);
 
                     if (nextFileToBackup != null)
                     {
@@ -167,7 +167,7 @@ namespace OzetteLibrary.Client
         {
             try
             {
-                return await Database.FindNextFileToBackupAsync(InstanceID);
+                return await Database.FindNextFileToBackupAsync(InstanceID).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

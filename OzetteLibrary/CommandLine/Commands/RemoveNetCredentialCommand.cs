@@ -52,7 +52,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup credential configuration");
 
                 Logger.WriteConsole("--- Step 1: Remove the network credential from the database.");
-                await RemoveNetCredAsync(removeProviderArgs);
+                await RemoveNetCredAsync(removeProviderArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Credential configuration completed successfully.");
 
@@ -78,7 +78,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing network credentials to see if the specified credential exists.");
 
-            var allCredentialsList = await db.GetNetCredentialsAsync();
+            var allCredentialsList = await db.GetNetCredentialsAsync().ConfigureAwait(false);
             var credToRemove = allCredentialsList.FirstOrDefault(x => x.CredentialName == arguments.CredentialName);
 
             if (credToRemove == null)
@@ -90,11 +90,11 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Found a matching network credential, removing it now.");
 
-            await db.RemoveNetCredentialAsync(credToRemove.CredentialName);
+            await db.RemoveNetCredentialAsync(credToRemove.CredentialName).ConfigureAwait(false);
 
             // remove provider specific secrets
-            await db.RemoveApplicationOptionAsync(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, credToRemove.CredentialName));
-            await db.RemoveApplicationOptionAsync(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, credToRemove.CredentialName));
+            await db.RemoveApplicationOptionAsync(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, credToRemove.CredentialName)).ConfigureAwait(false);
+            await db.RemoveApplicationOptionAsync(string.Format(Constants.Formats.NetCredentialUserPasswordKeyLookup, credToRemove.CredentialName)).ConfigureAwait(false);
 
             Logger.WriteConsole("Successfully removed the credential from the database.");
         }

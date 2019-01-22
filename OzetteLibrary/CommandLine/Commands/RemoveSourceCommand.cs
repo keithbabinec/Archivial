@@ -53,7 +53,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup source configuration");
 
                 Logger.WriteConsole("--- Step 1: Remove the source from the database.");
-                await RemoveSourceAsync(removeSrcArgs);
+                await RemoveSourceAsync(removeSrcArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Source configuration completed successfully.");
 
@@ -79,7 +79,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing scan sources to see if the specified source exists.");
 
-            var allSources = await db.GetSourceLocationsAsync();
+            var allSources = await db.GetSourceLocationsAsync().ConfigureAwait(false);
 
             SourceLocation sourceToRemove = null;
 
@@ -109,7 +109,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Found a matching backup source, removing it now.");
 
-            await db.RemoveSourceLocationAsync(sourceToRemove);
+            await db.RemoveSourceLocationAsync(sourceToRemove).ConfigureAwait(false);
 
             Logger.WriteConsole("Successfully removed the source from the database.");
         }

@@ -54,7 +54,7 @@ namespace OzetteLibrary.CommandLine.Commands
                 Logger.WriteConsole("--- Starting Ozette Cloud Backup source configuration");
 
                 Logger.WriteConsole("--- Step 1: Validate the source and save it to the database.");
-                await ValidateAndSaveSourceAsync(addSrcArgs);
+                await ValidateAndSaveSourceAsync(addSrcArgs).ConfigureAwait(false);
 
                 Logger.WriteConsole("--- Source configuration completed successfully.");
 
@@ -80,7 +80,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             Logger.WriteConsole("Querying for existing scan sources to check for duplicates.");
 
-            var allSources = await db.GetSourceLocationsAsync();
+            var allSources = await db.GetSourceLocationsAsync().ConfigureAwait(false);
             var allNetSources = allSources.Where(x => x is NetworkSourceLocation).ToList();
 
             if (allNetSources.Any(x => string.Equals(x.Path, arguments.UncPath, StringComparison.CurrentCultureIgnoreCase) 
@@ -106,7 +106,7 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("The specified scan source has normal parameters.");
 
             Logger.WriteConsole("Saving the source to the database.");
-            await db.SetSourceLocationAsync(newSource);
+            await db.SetSourceLocationAsync(newSource).ConfigureAwait(false);
             Logger.WriteConsole(string.Format("Successfully saved source ID {0} to the database.", newSource.ID));
         }
     }
