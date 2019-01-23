@@ -98,6 +98,7 @@
     <Build Include="Stored Procedures\SetBackupFileHash.sql" />
     <Build Include="Stored Procedures\SetBackupFileOverallState.sql" />
     <Build Include="Stored Procedures\RemoveFileFromBackupQueue.sql" />
+    <Build Include="Stored Procedures\AddFileToBackupQueue.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

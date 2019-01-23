@@ -1078,6 +1078,17 @@ namespace OzetteLibrary.Database.SQLServer
                             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                         }
                     }
+
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.AddFileToBackupQueue";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", File.FileID);
+
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                    }
                 }
             }
             catch (Exception)

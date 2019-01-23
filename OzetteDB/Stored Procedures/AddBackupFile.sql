@@ -100,19 +100,6 @@ BEGIN
 			0 -- unsynced
 		)
 
-		-- new file- add it to the backup queue.
-
-		INSERT INTO [dbo].[BackupQueue]
-		(
-			[FileID],
-			[AssignedInstanceID]
-		)
-		VALUES
-		(
-			@ID,
-			-1 -- unassigned.
-		)
-
 		COMMIT TRANSACTION
 
 	END TRY
