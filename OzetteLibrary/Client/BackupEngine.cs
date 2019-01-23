@@ -182,7 +182,7 @@ namespace OzetteLibrary.Client
                 {
                     // otherwise check the database to see if we have any providers.
 
-                    var storageProviders = await Database.GetProvidersAsync(ProviderTypes.Messaging);
+                    var storageProviders = await Database.GetProvidersAsync(ProviderTypes.Storage);
 
                     if (storageProviders.Count > 0)
                     {
@@ -203,7 +203,7 @@ namespace OzetteLibrary.Client
                     else
                     {
                         // no providers setup yet.
-                        Logger.WriteTraceMessage("No storage providers have been configured yet. The backup engine(s) won't work until these have been configured.");
+                        Logger.WriteTraceWarning("No storage providers have been configured yet. The backup engine(s) won't work until these have been configured.");
                         return false;
                     }
                 }

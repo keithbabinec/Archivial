@@ -8,6 +8,7 @@ using System;
 using System.Threading;
 using OzetteLibrary.Folders;
 using System.Threading.Tasks;
+using OzetteLibrary.Providers;
 
 namespace OzetteLibrary.Client
 {
@@ -79,58 +80,61 @@ namespace OzetteLibrary.Client
             {
                 while (true)
                 {
-                    // first: grab current options from the database
+                    // make sure we actually have at least one storage provider configured.
+                    // otherwise scanning files won't be helpful since we can't send them anywhere.
 
-                    var sourcesFilePath = await Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.SourcesFilePath).ConfigureAwait(false);
-                    var providersFilePath = await Database.GetApplicationOptionAsync(Constants.RuntimeSettingNames.ProvidersFilePath).ConfigureAwait(false);
-                    var scanOptions = await GetScanFrequenciesAsync(Database).ConfigureAwait(false);
-
-                    // second: check to see if we have any valid sources defined.
-                    // the sources found are returned in the order they should be scanned.
-
-                    var sources = await SafeImportSourcesAsync().ConfigureAwait(false);
-
-                    if (sources != null)
+                    if (await StorageProvidersHaveBeenConfiguredAsync())
                     {
-                        foreach (var source in sources)
-                        {
-                            // should we actually scan this source?
-                            // checks the DB to see if it has been scanned recently.
+                        // first: grab current options from the database
+                        var scanOptions = await GetScanFrequenciesAsync(Database).ConfigureAwait(false);
 
-                            if (source.ShouldScan(scanOptions))
+                        // second: check to see if we have any valid sources defined.
+                        // the sources found are returned in the order they should be scanned.
+
+                        var sources = await SafeImportSourcesAsync().ConfigureAwait(false);
+
+                        if (sources != null)
+                        {
+                            foreach (var source in sources)
                             {
-                                if (source is NetworkSourceLocation && !(source as NetworkSourceLocation).IsConnected)
+                                // should we actually scan this source?
+                                // checks the DB to see if it has been scanned recently.
+
+                                if (source.ShouldScan(scanOptions))
                                 {
-                                    // this is a network source and in a disconnected or failed state
-                                    // scanning won't be possible at this time.
-                                    Logger.WriteTraceMessage(string.Format("Unable to scan network source: {0}. It is currently disconnected or unreachable.", source.Path));
-                                    continue;
+                                    if (source is NetworkSourceLocation && !(source as NetworkSourceLocation).IsConnected)
+                                    {
+                                        // this is a network source and in a disconnected or failed state
+                                        // scanning won't be possible at this time.
+                                        Logger.WriteTraceMessage(string.Format("Unable to scan network source: {0}. It is currently disconnected or unreachable.", source.Path));
+                                        continue;
+                                    }
+
+                                    // invoke the scan
+                                    await Scanner.ScanAsync(source).ConfigureAwait(false);
+
+                                    // update the last scanned timestamp.
+                                    LastHeartbeatOrScanCompleted = DateTime.Now;
+                                    await UpdateLastScannedTimeStamp(source).ConfigureAwait(false);
                                 }
 
-                                // invoke the scan
-                                await Scanner.ScanAsync(source).ConfigureAwait(false);
-
-                                // update the last scanned timestamp.
-                                LastHeartbeatOrScanCompleted = DateTime.Now;
-                                await UpdateLastScannedTimeStamp(source).ConfigureAwait(false);
+                                if (Running == false)
+                                {
+                                    // stop was requested.
+                                    // do not continue scanning any remaining sources.
+                                    break;
+                                }
                             }
+                        }
 
-                            if (Running == false)
-                            {
-                                // stop was requested.
-                                // do not continue scanning any remaining sources.
-                                break;
-                            }
+                        if (LastHeartbeatOrScanCompleted.HasValue == false || LastHeartbeatOrScanCompleted.Value < DateTime.Now.Add(TimeSpan.FromMinutes(-1)))
+                        {
+                            LastHeartbeatOrScanCompleted = DateTime.Now;
+                            Logger.WriteTraceMessage("Scan engine heartbeat: no recent activity.");
                         }
                     }
 
                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
-
-                    if (LastHeartbeatOrScanCompleted.HasValue == false || LastHeartbeatOrScanCompleted.Value < DateTime.Now.Add(TimeSpan.FromMinutes(-1)))
-                    {
-                        LastHeartbeatOrScanCompleted = DateTime.Now;
-                        Logger.WriteTraceMessage("Scan engine heartbeat: no recent activity.");
-                    }
 
                     if (Running == false)
                     {
@@ -142,6 +146,34 @@ namespace OzetteLibrary.Client
             catch (Exception ex)
             {
                 OnStopped(new EngineStoppedEventArgs(ex, InstanceID));
+            }
+        }
+
+        /// <summary>
+        /// Checks to see if Storage Providers have been configured in the database.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> StorageProvidersHaveBeenConfiguredAsync()
+        {
+            try
+            {
+                var storageProviders = await Database.GetProvidersAsync(ProviderTypes.Messaging);
+
+                if (storageProviders.Count > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    // no providers setup yet.
+                    Logger.WriteTraceWarning("No storage providers have been configured. Will be unable to scan sources until at least 1 storage provider is added.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteTraceError("Failed to lookup storage providers.", ex, Logger.GenerateFullContextStackTrace());
+                return false;
             }
         }
 

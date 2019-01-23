@@ -117,7 +117,7 @@ namespace OzetteLibrary.Client
                 {
                     // otherwise check the database to see if we have any providers.
 
-                    var messagingProviders = await Database.GetProvidersAsync(Providers.ProviderTypes.Messaging);
+                    var messagingProviders = await Database.GetProvidersAsync(ProviderTypes.Messaging);
 
                     if (messagingProviders.Count > 0)
                     {
