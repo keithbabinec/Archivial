@@ -15,7 +15,7 @@ This project is under active development and not fully usuable yet. Breaking cha
 
 | Messaging Providers | SMS (Twilio) | Email (SendGrid) |
 | --- | --- | --- |
-| Backup Status | In-Progress | N/A |
+| Backup Status | Complete | N/A |
 
 # Installation
 
