@@ -104,7 +104,7 @@ namespace OzetteLibrary.MessagingProviders.Twilio
             var finalMessage = string.Format(MessageFormat,
                 Environment.MachineName.ToUpper(), Progress.OverallPercentage,
                 Progress.BackedUpFileCount, Progress.BackedUpFileSize,
-                Progress.RemainingFileCount, Progress.RemainingFileCount);
+                Progress.RemainingFileCount, Progress.RemainingFileSize);
 
             Logger.WriteTraceMessage("Sending backup status update messages through Twilio.");
 
