@@ -6,7 +6,6 @@ AS
 BEGIN
 
 	SET ARITHABORT, NOCOUNT, XACT_ABORT ON;
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 
 	-- param checks
 
@@ -24,23 +23,23 @@ BEGIN
 	BEGIN TRY
 		
 		DECLARE @NextFileID UNIQUEIDENTIFIER
+		DECLARE @NextOrderID INT
 
 		BEGIN TRANSACTION
 
 		-- grab next file to backup
 		-- update its assigned instance ID (so it won't be grabbed by another instance).
 
-		UPDATE		[dbo].[BackupQueue]
+		SELECT		TOP 1 @NextOrderID = [dbo].[BackupQueue].[OrderID]
+		FROM		[dbo].[BackupQueue] WITH (UPDLOCK)
+		WHERE		[dbo].[BackupQueue].[AssignedInstanceID] = @UnassignedInstance
+		OR			[dbo].[BackupQueue].[AssignedInstanceID] = @EngineInstanceID
+		ORDER BY	[dbo].[BackupQueue].[OrderID]
+
+		UPDATE		[dbo].[BackupQueue] WITH (ROWLOCK)
 		SET			[dbo].[BackupQueue].[AssignedInstanceID] = @EngineInstanceID,
 					@NextFileID = [dbo].[BackupQueue].[FileID]
-		WHERE		[dbo].[BackupQueue].[OrderID] =
-		(
-			SELECT		TOP 1 [dbo].[BackupQueue].[OrderID]
-			FROM		[dbo].[BackupQueue]
-			WHERE		[dbo].[BackupQueue].[AssignedInstanceID] = @UnassignedInstance
-			OR			[dbo].[BackupQueue].[AssignedInstanceID] = @EngineInstanceID
-			ORDER BY	[dbo].[BackupQueue].[OrderID]
-		)
+		WHERE		[dbo].[BackupQueue].[OrderID] = @NextOrderID
 
 		COMMIT TRANSACTION
 
