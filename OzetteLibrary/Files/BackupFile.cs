@@ -371,7 +371,7 @@ namespace OzetteLibrary.Files
             // set the position in the file to the current block offset.
 
             int blockSize = Constants.Transfers.TransferBlockSizeBytes;
-            long offset = blockSize * BlockNumber;
+            long offset = (long)blockSize * BlockNumber;
             Stream.Seek(offset, SeekOrigin.Begin);
 
             // size the buffer appropriately.
