@@ -40,9 +40,46 @@ namespace OzetteLibrary.StorageProviders.Azure
         private CloudStorageAccount AzureStorage;
 
         /// <summary>
-        /// A reference to the request options we should use on blob operations, which includes the retry policy.
+        /// A set of blob request options for writing or reading metadata.
         /// </summary>
-        private BlobRequestOptions RequestOptions;
+        private BlobRequestOptions MetaDataRequestOptions = new BlobRequestOptions()
+        {
+            RetryPolicy = new ExponentialRetry(TimeSpan.FromSeconds(5), 3),
+            StoreBlobContentMD5 = false,
+            ServerTimeout = TimeSpan.FromSeconds(30)
+        };
+
+        /// <summary>
+        /// A set of blob request options for creating new containers.
+        /// </summary>
+        private BlobRequestOptions NewContainerRequestOptions = new BlobRequestOptions()
+        {
+            RetryPolicy = new ExponentialRetry(TimeSpan.FromSeconds(15), 3),
+            StoreBlobContentMD5 = false,
+            ServerTimeout = TimeSpan.FromSeconds(30)
+        };
+
+        /// <summary>
+        /// A set of blob request options for writing block lists.
+        /// </summary>
+        private BlobRequestOptions WriteBlockListRequestOptions = new BlobRequestOptions()
+        {
+            RetryPolicy = new ExponentialRetry(TimeSpan.FromSeconds(15), 3),
+            StoreBlobContentMD5 = false,
+            ServerTimeout = TimeSpan.FromSeconds(60)
+        };
+
+        /// <summary>
+        /// A set of blob request options for writing blocks.
+        /// </summary>
+        private BlobRequestOptions WriteBlockRequestOptions = new BlobRequestOptions()
+        {
+            RetryPolicy = new ExponentialRetry(TimeSpan.FromSeconds(15), 3),
+            StoreBlobContentMD5 = false,
+
+            // Azure allows 10 minutes per MB. Commit blocks are 2MB in size.
+            ServerTimeout = TimeSpan.FromMinutes(20)
+        };
 
         /// <summary>
         /// Constructor that accepts a storage account name and storage account SAS token.
@@ -71,12 +108,6 @@ namespace OzetteLibrary.StorageProviders.Azure
 
             var storageCredentials = new StorageCredentials(storageAccountName, storageAccountSASToken);
             AzureStorage = new CloudStorageAccount(storageCredentials, true);
-
-            RequestOptions = new BlobRequestOptions()
-            {
-                RetryPolicy = new ExponentialRetry(TimeSpan.FromSeconds(1), 3),
-                StoreBlobContentMD5 = false
-            };
         }
 
         /// <summary>
@@ -99,12 +130,12 @@ namespace OzetteLibrary.StorageProviders.Azure
 
             // does the file exist at the specified uri?
 
-            if (await blob.ExistsAsync(RequestOptions, null).ConfigureAwait(false))
+            if (await blob.ExistsAsync(MetaDataRequestOptions, null).ConfigureAwait(false))
             {
                 // -- query metadata
                 // -- determine state from metadata
                 
-                await blob.FetchAttributesAsync(null, RequestOptions, null).ConfigureAwait(false);
+                await blob.FetchAttributesAsync(null, MetaDataRequestOptions, null).ConfigureAwait(false);
 
                 var allPropsAndMetadata = new Dictionary<string, string>(blob.Metadata);
                 allPropsAndMetadata.Add(ProviderMetadata.HydrationStateKeyName, ProviderUtilities.GetHydrationStatusFromAzureState(blob.Properties.RehydrationStatus));
@@ -157,7 +188,7 @@ namespace OzetteLibrary.StorageProviders.Azure
             using (var stream = new MemoryStream(data))
             {
                 var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlockIndex);
-                await blob.PutBlockAsync(encodedBlockIdString, stream, null, null, RequestOptions, null).ConfigureAwait(false);
+                await blob.PutBlockAsync(encodedBlockIdString, stream, null, null, WriteBlockRequestOptions, null).ConfigureAwait(false);
             }
 
             // is this the first block or the last block? then run the block commit.
@@ -180,7 +211,7 @@ namespace OzetteLibrary.StorageProviders.Azure
                 {
                     // set blob tier access.
                     // we only need to set this one time, at the time the upload is completed.
-                    await blob.SetStandardBlobTierAsync(StandardBlobTier.Archive, null, RequestOptions, null).ConfigureAwait(false);
+                    await blob.SetStandardBlobTierAsync(StandardBlobTier.Archive, null, MetaDataRequestOptions, null).ConfigureAwait(false);
                 }
 
                 Logger.WriteTraceMessage("File successfully uploaded to Azure storage: " + file.FullSourcePath);
@@ -198,17 +229,17 @@ namespace OzetteLibrary.StorageProviders.Azure
         {
             CloudBlobContainer container = new CloudBlobContainer(new Uri(containerUri), AzureStorage.Credentials);
 
-            if (!await container.ExistsAsync(RequestOptions, null).ConfigureAwait(false))
+            if (!await container.ExistsAsync(MetaDataRequestOptions, null).ConfigureAwait(false))
             {
                 try
                 {
                     Logger.WriteTraceMessage(string.Format("Azure container [{0}] does not exist. Creating it now.", containerName));
 
-                    await container.CreateAsync(BlobContainerPublicAccessType.Off, RequestOptions, null).ConfigureAwait(false);
+                    await container.CreateAsync(BlobContainerPublicAccessType.Off, NewContainerRequestOptions, null).ConfigureAwait(false);
 
                     container.Metadata[ProviderMetadata.ContainerLocalFolderPathKeyName] = System.Web.HttpUtility.UrlEncode(directory.LocalPath);
                     container.Metadata[ProviderMetadata.LocalHostNameKeyName] = Environment.MachineName;
-                    await container.SetMetadataAsync(null, RequestOptions, null).ConfigureAwait(false);
+                    await container.SetMetadataAsync(null, MetaDataRequestOptions, null).ConfigureAwait(false);
                 }
                 catch (StorageException ex)
                 {
@@ -243,7 +274,7 @@ namespace OzetteLibrary.StorageProviders.Azure
             // commit this block (plus any previously committed blocks).
 
             var blockListToCommit = ProviderUtilities.GenerateListOfBlocksToCommit(file.FileID, currentBlockIndex);
-            await blob.PutBlockListAsync(blockListToCommit, null, RequestOptions, null).ConfigureAwait(false);
+            await blob.PutBlockListAsync(blockListToCommit, null, WriteBlockListRequestOptions, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -268,7 +299,7 @@ namespace OzetteLibrary.StorageProviders.Azure
             blob.Metadata[ProviderMetadata.FileHashAlgorithmKeyName] = file.HashAlgorithmType;
 
             // commit the metadata changes to Azure.
-            await blob.SetMetadataAsync(null, RequestOptions, null).ConfigureAwait(false);
+            await blob.SetMetadataAsync(null, MetaDataRequestOptions, null).ConfigureAwait(false);
         }
     }
 }
