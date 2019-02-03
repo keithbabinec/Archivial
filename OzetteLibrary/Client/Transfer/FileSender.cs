@@ -176,6 +176,9 @@ namespace OzetteLibrary.Client.Transfer
                 {
                     Logger.WriteTraceError("An error occurred during a file transfer.", ex, Logger.GenerateFullContextStackTrace(), InstanceID);
                     file.SetProviderToFailed(providerName);
+
+                    // sets the error message/stack trace
+                    await Database.SetBackupFileAsFailedAsync(file, ex.ToString());
                 }
                 finally
                 {
