@@ -460,6 +460,15 @@ namespace OzetteLibrary.Logging.Default
         /// <returns></returns>
         private string GenerateExceptionLoggingMessage(string message, Exception exception, string contextStack)
         {
+            if (string.IsNullOrEmpty(message))
+            {
+                throw new ArgumentException(nameof(message) + " was not provided.");
+            }
+            if (exception == null)
+            {
+                throw new ArgumentException(nameof(exception) + " was not provided.");
+            }
+
             StringBuilder r = new StringBuilder();
 
             r.AppendLine(string.Format("{0} [{1}]: {2}",
@@ -468,25 +477,27 @@ namespace OzetteLibrary.Logging.Default
                 message
             ));
 
-            r.AppendLine(string.Format("Exception Message: {0}", exception.Message));
-            r.AppendLine(string.Format("Exception Type: {0}", exception.GetType().FullName));
+            r.AppendLine("Exception Message: " + exception.Message);
+            r.AppendLine("Exception Type: " + exception.GetType().FullName);
             r.AppendLine();
-            r.AppendLine(string.Format("Exception Stack:"));
-            r.AppendLine(string.Format(exception.StackTrace));
+            r.AppendLine("Exception Stack:" + exception.StackTrace);
             r.AppendLine();
-            r.AppendLine(string.Format("Additional Context:"));
-            r.AppendLine(string.Format("{0}", contextStack));
+
+            if (!string.IsNullOrWhiteSpace(contextStack))
+            {
+                r.AppendLine("Additional Context: " + contextStack);
+                r.AppendLine();
+            }
 
             while (exception.InnerException != null)
             {
                 exception = exception.InnerException;
 
                 r.AppendLine();
-                r.AppendLine(string.Format("Inner Exception Message: {0}", exception.Message));
-                r.AppendLine(string.Format("Inner Exception Type: {0}", exception.GetType().FullName));
+                r.AppendLine("Inner Exception Message: " + exception.Message);
+                r.AppendLine("Inner Exception Type: " + exception.GetType().FullName);
                 r.AppendLine();
-                r.AppendLine(string.Format("Inner Exception Stack:"));
-                r.AppendLine(string.Format(exception.StackTrace));
+                r.AppendLine("Inner Exception Stack: " + exception.StackTrace);
             }
 
             return r.ToString();
