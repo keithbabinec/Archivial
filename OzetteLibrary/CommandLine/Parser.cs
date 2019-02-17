@@ -75,6 +75,10 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseRemoveSourceArgs(args, out parsed);
             }
+            else if (baseCommand == "rescan-source")
+            {
+                return ParseRescanSourceArgs(args, out parsed);
+            }
             else if (baseCommand == "remove-provider")
             {
                 return ParseRemoveProviderArgs(args, out parsed);
@@ -519,6 +523,67 @@ namespace OzetteLibrary.CommandLine
             }
 
             parsed = remSrcArgs;
+            return true;
+        }
+
+        /// <summary>
+        /// Parses the provided arguments into an <c>RescanSourceArguments</c> object.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="parsed"></param>
+        /// <returns></returns>
+        private bool ParseRescanSourceArgs(string[] args, out ArgumentBase parsed)
+        {
+            // initialize args object with default
+            var scanSrcArgs = new RescanSourceArguments();
+            var map = ExtractArguments(args);
+
+            if (map.ContainsKey("sourceid"))
+            {
+                var sourceId = map["sourceid"];
+                int parsedId;
+
+                if (int.TryParse(sourceId, out parsedId))
+                {
+                    scanSrcArgs.SourceID = parsedId;
+                }
+                else
+                {
+                    // required argument was not valid.
+                    parsed = null;
+                    return false;
+                }
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            if (map.ContainsKey("sourcetype"))
+            {
+                var sourceType = map["sourcetype"];
+                SourceLocationType parsedLocationType;
+
+                if (Enum.TryParse(sourceType, true, out parsedLocationType))
+                {
+                    scanSrcArgs.SourceType = parsedLocationType;
+                }
+                else
+                {
+                    // an optional argument was specified, but was not given a valid value.
+                    throw new SourceLocationException("Invalid source type value.");
+                }
+            }
+            else
+            {
+                // required argument was not found.
+                parsed = null;
+                return false;
+            }
+
+            parsed = scanSrcArgs;
             return true;
         }
 

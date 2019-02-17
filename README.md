@@ -110,6 +110,15 @@ OzetteCmd.exe remove-provider --providerid 1
 ```
 
 ## Sources
+Sources are the known folder locations (local or remote/UNC) that Ozette will periodically scan for files to backup. The commands below are used to control the folders that Ozette will watch/scan.
+
+The priority assigned to a source determines how frequently it will be scanned for changes. The default priority assigned to a new source (unless specified) is Medium.
+
+| Source Priority | Scan Frequency |
+| --- | --- |
+| Low | Every 48 Hours |
+| Medium | Every 12 hours |
+| High | Every 1 Hour |
 
 **Example: Add a local source folder to backup, using default options.**
 ```
@@ -153,6 +162,20 @@ OzetteCmd.exe remove-source --sourceid 1 --sourcetype 'Local'
 Note: see *list-sources* to view the existing sources with IDs.
 ```
 OzetteCmd.exe remove-source --sourceid 1 --sourcetype 'Network'
+```
+
+**Example: Queue a rescan for a local source folder (outside of the scheduled scan frequency)**
+
+Note: see *list-sources* to view the existing sources with IDs.
+```
+OzetteCmd.exe rescan-source --sourceid 1 --sourcetype 'Local'
+```
+
+**Example: Queue a rescan for a network source folder (outside of the scheduled scan frequency)**
+
+Note: see *list-sources* to view the existing sources with IDs.
+```
+OzetteCmd.exe rescan-source --sourceid 1 --sourcetype 'Network'
 ```
 
 **Example: List the stored network credentials you have configured**

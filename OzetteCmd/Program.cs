@@ -161,6 +161,14 @@ namespace OzetteCmd
             help.AppendLine("\t--sourceid\tThe ID of the backup source to remove.");
             help.AppendLine("\t--sourcetype\tThe type of backup source to remove (specify 'Local' or 'Network').");
             help.AppendLine();
+            help.AppendLine("OzetteCmd.exe rescan-source");
+            help.AppendLine();
+            help.AppendLine("  Description:");
+            help.AppendLine("\tForces the rescan of a backup source with specified ID. Run list-sources to see the current sources with IDs.");
+            help.AppendLine("  Arguments:");
+            help.AppendLine("\t--sourceid\tThe ID of the backup source to rescan.");
+            help.AppendLine("\t--sourcetype\tThe type of backup source to rescan (specify 'Local' or 'Network').");
+            help.AppendLine();
             help.AppendLine("OzetteCmd.exe show-status");
             help.AppendLine();
             help.AppendLine("  Description:");
@@ -218,6 +226,10 @@ namespace OzetteCmd
             else if (arguments is RemoveSourceArguments)
             {
                 command = new RemoveSourceCommand(logger);
+            }
+            else if (arguments is RescanSourceArguments)
+            {
+                command = new RescanSourceCommand(logger);
             }
             else if (arguments is RemoveProviderArguments)
             {
