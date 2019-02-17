@@ -120,6 +120,12 @@ namespace OzetteLibrary.Database
         Task RemoveSourceLocationAsync(SourceLocation Location);
 
         /// <summary>
+        /// Forces a rescan of a single source location.
+        /// </summary>
+        /// <param name="Location"><c>SourceLocation</c></param>
+        Task RescanSourceLocationAsync(SourceLocation Location);
+
+        /// <summary>
         /// Gets the next file that needs to be backed up.
         /// </summary>
         /// <remarks>

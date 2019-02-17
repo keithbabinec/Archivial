@@ -99,6 +99,8 @@
     <Build Include="Stored Procedures\SetBackupFileOverallState.sql" />
     <Build Include="Stored Procedures\RemoveFileFromBackupQueue.sql" />
     <Build Include="Stored Procedures\AddFileToBackupQueue.sql" />
+    <Build Include="Stored Procedures\RescanLocalSourceLocation.sql" />
+    <Build Include="Stored Procedures\RescanNetworkSourceLocation.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

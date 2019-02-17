@@ -878,6 +878,57 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
+        /// Forces a rescan of a single source location.
+        /// </summary>
+        /// <param name="Location"><c>SourceLocation</c></param>
+        public async Task RescanSourceLocationAsync(SourceLocation Location)
+        {
+            if (Location == null)
+            {
+                throw new ArgumentNullException(nameof(Location));
+            }
+            if (Location.ID <= 0)
+            {
+                throw new ArgumentException(nameof(Location.ID) + " must be provided.");
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+
+                        if (Location is LocalSourceLocation)
+                        {
+                            cmd.CommandText = "dbo.RescanLocalSourceLocation";
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@ID", Location.ID);
+                        }
+                        else if (Location is NetworkSourceLocation)
+                        {
+                            cmd.CommandText = "dbo.RescanNetworkSourceLocation";
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@ID", Location.ID);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException("Unexpected source location type: " + Location.GetType().FullName);
+                        }
+
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Gets the next file that needs to be backed up.
         /// </summary>
         /// <remarks>
