@@ -32,13 +32,6 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStart()
         {
-            if (Running == true)
-            {
-                throw new InvalidOperationException("The engine cannot be started, it is already running.");
-            }
-
-            Running = true;
-            
             Logger.WriteTraceMessage(string.Format("Backup engine is starting up."), InstanceID);
 
             Thread pl = new Thread(() => ProcessLoopAsync().Wait());
@@ -52,11 +45,8 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStop()
         {
-            if (Running == true)
-            {
-                Logger.WriteTraceMessage("Backup engine is shutting down.", InstanceID);
-                Running = false;
-            }
+            CancelSource.Cancel();
+            Logger.WriteTraceMessage("Backup engine is shutting down by request.", InstanceID);
         }
 
         /// <summary>
@@ -91,9 +81,8 @@ namespace OzetteLibrary.Client
                         {
                             // initiate the file-send operation.
 
-                            var cancel = new CancellationTokenSource();
                             var transferFinished = false;
-                            var transferTask = Sender.TransferAsync(nextFileToBackup, cancel.Token);
+                            var transferTask = Sender.TransferAsync(nextFileToBackup, CancelSource.Token);
 
                             while (!transferFinished)
                             {
@@ -119,11 +108,11 @@ namespace OzetteLibrary.Client
                                         }
                                 }
 
-                                if (Running == false)
+                                if (CancelSource.Token.IsCancellationRequested)
                                 {
                                     // stop was requested.
                                     // stop the currently in-progress file send operation.
-                                    cancel.Cancel();
+                                    break;
                                 }
                             }
 
@@ -152,7 +141,7 @@ namespace OzetteLibrary.Client
                         }
                     }
 
-                    if (Running == false)
+                    if (CancelSource.Token.IsCancellationRequested)
                     {
                         OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested, InstanceID));
                         break;

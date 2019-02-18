@@ -43,6 +43,7 @@ namespace OzetteLibrary.Engine
             Database = database;
             Logger = logger;
             InstanceID = instanceID;
+            CancelSource = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -70,11 +71,6 @@ namespace OzetteLibrary.Engine
         }
 
         /// <summary>
-        /// A flag to indicate if the engine is running.
-        /// </summary>
-        protected volatile bool Running = false;
-
-        /// <summary>
         /// An instance ID for the engine.
         /// </summary>
         protected int InstanceID { get; set; }
@@ -90,6 +86,11 @@ namespace OzetteLibrary.Engine
         protected IClientDatabase Database { get; set; }
 
         /// <summary>
+        /// A reference to the engine cancellation token source.
+        /// </summary>
+        protected CancellationTokenSource CancelSource { get; set; }
+
+        /// <summary>
         /// Sleeps the engine for the specified time, while checking periodically for stop request.
         /// </summary>
         /// <param name="SleepTime"></param>
@@ -97,7 +98,7 @@ namespace OzetteLibrary.Engine
         {
             DateTime sleepUntil = DateTime.Now.Add(SleepTime);
 
-            while (Running)
+            while (CancelSource.IsCancellationRequested == false)
             {
                 Thread.Sleep(TimeSpan.FromMilliseconds(500));
 

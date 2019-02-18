@@ -35,13 +35,6 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStart()
         {
-            if (Running == true)
-            {
-                throw new InvalidOperationException("The engine cannot be started, it is already running.");
-            }
-
-            Running = true;
-
             Thread pl = new Thread(() => ProcessLoopAsync().Wait());
             pl.Start();
         }
@@ -51,10 +44,8 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStop()
         {
-            if (Running == true)
-            {
-                Running = false;
-            }
+            CancelSource.Cancel();
+            Logger.WriteTraceMessage("Connection engine is shutting down by request.", InstanceID);
         }
 
         /// <summary>
@@ -83,7 +74,7 @@ namespace OzetteLibrary.Client
 
                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
 
-                    if (Running == false)
+                    if (CancelSource.Token.IsCancellationRequested)
                     {
                         OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested, InstanceID));
                         break;
