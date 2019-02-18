@@ -7,6 +7,7 @@ using OzetteLibrary.Folders;
 using OzetteLibrary.Logging.Mock;
 using OzetteLibrary.Providers;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OzetteLibraryTests.Client.Sources
@@ -69,7 +70,8 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            await scanner.ScanAsync(source).ConfigureAwait(false);
+            var cancelSource = new CancellationTokenSource();
+            await scanner.ScanAsync(source, cancelSource.Token).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -95,8 +97,9 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            await scanner.ScanAsync(source).ConfigureAwait(false);
-            await scanner.ScanAsync(source).ConfigureAwait(false);
+            var cancelSource = new CancellationTokenSource();
+            await scanner.ScanAsync(source, cancelSource.Token).ConfigureAwait(false);
+            await scanner.ScanAsync(source, cancelSource.Token).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -122,7 +125,8 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            await scanner.ScanAsync(source).ConfigureAwait(false);
+            var cancelSource = new CancellationTokenSource();
+            await scanner.ScanAsync(source, cancelSource.Token).ConfigureAwait(false);
 
             db.Verify(x => x.AddBackupFileAsync(It.IsAny<BackupFile>()), Times.AtLeast(10));
         }
@@ -150,7 +154,8 @@ namespace OzetteLibraryTests.Client.Sources
                 RevisionCount = 1
             };
 
-            await scanner.ScanAsync(source).ConfigureAwait(false);
+            var cancelSource = new CancellationTokenSource();
+            await scanner.ScanAsync(source, cancelSource.Token).ConfigureAwait(false);
 
             Assert.IsTrue(logger.WriteTraceMessageHasBeenCalled);
         }

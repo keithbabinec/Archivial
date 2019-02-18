@@ -33,12 +33,6 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStart()
         {
-            if (Running == true)
-            {
-                throw new InvalidOperationException("The engine cannot be started, it is already running.");
-            }
-
-            Running = true;
             StatusCheckTimes = new Queue<DateTime>();
 
             Thread pl = new Thread(() => ProcessLoopAsync().Wait());
@@ -50,10 +44,8 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStop()
         {
-            if (Running == true)
-            {
-                Running = false;
-            }
+            CancelSource.Cancel();
+            Logger.WriteTraceMessage("Status engine is shutting down by request.", InstanceID);
         }
 
         /// <summary>
@@ -87,7 +79,7 @@ namespace OzetteLibrary.Client
 
                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
 
-                    if (Running == false)
+                    if (CancelSource.Token.IsCancellationRequested)
                     {
                         OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested, InstanceID));
                         break;

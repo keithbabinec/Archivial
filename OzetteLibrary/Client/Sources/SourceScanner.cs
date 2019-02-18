@@ -58,8 +58,8 @@ namespace OzetteLibrary.Client.Sources
         /// Performs a scan of a source location.
         /// </summary>
         /// <param name="source">The local source definition</param>
-        /// <param name="asyncState">The async result state</param>
-        public async Task ScanAsync(SourceLocation source)
+        /// <param name="cancelToken"></param>
+        public async Task ScanAsync(SourceLocation source, CancellationToken cancelToken)
         {
             if (source == null)
             {
@@ -70,40 +70,55 @@ namespace OzetteLibrary.Client.Sources
 
             var results = new ScanResults();
 
-            // note: constructing DirectoryInfo objects with non-existent paths will not throw exceptions.
-            // however calling EnumerateFiles() or EnumerateDirectories() will throw exceptions, so these are wrapped.
-
-            var directoriesToScan = new Queue<DirectoryInfo>();
-            directoriesToScan.Enqueue(new DirectoryInfo(source.Path));
-
-            while (directoriesToScan.Count > 0)
+            try
             {
-                var currentDirectory = directoriesToScan.Dequeue();
+                // cancel if the caller is shutting down.
+                // add these in a few different places to ensure we aren't holding the threads open too long.
+                cancelToken.ThrowIfCancellationRequested();
 
-                Logger.WriteTraceMessage(string.Format("Scanning directory: {0}", currentDirectory.FullName));
+                // note: constructing DirectoryInfo objects with non-existent paths will not throw exceptions.
+                // however calling EnumerateFiles() or EnumerateDirectories() will throw exceptions, so these are wrapped.
 
-                var subDirs = SafeEnumerateDirectories(currentDirectory);
-                if (subDirs != null)
+                var directoriesToScan = new Queue<DirectoryInfo>();
+                directoriesToScan.Enqueue(new DirectoryInfo(source.Path));
+
+                while (directoriesToScan.Count > 0)
                 {
-                    foreach (var subDir in subDirs)
+                    var currentDirectory = directoriesToScan.Dequeue();
+
+                    Logger.WriteTraceMessage(string.Format("Scanning directory: {0}", currentDirectory.FullName));
+
+                    cancelToken.ThrowIfCancellationRequested();
+                    var subDirs = SafeEnumerateDirectories(currentDirectory);
+                    if (subDirs != null)
                     {
-                        directoriesToScan.Enqueue(subDir);
+                        foreach (var subDir in subDirs)
+                        {
+                            directoriesToScan.Enqueue(subDir);
+                        }
                     }
+
+                    cancelToken.ThrowIfCancellationRequested();
+                    var foundFiles = SafeEnumerateFiles(currentDirectory, source.FileMatchFilter);
+                    if (foundFiles != null)
+                    {
+                        foreach (var foundFile in foundFiles)
+                        {
+                            cancelToken.ThrowIfCancellationRequested();
+                            await ScanFileAsync(results, foundFile, source).ConfigureAwait(false);
+                        }
+                    }
+
+                    results.ScannedDirectoriesCount++;
                 }
 
-                var foundFiles = SafeEnumerateFiles(currentDirectory, source.FileMatchFilter);
-                if (foundFiles != null)
-                {
-                    foreach (var foundFile in foundFiles)
-                    {
-                        await ScanFileAsync(results, foundFile, source).ConfigureAwait(false);
-                    }
-                }
-
-                results.ScannedDirectoriesCount++;
+                WriteScanResultsToLog(results, source);
             }
-
-            WriteScanResultsToLog(results, source);
+            catch (OperationCanceledException)
+            {
+                // the caller has requested that we stop.
+                Logger.WriteTraceWarning("An in-progress source scan has been cancelled by request of the Scan Engine. It will be resumed the next time the engine starts up.", 0);
+            }
         }
 
         /// <summary>

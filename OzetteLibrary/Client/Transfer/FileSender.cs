@@ -82,6 +82,10 @@ namespace OzetteLibrary.Client.Transfer
             {
                 throw new ArgumentNullException(nameof(File));
             }
+            if (CancelToken == null)
+            {
+                throw new ArgumentNullException(nameof(CancelToken));
+            }
 
             Logger.WriteTraceMessage(string.Format("Starting transfer operation for file: {0}", File.ToString()), InstanceID);
 
@@ -108,6 +112,10 @@ namespace OzetteLibrary.Client.Transfer
                     return;
                 }
 
+                // cancel if the caller is shutting down.
+                // add these in a few different places to ensure we aren't holding the threads open too long.
+                CancelToken.ThrowIfCancellationRequested();
+
                 // step 2: open up a filestream to the specified file.
                 // use a read-only lock: this prevents the file from being modified while this lock is open.
                 // but others can still open for read.
@@ -116,11 +124,13 @@ namespace OzetteLibrary.Client.Transfer
                 {
                     // step 3: calculate and save the hash.
 
+                    CancelToken.ThrowIfCancellationRequested();
                     await UpdateFileHashInDatabaseAsync(File, fs).ConfigureAwait(false);
 
                     // step 4: see if this file is already on the destination target provider(s).
                     // this avoids resending the file if for some reason the client DB/states got wiped out.
 
+                    CancelToken.ThrowIfCancellationRequested();
                     await UpdateFileCopyStateIfFileAlreadyExistsAtProvidersAsync(File, fs).ConfigureAwait(false);
 
                     // step 5: while the file has data that needs to be transferred- transfer it.
@@ -129,9 +139,11 @@ namespace OzetteLibrary.Client.Transfer
                     while (File.HasDataToTransfer())
                     {
                         // step 5A: generate the next transfer data block.
+                        CancelToken.ThrowIfCancellationRequested();
                         var payload = File.GenerateNextTransferPayload(fs, Hasher);
 
                         // step 5B: send the transfer payload.
+                        CancelToken.ThrowIfCancellationRequested();
                         await SendTransferPayloadToFileTargetsAsync(File, payload).ConfigureAwait(false);
                     }
 
@@ -139,9 +151,14 @@ namespace OzetteLibrary.Client.Transfer
                     await Database.RemoveFileFromBackupQueueAsync(File).ConfigureAwait(false);
                 }
             }
+            catch (OperationCanceledException)
+            {
+                // the caller has requested that we stop.
+                Logger.WriteTraceWarning("An in-progress file transfer has been cancelled by request of the Backup Engine. It will be resumed the next time the engine starts up.", InstanceID);
+            }
             catch (Exception ex)
             {
-                var message = "An error occurred while preparing to transfer a file. ";
+                var message = "An error occurred while preparing to transfer a file.";
                 Logger.WriteTraceError(message, ex, Logger.GenerateFullContextStackTrace(), InstanceID);
                 await Database.SetBackupFileAsFailedAsync(File, (message + ex.ToString())).ConfigureAwait(false);
                 await Database.RemoveFileFromBackupQueueAsync(File).ConfigureAwait(false);

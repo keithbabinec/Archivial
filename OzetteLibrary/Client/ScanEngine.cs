@@ -33,12 +33,6 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStart()
         {
-            if (Running == true)
-            {
-                throw new InvalidOperationException("The engine cannot be started, it is already running.");
-            }
-
-            Running = true;
             Scanner = new SourceScanner(Database, Logger);
 
             Logger.WriteTraceMessage("Scan engine is starting up.");
@@ -54,11 +48,8 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStop()
         {
-            if (Running == true)
-            {
-                Logger.WriteTraceMessage("Scan engine is shutting down.");
-                Running = false;
-            }
+            CancelSource.Cancel();
+            Logger.WriteTraceMessage("Scan engine is shutting down by request.", InstanceID);
         }
 
         /// <summary>
@@ -111,14 +102,17 @@ namespace OzetteLibrary.Client
                                     }
 
                                     // invoke the scan
-                                    await Scanner.ScanAsync(source).ConfigureAwait(false);
+                                    await Scanner.ScanAsync(source, CancelSource.Token).ConfigureAwait(false);
 
-                                    // update the last scanned timestamp.
-                                    LastHeartbeatOrScanCompleted = DateTime.Now;
-                                    await UpdateLastScannedTimeStamp(source).ConfigureAwait(false);
+                                    if (CancelSource.Token.IsCancellationRequested == false)
+                                    {
+                                        // update the last scanned timestamp if the scan was completed (it wasn't cancelled).
+                                        LastHeartbeatOrScanCompleted = DateTime.Now;
+                                        await UpdateLastScannedTimeStamp(source).ConfigureAwait(false);
+                                    }
                                 }
 
-                                if (Running == false)
+                                if (CancelSource.Token.IsCancellationRequested)
                                 {
                                     // stop was requested.
                                     // do not continue scanning any remaining sources.
@@ -136,7 +130,7 @@ namespace OzetteLibrary.Client
 
                     ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
 
-                    if (Running == false)
+                    if (CancelSource.Token.IsCancellationRequested)
                     {
                         OnStopped(new EngineStoppedEventArgs(EngineStoppedReason.StopRequested, InstanceID));
                         break;

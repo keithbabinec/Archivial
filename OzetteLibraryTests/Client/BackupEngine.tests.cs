@@ -94,27 +94,5 @@ namespace OzetteLibraryTests.Client
 
             Assert.IsTrue(engineStoppedSignaled);
         }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BackupEngineThrowsExceptionWhenEngineIsStartedTwice()
-        {
-            var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
-
-            OzetteLibrary.Client.BackupEngine engine =
-                new OzetteLibrary.Client.BackupEngine(db, logger, 0);
-
-            try
-            {
-                engine.BeginStart();
-                engine.BeginStart();
-            }
-            finally
-            {
-                engine.BeginStop();
-                Thread.Sleep(2000);
-            }
-        }
     }
 }
