@@ -284,6 +284,13 @@ namespace OzetteLibrary.Client.Sources
         {
             Logger.WriteTraceMessage(string.Format("Updated File: {0}", fileInfo.FullName));
 
+            // update the file metadata (size, last written, blocks)
+            fileLookup.File.LastModified = fileInfo.LastWriteTime;
+            fileLookup.File.FileSizeBytes = fileInfo.Length;
+            fileLookup.File.TotalFileBlocks = fileLookup.File.CalculateTotalFileBlocks(Constants.Transfers.TransferBlockSizeBytes);
+            
+            // commit the updated file metadata.
+            // this resets the backup copy state.
             await Database.ResetBackupFileStateAsync(fileLookup.File).ConfigureAwait(false);
         }
 
