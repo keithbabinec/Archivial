@@ -1,10 +1,31 @@
 # Ozette
 Data backup agent software for Windows that automatically archives your local data to a cloud storage provider.
 
-# Build/Release
+# Help Contents
+* [Project Information](#project-information)
+  * [About](#about)
+  * [CI Status](#ci-status)
+  * [Feature Progress](#feature-progress)
+  * [Upload Performance](#upload-performance)
+* [Installation](#installation)
+  * [Prerequisites](#prerequisites)
+  * [How to install Ozette](#how-to-install-ozette)
+* [Ozette Configuration](#ozette-configuration)
+  * [How to view backup progress](#how-to-view-backup-progress)
+  * [How to configure providers](#how-to-configure-providers)
+  * [How to configure sources](#how-to-configure-sources)
+
+# Project Information
+
+## About
+The goal of Ozette is to provide a lightweight but highly configurable backup agent that supports cloud storage destinations. There are of course other software products that exist in this space. However none that had the exact feature set I was looking for and I also thought it would be a great software project to pick up some knowledge in areas I had wanted to learn.
+
+## CI Status
+The source code for this project is hosted here on Github. Pull request and integration builds are run via Azure DevOps CI. Releases are automatically published to the releases tab.
+
 [![Build status](https://ozette.visualstudio.com/ozette-project/_apis/build/status/ozette-project-CI)](https://ozette.visualstudio.com/ozette-project/_build/latest?definitionId=1)
 
-# Project Status
+## Feature Progress
 This project is under active development and not fully usuable yet. Breaking changes may occur without notice. This grid shows progress by feature.
 
 | Storage Providers | Azure Support | AWS Support |
@@ -17,6 +38,11 @@ This project is under active development and not fully usuable yet. Breaking cha
 | --- | --- | --- |
 | Backup Status | Complete | N/A |
 
+## Upload Performance
+The upload speed performance you can see with Ozette will depend on a variety of factors including internet bandwidth, computer/storage specs, and configured Ozette options.
+
+Using the default Ozette options, an Intel Core i7 laptop, and an Xfinity 75/5 (Mbps up/down) internet line- I have been able to average 50 GB of upload per day when uploading large files. The biggest limiting factor in my test scenarios is the internet line.
+
 # Installation
 
 ## Prerequisites
@@ -24,36 +50,36 @@ This project is under active development and not fully usuable yet. Breaking cha
 * A Windows Operating System running .NET 4.6.1 (or later).
 * SQL Server 2017 Express (or later). Express edition is available for free from Microsoft at [this link](https://www.microsoft.com/en-us/sql-server/sql-server-editions-express).
 
-## Install Ozette
+## How to install Ozette
 
 1. Open an elevated (Run-As Administrator) PowerShell prompt.
 2. Download latest binaries from [Releases](https://github.com/keithbabinec/Ozette/releases):
-```
+``` powershell
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $latestUri = 'https://api.github.com/repos/keithbabinec/Ozette/releases/latest'
 $latestDownloadUri = (Invoke-RestMethod -Method Get -Uri $latestUri).assets[0].browser_download_url
 Invoke-RestMethod -Method Get -Uri $latestDownloadUri -OutFile $home\downloads\OzetteBin.zip
 ```
 3. Unblock/extract the archive:
-```
+``` powershell
 Unblock-File -Path $home\downloads\OzetteBin.zip
 Expand-Archive $home\downloads\OzetteBin.zip -DestinationPath $home\downloads\OzetteBin
 ```
 4. Navigate to the unzipped release folder:
-```
+``` powershell
 cd $home\downloads\OzetteBin
 ```
 5. Run the install command:
-```
+``` powershell
 .\OzetteCmd.exe install
 ```
 6. Cleanup:
-```
+``` powershell
 cd $home
 Remove-Item -Force -Recurse $home\downloads\OzetteBin*
 ```
 
-# Configuration and Status
+# Ozette Configuration
 
 OzetteCmd.exe is used to configure the Ozette installation. The commands below can be used to add, remove, or list sources (folders you want to backup) and providers (cloud destinations) for an existing Ozette installation.
 
@@ -61,7 +87,7 @@ Note: Once Ozette is installed, OzetteCmd.exe should be available in your system
 
 Usage: OzetteCmd.exe &lt;command&gt; --Option1Name Option1Value --Option2Name Option2Value
 
-## Backup Progress
+## How to view backup progress
 
 **Example: Print the current status/progress of your backup (files/size transferred, remaining, failed, etc).**
 
@@ -69,10 +95,10 @@ Usage: OzetteCmd.exe &lt;command&gt; --Option1Name Option1Value --Option2Name Op
 OzetteCmd.exe show-status
 ```
 
-## Providers
+## How to configure providers
 
 There are two types of providers available: Storage Providers and Messaging Providers.
-* A storage provider is your cloud storage backup destination/target. Examples include Azure storage, Amazon S3, etc.
+* A storage provider is your cloud storage backup destination/target. Examples include Azure blob storage, Amazon S3, etc.
 * A messaging provider sends you notifications about backup status, usually through email or SMS text messaging. Examples include Twilio, Sendgrid, etc.
 
 ### Storage Providers
@@ -109,7 +135,7 @@ Note: see *list-providers* to view the existing providers with IDs.
 OzetteCmd.exe remove-provider --providerid 1
 ```
 
-## Sources
+## How to configure sources
 Sources are the known folder locations (local or remote/UNC) that Ozette will periodically scan for files to backup. The commands below are used to control the folders that Ozette will watch/scan.
 
 The priority assigned to a source determines how frequently it will be scanned for changes. The default priority assigned to a new source (unless specified) is Medium.
