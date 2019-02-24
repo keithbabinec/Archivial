@@ -76,10 +76,17 @@ namespace OzetteClientAgent
         private List<BackupEngine> BackupEngineInstances { get; set; }
 
         /// <summary>
+        /// A flag that indicates if the core service stop has been requested.
+        /// </summary>
+        private bool ServiceStopHasBeenRequested { get; set; }
+
+        /// <summary>
         /// Core application start.
         /// </summary>
         private void CoreStart()
         {
+            ServiceStopHasBeenRequested = false;
+
             StartLoggers();
 
             CoreLog.WriteSystemEvent(
@@ -122,6 +129,10 @@ namespace OzetteClientAgent
             CoreLog.WriteSystemEvent(
                 string.Format("Successfully started {0} client service.", OzetteLibrary.Constants.Logging.AppName),
                 EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedService, true);
+
+            // start the core service heartbeat
+
+            CoreHeartbeat();
         }
 
         /// <summary>
@@ -129,6 +140,8 @@ namespace OzetteClientAgent
         /// </summary>
         protected override void OnStop()
         {
+            ServiceStopHasBeenRequested = true;
+
             if (CoreLog != null)
             {
                 CoreLog.WriteSystemEvent(
@@ -161,6 +174,37 @@ namespace OzetteClientAgent
                 CoreLog.WriteSystemEvent(
                     string.Format("Successfully stopped {0} client service.", OzetteLibrary.Constants.Logging.AppName),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedService, true);
+            }
+        }
+
+        /// <summary>
+        /// A core service heartbeat that writes to the core log.
+        /// </summary>
+        /// <remarks>
+        /// This is used as a visible sign the service core is still alive/listening.
+        /// </remarks>
+        private void CoreHeartbeat()
+        {
+            while (true)
+            {
+                CoreLog.WriteTraceMessage("Ozette core service heartbeat.");
+
+                DateTime sleepUntil = DateTime.Now.AddMinutes(15);
+
+                while (ServiceStopHasBeenRequested == false)
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+
+                    if (DateTime.Now > sleepUntil)
+                    {
+                        break;
+                    }
+                }
+
+                if (ServiceStopHasBeenRequested)
+                {
+                    break;
+                }
             }
         }
 
