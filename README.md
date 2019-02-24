@@ -2,7 +2,7 @@
 Data backup agent software for Windows that automatically archives your local data to a cloud storage provider.
 
 # Help Contents
-* [Project Information](#project-information)
+* [Meta](#meta)
   * [About](#about)
   * [CI Status](#ci-status)
   * [Feature Progress](#feature-progress)
@@ -10,12 +10,12 @@ Data backup agent software for Windows that automatically archives your local da
 * [Installation](#installation)
   * [Prerequisites](#prerequisites)
   * [How to install Ozette](#how-to-install-ozette)
-* [Ozette Configuration](#ozette-configuration)
+* [Configuration](#configuration)
   * [How to view backup progress](#how-to-view-backup-progress)
   * [How to configure providers](#how-to-configure-providers)
   * [How to configure sources](#how-to-configure-sources)
 
-# Project Information
+# Meta
 
 ## About
 The goal of Ozette is to provide a lightweight but highly configurable backup agent that supports cloud storage destinations. There are of course other software products that exist in this space. However none that had the exact feature set I was looking for and I also thought it would be a great software project to pick up some knowledge in areas I had wanted to learn.
@@ -79,7 +79,7 @@ cd $home
 Remove-Item -Force -Recurse $home\downloads\OzetteBin*
 ```
 
-# Ozette Configuration
+# Configuration
 
 OzetteCmd.exe is used to configure the Ozette installation. The commands below can be used to add, remove, or list sources (folders you want to backup) and providers (cloud destinations) for an existing Ozette installation.
 
@@ -91,7 +91,7 @@ Usage: OzetteCmd.exe &lt;command&gt; --Option1Name Option1Value --Option2Name Op
 
 **Example: Print the current status/progress of your backup (files/size transferred, remaining, failed, etc).**
 
-```
+``` powershell
 OzetteCmd.exe show-status
 ```
 
@@ -106,7 +106,7 @@ There are two types of providers available: Storage Providers and Messaging Prov
 **Example: Set Microsoft Azure as one of your cloud storage providers.**
 
 Note: These secrets will be saved as encrypted values in the local database.
-```
+``` powershell
 OzetteCmd.exe configure-azure --azurestorageaccountname "myaccount" --azurestorageaccounttoken "mytoken"
 ```
 
@@ -117,21 +117,21 @@ OzetteCmd.exe configure-azure --azurestorageaccountname "myaccount" --azurestora
 You must have a pre-configured Twilio account and Twilio phone number to use this feature. One or more phone numbers can be used for the destination. If using multiple phone numbers, use a semicolon ';' character to seperate the list. The phone number(s) should be specified in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, as shown below.
 
 Note: These secrets will be saved as encrypted values in the local database.
-```
+``` powershell
 OzetteCmd.exe configure-twilio --twilioaccountid "myaccount" --twilioauthtoken "mytoken" --twiliosourcephone "+12065551234" --twiliodestinationphones "+12065554567;+12065556789"
 ```
 
 ### Manage Existing Providers
 
 **Example: List the existing providers you have configured**
-```
+``` powershell
 OzetteCmd.exe list-providers
 ```
 
 **Example: Remove one of the configured providers by ID**
 
 Note: see *list-providers* to view the existing providers with IDs.
-```
+``` powershell
 OzetteCmd.exe remove-provider --providerid 1
 ```
 
@@ -147,71 +147,71 @@ The priority assigned to a source determines how frequently it will be scanned f
 | High | Every 1 Hour |
 
 **Example: Add a local source folder to backup, using default options.**
-```
+``` powershell
 OzetteCmd.exe add-localsource --folderpath "C:\users\me\downloads"
 ```
 
 **Example: Add a local source folder to backup, using all of the optional arguments.**
 
 Note: --Priority accepts values 'Low', 'Medium', or 'High'. --MatchFilter accepts Windows file matching wildcards.
-```
+``` powershell
 OzetteCmd.exe add-localsource --folderpath "C:\users\me\documents" --priority High --revisions 3 --matchfilter "*.docx"
 ```
 
 **Example: Add an unauthenticated network/UNC source folder to backup, using default options.**
-```
+``` powershell
 OzetteCmd.exe add-netsource --uncpath "\\networkshare\public\media\playlists"
 ```
 
 **Example: Add a network credential, then add an authenticated network/UNC source folder to backup, using all of the optional arguments.**
 
 Note: The credential must be stored using the add-netcredential command prior to saving an authenticated netsource.
-```
+``` powershell
 OzetteCmd.exe add-netcredential --credentialname 'Drobo-NAS-Device' --username 'drobo_read_only_user' --password '******'
 OzetteCmd.exe add-netsource --uncpath "\\networkshare\private\docs\taxes" --credentialname 'Drobo-NAS-Device' --priority High --revisions 3 --matchfilter "*.pdf"
 ```
 
 **Example: List the source folders you have configured**
-```
+``` powershell
 OzetteCmd.exe list-sources
 ```
 
 **Example: Remove one of the local source folders by ID**
 
 Note: see *list-sources* to view the existing sources with IDs.
-```
+``` powershell
 OzetteCmd.exe remove-source --sourceid 1 --sourcetype 'Local'
 ```
 
 **Example: Remove one of the network source folders by ID**
 
 Note: see *list-sources* to view the existing sources with IDs.
-```
+``` powershell
 OzetteCmd.exe remove-source --sourceid 1 --sourcetype 'Network'
 ```
 
 **Example: Queue a rescan for a local source folder (outside of the scheduled scan frequency)**
 
 Note: see *list-sources* to view the existing sources with IDs.
-```
+``` powershell
 OzetteCmd.exe rescan-source --sourceid 1 --sourcetype 'Local'
 ```
 
 **Example: Queue a rescan for a network source folder (outside of the scheduled scan frequency)**
 
 Note: see *list-sources* to view the existing sources with IDs.
-```
+``` powershell
 OzetteCmd.exe rescan-source --sourceid 1 --sourcetype 'Network'
 ```
 
 **Example: List the stored network credentials you have configured**
-```
+``` powershell
 OzetteCmd.exe list-netcredentials
 ```
 
 **Example: Remove one of the stored network credentials by name**
 
 Note: see *list-netcredentials* to view the existing credentials.
-```
+``` powershell
 OzetteCmd.exe remove-netcredential --credentialname 'Drobo-NAS-Device'
 ```
