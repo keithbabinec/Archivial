@@ -23,7 +23,8 @@ BEGIN
 
 		UPDATE	[dbo].[BackupFiles]
 		SET		[dbo].[BackupFiles].[LastChecked] = GETDATE(),
-				[dbo].[BackupFiles].[LastUpdated] = GETDATE()
+				[dbo].[BackupFiles].[LastUpdated] = GETDATE(),
+				[dbo].[BackupFiles].[WasDeleted] = NULL
 		WHERE	[dbo].[BackupFiles].[ID] = @ID
 
 		COMMIT TRANSACTION

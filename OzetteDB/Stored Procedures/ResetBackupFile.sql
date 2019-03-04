@@ -60,6 +60,7 @@ BEGIN
 				[dbo].[BackupFiles].[FileSizeBytes] = @FileSizeBytes,
 				[dbo].[BackupFiles].[TotalFileBlocks] = @TotalFileBlocks,
 				[dbo].[BackupFiles].[FileRevisionNumber] = (@PreviousRevision + 1),
+				[dbo].[BackupFiles].[WasDeleted] = NULL,
 				[dbo].[BackupFiles].[OverallState] = 0, -- unsynced
 				[dbo].[BackupFiles].[StateMessage] = NULL
 		WHERE	[dbo].[BackupFiles].[ID] = @ID
