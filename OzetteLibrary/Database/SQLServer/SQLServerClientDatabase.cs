@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Dac;
 using OzetteLibrary.Files;
@@ -141,6 +142,63 @@ namespace OzetteLibrary.Database.SQLServer
             else
             {
                 Logger.WriteTraceMessage("Database publish is not required.");
+            }
+        }
+
+        /// <summary>
+        /// Creates a backup of the database.
+        /// </summary>
+        /// <param name="BackupType">The type of backup to perform.</param>
+        /// <returns></returns>
+        public async Task CreateDatabaseBackupAsync(DatabaseBackupType BackupType)
+        {
+            Logger.WriteTraceMessage(string.Format("Attempting to backup database ({1}). Backup type: ({0}).", BackupType, Constants.Database.DatabaseName));
+
+            using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultSqlExpressInstanceConnectionString))
+            {
+                await sqlcon.OpenAsync().ConfigureAwait(false);
+
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = sqlcon;
+
+                    var fileName = string.Format("{0}\\{1}.{2}.{3}.bak", 
+                        CoreSettings.DatabaseBackupsDirectory, 
+                        Constants.Database.DatabaseName,
+                        DateTime.Now.ToString(Constants.Logging.SortableFilesDateTimeFormat),
+                        BackupType);
+
+                    Logger.WriteTraceMessage("Backup file destination: " + fileName);
+
+                    var commandBuilder = new StringBuilder();
+
+                    if (BackupType == DatabaseBackupType.Full)
+                    {
+                        commandBuilder.AppendLine(string.Format("BACKUP DATABASE {0} TO DISK='{1}'", Constants.Database.DatabaseName, fileName));
+                        commandBuilder.AppendLine(string.Format("WITH FORMAT;"));
+                    }
+                    else if (BackupType == DatabaseBackupType.Differential)
+                    {
+                        commandBuilder.AppendLine(string.Format("BACKUP DATABASE {0} TO DISK='{1}'", Constants.Database.DatabaseName, fileName));
+                        commandBuilder.AppendLine(string.Format("WITH FORMAT, DIFFERENTIAL;"));
+                    }
+                    else if (BackupType == DatabaseBackupType.TransactionLog)
+                    {
+                        commandBuilder.AppendLine(string.Format("BACKUP LOG {0} TO DISK='{1}'", Constants.Database.DatabaseName, fileName));
+                        commandBuilder.AppendLine(string.Format("WITH FORMAT;"));
+                    }
+                    else
+                    {
+                        throw new NotImplementedException("Unexpected database backup type specified: " + BackupType);
+                    }
+
+                    cmd.CommandText = commandBuilder.ToString();
+                    cmd.CommandType = System.Data.CommandType.Text;
+
+                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+                    Logger.WriteTraceMessage(string.Format("Database backup file ({0}) created successfully.", BackupType));
+                }
             }
         }
 

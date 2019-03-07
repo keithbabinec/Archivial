@@ -5,7 +5,6 @@ using OzetteLibrary.ServiceCore;
 using System;
 using OzetteLibrary.Providers;
 using System.Threading.Tasks;
-using OzetteLibrary.Logging;
 
 namespace OzetteLibrary.Database
 {
@@ -19,6 +18,13 @@ namespace OzetteLibrary.Database
         /// </summary>
         /// <returns></returns>
         Task PrepareDatabaseAsync();
+
+        /// <summary>
+        /// Creates a backup of the database.
+        /// </summary>
+        /// <param name="BackupType">The type of backup to perform.</param>
+        /// <returns></returns>
+        Task CreateDatabaseBackupAsync(DatabaseBackupType BackupType);
 
         /// <summary>
         /// Saves an application setting to the database.

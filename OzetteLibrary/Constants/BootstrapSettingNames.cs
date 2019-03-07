@@ -24,6 +24,11 @@
         public const string DatabaseDirectory = "OZETTE_DATABASEDIRECTORY";
 
         /// <summary>
+        /// The database backups directory path setting.
+        /// </summary>
+        public const string DatabaseBackupsDirectory = "OZETTE_DATABASEBACKUPSDIRECTORY";
+
+        /// <summary>
         /// The installation directory path.
         /// </summary>
         public const string InstallationDirectory = "OZETTE_INSTALLATIONDIRECTORY";

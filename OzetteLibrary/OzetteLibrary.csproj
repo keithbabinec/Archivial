@@ -131,6 +131,7 @@
     <Compile Include="Constants\RuntimeSettingNames.cs" />
     <Compile Include="Constants\ProviderMetadata.cs" />
     <Compile Include="Constants\Transfers.cs" />
+    <Compile Include="Database\DatabaseBackupType.cs" />
     <Compile Include="Database\SQLServer\SQLServerClientDatabase.cs" />
     <Compile Include="Engine\BaseEngine.cs" />
     <Compile Include="Events\AsyncResult.cs" />

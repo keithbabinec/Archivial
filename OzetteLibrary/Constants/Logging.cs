@@ -33,11 +33,16 @@
         /// <summary>
         /// A string constant for the standard date format to use on files.
         /// </summary>
-        public const string SortableDateFormat = "yyyy_MM_dd";
+        public const string SortableFilesDateFormat = "yyyy_MM_dd";
+
+        /// <summary>
+        /// A string constant for the standard date and time format to use on files.
+        /// </summary>
+        public const string SortableFilesDateTimeFormat = "yyyy_MM_dd_HHmmss";
 
         /// <summary>
         /// A string constant for the standard datetime format to use in logs.
         /// </summary>
-        public const string SortableDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+        public const string SortableLogEntryDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
     }
 }

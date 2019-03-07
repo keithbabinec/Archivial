@@ -104,6 +104,7 @@ namespace OzetteLibrary.CommandLine.Commands
             CoreSettings.InstallationDirectory = arguments.InstallDirectory;
             CoreSettings.LogFilesDirectory = Path.Combine(arguments.InstallDirectory, "Logs");
             CoreSettings.DatabaseDirectory = Path.Combine(arguments.InstallDirectory, "Database");
+            CoreSettings.DatabaseBackupsDirectory = Path.Combine(CoreSettings.DatabaseDirectory, "Backups");
             CoreSettings.EventlogName = "Ozette";
             CoreSettings.BackupEngineInstanceCount = 4;
 
@@ -167,6 +168,7 @@ namespace OzetteLibrary.CommandLine.Commands
             {
                 Logger.WriteConsole("Target database directory was not found, creating it now.");
                 Directory.CreateDirectory(CoreSettings.DatabaseDirectory);
+                Directory.CreateDirectory(CoreSettings.DatabaseBackupsDirectory);
 
                 Logger.WriteConsole("Successfully created target database directory.");
                 Logger.WriteConsole("Applying SQLExpress account permissions to database folder.");
