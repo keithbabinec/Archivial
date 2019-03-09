@@ -101,6 +101,9 @@
     <Build Include="Stored Procedures\AddFileToBackupQueue.sql" />
     <Build Include="Stored Procedures\RescanLocalSourceLocation.sql" />
     <Build Include="Stored Procedures\RescanNetworkSourceLocation.sql" />
+    <Build Include="Tables\ClientDatabaseBackupStatus.sql" />
+    <Build Include="Stored Procedures\GetClientDatabaseBackupStatus.sql" />
+    <Build Include="Stored Procedures\SetClientDatabaseBackupCompleted.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

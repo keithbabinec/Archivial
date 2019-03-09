@@ -40,3 +40,10 @@ BEGIN
 	VALUES ( 'StatusUpdateSchedule', '0 8 * * *' )
 END
 
+RAISERROR ('Adding client database backup status record.', 0, 1) WITH NOWAIT
+
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ClientDatabaseBackupStatus]))
+BEGIN
+    INSERT INTO	[dbo].[ClientDatabaseBackupStatus] ( [LastFullBackup], [LastDifferentialBackup], [LastTransactionLogBackup] )
+	VALUES ( NULL, NULL, NULL )
+END

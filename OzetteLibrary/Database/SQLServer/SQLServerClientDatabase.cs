@@ -146,6 +146,16 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
+        /// An event handler for receiving DAC services messages.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dacMessages_Received(object sender, DacMessageEventArgs e)
+        {
+            Logger.WriteTraceMessage(string.Format("[DATABASE]: {0}", e.Message.ToString()));
+        }
+
+        /// <summary>
         /// Creates a backup of the database.
         /// </summary>
         /// <param name="BackupType">The type of backup to perform.</param>
@@ -203,13 +213,74 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
-        /// An event handler for receiving DAC services messages.
+        /// Returns the client database backup status.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dacMessages_Received(object sender, DacMessageEventArgs e)
+        /// <returns><c>DatabaseBackupStatus</c></returns>
+        public async Task<DatabaseBackupStatus> GetClientDatabaseBackupStatusAsync()
         {
-            Logger.WriteTraceMessage(string.Format("[DATABASE]: {0}", e.Message.ToString()));
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.GetClientDatabaseBackupStatus";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        var result = new DatabaseBackupStatus();
+
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                        {
+                            if (rdr.HasRows)
+                            {
+                                await rdr.ReadAsync();
+
+                                result.LastFullBackup = rdr.IsDBNull(0) ? (DateTime?)null : rdr.GetDateTime(0);
+                                result.LastDifferentialBackup = rdr.IsDBNull(1) ? (DateTime?)null : rdr.GetDateTime(1);
+                                result.LastTransactionLogBackup = rdr.IsDBNull(2) ? (DateTime?)null : rdr.GetDateTime(2);
+                            }
+                        }
+
+                        return result;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Flags a client database backup as complete.
+        /// </summary>
+        /// <param name="BackupType">The type of backup that was completed.</param>
+        /// <returns></returns>
+        public async Task SetClientDatabaseBackupCompletedAsync(DatabaseBackupType BackupType)
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.SetClientDatabaseBackupCompleted";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@DatabaseBackupType", (int)BackupType);
+
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -756,7 +827,7 @@ namespace OzetteLibrary.Database.SQLServer
                                     FileMatchFilter = rdr.GetString(2),
                                     Priority = (FileBackupPriority)rdr.GetInt32(3),
                                     RevisionCount = rdr.GetInt32(4),
-                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5) 
+                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5)
                                 });
                             }
 

@@ -27,6 +27,19 @@ namespace OzetteLibrary.Database
         Task CreateDatabaseBackupAsync(DatabaseBackupType BackupType);
 
         /// <summary>
+        /// Returns the client database backup status.
+        /// </summary>
+        /// <returns><c>DatabaseBackupStatus</c></returns>
+        Task<DatabaseBackupStatus> GetClientDatabaseBackupStatusAsync();
+
+        /// <summary>
+        /// Flags a client database backup as complete.
+        /// </summary>
+        /// <param name="BackupType">The type of backup that was completed.</param>
+        /// <returns></returns>
+        Task SetClientDatabaseBackupCompletedAsync(DatabaseBackupType BackupType);
+
+        /// <summary>
         /// Saves an application setting to the database.
         /// </summary>
         /// <param name="OptionName">Option name</param>
