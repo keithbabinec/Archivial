@@ -42,9 +42,9 @@ namespace OzetteLibraryTests.Database
 
             var recentBackups = new DatabaseBackupStatus()
             {
-                LastFullBackup = now.AddHours(23),
-                LastDifferentialBackup = now.AddHours(3),
-                LastTransactionLogBackup = now.AddMinutes(29)
+                LastFullBackup = now.AddHours(-23),
+                LastDifferentialBackup = now.AddHours(-3),
+                LastTransactionLogBackup = now.AddMinutes(-29)
             };
 
             var result = Scheduler.NextDatabaseBackup(recentBackups);
@@ -59,9 +59,9 @@ namespace OzetteLibraryTests.Database
 
             var recentBackups = new DatabaseBackupStatus()
             {
-                LastFullBackup = now.AddHours(24),
-                LastDifferentialBackup = now.AddHours(2),
-                LastTransactionLogBackup = now.AddMinutes(5)
+                LastFullBackup = now.AddHours(-24),
+                LastDifferentialBackup = now.AddHours(-2),
+                LastTransactionLogBackup = now.AddMinutes(-5)
             };
 
             var result = Scheduler.NextDatabaseBackup(recentBackups);
@@ -77,9 +77,9 @@ namespace OzetteLibraryTests.Database
 
             var recentBackups = new DatabaseBackupStatus()
             {
-                LastFullBackup = now.AddHours(22),
-                LastDifferentialBackup = now.AddHours(4),
-                LastTransactionLogBackup = now.AddMinutes(5)
+                LastFullBackup = now.AddHours(-22),
+                LastDifferentialBackup = now.AddHours(-4),
+                LastTransactionLogBackup = now.AddMinutes(-5)
             };
 
             var result = Scheduler.NextDatabaseBackup(recentBackups);
@@ -95,9 +95,9 @@ namespace OzetteLibraryTests.Database
 
             var recentBackups = new DatabaseBackupStatus()
             {
-                LastFullBackup = now.AddHours(20),
-                LastDifferentialBackup = now.AddHours(3),
-                LastTransactionLogBackup = now.AddMinutes(30)
+                LastFullBackup = now.AddHours(-20),
+                LastDifferentialBackup = now.AddHours(-3),
+                LastTransactionLogBackup = now.AddMinutes(-30)
             };
 
             var result = Scheduler.NextDatabaseBackup(recentBackups);
@@ -113,9 +113,9 @@ namespace OzetteLibraryTests.Database
 
             var recentBackups = new DatabaseBackupStatus()
             {
-                LastFullBackup = now.AddHours(25),
-                LastDifferentialBackup = now.AddHours(5),
-                LastTransactionLogBackup = now.AddMinutes(35)
+                LastFullBackup = now.AddHours(-25),
+                LastDifferentialBackup = now.AddHours(-5),
+                LastTransactionLogBackup = now.AddMinutes(-35)
             };
 
             var result = Scheduler.NextDatabaseBackup(recentBackups);
@@ -131,9 +131,9 @@ namespace OzetteLibraryTests.Database
 
             var recentBackups = new DatabaseBackupStatus()
             {
-                LastFullBackup = now.AddHours(20),
-                LastDifferentialBackup = now.AddHours(5),
-                LastTransactionLogBackup = now.AddMinutes(35)
+                LastFullBackup = now.AddHours(-20),
+                LastDifferentialBackup = now.AddHours(-5),
+                LastTransactionLogBackup = now.AddMinutes(-35)
             };
 
             var result = Scheduler.NextDatabaseBackup(recentBackups);

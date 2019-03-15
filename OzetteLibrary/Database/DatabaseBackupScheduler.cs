@@ -34,17 +34,17 @@ namespace OzetteLibrary.Database
 
             var now = DateTime.Now;
 
-            if (RecentBackups.LastFullBackup.Value >= now.AddHours(24))
+            if (RecentBackups.LastFullBackup.Value <= now.AddHours(-24))
             {
                 return DatabaseBackupType.Full;
             }
 
-            if (RecentBackups.LastDifferentialBackup.Value >= now.AddHours(4))
+            if (RecentBackups.LastDifferentialBackup.Value <= now.AddHours(-4))
             {
                 return DatabaseBackupType.Differential;
             }
 
-            if (RecentBackups.LastTransactionLogBackup.Value >= now.AddMinutes(30))
+            if (RecentBackups.LastTransactionLogBackup.Value <= now.AddMinutes(-30))
             {
                 return DatabaseBackupType.TransactionLog;
             }
