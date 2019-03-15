@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Dac;
 using OzetteLibrary.Files;
@@ -152,6 +153,134 @@ namespace OzetteLibrary.Database.SQLServer
         private void dacMessages_Received(object sender, DacMessageEventArgs e)
         {
             Logger.WriteTraceMessage(string.Format("[DATABASE]: {0}", e.Message.ToString()));
+        }
+
+        /// <summary>
+        /// Creates a backup of the database.
+        /// </summary>
+        /// <param name="BackupType">The type of backup to perform.</param>
+        /// <returns></returns>
+        public async Task CreateDatabaseBackupAsync(DatabaseBackupType BackupType)
+        {
+            Logger.WriteTraceMessage(string.Format("Attempting to backup database ({1}). Backup type: ({0}).", BackupType, Constants.Database.DatabaseName));
+
+            using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultSqlExpressInstanceConnectionString))
+            {
+                await sqlcon.OpenAsync().ConfigureAwait(false);
+
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = sqlcon;
+
+                    var fileName = string.Format("{0}\\{1}.{2}.{3}.bak", 
+                        CoreSettings.DatabaseBackupsDirectory, 
+                        Constants.Database.DatabaseName,
+                        DateTime.Now.ToString(Constants.Logging.SortableFilesDateTimeFormat),
+                        BackupType);
+
+                    Logger.WriteTraceMessage("Backup file destination: " + fileName);
+
+                    var commandBuilder = new StringBuilder();
+
+                    if (BackupType == DatabaseBackupType.Full)
+                    {
+                        commandBuilder.AppendLine(string.Format("BACKUP DATABASE {0} TO DISK='{1}'", Constants.Database.DatabaseName, fileName));
+                        commandBuilder.AppendLine(string.Format("WITH FORMAT;"));
+                    }
+                    else if (BackupType == DatabaseBackupType.Differential)
+                    {
+                        commandBuilder.AppendLine(string.Format("BACKUP DATABASE {0} TO DISK='{1}'", Constants.Database.DatabaseName, fileName));
+                        commandBuilder.AppendLine(string.Format("WITH FORMAT, DIFFERENTIAL;"));
+                    }
+                    else if (BackupType == DatabaseBackupType.TransactionLog)
+                    {
+                        commandBuilder.AppendLine(string.Format("BACKUP LOG {0} TO DISK='{1}'", Constants.Database.DatabaseName, fileName));
+                        commandBuilder.AppendLine(string.Format("WITH FORMAT;"));
+                    }
+                    else
+                    {
+                        throw new NotImplementedException("Unexpected database backup type specified: " + BackupType);
+                    }
+
+                    cmd.CommandText = commandBuilder.ToString();
+                    cmd.CommandType = System.Data.CommandType.Text;
+
+                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+                    Logger.WriteTraceMessage(string.Format("Database backup file ({0}) created successfully.", BackupType));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the client database backup status.
+        /// </summary>
+        /// <returns><c>DatabaseBackupStatus</c></returns>
+        public async Task<DatabaseBackupStatus> GetClientDatabaseBackupStatusAsync()
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.GetClientDatabaseBackupStatus";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        var result = new DatabaseBackupStatus();
+
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                        {
+                            if (rdr.HasRows)
+                            {
+                                await rdr.ReadAsync();
+
+                                result.LastFullBackup = rdr.IsDBNull(0) ? (DateTime?)null : rdr.GetDateTime(0);
+                                result.LastDifferentialBackup = rdr.IsDBNull(1) ? (DateTime?)null : rdr.GetDateTime(1);
+                                result.LastTransactionLogBackup = rdr.IsDBNull(2) ? (DateTime?)null : rdr.GetDateTime(2);
+                            }
+                        }
+
+                        return result;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Flags a client database backup as complete.
+        /// </summary>
+        /// <param name="BackupType">The type of backup that was completed.</param>
+        /// <returns></returns>
+        public async Task SetClientDatabaseBackupCompletedAsync(DatabaseBackupType BackupType)
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.SetClientDatabaseBackupCompleted";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@DatabaseBackupType", (int)BackupType);
+
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -698,7 +827,7 @@ namespace OzetteLibrary.Database.SQLServer
                                     FileMatchFilter = rdr.GetString(2),
                                     Priority = (FileBackupPriority)rdr.GetInt32(3),
                                     RevisionCount = rdr.GetInt32(4),
-                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5) 
+                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5)
                                 });
                             }
 

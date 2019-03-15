@@ -96,6 +96,11 @@
         public const int ConfiguredMessagingProviderConnections = 1017;
 
         /// <summary>
+        /// Event ID: Started core service engine.
+        /// </summary>
+        public const int StartedCoreServiceEngine = 1018;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;
@@ -184,5 +189,10 @@
         /// Event ID: Failed to setup/prepare the client database.
         /// </summary>
         public const int FailedToPrepareClientDatabase = 2017;
+
+        /// <summary>
+        /// Event ID: Failed core service engine.
+        /// </summary>
+        public const int FailedCoreServiceEngine = 2018;
     }
 }

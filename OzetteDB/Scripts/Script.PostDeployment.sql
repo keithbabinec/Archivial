@@ -40,3 +40,34 @@ BEGIN
 	VALUES ( 'StatusUpdateSchedule', '0 8 * * *' )
 END
 
+RAISERROR ('Adding client database backup status record.', 0, 1) WITH NOWAIT
+
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ClientDatabaseBackupStatus]))
+BEGIN
+    INSERT INTO	[dbo].[ClientDatabaseBackupStatus] ( [LastFullBackup], [LastDifferentialBackup], [LastTransactionLogBackup] )
+	VALUES ( NULL, NULL, NULL )
+END
+
+RAISERROR ('Adding database directory source.', 0, 1) WITH NOWAIT
+
+DECLARE @DatabaseBackupPath NVARCHAR(255) = 'C:\Program Files\Ozette Cloud Backup\Client\Database\Backups'
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[LocalSourceLocations] WHERE [Path] = @DatabaseBackupPath)
+BEGIN
+	INSERT INTO [dbo].[LocalSourceLocations]
+	(
+		[Path],
+		[FileMatchFilter],
+		[Priority],
+		[RevisionCount],
+		[LastCompletedScan]
+	)
+	VALUES
+	(
+		@DatabaseBackupPath,
+		'*.bak',
+		3, -- high priority
+		1, -- 1 revision
+		NULL
+	)
+END

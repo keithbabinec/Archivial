@@ -56,6 +56,11 @@ namespace OzetteClientAgent
         private IClientDatabase ClientDatabase { get; set; }
 
         /// <summary>
+        /// A reference to the core service engine instance.
+        /// </summary>
+        private CoreServiceEngine CoreServiceEngineInstance { get; set; }
+
+        /// <summary>
         /// A reference to the connection engine instance.
         /// </summary>
         private ConnectionEngine ConnectionEngineInstance { get; set; }
@@ -102,6 +107,12 @@ namespace OzetteClientAgent
                 return;
             }
 
+            if (!StartCoreServiceEngine())
+            {
+                Stop();
+                return;
+            }
+
             if (!StartConnectionEngine())
             {
                 Stop();
@@ -129,10 +140,6 @@ namespace OzetteClientAgent
             CoreLog.WriteSystemEvent(
                 string.Format("Successfully started {0} client service.", OzetteLibrary.Constants.Logging.AppName),
                 EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedService, true);
-
-            // start the core service heartbeat
-
-            CoreHeartbeat();
         }
 
         /// <summary>
@@ -149,6 +156,10 @@ namespace OzetteClientAgent
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppingService, true);
             }
 
+            if (CoreServiceEngineInstance != null)
+            {
+                CoreServiceEngineInstance.BeginStop();
+            }
             if (ScanEngineInstance != null)
             {
                 ScanEngineInstance.BeginStop();
@@ -174,37 +185,6 @@ namespace OzetteClientAgent
                 CoreLog.WriteSystemEvent(
                     string.Format("Successfully stopped {0} client service.", OzetteLibrary.Constants.Logging.AppName),
                     EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StoppedService, true);
-            }
-        }
-
-        /// <summary>
-        /// A core service heartbeat that writes to the core log.
-        /// </summary>
-        /// <remarks>
-        /// This is used as a visible sign the service core is still alive/listening.
-        /// </remarks>
-        private void CoreHeartbeat()
-        {
-            while (true)
-            {
-                CoreLog.WriteTraceMessage("Ozette core service heartbeat.");
-
-                DateTime sleepUntil = DateTime.Now.AddMinutes(15);
-
-                while (ServiceStopHasBeenRequested == false)
-                {
-                    Thread.Sleep(TimeSpan.FromSeconds(1));
-
-                    if (DateTime.Now > sleepUntil)
-                    {
-                        break;
-                    }
-                }
-
-                if (ServiceStopHasBeenRequested)
-                {
-                    break;
-                }
             }
         }
 
@@ -244,6 +224,33 @@ namespace OzetteClientAgent
                 var message = "Failed to configure client database.";
                 var context = CoreLog.GenerateFullContextStackTrace();
                 CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedToPrepareClientDatabase, true);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Starts the core service engine.
+        /// </summary>
+        /// <returns>True if successful, otherwise false.</returns>
+        private bool StartCoreServiceEngine()
+        {
+            try
+            {
+                CoreServiceEngineInstance = new CoreServiceEngine(ClientDatabase, CoreLog, 0);
+                CoreServiceEngineInstance.Stopped += Connection_Stopped;
+                CoreServiceEngineInstance.BeginStart();
+
+                CoreLog.WriteSystemEvent(
+                    string.Format("Core Service Engine has started."),
+                    EventLogEntryType.Information, OzetteLibrary.Constants.EventIDs.StartedCoreServiceEngine, true);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var message = "Failed to start the core service engine.";
+                var context = CoreLog.GenerateFullContextStackTrace();
+                CoreLog.WriteSystemEvent(message, ex, context, OzetteLibrary.Constants.EventIDs.FailedCoreServiceEngine, true);
                 return false;
             }
         }
