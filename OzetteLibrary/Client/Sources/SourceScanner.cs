@@ -238,7 +238,7 @@ namespace OzetteLibrary.Client.Sources
 
             if (fileIndexLookup.Result == BackupFileLookupResult.New)
             {
-                await ProcessNewFileAsync(fileInfo, source.Priority);
+                await ProcessNewFileAsync(fileInfo, source);
                 results.NewFilesFound++;
                 results.NewBytesFound += (ulong)fileInfo.Length;
             }
@@ -265,13 +265,13 @@ namespace OzetteLibrary.Client.Sources
         /// Processes a new scanned file into the database.
         /// </summary>
         /// <param name="fileInfo">FileInfo details</param>
-        /// <param name="priority">The source priority</param>
-        private async Task ProcessNewFileAsync(FileInfo fileInfo, FileBackupPriority priority)
+        /// <param name="source">The source location</param>
+        private async Task ProcessNewFileAsync(FileInfo fileInfo, SourceLocation source)
         {
             Logger.WriteTraceMessage(string.Format("New File: {0}", fileInfo.FullName));
 
             // brand new file
-            var backupFile = new BackupFile(fileInfo, priority);
+            var backupFile = new BackupFile(fileInfo, source);
             await Database.AddBackupFileAsync(backupFile).ConfigureAwait(false);
         }
 

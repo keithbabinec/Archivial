@@ -106,6 +106,8 @@ BEGIN
 				[dbo].[BackupFiles].[FileHash],
 				[dbo].[BackupFiles].[FileHashString],
 				[dbo].[BackupFiles].[Priority],
+				[dbo].[BackupFiles].[SourceID],
+				[dbo].[BackupFiles].[SourceType],
 				[dbo].[BackupFiles].[FileRevisionNumber],
 				[dbo].[BackupFiles].[HashAlgorithmType],
 				[dbo].[BackupFiles].[LastChecked],

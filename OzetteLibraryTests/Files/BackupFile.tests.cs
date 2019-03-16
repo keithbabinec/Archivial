@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OzetteLibrary.Exceptions;
+using OzetteLibrary.Files;
+using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
 using OzetteLibrary.StorageProviders;
 using System;
@@ -316,7 +318,8 @@ namespace OzetteLibraryTests.Files
         [ExpectedException(typeof(InvalidOperationException))]
         public void BackupFileGenerateNextTransferPayloadThrowsOnInvalidFileState4()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // copy state is inconsistent
 
@@ -337,8 +340,9 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload1()
         {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
@@ -368,8 +372,9 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload2()
         {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Medium };
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Medium);
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
@@ -399,8 +404,9 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload3()
         {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Medium };
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // generate a payload for the second block (index 1)
 
@@ -435,8 +441,9 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload4()
         {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // generate a payload for a block in the middle (index 3)
 
@@ -471,8 +478,9 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload5()
         {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // generate a payload for the final block (index 4)
 
@@ -507,8 +515,9 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload6()
         {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] { OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure };
 
@@ -550,8 +559,9 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload7()
         {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] {
                 OzetteLibrary.StorageProviders.StorageProviderTypes.AWS,
@@ -602,8 +612,9 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload8()
         {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] {
                 OzetteLibrary.StorageProviders.StorageProviderTypes.AWS,
@@ -654,8 +665,9 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload9()
         {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
             var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] {
                 OzetteLibrary.StorageProviders.StorageProviderTypes.AWS,
@@ -709,7 +721,8 @@ namespace OzetteLibraryTests.Files
         [ExpectedException(typeof(ArgumentException))]
         public void BackupFileSetBlockAsSentThrowsOnInvalidBlockNumber()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.SetBlockAsSent(-5, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
         }
@@ -718,7 +731,8 @@ namespace OzetteLibraryTests.Files
         [ExpectedException(typeof(InvalidOperationException))]
         public void BackupFileSetBlockAsSentThrowsOnFileAlreadySynced()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
             file.OverallState = OzetteLibrary.Files.FileStatus.Synced;
 
             file.SetBlockAsSent(2, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
@@ -728,7 +742,8 @@ namespace OzetteLibraryTests.Files
         [ExpectedException(typeof(InvalidOperationException))]
         public void BackupFileSetBlockAsSentThrowsOnMissingCopyState()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
             file.OverallState = OzetteLibrary.Files.FileStatus.InProgress;
 
             file.SetBlockAsSent(2, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
@@ -737,7 +752,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState1()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
@@ -757,7 +773,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState2()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
@@ -777,7 +794,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState3()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
@@ -797,7 +815,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState4()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
@@ -817,7 +836,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGetRemoteFileNameReturnsCorrectlyFormattedNameForAzureProvider()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // reset auto-generated id for stable test result.
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
@@ -832,7 +852,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGetRemoteFileNameReturnsCorrectlyFormattedExtensionlessNameForAzureProvider()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\AnExtensionlessFile"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\AnExtensionlessFile"), source);
 
             // reset auto-generated id for stable test result.
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
@@ -847,7 +868,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGetRemoteFileNameWithLaterRevisionReturnsCorrectlyFormattedNameForAzureProvider()
         {
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), OzetteLibrary.Files.FileBackupPriority.Low);
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // reset auto-generated id for stable test result.
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");

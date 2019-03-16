@@ -7,7 +7,9 @@
 	@FileSizeBytes				BIGINT,
 	@LastModified				DATETIME,
 	@TotalFileBlocks			INT,
-	@Priority					INT
+	@Priority					INT,
+	@SourceID					INT,
+	@SourceType					INT
 )
 AS
 BEGIN
@@ -57,6 +59,16 @@ BEGIN
 		;THROW 50000, 'Priority must be populated.', 0
 	END
 
+	IF @SourceID IS NULL
+	BEGIN
+		;THROW 50000, 'SourceID must be populated.', 0
+	END
+
+	IF @SourceType IS NULL
+	BEGIN
+		;THROW 50000, 'SourceType must be populated.', 0
+	END
+
 	-- transaction
 	
 	BEGIN TRY
@@ -75,6 +87,8 @@ BEGIN
 			[FileHash],
 			[FileHashString],
 			[Priority],
+			[SourceID],
+			[SourceType],
 			[FileRevisionNumber],
 			[HashAlgorithmType],
 			[LastChecked],
@@ -93,6 +107,8 @@ BEGIN
 			NULL,
 			NULL,
 			@Priority,
+			@SourceID,
+			@SourceType,
 			1,
 			NULL,
 			GETDATE(),

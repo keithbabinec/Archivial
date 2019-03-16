@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.Crypto;
 using OzetteLibrary.Exceptions;
+using OzetteLibrary.Folders;
 using OzetteLibrary.Providers;
 using OzetteLibrary.StorageProviders;
 using System;
@@ -30,11 +31,15 @@ namespace OzetteLibrary.Files
         /// </summary>
         /// <param name="fileInfo"></param>
         /// <param name="priority"></param>
-        public BackupFile(FileInfo fileInfo, FileBackupPriority priority)
+        public BackupFile(FileInfo fileInfo, SourceLocation source)
         {
-            if (priority == FileBackupPriority.Unset)
+            if (fileInfo == null)
             {
-                throw new ArgumentException(nameof(priority) + " must be provided.");
+                throw new ArgumentNullException(nameof(fileInfo));
+            }
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
             }
 
             FileID = Guid.NewGuid();
@@ -44,8 +49,23 @@ namespace OzetteLibrary.Files
             FileSizeBytes = fileInfo.Length;
             LastModified = fileInfo.LastWriteTime;
             TotalFileBlocks = CalculateTotalFileBlocks(Constants.Transfers.TransferBlockSizeBytes);
-            Priority = priority;
             FileRevisionNumber = 1;
+
+            Priority = source.Priority;
+            SourceID = source.ID;
+
+            if (source is LocalSourceLocation)
+            {
+                SourceType = SourceLocationType.Local;
+            }
+            else if (source is NetworkSourceLocation)
+            {
+                SourceType = SourceLocationType.Network;
+            }
+            else
+            {
+                throw new NotImplementedException("Unexpected source location type:" + source.GetType().FullName);
+            }
         }
 
         /// <summary>
@@ -106,6 +126,16 @@ namespace OzetteLibrary.Files
         /// The file backup priority of this file.
         /// </summary>
         public FileBackupPriority Priority { get; set; }
+
+        /// <summary>
+        /// The ID of the source from which the file was scanned.
+        /// </summary>
+        public int SourceID { get; set; }
+
+        /// <summary>
+        /// The type of source from which the file was scanned.
+        /// </summary>
+        public SourceLocationType SourceType { get; set; }
 
         /// <summary>
         /// The number of the latest version of this file.

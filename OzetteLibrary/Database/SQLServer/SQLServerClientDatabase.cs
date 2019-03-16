@@ -713,11 +713,13 @@ namespace OzetteLibrary.Database.SQLServer
                                             FileHash = rdr.IsDBNull(7) ? null : (byte[])rdr["FileHash"], // special handling for varbinary column
                                             FileHashString = rdr.IsDBNull(8) ? null : rdr.GetString(8),
                                             Priority = (FileBackupPriority)rdr.GetInt32(9),
-                                            FileRevisionNumber = rdr.GetInt32(10),
-                                            HashAlgorithmType = rdr.IsDBNull(11) ? null : rdr.GetString(11),
-                                            LastChecked = rdr.GetDateTime(12),
-                                            LastUpdated = rdr.GetDateTime(13),
-                                            OverallState = (FileStatus)rdr.GetInt32(14)
+                                            SourceID = rdr.GetInt32(10),
+                                            SourceType = (SourceLocationType)rdr.GetInt32(11),
+                                            FileRevisionNumber = rdr.GetInt32(12),
+                                            HashAlgorithmType = rdr.IsDBNull(13) ? null : rdr.GetString(13),
+                                            LastChecked = rdr.GetDateTime(14),
+                                            LastUpdated = rdr.GetDateTime(15),
+                                            OverallState = (FileStatus)rdr.GetInt32(15)
                                         };
                                     }
                                 }
@@ -1120,11 +1122,13 @@ namespace OzetteLibrary.Database.SQLServer
                                     FileHash = rdr.IsDBNull(7) ? null : (byte[])rdr["FileHash"], // special handling for varbinary column
                                     FileHashString = rdr.IsDBNull(8) ? null : rdr.GetString(8),
                                     Priority = (FileBackupPriority)rdr.GetInt32(9),
-                                    FileRevisionNumber = rdr.GetInt32(10),
-                                    HashAlgorithmType = rdr.IsDBNull(11) ? null : rdr.GetString(11),
-                                    LastChecked = rdr.GetDateTime(12),
-                                    LastUpdated = rdr.GetDateTime(13),
-                                    OverallState = (FileStatus)rdr.GetInt32(14),
+                                    SourceID = rdr.GetInt32(10),
+                                    SourceType = (SourceLocationType)rdr.GetInt32(11),
+                                    FileRevisionNumber = rdr.GetInt32(12),
+                                    HashAlgorithmType = rdr.IsDBNull(13) ? null : rdr.GetString(13),
+                                    LastChecked = rdr.GetDateTime(14),
+                                    LastUpdated = rdr.GetDateTime(15),
+                                    OverallState = (FileStatus)rdr.GetInt32(15),
                                     CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
                                 };
 
@@ -1259,6 +1263,8 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@LastModified", File.LastModified);
                         cmd.Parameters.AddWithValue("@TotalFileBlocks", File.TotalFileBlocks);
                         cmd.Parameters.AddWithValue("@Priority", File.Priority);
+                        cmd.Parameters.AddWithValue("@SourceID", File.SourceID);
+                        cmd.Parameters.AddWithValue("@SourceType", File.SourceType);
 
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }

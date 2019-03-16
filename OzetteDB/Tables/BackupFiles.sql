@@ -10,6 +10,8 @@
 	[FileHash] VARBINARY(512) NULL,
 	[FileHashString] NVARCHAR(512) NULL,
 	[Priority] INT NOT NULL,
+	[SourceID] INT NOT NULL,
+	[SourceType] INT NOT NULL,
 	[FileRevisionNumber] INT NOT NULL,
 	[HashAlgorithmType] NVARCHAR(512) NULL,
 	[LastChecked] DATETIME NOT NULL,
