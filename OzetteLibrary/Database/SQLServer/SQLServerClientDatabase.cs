@@ -132,8 +132,12 @@ namespace OzetteLibrary.Database.SQLServer
                 using (DacPackage package = DacPackage.Load(packagePath, DacSchemaModelStorageType.Memory))
                 {
                     DacServices services = new DacServices(Constants.Database.DefaultSqlExpressInstanceConnectionString);
+
+                    var options = new DacDeployOptions();
+                    options.GenerateSmartDefaults = true;
+
                     services.Message += dacMessages_Received;
-                    services.Deploy(package, Constants.Database.DatabaseName, true);
+                    services.Deploy(package, Constants.Database.DatabaseName, true, options);
 
                     CoreSettings.DatabasePublishIsRequired = false;
                     Logger.WriteTraceMessage("Database publish completed.");
