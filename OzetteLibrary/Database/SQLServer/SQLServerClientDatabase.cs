@@ -1064,8 +1064,9 @@ namespace OzetteLibrary.Database.SQLServer
         /// If no files need to be backed up, return null.
         /// </remarks>
         /// <param name="EngineInstanceID">The engine instance.</param>
+        /// <param name="Priority">The file backup priority</param>
         /// <returns><c>BackupFile</c></returns>
-        public async Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID)
+        public async Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID, FileBackupPriority Priority)
         {
             try
             {
@@ -1079,6 +1080,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@EngineInstanceID", EngineInstanceID);
+                        cmd.Parameters.AddWithValue("@Priority", Priority);
 
                         using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                         {
@@ -1266,6 +1268,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@ID", File.FileID);
+                        cmd.Parameters.AddWithValue("@Priority", File.Priority);
 
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
@@ -1324,6 +1327,18 @@ namespace OzetteLibrary.Database.SQLServer
 
                             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                         }
+                    }
+
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.AddFileToBackupQueue";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", File.FileID);
+                        cmd.Parameters.AddWithValue("@Priority", File.Priority);
+
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -1563,6 +1578,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@ID", File.FileID);
+                        cmd.Parameters.AddWithValue("@Priority", File.Priority);
 
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }

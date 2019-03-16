@@ -60,6 +60,17 @@ namespace OzetteLibrary.Client
         private DateTime? LastHeartbeatOrBackupCompleted { get; set; }
 
         /// <summary>
+        /// An ordered collection of backup queues to query for files to backup.
+        /// </summary>
+        private FileBackupPriority[] OrderedBackupQueues = new FileBackupPriority[] 
+        {
+            FileBackupPriority.Meta,
+            FileBackupPriority.High,
+            FileBackupPriority.Medium,
+            FileBackupPriority.Low
+        };
+
+        /// <summary>
         /// Core processing loop.
         /// </summary>
         private async Task ProcessLoopAsync()
@@ -215,7 +226,23 @@ namespace OzetteLibrary.Client
         {
             try
             {
-                return await Database.FindNextFileToBackupAsync(InstanceID).ConfigureAwait(false);
+                // there are 4 different priority queues: Low, Med, High, and Meta (system/reserved).
+                // check the queues in priority order to determine the next file to backup.
+
+                BackupFile nextFile = null;
+
+                foreach (var queuePriority in OrderedBackupQueues)
+                {
+                    nextFile = await Database.FindNextFileToBackupAsync(InstanceID, queuePriority).ConfigureAwait(false);
+
+                    if (nextFile != null)
+                    {
+                        // no need to look at additional queues-- we found one.
+                        break;
+                    }
+                }
+
+                return nextFile;
             }
             catch (Exception ex)
             {

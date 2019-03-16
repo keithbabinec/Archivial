@@ -151,8 +151,9 @@ namespace OzetteLibrary.Database
         /// If no files need to be backed up, return null.
         /// </remarks>
         /// <param name="EngineInstanceID">The engine instance.</param>
+        /// <param name="Priority">The file backup priority.</param>
         /// <returns><c>BackupFile</c></returns>
-        Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID);
+        Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID, FileBackupPriority Priority);
 
         /// <summary>
         /// Calculates and returns the overall backup progress.

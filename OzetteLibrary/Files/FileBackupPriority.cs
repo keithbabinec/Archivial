@@ -23,6 +23,11 @@
         /// <summary>
         /// High priority.
         /// </summary>
-        High = 3
+        High = 3,
+
+        /// <summary>
+        /// Reserved status for metadata files.
+        /// </summary>
+        Meta = 4
     }
 }

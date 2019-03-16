@@ -65,22 +65,6 @@ BEGIN
 				[dbo].[BackupFiles].[StateMessage] = NULL
 		WHERE	[dbo].[BackupFiles].[ID] = @ID
 
-		-- updated file- add it to the backup queue if it isn't already there.
-
-		IF NOT EXISTS(SELECT 1 FROM [dbo].[BackupQueue] WHERE [FileID] = @ID)
-		BEGIN
-			INSERT INTO [dbo].[BackupQueue]
-			(
-				[FileID],
-				[AssignedInstanceID]
-			)
-			VALUES
-			(
-				@ID,
-				-1 -- unassigned.
-			)
-		END
-
 		COMMIT TRANSACTION
 
 	END TRY
