@@ -70,6 +70,21 @@ namespace OzetteLibrary.ServiceCore
         }
 
         /// <summary>
+        /// The log files archive directory.
+        /// </summary>
+        public static string LogFilesArchiveDirectory
+        {
+            get
+            {
+                return GetCoreStringSetting(BootstrapSettingNames.LogFilesArchiveDirectory);
+            }
+            set
+            {
+                SetCoreStringSetting(BootstrapSettingNames.LogFilesArchiveDirectory, value);
+            }
+        }
+
+        /// <summary>
         /// The database directory.
         /// </summary>
         public static string DatabaseDirectory

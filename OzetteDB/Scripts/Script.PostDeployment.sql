@@ -66,7 +66,29 @@ BEGIN
 	(
 		@DatabaseBackupPath,
 		'*.bak',
-		3, -- high priority
+		4, -- meta priority
+		1, -- 1 revision
+		NULL
+	)
+END
+
+DECLARE @LogArchivePath NVARCHAR(255) = 'C:\Program Files\Ozette Cloud Backup\Client\Logs\Archive'
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[LocalSourceLocations] WHERE [Path] = @LogArchivePath)
+BEGIN
+	INSERT INTO [dbo].[LocalSourceLocations]
+	(
+		[Path],
+		[FileMatchFilter],
+		[Priority],
+		[RevisionCount],
+		[LastCompletedScan]
+	)
+	VALUES
+	(
+		@LogArchivePath,
+		'*.log',
+		4, -- meta priority
 		1, -- 1 revision
 		NULL
 	)

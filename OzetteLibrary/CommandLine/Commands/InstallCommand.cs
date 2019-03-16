@@ -103,6 +103,7 @@ namespace OzetteLibrary.CommandLine.Commands
 
             CoreSettings.InstallationDirectory = arguments.InstallDirectory;
             CoreSettings.LogFilesDirectory = Path.Combine(arguments.InstallDirectory, "Logs");
+            CoreSettings.LogFilesArchiveDirectory = Path.Combine(CoreSettings.LogFilesDirectory, "Archive");
             CoreSettings.DatabaseDirectory = Path.Combine(arguments.InstallDirectory, "Database");
             CoreSettings.DatabaseBackupsDirectory = Path.Combine(CoreSettings.DatabaseDirectory, "Backups");
             CoreSettings.EventlogName = "Ozette";
@@ -125,7 +126,9 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("Core settings successfully applied.");
             Logger.WriteConsole("InstallationDirectory=" + CoreSettings.InstallationDirectory);
             Logger.WriteConsole("LogFilesDirectory=" + CoreSettings.LogFilesDirectory);
+            Logger.WriteConsole("LogFilesArchiveDirectory=" + CoreSettings.LogFilesArchiveDirectory);
             Logger.WriteConsole("DatabaseDirectory=" + CoreSettings.DatabaseDirectory);
+            Logger.WriteConsole("DatabaseBackupsDirectory=" + CoreSettings.DatabaseBackupsDirectory);
             Logger.WriteConsole("EventlogName=" + CoreSettings.EventlogName);
             Logger.WriteConsole("DatabaseConnectionString=" + CoreSettings.DatabaseConnectionString);
             Logger.WriteConsole("BackupEngineInstancesCount=" + CoreSettings.BackupEngineInstanceCount);
@@ -199,6 +202,7 @@ namespace OzetteLibrary.CommandLine.Commands
             {
                 Logger.WriteConsole("Target log files directory was not found, creating it now.");
                 Directory.CreateDirectory(CoreSettings.LogFilesDirectory);
+                Directory.CreateDirectory(CoreSettings.LogFilesArchiveDirectory);
                 Logger.WriteConsole("Successfully created target log files directory.");
             }
             else

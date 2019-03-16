@@ -19,6 +19,11 @@
         public const string LogFilesDirectory = "OZETTE_LOGFILESDIRECTORY";
 
         /// <summary>
+        /// The log files path setting.
+        /// </summary>
+        public const string LogFilesArchiveDirectory = "OZETTE_LOGFILESARCHIVEDIRECTORY";
+
+        /// <summary>
         /// The database directory path setting.
         /// </summary>
         public const string DatabaseDirectory = "OZETTE_DATABASEDIRECTORY";
