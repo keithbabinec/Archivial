@@ -16,7 +16,8 @@ BEGIN
 				[dbo].[LocalSourceLocations].[FileMatchFilter],
 				[dbo].[LocalSourceLocations].[Priority],
 				[dbo].[LocalSourceLocations].[RevisionCount],
-				[dbo].[LocalSourceLocations].[LastCompletedScan]
+				[dbo].[LocalSourceLocations].[LastCompletedScan],
+				[dbo].[LocalSourceLocations].[DestinationContainerName]
 		FROM	[dbo].[LocalSourceLocations]
 
 		-- grab network sources
@@ -30,7 +31,8 @@ BEGIN
 				[dbo].[NetworkSourceLocations].[CredentialName],
 				[dbo].[NetworkSourceLocations].[IsConnected],
 				[dbo].[NetworkSourceLocations].[IsFailed],
-				[dbo].[NetworkSourceLocations].[LastConnectionCheck]
+				[dbo].[NetworkSourceLocations].[LastConnectionCheck],
+				[dbo].[NetworkSourceLocations].[DestinationContainerName]
 		FROM	[dbo].[NetworkSourceLocations]
 
 	END TRY

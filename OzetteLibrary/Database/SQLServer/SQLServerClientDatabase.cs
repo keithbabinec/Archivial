@@ -827,7 +827,8 @@ namespace OzetteLibrary.Database.SQLServer
                                     FileMatchFilter = rdr.GetString(2),
                                     Priority = (FileBackupPriority)rdr.GetInt32(3),
                                     RevisionCount = rdr.GetInt32(4),
-                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5)
+                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5),
+                                    DestinationContainerName = rdr.IsDBNull(6) ? null : rdr.GetString(6)
                                 });
                             }
 
@@ -848,7 +849,8 @@ namespace OzetteLibrary.Database.SQLServer
                                         CredentialName = rdr.GetString(6),
                                         IsConnected = rdr.GetBoolean(7),
                                         IsFailed = rdr.GetBoolean(8),
-                                        LastConnectionCheck = rdr.IsDBNull(9) ? (DateTime?)null : rdr.GetDateTime(9)
+                                        LastConnectionCheck = rdr.IsDBNull(9) ? (DateTime?)null : rdr.GetDateTime(9),
+                                        DestinationContainerName = rdr.IsDBNull(10) ? null : rdr.GetString(10)
                                     });
                                 }
                             }
@@ -904,6 +906,15 @@ namespace OzetteLibrary.Database.SQLServer
                             {
                                 cmd.Parameters.AddWithValue("@LastCompletedScan", lsl.LastCompletedScan);
                             }
+
+                            if (lsl.DestinationContainerName == null)
+                            {
+                                cmd.Parameters.AddWithValue("@DestinationContainerName", DBNull.Value);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@DestinationContainerName", lsl.DestinationContainerName);
+                            }
                         }
                         else if (Location is NetworkSourceLocation)
                         {
@@ -937,6 +948,15 @@ namespace OzetteLibrary.Database.SQLServer
                             else
                             {
                                 cmd.Parameters.AddWithValue("@LastConnectionCheck", nsl.LastConnectionCheck);
+                            }
+
+                            if (nsl.DestinationContainerName == null)
+                            {
+                                cmd.Parameters.AddWithValue("@DestinationContainerName", DBNull.Value);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@DestinationContainerName", nsl.DestinationContainerName);
                             }
                         }
                         else

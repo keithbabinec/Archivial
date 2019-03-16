@@ -6,6 +6,7 @@
 	[Priority] INT NOT NULL,
 	[RevisionCount] INT NOT NULL,
 	[LastCompletedScan] DATETIME NULL,
+	[DestinationContainerName] NVARCHAR(256) NULL,
 
 	CONSTRAINT PK_LocalSourceLocations_ID PRIMARY KEY ([ID]),
 	INDEX IDX_LocalSourceLocations_Path ([Path])

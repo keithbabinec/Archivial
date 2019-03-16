@@ -34,6 +34,12 @@ BEGIN
 	VALUES ( 'HighPriorityScanFrequencyInHours', '1' )
 END
 
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'MetaPriorityScanFrequencyInHours'))
+BEGIN
+    INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
+	VALUES ( 'MetaPriorityScanFrequencyInHours', '1' )
+END
+
 IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'StatusUpdateSchedule'))
 BEGIN
     INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
@@ -60,7 +66,8 @@ BEGIN
 		[FileMatchFilter],
 		[Priority],
 		[RevisionCount],
-		[LastCompletedScan]
+		[LastCompletedScan],
+		[DestinationContainerName]
 	)
 	VALUES
 	(
@@ -68,7 +75,8 @@ BEGIN
 		'*.bak',
 		4, -- meta priority
 		1, -- 1 revision
-		NULL
+		NULL,
+		'ozette-core-database-backups'
 	)
 END
 
@@ -82,7 +90,8 @@ BEGIN
 		[FileMatchFilter],
 		[Priority],
 		[RevisionCount],
-		[LastCompletedScan]
+		[LastCompletedScan],
+		[DestinationContainerName]
 	)
 	VALUES
 	(
@@ -90,6 +99,7 @@ BEGIN
 		'*.log',
 		4, -- meta priority
 		1, -- 1 revision
-		NULL
+		NULL,
+		'ozette-core-log-backups'
 	)
 END

@@ -1,10 +1,11 @@
 ﻿CREATE PROCEDURE [dbo].[SetLocalSourceLocation]
 (
-	@Path					NVARCHAR(1024),
-	@FileMatchFilter		NVARCHAR(256),
-	@Priority				INT,
-	@RevisionCount			INT,
-	@LastCompletedScan		DATETIME NULL
+	@Path						NVARCHAR(1024),
+	@FileMatchFilter			NVARCHAR(256),
+	@Priority					INT,
+	@RevisionCount				INT,
+	@LastCompletedScan			DATETIME NULL,
+	@DestinationContainerName	NVARCHAR(256) NULL
 )
 AS
 BEGIN
@@ -48,7 +49,8 @@ BEGIN
 				[FileMatchFilter],
 				[Priority],
 				[RevisionCount],
-				[LastCompletedScan]
+				[LastCompletedScan],
+				[DestinationContainerName]
 			)
 			VALUES
 			(
@@ -56,7 +58,8 @@ BEGIN
 				@FileMatchFilter,
 				@Priority,
 				@RevisionCount,
-				@LastCompletedScan
+				@LastCompletedScan,
+				@DestinationContainerName
 			)
 		END
 		ELSE
@@ -66,7 +69,8 @@ BEGIN
 					[dbo].[LocalSourceLocations].[FileMatchFilter] = @FileMatchFilter,
 					[dbo].[LocalSourceLocations].[Priority] = @Priority,
 					[dbo].[LocalSourceLocations].[RevisionCount] = @RevisionCount,
-					[dbo].[LocalSourceLocations].[LastCompletedScan] = @LastCompletedScan
+					[dbo].[LocalSourceLocations].[LastCompletedScan] = @LastCompletedScan,
+					[dbo].[LocalSourceLocations].[DestinationContainerName] = @DestinationContainerName
 			WHERE	[dbo].[LocalSourceLocations].[Path] = @Path
 		END
 

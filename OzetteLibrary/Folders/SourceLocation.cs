@@ -28,6 +28,11 @@ namespace OzetteLibrary.Folders
         public string FileMatchFilter { get; set; }
 
         /// <summary>
+        /// The destination container name (for meta sources only).
+        /// </summary>
+        public string DestinationContainerName { get; set; }
+
+        /// <summary>
         /// The priority in which this file should be backed up.
         /// </summary>
         public FileBackupPriority Priority { get; set; }
@@ -72,6 +77,10 @@ namespace OzetteLibrary.Folders
                 lastAcceptableScanPoint = DateTime.Now.AddHours(-options.MedPriorityScanFrequencyInHours);
             }
             else if (Priority == FileBackupPriority.High)
+            {
+                lastAcceptableScanPoint = DateTime.Now.AddHours(-options.HighPriorityScanFrequencyInHours);
+            }
+            else if (Priority == FileBackupPriority.Meta)
             {
                 lastAcceptableScanPoint = DateTime.Now.AddHours(-options.HighPriorityScanFrequencyInHours);
             }

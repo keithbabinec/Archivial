@@ -189,6 +189,9 @@ namespace OzetteLibrary.Client
             scan.HighPriorityScanFrequencyInHours =
                 Convert.ToInt32(await db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours).ConfigureAwait(false));
 
+            scan.MetaPriorityScanFrequencyInHours =
+                Convert.ToInt32(await db.GetApplicationOptionAsync(Constants.RuntimeSettingNames.MetaPriorityScanFrequencyInHours).ConfigureAwait(false));
+
             return scan;
         }
 
