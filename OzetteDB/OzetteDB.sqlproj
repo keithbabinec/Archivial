@@ -107,6 +107,7 @@
     <Build Include="Tables\LowPriBackupFilesQueue.sql" />
     <Build Include="Tables\MedPriBackupFilesQueue.sql" />
     <Build Include="Tables\HighPriBackupFilesQueue.sql" />
+    <Build Include="Stored Procedures\GetSourceLocation.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

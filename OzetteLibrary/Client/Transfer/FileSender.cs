@@ -8,6 +8,7 @@ using OzetteLibrary.Files;
 using OzetteLibrary.StorageProviders;
 using System.Threading.Tasks;
 using OzetteLibrary.Constants;
+using OzetteLibrary.Folders;
 
 namespace OzetteLibrary.Client.Transfer
 {
@@ -76,11 +77,15 @@ namespace OzetteLibrary.Client.Transfer
         /// </summary>
         /// <param name="File"></param>
         /// <param name="CancelToken"></param>
-        public async Task TransferAsync(BackupFile File, CancellationToken CancelToken)
+        public async Task TransferAsync(BackupFile File, SourceLocation Source, CancellationToken CancelToken)
         {
             if (File == null)
             {
                 throw new ArgumentNullException(nameof(File));
+            }
+            if (Source == null)
+            {
+                throw new ArgumentNullException(nameof(Source));
             }
             if (CancelToken == null)
             {
@@ -131,7 +136,7 @@ namespace OzetteLibrary.Client.Transfer
                     // this avoids resending the file if for some reason the client DB/states got wiped out.
 
                     CancelToken.ThrowIfCancellationRequested();
-                    await UpdateFileCopyStateIfFileAlreadyExistsAtProvidersAsync(File, fs).ConfigureAwait(false);
+                    await UpdateFileCopyStateIfFileAlreadyExistsAtProvidersAsync(File, Source, fs).ConfigureAwait(false);
 
                     // step 5: while the file has data that needs to be transferred- transfer it.
                     // this includes transferring to each potential target that needs this same file block.
@@ -144,7 +149,7 @@ namespace OzetteLibrary.Client.Transfer
 
                         // step 5B: send the transfer payload.
                         CancelToken.ThrowIfCancellationRequested();
-                        await SendTransferPayloadToFileTargetsAsync(File, payload).ConfigureAwait(false);
+                        await SendTransferPayloadToFileTargetsAsync(File, Source, payload).ConfigureAwait(false);
                     }
 
                     // no more data to transfer, remove the file from the backup queue.
@@ -171,7 +176,7 @@ namespace OzetteLibrary.Client.Transfer
         /// <param name="file"></param>
         /// <param name="payload"></param>
         /// <returns></returns>
-        private async Task SendTransferPayloadToFileTargetsAsync(BackupFile file, TransferPayload payload)
+        private async Task SendTransferPayloadToFileTargetsAsync(BackupFile file, SourceLocation source, TransferPayload payload)
         {
             var directory = await Database.GetDirectoryMapItemAsync(file.Directory).ConfigureAwait(false);
 
@@ -183,7 +188,7 @@ namespace OzetteLibrary.Client.Transfer
                 {
                     // upload this chunk to the destination cloud provider.
                     // note: the provider implementation will automatically handle retries of transient issues.
-                    await destination.UploadFileBlockAsync(file, directory,
+                    await destination.UploadFileBlockAsync(file, source, directory,
                         payload.Data, (int)payload.CurrentBlockNumber, (int)payload.TotalBlocks).ConfigureAwait(false);
 
                     // flag the chunk as sent in the file status.
@@ -210,7 +215,7 @@ namespace OzetteLibrary.Client.Transfer
         /// </summary>
         /// <param name="file"></param>
         /// <param name="fs"></param>
-        private async Task UpdateFileCopyStateIfFileAlreadyExistsAtProvidersAsync(BackupFile file, FileStream fs)
+        private async Task UpdateFileCopyStateIfFileAlreadyExistsAtProvidersAsync(BackupFile file, SourceLocation source, FileStream fs)
         {
             // for each provider that needs this file:
             // > double check that we haven't already transferred this whole file.
@@ -219,7 +224,7 @@ namespace OzetteLibrary.Client.Transfer
             foreach (var provider in Providers)
             {
                 var directory = await Database.GetDirectoryMapItemAsync(file.Directory).ConfigureAwait(false);
-                var providerState = await provider.Value.GetFileStatusAsync(file, directory).ConfigureAwait(false);
+                var providerState = await provider.Value.GetFileStatusAsync(file, source, directory).ConfigureAwait(false);
 
                 // mismatch: the provider file is synced, but our local state does not reflect this.
 

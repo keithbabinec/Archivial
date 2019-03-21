@@ -802,6 +802,87 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
+        /// Get the source location by ID and type.
+        /// </summary>
+        /// <param name="sourceID">The ID of the source location.</param>
+        /// <param name="sourceType">The type of source location.</param>
+        /// <returns></returns>
+        public async Task<SourceLocation> GetSourceLocationAsync(int sourceID, SourceLocationType sourceType)
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.GetSourceLocation";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@SourceID", sourceID);
+                        cmd.Parameters.AddWithValue("@SourceType", (int)sourceType);
+
+                        SourceLocation result = null;
+
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                        {
+                            // local sources
+
+                            if (!rdr.HasRows)
+                            {
+                                throw new Exception("Specifed source was not found in the database.");
+                            }
+
+                            await rdr.ReadAsync().ConfigureAwait(false);
+
+                            if (sourceType == SourceLocationType.Local)
+                            {
+                                result = new LocalSourceLocation()
+                                {
+                                    ID = rdr.GetInt32(0),
+                                    Path = rdr.GetString(1),
+                                    FileMatchFilter = rdr.GetString(2),
+                                    Priority = (FileBackupPriority)rdr.GetInt32(3),
+                                    RevisionCount = rdr.GetInt32(4),
+                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5),
+                                    DestinationContainerName = rdr.IsDBNull(6) ? null : rdr.GetString(6)
+                                };
+                            }
+                            else if (sourceType == SourceLocationType.Network)
+                            {
+                                result = new NetworkSourceLocation()
+                                {
+                                    ID = rdr.GetInt32(0),
+                                    Path = rdr.GetString(1),
+                                    FileMatchFilter = rdr.GetString(2),
+                                    Priority = (FileBackupPriority)rdr.GetInt32(3),
+                                    RevisionCount = rdr.GetInt32(4),
+                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5),
+                                    CredentialName = rdr.GetString(6),
+                                    IsConnected = rdr.GetBoolean(7),
+                                    IsFailed = rdr.GetBoolean(8),
+                                    LastConnectionCheck = rdr.IsDBNull(9) ? (DateTime?)null : rdr.GetDateTime(9),
+                                    DestinationContainerName = rdr.IsDBNull(10) ? null : rdr.GetString(10)
+                                };
+                            }
+                            else
+                            {
+                                throw new NotImplementedException("Unexpected source location type specified: " + sourceType);
+                            }
+                        }
+
+                        return result;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Returns all source locations defined in the database.
         /// </summary>
         /// <returns><c>SourceLocations</c></returns>

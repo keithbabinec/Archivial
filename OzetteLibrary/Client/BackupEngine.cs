@@ -3,6 +3,7 @@ using OzetteLibrary.Database;
 using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Files;
+using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Providers;
 using System;
@@ -86,14 +87,28 @@ namespace OzetteLibrary.Client
                         // check to see if we have any files to backup.
                         // return the next one to backup.
 
-                        BackupFile nextFileToBackup = await SafeGetNextFileToBackupAsync().ConfigureAwait(false);
+                        var nextFileToBackup = await SafeGetNextFileToBackupAsync().ConfigureAwait(false);
 
                         if (nextFileToBackup != null)
                         {
+                            // lookup the source information for this file.
+                            // it is required for the backup.
+
+                            var nextFileSource = await SafeGetSourceFromSourceIdAndType(nextFileToBackup.SourceID, nextFileToBackup.SourceType).ConfigureAwait(false);
+
+                            if (nextFileSource == null)
+                            {
+                                var message = string.Format("Unable to backup file ({0}). An error has occurred while looking up the Source information.", nextFileToBackup.FullSourcePath);
+                                Logger.WriteTraceMessage(message, InstanceID);
+
+                                await Database.SetBackupFileAsFailedAsync(nextFileToBackup, message).ConfigureAwait(false);
+                                await Database.RemoveFileFromBackupQueueAsync(nextFileToBackup).ConfigureAwait(false);
+                            }
+
                             // initiate the file-send operation.
 
                             var transferFinished = false;
-                            var transferTask = Sender.TransferAsync(nextFileToBackup, CancelSource.Token);
+                            var transferTask = Sender.TransferAsync(nextFileToBackup, nextFileSource, CancelSource.Token);
 
                             while (!transferFinished)
                             {
@@ -248,6 +263,27 @@ namespace OzetteLibrary.Client
             {
                 string err = "Failed to capture the next file ready for backup.";
                 Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetNextFileToBackup, true, InstanceID);
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns the source from the specified source ID and type.
+        /// </summary>
+        /// <param name="sourceID">The ID of the source location.</param>
+        /// <param name="sourceType">The source location type.</param>
+        /// <returns></returns>
+        private async Task<SourceLocation> SafeGetSourceFromSourceIdAndType(int sourceID, SourceLocationType sourceType)
+        {
+            try
+            {
+                return await Database.GetSourceLocationAsync(sourceID, sourceType).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                string err = string.Format("Failed to lookup the source {0} of type {1}.", sourceID, sourceType);
+                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetSourceLocationForBackupFile, true, InstanceID);
 
                 return null;
             }
