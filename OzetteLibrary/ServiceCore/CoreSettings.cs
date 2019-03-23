@@ -85,6 +85,21 @@ namespace OzetteLibrary.ServiceCore
         }
 
         /// <summary>
+        /// The log files retention length.
+        /// </summary>
+        public static int LogFilesRetentionInDays
+        {
+            get
+            {
+                return GetCoreIntSetting(BootstrapSettingNames.LogFilesRetentionInDays);
+            }
+            set
+            {
+                SetCoreIntSetting(BootstrapSettingNames.LogFilesRetentionInDays, value.ToString());
+            }
+        }
+
+        /// <summary>
         /// The database directory.
         /// </summary>
         public static string DatabaseDirectory

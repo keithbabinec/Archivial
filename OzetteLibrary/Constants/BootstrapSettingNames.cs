@@ -24,6 +24,11 @@
         public const string LogFilesArchiveDirectory = "OZETTE_LOGFILESARCHIVEDIRECTORY";
 
         /// <summary>
+        /// The log files retention setting.
+        /// </summary>
+        public const string LogFilesRetentionInDays = "OZETTE_LOGFILESRETENTIONINDAYS";
+
+        /// <summary>
         /// The database directory path setting.
         /// </summary>
         public const string DatabaseDirectory = "OZETTE_DATABASEDIRECTORY";

@@ -104,11 +104,12 @@ namespace OzetteLibrary.CommandLine.Commands
             CoreSettings.InstallationDirectory = arguments.InstallDirectory;
             CoreSettings.LogFilesDirectory = Path.Combine(arguments.InstallDirectory, "Logs");
             CoreSettings.LogFilesArchiveDirectory = Path.Combine(CoreSettings.LogFilesDirectory, "Archive");
+            CoreSettings.LogFilesRetentionInDays = 30;
             CoreSettings.DatabaseDirectory = Path.Combine(arguments.InstallDirectory, "Database");
             CoreSettings.DatabaseBackupsDirectory = Path.Combine(CoreSettings.DatabaseDirectory, "Backups");
             CoreSettings.EventlogName = "Ozette";
             CoreSettings.BackupEngineInstanceCount = 4;
-
+            
             // setting this flag indicates publish is required on next service startup.
             CoreSettings.DatabasePublishIsRequired = true;
 
@@ -127,6 +128,7 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("InstallationDirectory=" + CoreSettings.InstallationDirectory);
             Logger.WriteConsole("LogFilesDirectory=" + CoreSettings.LogFilesDirectory);
             Logger.WriteConsole("LogFilesArchiveDirectory=" + CoreSettings.LogFilesArchiveDirectory);
+            Logger.WriteConsole("LogFilesRetentionInDays=" + CoreSettings.LogFilesRetentionInDays);
             Logger.WriteConsole("DatabaseDirectory=" + CoreSettings.DatabaseDirectory);
             Logger.WriteConsole("DatabaseBackupsDirectory=" + CoreSettings.DatabaseBackupsDirectory);
             Logger.WriteConsole("EventlogName=" + CoreSettings.EventlogName);
