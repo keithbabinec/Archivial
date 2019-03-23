@@ -39,6 +39,11 @@
         public const string DatabaseBackupsDirectory = "OZETTE_DATABASEBACKUPSDIRECTORY";
 
         /// <summary>
+        /// The database backups retention in days.
+        /// </summary>
+        public const string DatabaseBackupsRetentionInDays = "OZETTE_DATABASEBACKUPSRETENTIONINDAYS";
+
+        /// <summary>
         /// The installation directory path.
         /// </summary>
         public const string InstallationDirectory = "OZETTE_INSTALLATIONDIRECTORY";

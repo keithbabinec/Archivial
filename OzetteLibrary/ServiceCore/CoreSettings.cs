@@ -100,6 +100,21 @@ namespace OzetteLibrary.ServiceCore
         }
 
         /// <summary>
+        /// The database backup files retention length.
+        /// </summary>
+        public static int DatabaseBackupsRetentionInDays
+        {
+            get
+            {
+                return GetCoreIntSetting(BootstrapSettingNames.DatabaseBackupsRetentionInDays);
+            }
+            set
+            {
+                SetCoreIntSetting(BootstrapSettingNames.DatabaseBackupsRetentionInDays, value.ToString());
+            }
+        }
+
+        /// <summary>
         /// The database directory.
         /// </summary>
         public static string DatabaseDirectory

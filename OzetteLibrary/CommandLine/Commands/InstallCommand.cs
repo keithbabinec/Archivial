@@ -107,6 +107,7 @@ namespace OzetteLibrary.CommandLine.Commands
             CoreSettings.LogFilesRetentionInDays = 30;
             CoreSettings.DatabaseDirectory = Path.Combine(arguments.InstallDirectory, "Database");
             CoreSettings.DatabaseBackupsDirectory = Path.Combine(CoreSettings.DatabaseDirectory, "Backups");
+            CoreSettings.DatabaseBackupsRetentionInDays = 7;
             CoreSettings.EventlogName = "Ozette";
             CoreSettings.BackupEngineInstanceCount = 4;
             
@@ -131,6 +132,7 @@ namespace OzetteLibrary.CommandLine.Commands
             Logger.WriteConsole("LogFilesRetentionInDays=" + CoreSettings.LogFilesRetentionInDays);
             Logger.WriteConsole("DatabaseDirectory=" + CoreSettings.DatabaseDirectory);
             Logger.WriteConsole("DatabaseBackupsDirectory=" + CoreSettings.DatabaseBackupsDirectory);
+            Logger.WriteConsole("DatabaseBackupsRetentionInDays=" + CoreSettings.DatabaseBackupsRetentionInDays);
             Logger.WriteConsole("EventlogName=" + CoreSettings.EventlogName);
             Logger.WriteConsole("DatabaseConnectionString=" + CoreSettings.DatabaseConnectionString);
             Logger.WriteConsole("BackupEngineInstancesCount=" + CoreSettings.BackupEngineInstanceCount);
