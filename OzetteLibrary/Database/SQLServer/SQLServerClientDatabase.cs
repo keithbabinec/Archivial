@@ -723,7 +723,7 @@ namespace OzetteLibrary.Database.SQLServer
                                             HashAlgorithmType = rdr.IsDBNull(13) ? null : rdr.GetString(13),
                                             LastChecked = rdr.GetDateTime(14),
                                             LastUpdated = rdr.GetDateTime(15),
-                                            OverallState = (FileStatus)rdr.GetInt32(15)
+                                            OverallState = (FileStatus)rdr.GetInt32(16)
                                         };
                                     }
                                 }
@@ -1213,7 +1213,7 @@ namespace OzetteLibrary.Database.SQLServer
                                     HashAlgorithmType = rdr.IsDBNull(13) ? null : rdr.GetString(13),
                                     LastChecked = rdr.GetDateTime(14),
                                     LastUpdated = rdr.GetDateTime(15),
-                                    OverallState = (FileStatus)rdr.GetInt32(15),
+                                    OverallState = (FileStatus)rdr.GetInt32(16),
                                     CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
                                 };
 
