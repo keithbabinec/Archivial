@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OzetteLibrary.Constants;
 using OzetteLibrary.Exceptions;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
@@ -882,6 +883,336 @@ namespace OzetteLibraryTests.Files
 
             Assert.IsNotNull(remoteName);
             Assert.AreEqual(expected, remoteName);
+        }
+
+        [TestMethod]
+        public void BackupFileUpdateLocalStateIfRemoteStateDoesNotMatchCase1()
+        {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new BackupFile(new FileInfo(".\\TestFiles\\Hasher\\SmallFile.txt"), source);
+
+            // scenario 1:
+            // > local: unsynced
+            // > remote: unsynced 
+            // no changes.
+
+            file.CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
+            {
+                {
+                    StorageProviderTypes.Azure,
+                    new StorageProviderFileStatus()
+                    {
+                        Provider = StorageProviderTypes.Azure,
+                        HydrationStatus = StorageProviderHydrationStatus.None,
+                        LastCompletedFileBlockIndex = -1,
+                        Metadata = null,
+                        SyncStatus = FileStatus.Unsynced
+                    }
+                }
+            };
+
+            var remoteState = new StorageProviderFileStatus()
+            {
+                Provider = StorageProviderTypes.Azure,
+                HydrationStatus = StorageProviderHydrationStatus.None,
+                LastCompletedFileBlockIndex = -1,
+                Metadata = null,
+                SyncStatus = FileStatus.Unsynced
+            };
+
+            var hasChanged = file.UpdateLocalStateIfRemoteStateDoesNotMatch(remoteState);
+
+            Assert.IsFalse(hasChanged);
+        }
+
+        [TestMethod]
+        public void BackupFileUpdateLocalStateIfRemoteStateDoesNotMatchCase2()
+        {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new BackupFile(new FileInfo(".\\TestFiles\\Hasher\\SmallFile.txt"), source);
+
+            // scenario 2:
+            // > local: in-progress
+            // > remote: in-progress
+            // no changes.
+
+            file.CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
+            {
+                {
+                    StorageProviderTypes.Azure,
+                    new StorageProviderFileStatus()
+                    {
+                        Provider = StorageProviderTypes.Azure,
+                        HydrationStatus = StorageProviderHydrationStatus.None,
+                        LastCompletedFileBlockIndex = 1,
+                        Metadata = new Dictionary<string,string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                        SyncStatus = FileStatus.InProgress
+                    }
+                }
+            };
+
+            var remoteState = new StorageProviderFileStatus()
+            {
+                Provider = StorageProviderTypes.Azure,
+                HydrationStatus = StorageProviderHydrationStatus.None,
+                LastCompletedFileBlockIndex = 1,
+                Metadata = new Dictionary<string, string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                SyncStatus = FileStatus.InProgress
+            };
+
+            var hasChanged = file.UpdateLocalStateIfRemoteStateDoesNotMatch(remoteState);
+
+            Assert.IsFalse(hasChanged);
+        }
+
+        [TestMethod]
+        public void BackupFileUpdateLocalStateIfRemoteStateDoesNotMatchCase3()
+        {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new BackupFile(new FileInfo(".\\TestFiles\\Hasher\\SmallFile.txt"), source);
+
+            // scenario 3:
+            // > local: synced
+            // > remote: synced
+            // no changes.
+
+            file.CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
+            {
+                {
+                    StorageProviderTypes.Azure,
+                    new StorageProviderFileStatus()
+                    {
+                        Provider = StorageProviderTypes.Azure,
+                        HydrationStatus = StorageProviderHydrationStatus.None,
+                        LastCompletedFileBlockIndex = 1,
+                        Metadata = new Dictionary<string,string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                        SyncStatus = FileStatus.Synced
+                    }
+                }
+            };
+
+            var remoteState = new StorageProviderFileStatus()
+            {
+                Provider = StorageProviderTypes.Azure,
+                HydrationStatus = StorageProviderHydrationStatus.None,
+                LastCompletedFileBlockIndex = 1,
+                Metadata = new Dictionary<string, string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                SyncStatus = FileStatus.Synced
+            };
+
+            var hasChanged = file.UpdateLocalStateIfRemoteStateDoesNotMatch(remoteState);
+
+            Assert.IsFalse(hasChanged);
+        }
+
+        [TestMethod]
+        public void BackupFileUpdateLocalStateIfRemoteStateDoesNotMatchCase4()
+        {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new BackupFile(new FileInfo(".\\TestFiles\\Hasher\\SmallFile.txt"), source);
+
+            // scenario 4:
+            // > local: unsynced
+            // > remote: in-progress
+            // any remote changes should take precedence.
+
+            file.CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
+            {
+                {
+                    StorageProviderTypes.Azure,
+                    new StorageProviderFileStatus()
+                    {
+                        Provider = StorageProviderTypes.Azure,
+                        HydrationStatus = StorageProviderHydrationStatus.None,
+                        LastCompletedFileBlockIndex = -1,
+                        Metadata = null,
+                        SyncStatus = FileStatus.Unsynced
+                    }
+                }
+            };
+
+            var remoteState = new StorageProviderFileStatus()
+            {
+                Provider = StorageProviderTypes.Azure,
+                HydrationStatus = StorageProviderHydrationStatus.None,
+                LastCompletedFileBlockIndex = 1,
+                Metadata = new Dictionary<string, string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                SyncStatus = FileStatus.InProgress
+            };
+
+            var hasChanged = file.UpdateLocalStateIfRemoteStateDoesNotMatch(remoteState);
+
+            Assert.IsTrue(hasChanged);
+            Assert.AreEqual(FileStatus.InProgress, file.CopyState[StorageProviderTypes.Azure].SyncStatus);
+            Assert.AreEqual(1, file.CopyState[StorageProviderTypes.Azure].LastCompletedFileBlockIndex);
+        }
+
+        [TestMethod]
+        public void BackupFileUpdateLocalStateIfRemoteStateDoesNotMatchCase5()
+        {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new BackupFile(new FileInfo(".\\TestFiles\\Hasher\\SmallFile.txt"), source);
+
+            // scenario 5:
+            // > local: unsynced
+            // > remote: synced
+            // any remote changes should take precedence.
+
+            file.CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
+            {
+                {
+                    StorageProviderTypes.Azure,
+                    new StorageProviderFileStatus()
+                    {
+                        Provider = StorageProviderTypes.Azure,
+                        HydrationStatus = StorageProviderHydrationStatus.None,
+                        LastCompletedFileBlockIndex = -1,
+                        Metadata = null,
+                        SyncStatus = FileStatus.Unsynced
+                    }
+                }
+            };
+
+            var remoteState = new StorageProviderFileStatus()
+            {
+                Provider = StorageProviderTypes.Azure,
+                HydrationStatus = StorageProviderHydrationStatus.None,
+                LastCompletedFileBlockIndex = 1,
+                Metadata = new Dictionary<string, string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                SyncStatus = FileStatus.Synced
+            };
+
+            var hasChanged = file.UpdateLocalStateIfRemoteStateDoesNotMatch(remoteState);
+
+            Assert.IsTrue(hasChanged);
+            Assert.AreEqual(FileStatus.Synced, file.CopyState[StorageProviderTypes.Azure].SyncStatus);
+            Assert.AreEqual(1, file.CopyState[StorageProviderTypes.Azure].LastCompletedFileBlockIndex);
+        }
+
+        [TestMethod]
+        public void BackupFileUpdateLocalStateIfRemoteStateDoesNotMatchCase6()
+        {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new BackupFile(new FileInfo(".\\TestFiles\\Hasher\\SmallFile.txt"), source);
+
+            // scenario 6:
+            // > local: in-progress
+            // > remote: unsynced
+            // any remote changes should take precedence.
+
+            file.CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
+            {
+                {
+                    StorageProviderTypes.Azure,
+                    new StorageProviderFileStatus()
+                    {
+                        Provider = StorageProviderTypes.Azure,
+                        HydrationStatus = StorageProviderHydrationStatus.None,
+                        LastCompletedFileBlockIndex = 1,
+                        Metadata = new Dictionary<string, string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                        SyncStatus = FileStatus.InProgress
+                    }
+                }
+            };
+
+            var remoteState = new StorageProviderFileStatus()
+            {
+                Provider = StorageProviderTypes.Azure,
+                HydrationStatus = StorageProviderHydrationStatus.None,
+                LastCompletedFileBlockIndex = -1,
+                Metadata = null,
+                SyncStatus = FileStatus.Unsynced
+            };
+
+            var hasChanged = file.UpdateLocalStateIfRemoteStateDoesNotMatch(remoteState);
+
+            Assert.IsTrue(hasChanged);
+            Assert.AreEqual(FileStatus.Unsynced, file.CopyState[StorageProviderTypes.Azure].SyncStatus);
+            Assert.AreEqual(-1, file.CopyState[StorageProviderTypes.Azure].LastCompletedFileBlockIndex);
+        }
+
+        [TestMethod]
+        public void BackupFileUpdateLocalStateIfRemoteStateDoesNotMatchCase7()
+        {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new BackupFile(new FileInfo(".\\TestFiles\\Hasher\\SmallFile.txt"), source);
+
+            // scenario 7:
+            // > local: in-progress
+            // > remote: in-progress (different state)
+            // any remote changes should take precedence.
+
+            file.CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
+            {
+                {
+                    StorageProviderTypes.Azure,
+                    new StorageProviderFileStatus()
+                    {
+                        Provider = StorageProviderTypes.Azure,
+                        HydrationStatus = StorageProviderHydrationStatus.None,
+                        LastCompletedFileBlockIndex = 1,
+                        Metadata = new Dictionary<string, string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                        SyncStatus = FileStatus.InProgress
+                    }
+                }
+            };
+
+            var remoteState = new StorageProviderFileStatus()
+            {
+                Provider = StorageProviderTypes.Azure,
+                HydrationStatus = StorageProviderHydrationStatus.None,
+                LastCompletedFileBlockIndex = 2,
+                Metadata = new Dictionary<string, string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                SyncStatus = FileStatus.InProgress
+            };
+
+            var hasChanged = file.UpdateLocalStateIfRemoteStateDoesNotMatch(remoteState);
+
+            Assert.IsTrue(hasChanged);
+            Assert.AreEqual(FileStatus.InProgress, file.CopyState[StorageProviderTypes.Azure].SyncStatus);
+            Assert.AreEqual(2, file.CopyState[StorageProviderTypes.Azure].LastCompletedFileBlockIndex);
+        }
+
+        [TestMethod]
+        public void BackupFileUpdateLocalStateIfRemoteStateDoesNotMatchCase8()
+        {
+            var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
+            var file = new BackupFile(new FileInfo(".\\TestFiles\\Hasher\\SmallFile.txt"), source);
+
+            // scenario 8:
+            // > local: in-progress
+            // > remote: synced
+            // any remote changes should take precedence.
+
+            file.CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
+            {
+                {
+                    StorageProviderTypes.Azure,
+                    new StorageProviderFileStatus()
+                    {
+                        Provider = StorageProviderTypes.Azure,
+                        HydrationStatus = StorageProviderHydrationStatus.None,
+                        LastCompletedFileBlockIndex = 1,
+                        Metadata = new Dictionary<string, string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                        SyncStatus = FileStatus.InProgress
+                    }
+                }
+            };
+
+            var remoteState = new StorageProviderFileStatus()
+            {
+                Provider = StorageProviderTypes.Azure,
+                HydrationStatus = StorageProviderHydrationStatus.None,
+                LastCompletedFileBlockIndex = 3,
+                Metadata = new Dictionary<string, string>() { { ProviderMetadata.FileHashKeyName, "a1b2c3d4e5f6" } },
+                SyncStatus = FileStatus.Synced
+            };
+
+            var hasChanged = file.UpdateLocalStateIfRemoteStateDoesNotMatch(remoteState);
+
+            Assert.IsTrue(hasChanged);
+            Assert.AreEqual(FileStatus.Synced, file.CopyState[StorageProviderTypes.Azure].SyncStatus);
+            Assert.AreEqual(3, file.CopyState[StorageProviderTypes.Azure].LastCompletedFileBlockIndex);
         }
     }
 }

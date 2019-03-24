@@ -201,6 +201,7 @@ namespace OzetteLibrary.Client.Transfer
 
                     // sets the error message/stack trace
                     await Database.SetBackupFileAsFailedAsync(file, ex.ToString());
+                    await Database.RemoveFileFromBackupQueueAsync(file).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -226,16 +227,14 @@ namespace OzetteLibrary.Client.Transfer
                 var directory = await Database.GetDirectoryMapItemAsync(file.Directory).ConfigureAwait(false);
                 var providerState = await provider.Value.GetFileStatusAsync(file, source, directory).ConfigureAwait(false);
 
-                // mismatch: the provider file is synced, but our local state does not reflect this.
+                // compare the results from the remote provider to the local known state.
+                // if things are different, then apply the remote state to known local and save the changes.
 
-                if (file.CopyState.ContainsKey(provider.Key) 
-                    && file.CopyState[provider.Key].SyncStatus == FileStatus.Unsynced 
-                    && providerState.SyncStatus == FileStatus.Synced
-                    && providerState.Metadata[ProviderMetadata.FileHashKeyName] == file.FileHashString)
+                if (file.UpdateLocalStateIfRemoteStateDoesNotMatch(providerState))
                 {
-                    Logger.WriteTraceMessage(string.Format("Found a sync mismatch: this file is already synced at the provider [{0}]. Updating our local status.", provider.Key), InstanceID);
+                    Logger.WriteTraceMessage(string.Format(
+                        "Found a sync mismatch. The provider state [{0}] does not match local status, updating now.", provider.Key), InstanceID);
 
-                    file.SetProviderToCompleted(provider.Key);
                     await Database.UpdateBackupFileCopyStateAsync(file).ConfigureAwait(false);
                 }
             }

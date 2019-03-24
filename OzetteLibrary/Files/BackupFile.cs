@@ -336,6 +336,15 @@ namespace OzetteLibrary.Files
         }
 
         /// <summary>
+        /// Updates the known local provider state if it doesn't match the remote state.
+        /// </summary>
+        /// <param name="providerState"></param>
+        public bool UpdateLocalStateIfRemoteStateDoesNotMatch(StorageProviderFileStatus providerState)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Returns the next transfer payload object
         /// </summary>
         /// <param name="Stream"></param>

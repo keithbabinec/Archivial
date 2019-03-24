@@ -304,9 +304,18 @@ namespace OzetteLibrary.Client.Sources
             // do not write trace messages for unchanged files
             // it becomes too noisy in the logs.
 
-            // existing file
-            // should update the last checked flag
-            await Database.SetBackupFileLastScannedAsync(fileLookup.File.FileID).ConfigureAwait(false);
+            if (fileLookup.File.OverallState == FileStatus.ProviderError)
+            {
+                // existing file but in a failed state.
+                // since we have rescanned we should reset the failed state to allow for a retry.
+                await Database.ResetBackupFileStateAsync(fileLookup.File).ConfigureAwait(false);
+            }
+            else
+            {
+                // existing file
+                // should update the last checked flag
+                await Database.SetBackupFileLastScannedAsync(fileLookup.File.FileID).ConfigureAwait(false);
+            }
         }
     }
 }
