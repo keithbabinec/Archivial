@@ -3,6 +3,7 @@ using OzetteLibrary.Database;
 using OzetteLibrary.Engine;
 using OzetteLibrary.Events;
 using OzetteLibrary.Files;
+using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Providers;
 using System;
@@ -60,6 +61,17 @@ namespace OzetteLibrary.Client
         private DateTime? LastHeartbeatOrBackupCompleted { get; set; }
 
         /// <summary>
+        /// An ordered collection of backup queues to query for files to backup.
+        /// </summary>
+        private FileBackupPriority[] OrderedBackupQueues = new FileBackupPriority[] 
+        {
+            FileBackupPriority.Meta,
+            FileBackupPriority.High,
+            FileBackupPriority.Medium,
+            FileBackupPriority.Low
+        };
+
+        /// <summary>
         /// Core processing loop.
         /// </summary>
         private async Task ProcessLoopAsync()
@@ -75,14 +87,28 @@ namespace OzetteLibrary.Client
                         // check to see if we have any files to backup.
                         // return the next one to backup.
 
-                        BackupFile nextFileToBackup = await SafeGetNextFileToBackupAsync().ConfigureAwait(false);
+                        var nextFileToBackup = await SafeGetNextFileToBackupAsync().ConfigureAwait(false);
 
                         if (nextFileToBackup != null)
                         {
+                            // lookup the source information for this file.
+                            // it is required for the backup.
+
+                            var nextFileSource = await SafeGetSourceFromSourceIdAndType(nextFileToBackup.SourceID, nextFileToBackup.SourceType).ConfigureAwait(false);
+
+                            if (nextFileSource == null)
+                            {
+                                var message = string.Format("Unable to backup file ({0}). An error has occurred while looking up the Source information.", nextFileToBackup.FullSourcePath);
+                                Logger.WriteTraceMessage(message, InstanceID);
+
+                                await Database.SetBackupFileAsFailedAsync(nextFileToBackup, message).ConfigureAwait(false);
+                                await Database.RemoveFileFromBackupQueueAsync(nextFileToBackup).ConfigureAwait(false);
+                            }
+
                             // initiate the file-send operation.
 
                             var transferFinished = false;
-                            var transferTask = Sender.TransferAsync(nextFileToBackup, CancelSource.Token);
+                            var transferTask = Sender.TransferAsync(nextFileToBackup, nextFileSource, CancelSource.Token);
 
                             while (!transferFinished)
                             {
@@ -215,12 +241,49 @@ namespace OzetteLibrary.Client
         {
             try
             {
-                return await Database.FindNextFileToBackupAsync(InstanceID).ConfigureAwait(false);
+                // there are 4 different priority queues: Low, Med, High, and Meta (system/reserved).
+                // check the queues in priority order to determine the next file to backup.
+
+                BackupFile nextFile = null;
+
+                foreach (var queuePriority in OrderedBackupQueues)
+                {
+                    nextFile = await Database.FindNextFileToBackupAsync(InstanceID, queuePriority).ConfigureAwait(false);
+
+                    if (nextFile != null)
+                    {
+                        // no need to look at additional queues-- we found one.
+                        break;
+                    }
+                }
+
+                return nextFile;
             }
             catch (Exception ex)
             {
                 string err = "Failed to capture the next file ready for backup.";
                 Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetNextFileToBackup, true, InstanceID);
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns the source from the specified source ID and type.
+        /// </summary>
+        /// <param name="sourceID">The ID of the source location.</param>
+        /// <param name="sourceType">The source location type.</param>
+        /// <returns></returns>
+        private async Task<SourceLocation> SafeGetSourceFromSourceIdAndType(int sourceID, SourceLocationType sourceType)
+        {
+            try
+            {
+                return await Database.GetSourceLocationAsync(sourceID, sourceType).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                string err = string.Format("Failed to lookup the source {0} of type {1}.", sourceID, sourceType);
+                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetSourceLocationForBackupFile, true, InstanceID);
 
                 return null;
             }

@@ -19,5 +19,10 @@
         /// The high priority scan timeframe.
         /// </summary>
         public int HighPriorityScanFrequencyInHours { get; set; }
+
+        /// <summary>
+        /// The meta priority scan timeframe.
+        /// </summary>
+        public int MetaPriorityScanFrequencyInHours { get; set; }
     }
 }

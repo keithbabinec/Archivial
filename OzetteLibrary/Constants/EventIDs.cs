@@ -194,5 +194,10 @@
         /// Event ID: Failed core service engine.
         /// </summary>
         public const int FailedCoreServiceEngine = 2018;
+
+        /// <summary>
+        /// Event ID: Failed to the source location for a backup file.
+        /// </summary>
+        public const int FailedToGetSourceLocationForBackupFile = 2019;
     }
 }

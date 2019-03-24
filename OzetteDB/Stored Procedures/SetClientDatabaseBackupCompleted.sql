@@ -25,20 +25,25 @@ BEGIN
 		
 		BEGIN TRANSACTION
 
+		DECLARE @Now DATETIME = GETDATE()
+
 		IF @DatabaseBackupType = 1
 		BEGIN
 			UPDATE	[dbo].[ClientDatabaseBackupStatus]
-			SET		[dbo].[ClientDatabaseBackupStatus].[LastFullBackup] = GETDATE()
+			SET		[dbo].[ClientDatabaseBackupStatus].[LastFullBackup] = @Now,
+					[dbo].[ClientDatabaseBackupStatus].[LastDifferentialBackup] = @Now,
+					[dbo].[ClientDatabaseBackupStatus].[LastTransactionLogBackup] = @Now
 		END
 		ELSE IF @DatabaseBackupType = 2
 		BEGIN
 			UPDATE	[dbo].[ClientDatabaseBackupStatus]
-			SET		[dbo].[ClientDatabaseBackupStatus].[LastDifferentialBackup] = GETDATE()
+			SET		[dbo].[ClientDatabaseBackupStatus].[LastDifferentialBackup] = @Now,
+					[dbo].[ClientDatabaseBackupStatus].[LastTransactionLogBackup] = @Now
 		END
 		ELSE IF @DatabaseBackupType = 3
 		BEGIN
 			UPDATE	[dbo].[ClientDatabaseBackupStatus]
-			SET		[dbo].[ClientDatabaseBackupStatus].[LastTransactionLogBackup] = GETDATE()
+			SET		[dbo].[ClientDatabaseBackupStatus].[LastTransactionLogBackup] = @Now
 		END
 
 		COMMIT TRANSACTION

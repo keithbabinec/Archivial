@@ -24,6 +24,11 @@
         public const string HighPriorityScanFrequencyInHours = "HighPriorityScanFrequencyInHours";
 
         /// <summary>
+        /// Option: MetaPriorityScanFrequencyInHours.
+        /// </summary>
+        public const string MetaPriorityScanFrequencyInHours = "MetaPriorityScanFrequencyInHours";
+
+        /// <summary>
         /// Option: StatusUpdateSchedule.
         /// </summary>
         public const string StatusUpdateSchedule = "StatusUpdateSchedule";

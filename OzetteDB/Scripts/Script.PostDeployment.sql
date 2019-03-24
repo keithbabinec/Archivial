@@ -34,6 +34,12 @@ BEGIN
 	VALUES ( 'HighPriorityScanFrequencyInHours', '1' )
 END
 
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'MetaPriorityScanFrequencyInHours'))
+BEGIN
+    INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
+	VALUES ( 'MetaPriorityScanFrequencyInHours', '1' )
+END
+
 IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'StatusUpdateSchedule'))
 BEGIN
     INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
@@ -60,14 +66,40 @@ BEGIN
 		[FileMatchFilter],
 		[Priority],
 		[RevisionCount],
-		[LastCompletedScan]
+		[LastCompletedScan],
+		[DestinationContainerName]
 	)
 	VALUES
 	(
 		@DatabaseBackupPath,
 		'*.bak',
-		3, -- high priority
+		4, -- meta priority
 		1, -- 1 revision
-		NULL
+		NULL,
+		'ozette-core-database-backups'
+	)
+END
+
+DECLARE @LogArchivePath NVARCHAR(255) = 'C:\Program Files\Ozette Cloud Backup\Client\Logs\Archive'
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[LocalSourceLocations] WHERE [Path] = @LogArchivePath)
+BEGIN
+	INSERT INTO [dbo].[LocalSourceLocations]
+	(
+		[Path],
+		[FileMatchFilter],
+		[Priority],
+		[RevisionCount],
+		[LastCompletedScan],
+		[DestinationContainerName]
+	)
+	VALUES
+	(
+		@LogArchivePath,
+		'*.log',
+		4, -- meta priority
+		1, -- 1 revision
+		NULL,
+		'ozette-core-log-backups'
 	)
 END

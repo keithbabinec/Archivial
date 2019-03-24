@@ -1,14 +1,15 @@
 ﻿CREATE PROCEDURE [dbo].[SetNetworkSourceLocation]
 (
-	@Path					NVARCHAR(1024),
-	@FileMatchFilter		NVARCHAR(256),
-	@Priority				INT,
-	@RevisionCount			INT,
-	@LastCompletedScan		DATETIME NULL,
-	@CredentialName			NVARCHAR(256),
-	@IsConnected			BIT,
-	@IsFailed				BIT,
-	@LastConnectionCheck	DATETIME NULL
+	@Path						NVARCHAR(1024),
+	@FileMatchFilter			NVARCHAR(256),
+	@Priority					INT,
+	@RevisionCount				INT,
+	@LastCompletedScan			DATETIME NULL,
+	@CredentialName				NVARCHAR(256),
+	@IsConnected				BIT,
+	@IsFailed					BIT,
+	@LastConnectionCheck		DATETIME NULL,
+	@DestinationContainerName	NVARCHAR(256) NULL
 )
 AS
 BEGIN
@@ -71,7 +72,8 @@ BEGIN
 				[CredentialName],
 				[IsConnected],
 				[IsFailed],
-				[LastConnectionCheck]
+				[LastConnectionCheck],
+				[DestinationContainerName]
 			)
 			VALUES
 			(
@@ -83,7 +85,8 @@ BEGIN
 				@CredentialName,
 				@IsConnected,
 				@IsFailed,
-				@LastConnectionCheck
+				@LastConnectionCheck,
+				@DestinationContainerName
 			)
 		END
 		ELSE
@@ -97,7 +100,8 @@ BEGIN
 					[dbo].[NetworkSourceLocations].[CredentialName] = @CredentialName,
 					[dbo].[NetworkSourceLocations].[IsConnected] = @IsConnected,
 					[dbo].[NetworkSourceLocations].[IsFailed] = @IsFailed,
-					[dbo].[NetworkSourceLocations].[LastConnectionCheck] = @LastConnectionCheck
+					[dbo].[NetworkSourceLocations].[LastConnectionCheck] = @LastConnectionCheck,
+					[dbo].[NetworkSourceLocations].[DestinationContainerName] = @DestinationContainerName
 			WHERE	[dbo].[NetworkSourceLocations].[Path] = @Path
 		END
 

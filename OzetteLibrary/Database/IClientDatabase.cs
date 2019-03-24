@@ -120,6 +120,14 @@ namespace OzetteLibrary.Database
         Task<DirectoryMapItem> GetDirectoryMapItemAsync(string DirectoryPath);
 
         /// <summary>
+        /// Get the source location by ID and type.
+        /// </summary>
+        /// <param name="sourceID">The ID of the source location.</param>
+        /// <param name="sourceType">The type of source location.</param>
+        /// <returns></returns>
+        Task<SourceLocation> GetSourceLocationAsync(int sourceID, SourceLocationType sourceType);
+
+        /// <summary>
         /// Returns all source locations defined in the database.
         /// </summary>
         /// <returns><c>SourceLocations</c></returns>
@@ -151,8 +159,9 @@ namespace OzetteLibrary.Database
         /// If no files need to be backed up, return null.
         /// </remarks>
         /// <param name="EngineInstanceID">The engine instance.</param>
+        /// <param name="Priority">The file backup priority.</param>
         /// <returns><c>BackupFile</c></returns>
-        Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID);
+        Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID, FileBackupPriority Priority);
 
         /// <summary>
         /// Calculates and returns the overall backup progress.

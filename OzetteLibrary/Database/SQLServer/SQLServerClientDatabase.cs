@@ -132,8 +132,12 @@ namespace OzetteLibrary.Database.SQLServer
                 using (DacPackage package = DacPackage.Load(packagePath, DacSchemaModelStorageType.Memory))
                 {
                     DacServices services = new DacServices(Constants.Database.DefaultSqlExpressInstanceConnectionString);
+
+                    var options = new DacDeployOptions();
+                    options.GenerateSmartDefaults = true;
+
                     services.Message += dacMessages_Received;
-                    services.Deploy(package, Constants.Database.DatabaseName, true);
+                    services.Deploy(package, Constants.Database.DatabaseName, true, options);
 
                     CoreSettings.DatabasePublishIsRequired = false;
                     Logger.WriteTraceMessage("Database publish completed.");
@@ -713,11 +717,13 @@ namespace OzetteLibrary.Database.SQLServer
                                             FileHash = rdr.IsDBNull(7) ? null : (byte[])rdr["FileHash"], // special handling for varbinary column
                                             FileHashString = rdr.IsDBNull(8) ? null : rdr.GetString(8),
                                             Priority = (FileBackupPriority)rdr.GetInt32(9),
-                                            FileRevisionNumber = rdr.GetInt32(10),
-                                            HashAlgorithmType = rdr.IsDBNull(11) ? null : rdr.GetString(11),
-                                            LastChecked = rdr.GetDateTime(12),
-                                            LastUpdated = rdr.GetDateTime(13),
-                                            OverallState = (FileStatus)rdr.GetInt32(14)
+                                            SourceID = rdr.GetInt32(10),
+                                            SourceType = (SourceLocationType)rdr.GetInt32(11),
+                                            FileRevisionNumber = rdr.GetInt32(12),
+                                            HashAlgorithmType = rdr.IsDBNull(13) ? null : rdr.GetString(13),
+                                            LastChecked = rdr.GetDateTime(14),
+                                            LastUpdated = rdr.GetDateTime(15),
+                                            OverallState = (FileStatus)rdr.GetInt32(16)
                                         };
                                     }
                                 }
@@ -796,6 +802,87 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
+        /// Get the source location by ID and type.
+        /// </summary>
+        /// <param name="sourceID">The ID of the source location.</param>
+        /// <param name="sourceType">The type of source location.</param>
+        /// <returns></returns>
+        public async Task<SourceLocation> GetSourceLocationAsync(int sourceID, SourceLocationType sourceType)
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.GetSourceLocation";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@SourceID", sourceID);
+                        cmd.Parameters.AddWithValue("@SourceType", (int)sourceType);
+
+                        SourceLocation result = null;
+
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                        {
+                            // local sources
+
+                            if (!rdr.HasRows)
+                            {
+                                throw new Exception("Specifed source was not found in the database.");
+                            }
+
+                            await rdr.ReadAsync().ConfigureAwait(false);
+
+                            if (sourceType == SourceLocationType.Local)
+                            {
+                                result = new LocalSourceLocation()
+                                {
+                                    ID = rdr.GetInt32(0),
+                                    Path = rdr.GetString(1),
+                                    FileMatchFilter = rdr.GetString(2),
+                                    Priority = (FileBackupPriority)rdr.GetInt32(3),
+                                    RevisionCount = rdr.GetInt32(4),
+                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5),
+                                    DestinationContainerName = rdr.IsDBNull(6) ? null : rdr.GetString(6)
+                                };
+                            }
+                            else if (sourceType == SourceLocationType.Network)
+                            {
+                                result = new NetworkSourceLocation()
+                                {
+                                    ID = rdr.GetInt32(0),
+                                    Path = rdr.GetString(1),
+                                    FileMatchFilter = rdr.GetString(2),
+                                    Priority = (FileBackupPriority)rdr.GetInt32(3),
+                                    RevisionCount = rdr.GetInt32(4),
+                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5),
+                                    CredentialName = rdr.GetString(6),
+                                    IsConnected = rdr.GetBoolean(7),
+                                    IsFailed = rdr.GetBoolean(8),
+                                    LastConnectionCheck = rdr.IsDBNull(9) ? (DateTime?)null : rdr.GetDateTime(9),
+                                    DestinationContainerName = rdr.IsDBNull(10) ? null : rdr.GetString(10)
+                                };
+                            }
+                            else
+                            {
+                                throw new NotImplementedException("Unexpected source location type specified: " + sourceType);
+                            }
+                        }
+
+                        return result;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Returns all source locations defined in the database.
         /// </summary>
         /// <returns><c>SourceLocations</c></returns>
@@ -827,7 +914,8 @@ namespace OzetteLibrary.Database.SQLServer
                                     FileMatchFilter = rdr.GetString(2),
                                     Priority = (FileBackupPriority)rdr.GetInt32(3),
                                     RevisionCount = rdr.GetInt32(4),
-                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5)
+                                    LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5),
+                                    DestinationContainerName = rdr.IsDBNull(6) ? null : rdr.GetString(6)
                                 });
                             }
 
@@ -848,7 +936,8 @@ namespace OzetteLibrary.Database.SQLServer
                                         CredentialName = rdr.GetString(6),
                                         IsConnected = rdr.GetBoolean(7),
                                         IsFailed = rdr.GetBoolean(8),
-                                        LastConnectionCheck = rdr.IsDBNull(9) ? (DateTime?)null : rdr.GetDateTime(9)
+                                        LastConnectionCheck = rdr.IsDBNull(9) ? (DateTime?)null : rdr.GetDateTime(9),
+                                        DestinationContainerName = rdr.IsDBNull(10) ? null : rdr.GetString(10)
                                     });
                                 }
                             }
@@ -904,6 +993,15 @@ namespace OzetteLibrary.Database.SQLServer
                             {
                                 cmd.Parameters.AddWithValue("@LastCompletedScan", lsl.LastCompletedScan);
                             }
+
+                            if (lsl.DestinationContainerName == null)
+                            {
+                                cmd.Parameters.AddWithValue("@DestinationContainerName", DBNull.Value);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@DestinationContainerName", lsl.DestinationContainerName);
+                            }
                         }
                         else if (Location is NetworkSourceLocation)
                         {
@@ -937,6 +1035,15 @@ namespace OzetteLibrary.Database.SQLServer
                             else
                             {
                                 cmd.Parameters.AddWithValue("@LastConnectionCheck", nsl.LastConnectionCheck);
+                            }
+
+                            if (nsl.DestinationContainerName == null)
+                            {
+                                cmd.Parameters.AddWithValue("@DestinationContainerName", DBNull.Value);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@DestinationContainerName", nsl.DestinationContainerName);
                             }
                         }
                         else
@@ -1064,8 +1171,9 @@ namespace OzetteLibrary.Database.SQLServer
         /// If no files need to be backed up, return null.
         /// </remarks>
         /// <param name="EngineInstanceID">The engine instance.</param>
+        /// <param name="Priority">The file backup priority</param>
         /// <returns><c>BackupFile</c></returns>
-        public async Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID)
+        public async Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID, FileBackupPriority Priority)
         {
             try
             {
@@ -1079,6 +1187,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@EngineInstanceID", EngineInstanceID);
+                        cmd.Parameters.AddWithValue("@Priority", Priority);
 
                         using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                         {
@@ -1098,11 +1207,13 @@ namespace OzetteLibrary.Database.SQLServer
                                     FileHash = rdr.IsDBNull(7) ? null : (byte[])rdr["FileHash"], // special handling for varbinary column
                                     FileHashString = rdr.IsDBNull(8) ? null : rdr.GetString(8),
                                     Priority = (FileBackupPriority)rdr.GetInt32(9),
-                                    FileRevisionNumber = rdr.GetInt32(10),
-                                    HashAlgorithmType = rdr.IsDBNull(11) ? null : rdr.GetString(11),
-                                    LastChecked = rdr.GetDateTime(12),
-                                    LastUpdated = rdr.GetDateTime(13),
-                                    OverallState = (FileStatus)rdr.GetInt32(14),
+                                    SourceID = rdr.GetInt32(10),
+                                    SourceType = (SourceLocationType)rdr.GetInt32(11),
+                                    FileRevisionNumber = rdr.GetInt32(12),
+                                    HashAlgorithmType = rdr.IsDBNull(13) ? null : rdr.GetString(13),
+                                    LastChecked = rdr.GetDateTime(14),
+                                    LastUpdated = rdr.GetDateTime(15),
+                                    OverallState = (FileStatus)rdr.GetInt32(16),
                                     CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
                                 };
 
@@ -1237,6 +1348,8 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@LastModified", File.LastModified);
                         cmd.Parameters.AddWithValue("@TotalFileBlocks", File.TotalFileBlocks);
                         cmd.Parameters.AddWithValue("@Priority", File.Priority);
+                        cmd.Parameters.AddWithValue("@SourceID", File.SourceID);
+                        cmd.Parameters.AddWithValue("@SourceType", File.SourceType);
 
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
@@ -1266,6 +1379,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@ID", File.FileID);
+                        cmd.Parameters.AddWithValue("@Priority", File.Priority);
 
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
@@ -1324,6 +1438,18 @@ namespace OzetteLibrary.Database.SQLServer
 
                             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                         }
+                    }
+
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.AddFileToBackupQueue";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", File.FileID);
+                        cmd.Parameters.AddWithValue("@Priority", File.Priority);
+
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -1563,6 +1689,7 @@ namespace OzetteLibrary.Database.SQLServer
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@ID", File.FileID);
+                        cmd.Parameters.AddWithValue("@Priority", File.Priority);
 
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }

@@ -19,6 +19,16 @@
         public const string LogFilesDirectory = "OZETTE_LOGFILESDIRECTORY";
 
         /// <summary>
+        /// The log files path setting.
+        /// </summary>
+        public const string LogFilesArchiveDirectory = "OZETTE_LOGFILESARCHIVEDIRECTORY";
+
+        /// <summary>
+        /// The log files retention setting.
+        /// </summary>
+        public const string LogFilesRetentionInDays = "OZETTE_LOGFILESRETENTIONINDAYS";
+
+        /// <summary>
         /// The database directory path setting.
         /// </summary>
         public const string DatabaseDirectory = "OZETTE_DATABASEDIRECTORY";
@@ -27,6 +37,11 @@
         /// The database backups directory path setting.
         /// </summary>
         public const string DatabaseBackupsDirectory = "OZETTE_DATABASEBACKUPSDIRECTORY";
+
+        /// <summary>
+        /// The database backups retention in days.
+        /// </summary>
+        public const string DatabaseBackupsRetentionInDays = "OZETTE_DATABASEBACKUPSRETENTIONINDAYS";
 
         /// <summary>
         /// The installation directory path.

@@ -70,6 +70,51 @@ namespace OzetteLibrary.ServiceCore
         }
 
         /// <summary>
+        /// The log files archive directory.
+        /// </summary>
+        public static string LogFilesArchiveDirectory
+        {
+            get
+            {
+                return GetCoreStringSetting(BootstrapSettingNames.LogFilesArchiveDirectory);
+            }
+            set
+            {
+                SetCoreStringSetting(BootstrapSettingNames.LogFilesArchiveDirectory, value);
+            }
+        }
+
+        /// <summary>
+        /// The log files retention length.
+        /// </summary>
+        public static int LogFilesRetentionInDays
+        {
+            get
+            {
+                return GetCoreIntSetting(BootstrapSettingNames.LogFilesRetentionInDays);
+            }
+            set
+            {
+                SetCoreIntSetting(BootstrapSettingNames.LogFilesRetentionInDays, value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// The database backup files retention length.
+        /// </summary>
+        public static int DatabaseBackupsRetentionInDays
+        {
+            get
+            {
+                return GetCoreIntSetting(BootstrapSettingNames.DatabaseBackupsRetentionInDays);
+            }
+            set
+            {
+                SetCoreIntSetting(BootstrapSettingNames.DatabaseBackupsRetentionInDays, value.ToString());
+            }
+        }
+
+        /// <summary>
         /// The database directory.
         /// </summary>
         public static string DatabaseDirectory

@@ -114,13 +114,24 @@ namespace OzetteLibrary.StorageProviders.Azure
         /// Returns the status of a file as it exists (or doesn't) in Azure cloud storage.
         /// </summary>
         /// <param name="file"><c>BackupFile</c></param>
+        /// <param name="sourceLocation"><c>SourceLocation</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <returns><c>ProviderFileStatus</c></returns>
-        public async Task<StorageProviderFileStatus> GetFileStatusAsync(BackupFile file, DirectoryMapItem directory)
+        public async Task<StorageProviderFileStatus> GetFileStatusAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory)
         {
             // calculate my uri
+            string sasBlobUri = null;
 
-            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, directory.GetRemoteContainerName(StorageProviderTypes.Azure), file.GetRemoteFileName(StorageProviderTypes.Azure));
+            if (sourceLocation.Priority == FileBackupPriority.Meta)
+            {
+                // file has a specific destination container. this is reserved for meta folders.
+                // use that specific container and filename instead of a guid-based uri.
+                sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, sourceLocation.DestinationContainerName, file.Filename.ToLower());
+            }
+            else
+            {
+                sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, directory.GetRemoteContainerName(StorageProviderTypes.Azure), file.GetRemoteFileName(StorageProviderTypes.Azure));
+            }
 
             // the default state for a freshly initialized file status object is unsynced.
             // if the blob doesn't exist, the file is unsynced.
@@ -153,13 +164,25 @@ namespace OzetteLibrary.StorageProviders.Azure
         /// If this file is the only (or final) block in the file, the file should be committed and/or the transaction finalized.
         /// </remarks>
         /// <param name="file"><c>BackupFile</c></param>
+        /// <param name="sourceLocation"><c>SourceLocation</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <param name="data">A byte array stream of file contents/data.</param>
         /// <param name="currentBlockIndex">The block number associated with the specified data.</param>
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
-        public async Task UploadFileBlockAsync(BackupFile file, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks)
+        public async Task UploadFileBlockAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks)
         {
-            var containerName = directory.GetRemoteContainerName(StorageProviderTypes.Azure);
+            string containerName = null;
+
+            if (sourceLocation.Priority == FileBackupPriority.Meta)
+            {
+                // special handling for meta/reserved folders
+                containerName = sourceLocation.DestinationContainerName;
+            }
+            else
+            {
+                containerName = directory.GetRemoteContainerName(StorageProviderTypes.Azure);
+            }
+
             var containerUri = ProviderUtilities.GetContainerUri(AzureStorage.Credentials.AccountName, containerName);
             var currentBlockNumber = currentBlockIndex + 1;
 
@@ -168,10 +191,20 @@ namespace OzetteLibrary.StorageProviders.Azure
 
             await CreateBlobContainerIfMissingAsync(containerName, containerUri, directory).ConfigureAwait(false);
 
-            // calculate my uri
+            string blobName = null;
+            string sasBlobUri = null;
 
-            var blobName = file.GetRemoteFileName(StorageProviderTypes.Azure);
-            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, containerName, blobName);
+            if (sourceLocation.Priority == FileBackupPriority.Meta)
+            {
+                // special handling for meta/reserved folders
+                blobName = file.Filename.ToLower();
+                sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, sourceLocation.DestinationContainerName, blobName);
+            }
+            else
+            {
+                blobName = file.GetRemoteFileName(StorageProviderTypes.Azure);
+                sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, containerName, blobName);
+            }
 
             if (isFirstBlock)
             {
@@ -211,7 +244,14 @@ namespace OzetteLibrary.StorageProviders.Azure
                 {
                     // set blob tier access.
                     // we only need to set this one time, at the time the upload is completed.
-                    await blob.SetStandardBlobTierAsync(StandardBlobTier.Archive, null, MetaDataRequestOptions, null).ConfigureAwait(false);
+                    if (sourceLocation.Priority == FileBackupPriority.Meta)
+                    {
+                        await blob.SetStandardBlobTierAsync(StandardBlobTier.Cool, null, MetaDataRequestOptions, null).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await blob.SetStandardBlobTierAsync(StandardBlobTier.Archive, null, MetaDataRequestOptions, null).ConfigureAwait(false);
+                    }
                 }
 
                 Logger.WriteTraceMessage("File successfully uploaded to Azure storage: " + file.FullSourcePath);

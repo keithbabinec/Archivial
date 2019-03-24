@@ -51,6 +51,10 @@ namespace OzetteLibrary.Crypto
             {
                 return Generate64ByteFileHash(filePath);
             }
+            else if (priority == FileBackupPriority.Meta)
+            {
+                return Generate64ByteFileHash(filePath);
+            }
             else
             {
                 throw new NotImplementedException("Unexpected file backup priority type: " + priority);
@@ -247,6 +251,10 @@ namespace OzetteLibrary.Crypto
                 return HashAlgorithmName.SHA256;
             }
             else if (priority == FileBackupPriority.High)
+            {
+                return HashAlgorithmName.SHA512;
+            }
+            else if (priority == FileBackupPriority.Meta)
             {
                 return HashAlgorithmName.SHA512;
             }

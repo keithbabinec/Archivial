@@ -10,6 +10,7 @@
 	[IsConnected] BIT NOT NULL,
 	[IsFailed] BIT NOT NULL,
 	[LastConnectionCheck] DATETIME NULL,
+	[DestinationContainerName] NVARCHAR(256) NULL,
 
 	CONSTRAINT PK_NetworkSourceLocations_ID PRIMARY KEY ([ID]),
 	INDEX IDX_NetworkSourceLocations_Path ([Path])

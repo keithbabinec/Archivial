@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[RemoveFileFromBackupQueue]
 (
-	@ID				UNIQUEIDENTIFIER
+	@ID				UNIQUEIDENTIFIER,
+	@Priority		INT
 )
 AS
 BEGIN
@@ -14,6 +15,14 @@ BEGIN
 	BEGIN
 		;THROW 50000, 'ID must be populated.', 0
 	END
+	IF @Priority IS NULL
+	BEGIN
+		;THROW 50000, 'Priority must be populated.', 0
+	END
+	IF @Priority < 1 OR @Priority > 4
+	BEGIN
+		;THROW 50000, 'Priority must be within range (1-4).', 0
+	END
 
 	-- transaction
 	
@@ -21,8 +30,26 @@ BEGIN
 		
 		BEGIN TRANSACTION
 
-		DELETE FROM	[dbo].[BackupQueue]
-		WHERE		[dbo].[BackupQueue].[FileID] = @ID
+		IF @Priority = 1
+		BEGIN
+			DELETE FROM	[dbo].[LowPriBackupFilesQueue]
+			WHERE [dbo].[LowPriBackupFilesQueue].[FileID] = @ID
+		END
+		ELSE IF @Priority = 2
+		BEGIN
+			DELETE FROM	[dbo].[MedPriBackupFilesQueue]
+			WHERE [dbo].[MedPriBackupFilesQueue].[FileID] = @ID
+		END
+		ELSE IF @Priority = 3
+		BEGIN
+			DELETE FROM	[dbo].[HighPriBackupFilesQueue]
+			WHERE [dbo].[HighPriBackupFilesQueue].[FileID] = @ID
+		END
+		ELSE IF @Priority = 4
+		BEGIN
+			DELETE FROM	[dbo].[MetaFilesQueue]
+			WHERE [dbo].[MetaFilesQueue].[FileID] = @ID
+		END
 
 		COMMIT TRANSACTION
 

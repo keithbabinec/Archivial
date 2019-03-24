@@ -89,7 +89,6 @@
     <Build Include="Stored Procedures\SetCopyState.sql" />
     <Build Include="Stored Procedures\FindBackupFile.sql" />
     <Build Include="Stored Procedures\FindNextFileToBackup.sql" />
-    <Build Include="Tables\BackupQueue.sql" />
     <Build Include="Stored Procedures\AddBackupFile.sql" />
     <Build Include="Stored Procedures\ResetBackupFile.sql" />
     <Build Include="Stored Procedures\SetBackupFileLastScanned.sql" />
@@ -104,6 +103,11 @@
     <Build Include="Tables\ClientDatabaseBackupStatus.sql" />
     <Build Include="Stored Procedures\GetClientDatabaseBackupStatus.sql" />
     <Build Include="Stored Procedures\SetClientDatabaseBackupCompleted.sql" />
+    <Build Include="Tables\MetaFilesQueue.sql" />
+    <Build Include="Tables\LowPriBackupFilesQueue.sql" />
+    <Build Include="Tables\MedPriBackupFilesQueue.sql" />
+    <Build Include="Tables\HighPriBackupFilesQueue.sql" />
+    <Build Include="Stored Procedures\GetSourceLocation.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
