@@ -338,10 +338,45 @@ namespace OzetteLibrary.Files
         /// <summary>
         /// Updates the known local provider state if it doesn't match the remote state.
         /// </summary>
-        /// <param name="providerState"></param>
-        public bool UpdateLocalStateIfRemoteStateDoesNotMatch(StorageProviderFileStatus providerState)
+        /// <param name="remoteState"></param>
+        public bool UpdateLocalStateIfRemoteStateDoesNotMatch(StorageProviderFileStatus remoteState)
         {
-            throw new NotImplementedException();
+            if (CopyState == null)
+            {
+                throw new InvalidOperationException("Unable to compare copy state, it is not populated when it should be.");
+            }
+
+            var hasChanged = false;
+
+            if (CopyState.ContainsKey(remoteState.Provider))
+            {
+                var localState = CopyState[remoteState.Provider];
+
+                if (localState.SyncStatus != remoteState.SyncStatus)
+                {
+                    hasChanged = true;
+                }
+                else if (localState.HydrationStatus != remoteState.HydrationStatus)
+                {
+                    hasChanged = true;
+                }
+                else if (localState.LastCompletedFileBlockIndex != remoteState.LastCompletedFileBlockIndex)
+                {
+                    hasChanged = true;
+                }
+            }
+            else
+            {
+                hasChanged = true;
+            }
+
+            if (hasChanged)
+            {
+                CopyState[remoteState.Provider] = remoteState;
+                SetOverallStateFromCopyState();
+            }
+
+            return hasChanged;
         }
 
         /// <summary>

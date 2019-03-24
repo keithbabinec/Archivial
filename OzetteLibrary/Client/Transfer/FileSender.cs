@@ -222,6 +222,8 @@ namespace OzetteLibrary.Client.Transfer
             // > double check that we haven't already transferred this whole file.
             // > this avoids a full upload if for some reason we have lost our client database state.
 
+            bool stateChanged = false;
+
             foreach (var provider in Providers)
             {
                 var directory = await Database.GetDirectoryMapItemAsync(file.Directory).ConfigureAwait(false);
@@ -232,11 +234,14 @@ namespace OzetteLibrary.Client.Transfer
 
                 if (file.UpdateLocalStateIfRemoteStateDoesNotMatch(providerState))
                 {
-                    Logger.WriteTraceMessage(string.Format(
-                        "Found a sync mismatch. The provider state [{0}] does not match local status, updating now.", provider.Key), InstanceID);
-
-                    await Database.UpdateBackupFileCopyStateAsync(file).ConfigureAwait(false);
+                    stateChanged = true;
                 }
+            }
+
+            if (stateChanged)
+            {
+                Logger.WriteTraceMessage("Found a sync mismatch. A provider state does not match local status, updating now.", InstanceID);
+                await Database.UpdateBackupFileCopyStateAsync(file).ConfigureAwait(false);
             }
         }
 
