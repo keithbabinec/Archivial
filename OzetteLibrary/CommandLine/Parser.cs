@@ -29,11 +29,7 @@ namespace OzetteLibrary.CommandLine
 
             var baseCommand = args[0].ToLower();
 
-            if (baseCommand == "install")
-            {
-                return ParseInstallArgs(args, out parsed);
-            }
-            else if (baseCommand == "configure-azure")
+            if (baseCommand == "configure-azure")
             {
                 return ParseConfigureAzureArgs(args, out parsed);
             }
@@ -99,32 +95,6 @@ namespace OzetteLibrary.CommandLine
                 parsed = null;
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Parses the provided arguments into an <c>InstallationArguments</c> object.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="parsed"></param>
-        /// <returns></returns>
-        private bool ParseInstallArgs(string[] args, out ArgumentBase parsed)
-        {
-            // initialize args object with default
-            var installArgs = new InstallationArguments();
-            var map = ExtractArguments(args);
-
-            if (map.ContainsKey("installdirectory"))
-            {
-                installArgs.InstallDirectory = map["installdirectory"];
-            }
-            else
-            {
-                // apply default
-                installArgs.InstallDirectory = Constants.CommandLine.DefaultInstallLocation;
-            }
-
-            parsed = installArgs;
-            return true;
         }
 
         /// <summary>

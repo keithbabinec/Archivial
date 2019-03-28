@@ -116,7 +116,6 @@
     <Compile Include="Client\ScanEngine.tests.cs" />
     <Compile Include="Client\Sources\Scanner.tests.cs" />
     <Compile Include="Client\StatusEngine.tests.cs" />
-    <Compile Include="CommandLine\Parser.tests.cs" />
     <Compile Include="Crypto\Hasher.tests.cs" />
     <Compile Include="Database\DatabaseBackupScheduler.tests.cs" />
     <Compile Include="Files\BackupFile.tests.cs" />
