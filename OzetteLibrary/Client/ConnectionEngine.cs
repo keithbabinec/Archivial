@@ -130,6 +130,16 @@ namespace OzetteLibrary.Client
 
             // force disconnect and reconnect
 
+            if (netSource.CredentialName == null)
+            {
+                Logger.WriteTraceError(string.Format(
+                    "Unable to connect to network source location: {0}.",
+                    netSource.Path, netSource.CredentialName));
+
+                await UpdateNetSourceConnectionStateAsync(netSource, false, true).ConfigureAwait(false);
+                return;
+            }
+
             Logger.WriteTraceMessage("Attempting to connect to network source location: " + netSource.Path);
 
             var creds = await GetNetSourceCredentialsAsync(netSource.CredentialName).ConfigureAwait(false);

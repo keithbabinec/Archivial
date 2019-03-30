@@ -160,6 +160,54 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
+        /// Deletes the database.
+        /// </summary>
+        /// <returns></returns>
+        public async Task DeleteClientDatabaseAsync()
+        {
+            // note: this method is not async because it runs from the PowerShell module, and had problems running in async.
+
+            using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultSqlExpressInstanceConnectionString))
+            {
+                sqlcon.Open();
+
+                bool databasePresent = false;
+
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = sqlcon;
+                    cmd.CommandText = string.Format("SELECT 1 FROM sys.databases WHERE [Name] = '{0}'", Constants.Database.DatabaseName);
+                    cmd.CommandType = System.Data.CommandType.Text;
+
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.HasRows)
+                        {
+                            databasePresent = true;
+                        }
+                    }
+                }
+
+                // delete the database, if present.
+
+                if (databasePresent)
+                {
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+
+                        var createDbCommand = string.Format("ALTER DATABASE [{0}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];", Constants.Database.DatabaseName);
+
+                        cmd.CommandText = createDbCommand;
+                        cmd.CommandType = System.Data.CommandType.Text;
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Creates a backup of the database.
         /// </summary>
         /// <param name="BackupType">The type of backup to perform.</param>
@@ -859,7 +907,7 @@ namespace OzetteLibrary.Database.SQLServer
                                     Priority = (FileBackupPriority)rdr.GetInt32(3),
                                     RevisionCount = rdr.GetInt32(4),
                                     LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5),
-                                    CredentialName = rdr.GetString(6),
+                                    CredentialName = rdr.IsDBNull(6) ? null : rdr.GetString(6),
                                     IsConnected = rdr.GetBoolean(7),
                                     IsFailed = rdr.GetBoolean(8),
                                     LastConnectionCheck = rdr.IsDBNull(9) ? (DateTime?)null : rdr.GetDateTime(9),
@@ -933,7 +981,7 @@ namespace OzetteLibrary.Database.SQLServer
                                         Priority = (FileBackupPriority)rdr.GetInt32(3),
                                         RevisionCount = rdr.GetInt32(4),
                                         LastCompletedScan = rdr.IsDBNull(5) ? (DateTime?)null : rdr.GetDateTime(5),
-                                        CredentialName = rdr.GetString(6),
+                                        CredentialName = rdr.IsDBNull(6) ? null : rdr.GetString(6),
                                         IsConnected = rdr.GetBoolean(7),
                                         IsFailed = rdr.GetBoolean(8),
                                         LastConnectionCheck = rdr.IsDBNull(9) ? (DateTime?)null : rdr.GetDateTime(9),
@@ -1025,6 +1073,16 @@ namespace OzetteLibrary.Database.SQLServer
                             }
 
                             cmd.Parameters.AddWithValue("@CredentialName", nsl.CredentialName);
+
+                            if (nsl.CredentialName == null)
+                            {
+                                cmd.Parameters.AddWithValue("@CredentialName", DBNull.Value);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@CredentialName", nsl.CredentialName);
+                            }
+
                             cmd.Parameters.AddWithValue("@IsConnected", nsl.IsConnected);
                             cmd.Parameters.AddWithValue("@IsFailed", nsl.IsFailed);
 

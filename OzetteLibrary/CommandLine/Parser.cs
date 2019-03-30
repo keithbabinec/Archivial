@@ -37,10 +37,6 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseConfigureTwilioArgs(args, out parsed);
             }
-            else if (baseCommand == "add-netsource")
-            {
-                return ParseAddNetSourceArgs(args, out parsed);
-            }
             else if (baseCommand == "add-netcredential")
             {
                 return ParseAddNetCredentialArgs(args, out parsed);
@@ -258,91 +254,6 @@ namespace OzetteLibrary.CommandLine
             }
 
             parsed = configArgs;
-            return true;
-        }
-
-        /// <summary>
-        /// Parses the provided arguments into an <c>AddNetSourceArguments</c> object.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="parsed"></param>
-        /// <returns></returns>
-        private bool ParseAddNetSourceArgs(string[] args, out ArgumentBase parsed)
-        {
-            // initialize args object with default
-            var sourceArgs = new AddNetSourceArguments();
-            var map = ExtractArguments(args);
-
-            if (map.ContainsKey("uncpath"))
-            {
-                sourceArgs.UncPath = map["uncpath"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            if (map.ContainsKey("credentialname"))
-            {
-                // optional argument (not all net shares are authenticated)
-                sourceArgs.CredentialName = map["credentialname"];
-            }
-
-            if (map.ContainsKey("priority"))
-            {
-                var priority = map["priority"];
-                FileBackupPriority parsedPriority;
-
-                if (Enum.TryParse(priority, true, out parsedPriority))
-                {
-                    sourceArgs.Priority = parsedPriority;
-                }
-                else
-                {
-                    // an optional argument was specified, but was not given a valid value.
-                    throw new SourceLocationInvalidFileBackupPriorityException();
-                }
-            }
-            else
-            {
-                // apply default
-                sourceArgs.Priority = Constants.CommandLine.DefaultSourcePriority;
-            }
-
-            if (map.ContainsKey("revisions"))
-            {
-                var revisions = map["revisions"];
-                int parsedRevisions;
-
-                if (int.TryParse(revisions, out parsedRevisions))
-                {
-                    sourceArgs.Revisions = parsedRevisions;
-                }
-                else
-                {
-                    // an optional argument was specified, but was not given a valid value.
-                    throw new SourceLocationInvalidRevisionCountException();
-                }
-            }
-            else
-            {
-                // apply default
-                sourceArgs.Revisions = Constants.CommandLine.DefaultSourceRevisionCount;
-            }
-
-            if (map.ContainsKey("matchfilter"))
-            {
-                sourceArgs.Matchfilter = map["matchfilter"];
-            }
-            else
-            {
-                // apply default
-                sourceArgs.Matchfilter = Constants.CommandLine.DefaultSourceMatchFilter;
-            }
-
-            parsed = sourceArgs;
             return true;
         }
 

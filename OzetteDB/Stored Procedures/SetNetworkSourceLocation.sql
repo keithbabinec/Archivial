@@ -5,7 +5,7 @@
 	@Priority					INT,
 	@RevisionCount				INT,
 	@LastCompletedScan			DATETIME NULL,
-	@CredentialName				NVARCHAR(256),
+	@CredentialName				NVARCHAR(256) NULL,
 	@IsConnected				BIT,
 	@IsFailed					BIT,
 	@LastConnectionCheck		DATETIME NULL,
@@ -37,11 +37,6 @@ BEGIN
 	IF @RevisionCount IS NULL
 	BEGIN
 		;THROW 50000, 'RevisionCount must be populated.', 0
-	END
-
-	IF @CredentialName IS NULL
-	BEGIN
-		;THROW 50000, 'CredentialName must be populated.', 0
 	END
 
 	IF @IsConnected IS NULL

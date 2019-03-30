@@ -6,7 +6,7 @@ using System.Management.Automation;
 
 namespace OzettePowerShell.Functions.Public
 {
-    [Cmdlet(VerbsLifecycle.Install, "OzetteCloudBackup")]
+    [Cmdlet(VerbsLifecycle.Install, "OzetteCloudBackup", ConfirmImpact = ConfirmImpact.High, SupportsShouldProcess = true)]
     public class InstallOzetteCloudBackupCommand : BaseOzetteCmdlet
     {
         [Parameter(Mandatory = false)]

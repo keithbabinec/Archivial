@@ -20,6 +20,12 @@ namespace OzetteLibrary.Database
         Task PrepareDatabaseAsync();
 
         /// <summary>
+        /// Deletes the database.
+        /// </summary>
+        /// <returns></returns>
+        Task DeleteClientDatabaseAsync();
+
+        /// <summary>
         /// Creates a backup of the database.
         /// </summary>
         /// <param name="BackupType">The type of backup to perform.</param>
