@@ -10,7 +10,8 @@ namespace OzettePowerShell.Functions.Public
     public class InstallOzetteCloudBackupCommand : BaseOzetteCmdlet
     {
         [Parameter(Mandatory = false)]
-        public string InstallDirectory { get; set; }
+        [ValidateNotNullOrEmpty]
+        public string InstallDirectory = OzetteLibrary.Constants.CommandLine.DefaultInstallLocation;
 
         public InstallOzetteCloudBackupCommand()
         {
@@ -23,10 +24,6 @@ namespace OzettePowerShell.Functions.Public
             if (!Elevation.IsRunningElevated())
             {
                 throw new CmdletNotElevatedException("This cmdlet requires elevated (run-as administrator) privileges. Please re-launch the cmdlet in an elevated window.");
-            }
-            if (string.IsNullOrWhiteSpace(InstallDirectory))
-            {
-                InstallDirectory = OzetteLibrary.Constants.CommandLine.DefaultInstallLocation;
             }
 
             WriteVerbose("Starting Ozette Cloud Backup installation.");

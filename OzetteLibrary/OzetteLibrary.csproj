@@ -95,13 +95,11 @@
     <Compile Include="Client\Transfer\FileSender.cs" />
     <Compile Include="CommandLine\Arguments\AddNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Arguments\AddNetSourceArguments.cs" />
-    <Compile Include="CommandLine\Arguments\AddLocalSourceArguments.cs" />
     <Compile Include="CommandLine\Arguments\ConfigureTwilioArguments.cs" />
     <Compile Include="CommandLine\Arguments\ListNetCredentialsArguments.cs" />
     <Compile Include="CommandLine\Arguments\RemoveNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Arguments\RescanSourceArguments.cs" />
     <Compile Include="CommandLine\Arguments\ShowStatusArguments.cs" />
-    <Compile Include="CommandLine\Commands\AddLocalSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\AddNetCredentialCommand.cs" />
     <Compile Include="CommandLine\Commands\AddNetSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\ConfigureAzureCommand.cs" />

@@ -37,10 +37,6 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseConfigureTwilioArgs(args, out parsed);
             }
-            else if (baseCommand == "add-localsource")
-            {
-                return ParseAddLocalSourceArgs(args, out parsed);
-            }
             else if (baseCommand == "add-netsource")
             {
                 return ParseAddNetSourceArgs(args, out parsed);
@@ -268,85 +264,6 @@ namespace OzetteLibrary.CommandLine
             }
 
             parsed = configArgs;
-            return true;
-        }
-
-        /// <summary>
-        /// Parses the provided arguments into an <c>AddLocalSourceArguments</c> object.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="parsed"></param>
-        /// <returns></returns>
-        private bool ParseAddLocalSourceArgs(string[] args, out ArgumentBase parsed)
-        {
-            // initialize args object with default
-            var sourceArgs = new AddLocalSourceArguments();
-            var map = ExtractArguments(args);
-
-            if (map.ContainsKey("folderpath"))
-            {
-                sourceArgs.FolderPath = map["folderpath"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            if (map.ContainsKey("priority"))
-            {
-                var priority = map["priority"];
-                FileBackupPriority parsedPriority;
-
-                if (Enum.TryParse(priority, true, out parsedPriority))
-                {
-                    sourceArgs.Priority = parsedPriority;
-                }
-                else
-                {
-                    // an optional argument was specified, but was not given a valid value.
-                    throw new SourceLocationInvalidFileBackupPriorityException();
-                }
-            }
-            else
-            {
-                // apply default
-                sourceArgs.Priority = Constants.CommandLine.DefaultSourcePriority;
-            }
-
-            if (map.ContainsKey("revisions"))
-            {
-                var revisions = map["revisions"];
-                int parsedRevisions;
-
-                if (int.TryParse(revisions, out parsedRevisions))
-                {
-                    sourceArgs.Revisions = parsedRevisions;
-                }
-                else
-                {
-                    // an optional argument was specified, but was not given a valid value.
-                    throw new SourceLocationInvalidRevisionCountException();
-                }
-            }
-            else
-            {
-                // apply default
-                sourceArgs.Revisions = Constants.CommandLine.DefaultSourceRevisionCount;
-            }
-
-            if (map.ContainsKey("matchfilter"))
-            {
-                sourceArgs.Matchfilter = map["matchfilter"];
-            }
-            else
-            {
-                // apply default
-                sourceArgs.Matchfilter = Constants.CommandLine.DefaultSourceMatchFilter;
-            }
-
-            parsed = sourceArgs;
             return true;
         }
 
