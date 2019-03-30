@@ -48,6 +48,8 @@
     <Compile Include="Exceptions\CmdletNotElevatedException.cs" />
     <Compile Include="Functions\Private\BaseOzetteCmdlet.cs" />
     <Compile Include="Functions\Public\AddOzetteLocalSourceCommand.cs" />
+    <Compile Include="Functions\Public\GetOzetteLocalSourcesCommand.cs" />
+    <Compile Include="Functions\Public\GetOzetteNetworkSourcesCommand.cs" />
     <Compile Include="Functions\Public\InstallOzetteCloudBackupCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\Elevation.cs" />

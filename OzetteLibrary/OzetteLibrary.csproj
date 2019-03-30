@@ -107,14 +107,12 @@
     <Compile Include="CommandLine\Commands\ICommand.cs" />
     <Compile Include="CommandLine\Commands\ListNetCredentialsCommand.cs" />
     <Compile Include="CommandLine\Commands\ListProvidersCommand.cs" />
-    <Compile Include="CommandLine\Commands\ListSourcesCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveNetCredentialCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveProviderCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\RequiresElevation.cs" />
     <Compile Include="CommandLine\Arguments\ConfigureAzureArguments.cs" />
     <Compile Include="CommandLine\Arguments\ListProvidersArguments.cs" />
-    <Compile Include="CommandLine\Arguments\ListSourcesArguments.cs" />
     <Compile Include="CommandLine\Commands\RescanSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\ShowStatusCommand.cs" />
     <Compile Include="CommandLine\Parser.cs" />
