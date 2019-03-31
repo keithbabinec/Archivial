@@ -41,43 +41,12 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseRemoveProviderArgs(args, out parsed);
             }
-            else if (baseCommand == "remove-netcredential")
-            {
-                return ParseRemoveNetCredentialArgs(args, out parsed);
-            }
             else
             {
                 // unexpected/no base command provided.
                 parsed = null;
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Parses the provided arguments into an <c>RemoveNetCredentialArguments</c> object.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="parsed"></param>
-        /// <returns></returns>
-        private bool ParseRemoveNetCredentialArgs(string[] args, out ArgumentBase parsed)
-        {
-            // initialize args object with default
-            var configArgs = new RemoveNetCredentialArguments();
-            var map = ExtractArguments(args);
-
-            if (map.ContainsKey("credentialname"))
-            {
-                configArgs.CredentialName = map["credentialname"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            parsed = configArgs;
-            return true;
         }
 
         /// <summary>

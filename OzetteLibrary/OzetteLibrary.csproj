@@ -93,10 +93,8 @@
     <Compile Include="Client\CoreServiceEngine.cs" />
     <Compile Include="Client\StatusEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
-    <Compile Include="CommandLine\Arguments\RemoveNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Arguments\RescanSourceArguments.cs" />
     <Compile Include="CommandLine\Commands\ICommand.cs" />
-    <Compile Include="CommandLine\Commands\RemoveNetCredentialCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveProviderCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\RescanSourceCommand.cs" />
