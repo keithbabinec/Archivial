@@ -64,6 +64,9 @@ namespace OzettePowerShell.Functions.Public
             WriteVerboseAndProgress(85, "Starting OzetteCloudBackup Windows Service.");
             Installation.StartClientService();
 
+            WriteVerboseAndProgress(90, "Waiting for OzetteCloudBackup Windows Service to finish initializing.");
+            Installation.WaitForFirstTimeSetup();
+
             WriteVerboseAndProgress(100, "Installation completed.");
         }
     }

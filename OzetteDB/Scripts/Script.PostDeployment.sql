@@ -56,7 +56,7 @@ END
 
 RAISERROR ('Adding database directory source.', 0, 1) WITH NOWAIT
 
-DECLARE @DatabaseBackupPath NVARCHAR(255) = 'C:\Program Files\Ozette Cloud Backup\Client\Database\Backups'
+DECLARE @DatabaseBackupPath NVARCHAR(255) = 'C:\Program Files\Ozette Cloud Backup\Database\Backups'
 
 IF NOT EXISTS (SELECT 1 FROM [dbo].[LocalSourceLocations] WHERE [Path] = @DatabaseBackupPath)
 BEGIN
@@ -80,7 +80,7 @@ BEGIN
 	)
 END
 
-DECLARE @LogArchivePath NVARCHAR(255) = 'C:\Program Files\Ozette Cloud Backup\Client\Logs\Archive'
+DECLARE @LogArchivePath NVARCHAR(255) = 'C:\Program Files\Ozette Cloud Backup\Logs\Archive'
 
 IF NOT EXISTS (SELECT 1 FROM [dbo].[LocalSourceLocations] WHERE [Path] = @LogArchivePath)
 BEGIN

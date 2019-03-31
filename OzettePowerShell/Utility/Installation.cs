@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.ServiceProcess;
+using System.Threading;
 
 namespace OzettePowerShell.Utility
 {
@@ -215,6 +216,40 @@ namespace OzettePowerShell.Utility
             if (startService.ExitCode != 0)
             {
                 throw new Exception("Failed to start the windows service. Sc.exe returned an error code: " + startService.ExitCode);
+            }
+        }
+
+        /// <summary>
+        /// Waits until the first time setup/init is completed.
+        /// </summary>
+        /// <remarks>
+        /// First time setup is done once the database is initialized, so check for the required publish flag/option state.
+        /// </remarks>
+        public static void WaitForFirstTimeSetup()
+        {
+            var Timeout = DateTime.Now.Add(TimeSpan.FromMinutes(10));
+
+            while (true)
+            {
+                if (CoreSettings.DatabasePublishIsRequired)
+                {
+                    // setup is still running.
+
+                    if (DateTime.Now > Timeout)
+                    {
+                        // we have exceeded the timeout.
+                        throw new System.TimeoutException("The Ozette Cloud Backup service has failed to initialize within the expected timeframe (10 minutes). There may be a problem with the service, please see the logs for details.");
+                    }
+                    else
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(2));
+                    }
+                }
+                else
+                {
+                    // setup has finished.
+                    break;
+                }
             }
         }
     }
