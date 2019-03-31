@@ -29,13 +29,7 @@ namespace OzetteLibrary.CommandLine
 
             var baseCommand = args[0].ToLower();
 
-            if (baseCommand == "list-providers")
-            {
-                // command has no additional arguments
-                parsed = new ListProvidersArguments();
-                return true;
-            }
-            else if (baseCommand == "remove-source")
+            if (baseCommand == "remove-source")
             {
                 return ParseRemoveSourceArgs(args, out parsed);
             }

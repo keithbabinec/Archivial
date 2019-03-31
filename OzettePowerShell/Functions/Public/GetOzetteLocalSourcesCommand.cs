@@ -1,5 +1,6 @@
 ﻿using OzetteLibrary.Folders;
 using OzettePowerShell.Utility;
+using System.Linq;
 using System.Management.Automation;
 
 namespace OzettePowerShell.Functions.Public
@@ -15,14 +16,13 @@ namespace OzettePowerShell.Functions.Public
 
             var allSources = db.GetSourceLocationsAsync().GetAwaiter().GetResult();
 
-            WriteVerbose("Writing output results to pipeline.");
+            var filtered = allSources.Where(x => x is LocalSourceLocation).ToArray();
 
-            foreach (var source in allSources)
+            WriteVerbose(string.Format("Writing output results to pipeline (Objects: {0})", filtered.Length));
+
+            foreach (var source in filtered)
             {
-                if (source is LocalSourceLocation)
-                {
-                    WriteObject(source);
-                }
+                WriteObject(source);
             }
         }
     }

@@ -14,7 +14,7 @@ namespace OzettePowerShell.Functions.Public
 
             var allNetCreds = db.GetNetCredentialsAsync().GetAwaiter().GetResult();
 
-            WriteVerbose("Writing output results to pipeline.");
+            WriteVerbose(string.Format("Writing output results to pipeline (Objects: {0})", allNetCreds.Count));
 
             foreach (var netCred in allNetCreds)
             {

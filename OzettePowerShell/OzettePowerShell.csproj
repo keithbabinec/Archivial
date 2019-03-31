@@ -49,6 +49,7 @@
     <Compile Include="Exceptions\CmdletExecutionNotApprovedException.cs" />
     <Compile Include="Exceptions\CmdletNotElevatedException.cs" />
     <Compile Include="Functions\Public\GetOzetteNetworkCredentialsCommand.cs" />
+    <Compile Include="Functions\Public\GetOzetteProvidersCommand.cs" />
     <Compile Include="Functions\Public\SetOzetteAzureProviderOptionsCommand.cs" />
     <Compile Include="Functions\Public\SetOzetteTwilioProviderOptionsCommand.cs" />
     <Compile Include="Utility\BaseOzetteCmdlet.cs" />
