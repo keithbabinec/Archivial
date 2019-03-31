@@ -13,6 +13,9 @@ namespace OzettePowerShell.Functions.Public
         [ValidateNotNullOrEmpty]
         public string InstallDirectory = OzetteLibrary.Constants.CommandLine.DefaultInstallLocation;
 
+        [Parameter(Mandatory = false)]
+        public SwitchParameter Force = false;
+
         public InstallOzetteCloudBackupCommand()
         {
             ActivityName = "Installation";
@@ -24,6 +27,10 @@ namespace OzettePowerShell.Functions.Public
             if (!Elevation.IsRunningElevated())
             {
                 throw new CmdletNotElevatedException("This cmdlet requires elevated (run-as administrator) privileges. Please re-launch the cmdlet in an elevated window.");
+            }
+            if (!Force && !ShouldProcess("Installing Ozette Cloud Backup Software", "Are you sure that you would like to install the Ozette Cloud Backup software?", "Install Ozette Cloud Backup"))
+            {
+                throw new CmdletExecutionNotApprovedException("This action must be approved (or provide the -force switch) to run.");
             }
 
             WriteVerbose("Starting Ozette Cloud Backup installation.");

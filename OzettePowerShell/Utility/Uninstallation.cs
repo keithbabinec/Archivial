@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.ServiceProcess;
+using System.Threading;
 
 namespace OzettePowerShell.Utility
 {
@@ -86,16 +87,42 @@ namespace OzettePowerShell.Utility
         /// </summary>
         public static void DeleteInstallationDirectories()
         {
-            if (Directory.Exists(CoreSettings.InstallationDirectory))
+            var installDirectory = CoreSettings.InstallationDirectory;
+            int attempts = 0;
+
+            while (true)
             {
-                Directory.Delete(CoreSettings.InstallationDirectory, true);
+                try
+                {
+                    if (Directory.Exists(installDirectory))
+                    {
+                        Directory.Delete(installDirectory, true);
+                        break;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                catch (Exception)
+                {
+                    if (attempts > 5)
+                    {
+                        throw;
+                    }
+                    else
+                    {
+                        attempts++;
+                        Thread.Sleep(TimeSpan.FromSeconds(5));
+                    }
+                }
             }
         }
 
         /// <summary>
         /// Removes the event log source.
         /// </summary>
-        public static void DeleteEventLogSource()
+        public static void DeleteEventLogContents()
         {
             if (EventLog.Exists(CoreSettings.EventlogName))
             {

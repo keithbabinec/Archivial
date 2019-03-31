@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\CmdletExecutionNotApprovedException.cs" />
     <Compile Include="Exceptions\CmdletNotElevatedException.cs" />
     <Compile Include="Functions\Private\BaseOzetteCmdlet.cs" />
     <Compile Include="Functions\Public\AddOzetteLocalSourceCommand.cs" />
