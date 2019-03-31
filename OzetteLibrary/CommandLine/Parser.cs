@@ -29,15 +29,7 @@ namespace OzetteLibrary.CommandLine
 
             var baseCommand = args[0].ToLower();
 
-            if (baseCommand == "configure-azure")
-            {
-                return ParseConfigureAzureArgs(args, out parsed);
-            }
-            else if (baseCommand == "configure-twilio")
-            {
-                return ParseConfigureTwilioArgs(args, out parsed);
-            }
-            else if (baseCommand == "list-netcredentials")
+            if (baseCommand == "list-netcredentials")
             {
                 // command has no additional arguments
                 parsed = new ListNetCredentialsArguments();
@@ -79,104 +71,6 @@ namespace OzetteLibrary.CommandLine
             }
         }
 
-        /// <summary>
-        /// Parses the provided arguments into an <c>ConfigureAzureArguments</c> object.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="parsed"></param>
-        /// <returns></returns>
-        private bool ParseConfigureAzureArgs(string[] args, out ArgumentBase parsed)
-        {
-            // initialize args object with default
-            var configArgs = new ConfigureAzureArguments();
-            var map = ExtractArguments(args);
-
-            if (map.ContainsKey("azurestorageaccountname"))
-            {
-                configArgs.AzureStorageAccountName = map["azurestorageaccountname"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            if (map.ContainsKey("azurestorageaccounttoken"))
-            {
-                configArgs.AzureStorageAccountToken = map["azurestorageaccounttoken"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            parsed = configArgs;
-            return true;
-        }
-
-        /// <summary>
-        /// Parses the provided arguments into an <c>ConfigureTwilioArguments</c> object.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="parsed"></param>
-        /// <returns></returns>
-        private bool ParseConfigureTwilioArgs(string[] args, out ArgumentBase parsed)
-        {
-            // initialize args object with default
-            var configArgs = new ConfigureTwilioArguments();
-            var map = ExtractArguments(args);
-
-            if (map.ContainsKey("twilioaccountid"))
-            {
-                configArgs.TwilioAccountID = map["twilioaccountid"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            if (map.ContainsKey("twilioauthtoken"))
-            {
-                configArgs.TwilioAuthToken = map["twilioauthtoken"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            if (map.ContainsKey("twiliosourcephone"))
-            {
-                configArgs.TwilioSourcePhone = map["twiliosourcephone"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            if (map.ContainsKey("twiliodestinationphones"))
-            {
-                configArgs.TwilioDestinationPhones = map["twiliodestinationphones"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            parsed = configArgs;
-            return true;
-        }
-        
         /// <summary>
         /// Parses the provided arguments into an <c>RemoveNetCredentialArguments</c> object.
         /// </summary>
