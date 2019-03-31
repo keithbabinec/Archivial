@@ -1,5 +1,4 @@
 ﻿using OzettePowerShell.Exceptions;
-using OzettePowerShell.Functions.Private;
 using OzettePowerShell.Utility;
 using System.Management.Automation;
 

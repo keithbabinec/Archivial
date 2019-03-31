@@ -93,13 +93,11 @@
     <Compile Include="Client\CoreServiceEngine.cs" />
     <Compile Include="Client\StatusEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
-    <Compile Include="CommandLine\Arguments\AddNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Arguments\ConfigureTwilioArguments.cs" />
     <Compile Include="CommandLine\Arguments\ListNetCredentialsArguments.cs" />
     <Compile Include="CommandLine\Arguments\RemoveNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Arguments\RescanSourceArguments.cs" />
     <Compile Include="CommandLine\Arguments\ShowStatusArguments.cs" />
-    <Compile Include="CommandLine\Commands\AddNetCredentialCommand.cs" />
     <Compile Include="CommandLine\Commands\ConfigureAzureCommand.cs" />
     <Compile Include="CommandLine\Commands\ConfigureTwilioCommand.cs" />
     <Compile Include="CommandLine\Commands\ICommand.cs" />

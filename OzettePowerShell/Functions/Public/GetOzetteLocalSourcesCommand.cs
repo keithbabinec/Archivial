@@ -1,5 +1,5 @@
 ﻿using OzetteLibrary.Folders;
-using OzettePowerShell.Functions.Private;
+using OzettePowerShell.Utility;
 using System.Management.Automation;
 
 namespace OzettePowerShell.Functions.Public

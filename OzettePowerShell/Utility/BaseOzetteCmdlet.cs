@@ -5,7 +5,7 @@ using OzetteLibrary.ServiceCore;
 using System;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Private
+namespace OzettePowerShell.Utility
 {
     public class BaseOzetteCmdlet : Cmdlet
     {

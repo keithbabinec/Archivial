@@ -1,7 +1,7 @@
 ﻿using OzetteLibrary.Exceptions;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
-using OzettePowerShell.Functions.Private;
+using OzettePowerShell.Utility;
 using System;
 using System.Linq;
 using System.Management.Automation;

@@ -37,10 +37,6 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseConfigureTwilioArgs(args, out parsed);
             }
-            else if (baseCommand == "add-netcredential")
-            {
-                return ParseAddNetCredentialArgs(args, out parsed);
-            }
             else if (baseCommand == "list-netcredentials")
             {
                 // command has no additional arguments
@@ -180,56 +176,7 @@ namespace OzetteLibrary.CommandLine
             parsed = configArgs;
             return true;
         }
-
-        /// <summary>
-        /// Parses the provided arguments into an <c>AddNetCredentialArguments</c> object.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="parsed"></param>
-        /// <returns></returns>
-        private bool ParseAddNetCredentialArgs(string[] args, out ArgumentBase parsed)
-        {
-            // initialize args object with default
-            var configArgs = new AddNetCredentialArguments();
-            var map = ExtractArguments(args);
-
-            if (map.ContainsKey("credentialname"))
-            {
-                configArgs.CredentialName = map["credentialname"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            if (map.ContainsKey("username"))
-            {
-                configArgs.ShareUser = map["username"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            if (map.ContainsKey("password"))
-            {
-                configArgs.SharePassword = map["password"];
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            parsed = configArgs;
-            return true;
-        }
-
+        
         /// <summary>
         /// Parses the provided arguments into an <c>RemoveNetCredentialArguments</c> object.
         /// </summary>

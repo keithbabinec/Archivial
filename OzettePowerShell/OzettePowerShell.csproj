@@ -36,6 +36,7 @@
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.PowerShell.5.ReferenceAssemblies.1.1.0\lib\net4\System.Management.Automation.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,8 +48,9 @@
   <ItemGroup>
     <Compile Include="Exceptions\CmdletExecutionNotApprovedException.cs" />
     <Compile Include="Exceptions\CmdletNotElevatedException.cs" />
-    <Compile Include="Functions\Private\BaseOzetteCmdlet.cs" />
+    <Compile Include="Utility\BaseOzetteCmdlet.cs" />
     <Compile Include="Functions\Public\AddOzetteLocalSourceCommand.cs" />
+    <Compile Include="Functions\Public\SetOzetteNetworkCredentialCommand.cs" />
     <Compile Include="Functions\Public\AddOzetteNetworkSourceCommand.cs" />
     <Compile Include="Functions\Public\GetOzetteLocalSourcesCommand.cs" />
     <Compile Include="Functions\Public\GetOzetteNetworkSourcesCommand.cs" />
