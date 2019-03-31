@@ -29,13 +29,7 @@ namespace OzetteLibrary.CommandLine
 
             var baseCommand = args[0].ToLower();
 
-            if (baseCommand == "list-netcredentials")
-            {
-                // command has no additional arguments
-                parsed = new ListNetCredentialsArguments();
-                return true;
-            }
-            else if (baseCommand == "list-providers")
+            if (baseCommand == "list-providers")
             {
                 // command has no additional arguments
                 parsed = new ListProvidersArguments();
