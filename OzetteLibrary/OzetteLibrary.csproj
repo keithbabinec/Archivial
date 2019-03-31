@@ -95,14 +95,11 @@
     <Compile Include="Client\Transfer\FileSender.cs" />
     <Compile Include="CommandLine\Arguments\RemoveNetCredentialArguments.cs" />
     <Compile Include="CommandLine\Arguments\RescanSourceArguments.cs" />
-    <Compile Include="CommandLine\Arguments\ShowStatusArguments.cs" />
     <Compile Include="CommandLine\Commands\ICommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveNetCredentialCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveProviderCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveSourceCommand.cs" />
-    <Compile Include="CommandLine\Commands\RequiresElevation.cs" />
     <Compile Include="CommandLine\Commands\RescanSourceCommand.cs" />
-    <Compile Include="CommandLine\Commands\ShowStatusCommand.cs" />
     <Compile Include="CommandLine\Parser.cs" />
     <Compile Include="CommandLine\Arguments\ArgumentBase.cs" />
     <Compile Include="CommandLine\Arguments\RemoveProviderArguments.cs" />

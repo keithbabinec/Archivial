@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\CmdletExecutionNotApprovedException.cs" />
     <Compile Include="Exceptions\CmdletNotElevatedException.cs" />
+    <Compile Include="Functions\Public\GetOzetteCloudBackupStatusCommand.cs" />
     <Compile Include="Functions\Public\GetOzetteNetworkCredentialsCommand.cs" />
     <Compile Include="Functions\Public\GetOzetteProvidersCommand.cs" />
     <Compile Include="Functions\Public\SetOzetteAzureProviderOptionsCommand.cs" />
