@@ -52,6 +52,7 @@
     <Compile Include="Functions\Public\GetOzetteNetworkCredentialsCommand.cs" />
     <Compile Include="Functions\Public\GetOzetteProvidersCommand.cs" />
     <Compile Include="Functions\Public\RemoveOzetteNetworkCredentialCommand.cs" />
+    <Compile Include="Functions\Public\RemoveOzetteProviderCommand.cs" />
     <Compile Include="Functions\Public\SetOzetteAzureProviderOptionsCommand.cs" />
     <Compile Include="Functions\Public\SetOzetteTwilioProviderOptionsCommand.cs" />
     <Compile Include="Utility\BaseOzetteCmdlet.cs" />

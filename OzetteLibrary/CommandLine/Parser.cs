@@ -37,10 +37,6 @@ namespace OzetteLibrary.CommandLine
             {
                 return ParseRescanSourceArgs(args, out parsed);
             }
-            else if (baseCommand == "remove-provider")
-            {
-                return ParseRemoveProviderArgs(args, out parsed);
-            }
             else
             {
                 // unexpected/no base command provided.
@@ -170,46 +166,7 @@ namespace OzetteLibrary.CommandLine
             parsed = scanSrcArgs;
             return true;
         }
-
-        /// <summary>
-        /// Parses the provided arguments into an <c>RemoveProviderArguments</c> object.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="parsed"></param>
-        /// <returns></returns>
-        private bool ParseRemoveProviderArgs(string[] args, out ArgumentBase parsed)
-        {
-            // initialize args object with default
-            var remSrcArgs = new RemoveProviderArguments();
-            var map = ExtractArguments(args);
-
-            if (map.ContainsKey("providerid"))
-            {
-                var providerId = map["providerid"];
-                int parsedId;
-
-                if (int.TryParse(providerId, out parsedId))
-                {
-                    remSrcArgs.ProviderID = parsedId;
-                }
-                else
-                {
-                    // required argument was not valid.
-                    parsed = null;
-                    return false;
-                }
-            }
-            else
-            {
-                // required argument was not found.
-                parsed = null;
-                return false;
-            }
-
-            parsed = remSrcArgs;
-            return true;
-        }
-
+        
         /// <summary>
         /// Returns a dictionary map of the provided arguments.
         /// </summary>

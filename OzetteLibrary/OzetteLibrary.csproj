@@ -95,12 +95,10 @@
     <Compile Include="Client\Transfer\FileSender.cs" />
     <Compile Include="CommandLine\Arguments\RescanSourceArguments.cs" />
     <Compile Include="CommandLine\Commands\ICommand.cs" />
-    <Compile Include="CommandLine\Commands\RemoveProviderCommand.cs" />
     <Compile Include="CommandLine\Commands\RemoveSourceCommand.cs" />
     <Compile Include="CommandLine\Commands\RescanSourceCommand.cs" />
     <Compile Include="CommandLine\Parser.cs" />
     <Compile Include="CommandLine\Arguments\ArgumentBase.cs" />
-    <Compile Include="CommandLine\Arguments\RemoveProviderArguments.cs" />
     <Compile Include="CommandLine\Arguments\RemoveSourceArguments.cs" />
     <Compile Include="Constants\CommandLine.cs" />
     <Compile Include="Constants\BootstrapSettingNames.cs" />
