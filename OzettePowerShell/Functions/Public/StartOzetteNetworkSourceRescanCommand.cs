@@ -6,8 +6,8 @@ using System.Management.Automation;
 
 namespace OzettePowerShell.Functions.Public
 {
-    [Cmdlet(VerbsCommon.Remove, "OzetteNetworkSource")]
-    public class RemoveOzetteNetworkSourceCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsLifecycle.Start, "OzetteNetworkSourceRescan")]
+    public class StartOzetteNetworkSourceRescanCommand : BaseOzetteCmdlet
     {
         [Parameter(Mandatory = true, ParameterSetName = "ByName")]
         public int SourceID { get; set; }
@@ -43,11 +43,11 @@ namespace OzettePowerShell.Functions.Public
                 }
             }
 
-            WriteVerbose("Removing the network source location now.");
+            WriteVerbose("Starting a forced rescan of the network source location now.");
 
-            database.RemoveSourceLocationAsync(NetworkSource).GetAwaiter().GetResult();
+            database.RescanSourceLocationAsync(NetworkSource);
 
-            WriteVerbose("Successfully removed the network source location from the database.");
+            WriteVerbose("Successfully queued the network source location for re-scan.");
         }
     }
 }

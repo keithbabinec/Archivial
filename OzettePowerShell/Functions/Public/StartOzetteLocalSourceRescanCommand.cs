@@ -6,15 +6,15 @@ using System.Management.Automation;
 
 namespace OzettePowerShell.Functions.Public
 {
-    [Cmdlet(VerbsCommon.Remove, "OzetteNetworkSource")]
-    public class RemoveOzetteNetworkSourceCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsLifecycle.Start, "OzetteLocalSourceRescan")]
+    public class StartOzetteLocalSourceRescanCommand : BaseOzetteCmdlet
     {
         [Parameter(Mandatory = true, ParameterSetName = "ByName")]
         public int SourceID { get; set; }
 
         [Parameter(Mandatory = true, ParameterSetName = "ByObject", ValueFromPipeline = true)]
         [ValidateNotNull]
-        public NetworkSourceLocation NetworkSource { get; set; }
+        public LocalSourceLocation LocalSource { get; set; }
 
         private IClientDatabase database { get; set; }
 
@@ -25,29 +25,29 @@ namespace OzettePowerShell.Functions.Public
 
         protected override void ProcessRecord()
         {
-            if (NetworkSource == null)
+            if (LocalSource == null)
             {
                 WriteVerbose("Querying for existing scan sources to see if the specified source exists.");
 
                 var allSources = database.GetSourceLocationsAsync().GetAwaiter().GetResult();
 
-                var sourceMatch = allSources.FirstOrDefault(x => x.ID == SourceID && x is NetworkSourceLocation);
+                var sourceMatch = allSources.FirstOrDefault(x => x.ID == SourceID && x is LocalSourceLocation);
 
                 if (sourceMatch == null)
                 {
-                    throw new ItemNotFoundException("There was no network source location found with the specified ID: " + SourceID);
+                    throw new ItemNotFoundException("There was no local source location found with the specified ID: " + SourceID);
                 }
                 else
                 {
-                    NetworkSource = (NetworkSourceLocation)sourceMatch;
+                    LocalSource = (LocalSourceLocation)sourceMatch;
                 }
             }
 
-            WriteVerbose("Removing the network source location now.");
+            WriteVerbose("Starting a forced rescan of the local source location now.");
 
-            database.RemoveSourceLocationAsync(NetworkSource).GetAwaiter().GetResult();
+            database.RescanSourceLocationAsync(LocalSource);
 
-            WriteVerbose("Successfully removed the network source location from the database.");
+            WriteVerbose("Successfully queued the local source location for re-scan.");
         }
     }
 }

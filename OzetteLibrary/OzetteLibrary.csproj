@@ -93,11 +93,6 @@
     <Compile Include="Client\CoreServiceEngine.cs" />
     <Compile Include="Client\StatusEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
-    <Compile Include="CommandLine\Arguments\RescanSourceArguments.cs" />
-    <Compile Include="CommandLine\Commands\ICommand.cs" />
-    <Compile Include="CommandLine\Commands\RescanSourceCommand.cs" />
-    <Compile Include="CommandLine\Parser.cs" />
-    <Compile Include="CommandLine\Arguments\ArgumentBase.cs" />
     <Compile Include="Constants\CommandLine.cs" />
     <Compile Include="Constants\BootstrapSettingNames.cs" />
     <Compile Include="Constants\EventIDs.cs" />
