@@ -51,7 +51,9 @@
     <Compile Include="Functions\Public\GetOzetteCloudBackupStatusCommand.cs" />
     <Compile Include="Functions\Public\GetOzetteNetworkCredentialsCommand.cs" />
     <Compile Include="Functions\Public\GetOzetteProvidersCommand.cs" />
+    <Compile Include="Functions\Public\RemoveOzetteLocalSourceCommand.cs" />
     <Compile Include="Functions\Public\RemoveOzetteNetworkCredentialCommand.cs" />
+    <Compile Include="Functions\Public\RemoveOzetteNetworkSourceCommand.cs" />
     <Compile Include="Functions\Public\RemoveOzetteProviderCommand.cs" />
     <Compile Include="Functions\Public\SetOzetteAzureProviderOptionsCommand.cs" />
     <Compile Include="Functions\Public\SetOzetteTwilioProviderOptionsCommand.cs" />
