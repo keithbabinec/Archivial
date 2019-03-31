@@ -6,13 +6,34 @@ using System.Management.Automation;
 
 namespace OzettePowerShell.Functions.Public
 {
+    /// <summary>
+    ///   <para type="synopsis">Removes the stored network credential used for connecting to network resources.</para>
+    ///   <para type="description">Network Source locations that are authenticated will have an associated credential stored with them. This command is used to remove that stored credential.</para>
+    ///   <para type="description">This command supports piping from Get-OzetteNetworkCredentials or manual invoke from credential name</para>
+    /// </summary>
+    /// <example>
+    ///   <code>C:\> Remove-OzetteNetworkCredential -CredentialName "drobo-nas"</code>
+    ///   <para>Removes the stored network credential with the specified name.</para>
+    ///   <para></para>
+    /// </example>
+    /// <example>
+    ///   <code>C:\> Get-OzetteNetworkCredentials | Where CredentialName -eq "drobo-nas" | Remove-OzetteNetworkCredential</code>
+    ///   <para>Removes the stored network credential, but using the pipeline scenario.</para>
+    ///   <para></para>
+    /// </example>
     [Cmdlet(VerbsCommon.Remove, "OzetteNetworkCredential")]
     public class RemoveOzetteNetworkCredentialCommand : BaseOzetteCmdlet
     {
+        /// <summary>
+        ///   <para type="description">Specify the name of the credential to remove.</para>
+        /// </summary>
         [Parameter(Mandatory = true, ParameterSetName = "ByName")]
         [ValidateNotNullOrEmpty]
         public string CredentialName { get; set; }
 
+        /// <summary>
+        ///   <para type="description">Specify the object (from pipeline) to remove.</para>
+        /// </summary>
         [Parameter(Mandatory = true, ParameterSetName = "ByObject", ValueFromPipeline = true)]
         [ValidateNotNull]
         public NetCredential NetCredential { get; set; }

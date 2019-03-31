@@ -6,12 +6,39 @@ using System.Management.Automation;
 
 namespace OzettePowerShell.Functions.Public
 {
+    /// <summary>
+    ///   <para type="synopsis">Forces the re-scan of a Local Source being monitored by Ozette.</para>
+    ///   <para type="description">All sources are monitored for new or updated files on a regular schedule. This cmdlet is used to force a source to re-scan now, outside of its regular schedule.</para>
+    ///   <para type="description">The automated scanning schedule for Low priority sources is once every 48 hours. Medium priority sources are scanned every 12 hours. High priority sources are scanned every hour.</para>
+    ///   <para type="description">Please see the Get-OzetteLocalSources command to find the ID of an existing source you would like to rescan.</para>
+    /// </summary>
+    /// <example>
+    ///   <code>C:\> Start-OzetteLocalSourceRescan -SourceID 2</code>
+    ///   <para>Forces a rescan of the Local Source with the specified ID.</para>
+    ///   <para></para>
+    /// </example>
+    /// <example>
+    ///   <code>C:\> Get-OzetteLocalSources | Start-OzetteLocalSourceRescan</code>
+    ///   <para>Forces a rescan of all defined Local Sources being monitored by Ozette.</para>
+    ///   <para></para>
+    /// </example>
+    /// <example>
+    ///   <code>C:\> Get-OzetteLocalSources | Where Path -like "*D:\temp*" | Start-OzetteLocalSourceRescan</code>
+    ///   <para>Forces a rescan of any Local Sources that match a UNC path filter.</para>
+    ///   <para></para>
+    /// </example>
     [Cmdlet(VerbsLifecycle.Start, "OzetteLocalSourceRescan")]
     public class StartOzetteLocalSourceRescanCommand : BaseOzetteCmdlet
     {
+        /// <summary>
+        ///   <para type="description">Specify the ID of the Local Source to rescan.</para>
+        /// </summary>
         [Parameter(Mandatory = true, ParameterSetName = "ByName")]
         public int SourceID { get; set; }
 
+        /// <summary>
+        ///   <para type="description">Specify the Local Source object to rescan.</para>
+        /// </summary>
         [Parameter(Mandatory = true, ParameterSetName = "ByObject", ValueFromPipeline = true)]
         [ValidateNotNull]
         public LocalSourceLocation LocalSource { get; set; }

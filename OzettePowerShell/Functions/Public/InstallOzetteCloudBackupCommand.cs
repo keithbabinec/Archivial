@@ -5,13 +5,34 @@ using System.Management.Automation;
 
 namespace OzettePowerShell.Functions.Public
 {
+    /// <summary>
+    ///   <para type="synopsis">Installs the Ozette Cloud Backup software on this computer.</para>
+    ///   <para type="description">Installs the Ozette Cloud Backup software on this computer. The default installation will be placed in the program files directory, but this can optionally be changed by specifying the -InstallDirectory parameter.</para>
+    ///   <para type="description">This command requires an elevated (run-as administrator) PowerShell prompt to complete. It will also prompt for comfirmation unless the -Force switch is applied.</para>
+    /// </summary>
+    /// <example>
+    ///   <code>C:\> Install-OzetteCloudBackup</code>
+    ///   <para>Starts the installation with default options. The user will be prompted for confirmation.</para>
+    ///   <para></para>
+    /// </example>
+    /// <example>
+    ///   <code>C:\> Install-OzetteCloudBackup -InstallDirectory "D:\Applications\Ozette Cloud Backup" -Force</code>
+    ///   <para>Starts the installation to the custom directory and suppresses the confirmation prompt.</para>
+    ///   <para></para>
+    /// </example>
     [Cmdlet(VerbsLifecycle.Install, "OzetteCloudBackup", ConfirmImpact = ConfirmImpact.High, SupportsShouldProcess = true)]
     public class InstallOzetteCloudBackupCommand : BaseOzetteCmdlet
     {
+        /// <summary>
+        ///   <para type="description">Specify a custom installation directory, otherwise the default Program Files location will be used.</para>
+        /// </summary>
         [Parameter(Mandatory = false)]
         [ValidateNotNullOrEmpty]
         public string InstallDirectory = OzetteLibrary.Constants.CommandLine.DefaultInstallLocation;
 
+        /// <summary>
+        ///   <para type="description">Suppresses the confirmation prompt.</para>
+        /// </summary>
         [Parameter(Mandatory = false)]
         public SwitchParameter Force = false;
 
