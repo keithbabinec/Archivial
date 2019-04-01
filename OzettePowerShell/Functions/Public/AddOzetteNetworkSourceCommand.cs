@@ -10,7 +10,7 @@ namespace OzettePowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Adds a network (UNC path) folder to the Ozette backup folders list.</para>
-    ///   <para type="description">A Network Source is a folder on your network that you would like Ozette to backup and automatically monitor for new and updated files.</para>
+    ///   <para type="description">A Network Source is a folder on your network (referenced by UNC Path) that you would like Ozette to backup and automatically monitor for new and updated files.</para>
     ///   <para type="description">Network Sources can be authenticated (require username/password), or unauthenticated (open access). If this Network Source requires authenticated access, you must provide the name of an already saved Network Credential (see examples). Network sources can use either a DNS or IP Address for the host.</para>
     ///   <para type="description">The priority of the source determines how frequently it will be scanned for changes. The automated scanning schedule for Low priority sources is once every 48 hours. Medium priority sources are scanned every 12 hours. High priority sources are scanned every hour.</para>
     ///   <para type="description">The optional MatchFilter parameter allows you to narrow the scope of files in the folder to be monitored. For example, by file extension. Any windows file path wildcard expression will be accepted here.</para>
