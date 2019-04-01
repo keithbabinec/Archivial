@@ -80,6 +80,9 @@
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.1.2\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.PowerShell.5.ReferenceAssemblies.1.1.0\lib\net4\System.Management.Automation.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Security" />
@@ -113,7 +116,6 @@
     <Compile Include="Client\ScanEngine.tests.cs" />
     <Compile Include="Client\Sources\Scanner.tests.cs" />
     <Compile Include="Client\StatusEngine.tests.cs" />
-    <Compile Include="CommandLine\Parser.tests.cs" />
     <Compile Include="Crypto\Hasher.tests.cs" />
     <Compile Include="Database\DatabaseBackupScheduler.tests.cs" />
     <Compile Include="Files\BackupFile.tests.cs" />

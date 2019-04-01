@@ -6,7 +6,7 @@
 	[Priority] INT NOT NULL,
 	[RevisionCount] INT NOT NULL,
 	[LastCompletedScan] DATETIME NULL,
-	[CredentialName] NVARCHAR(256) NOT NULL,
+	[CredentialName] NVARCHAR(256) NULL,
 	[IsConnected] BIT NOT NULL,
 	[IsFailed] BIT NOT NULL,
 	[LastConnectionCheck] DATETIME NULL,

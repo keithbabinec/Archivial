@@ -10,7 +10,7 @@ namespace OzetteLibrary.Constants
         /// <summary>
         /// The default application installation folder.
         /// </summary>
-        public const string DefaultInstallLocation = "C:\\Program Files\\Ozette Cloud Backup\\Client";
+        public const string DefaultInstallLocation = "C:\\Program Files\\Ozette Cloud Backup";
 
         /// <summary>
         /// The default scan source priority.

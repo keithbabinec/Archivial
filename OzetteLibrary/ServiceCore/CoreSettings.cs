@@ -283,5 +283,14 @@ namespace OzetteLibrary.ServiceCore
         {
             Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.Machine);
         }
+
+        /// <summary>
+        /// Removes a core setting by name.
+        /// </summary>
+        /// <param name="name"></param>
+        public static void RemoveCoreSetting(string name)
+        {
+            Environment.SetEnvironmentVariable(name, null, EnvironmentVariableTarget.Machine);
+        }
     }
 }

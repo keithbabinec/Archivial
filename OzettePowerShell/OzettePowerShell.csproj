@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E9CF78CA-881A-4179-9F26-84A7AC54748D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OzettePowerShell</RootNamespace>
+    <AssemblyName>OzettePowerShell</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\OzettePowerShell.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+	<DocumentationFile>bin\Debug\OzettePowerShell.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.PowerShell.5.ReferenceAssemblies.1.1.0\lib\net4\System.Management.Automation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Exceptions\CmdletExecutionNotApprovedException.cs" />
+    <Compile Include="Exceptions\CmdletNotElevatedException.cs" />
+    <Compile Include="Functions\Public\GetOzetteCloudBackupStatusCommand.cs" />
+    <Compile Include="Functions\Public\GetOzetteNetworkCredentialsCommand.cs" />
+    <Compile Include="Functions\Public\GetOzetteProvidersCommand.cs" />
+    <Compile Include="Functions\Public\RemoveOzetteLocalSourceCommand.cs" />
+    <Compile Include="Functions\Public\RemoveOzetteNetworkCredentialCommand.cs" />
+    <Compile Include="Functions\Public\RemoveOzetteNetworkSourceCommand.cs" />
+    <Compile Include="Functions\Public\RemoveOzetteProviderCommand.cs" />
+    <Compile Include="Functions\Public\SetOzetteAzureProviderOptionsCommand.cs" />
+    <Compile Include="Functions\Public\SetOzetteTwilioProviderOptionsCommand.cs" />
+    <Compile Include="Functions\Public\StartOzetteLocalSourceRescanCommand.cs" />
+    <Compile Include="Functions\Public\StartOzetteNetworkSourceRescanCommand.cs" />
+    <Compile Include="Utility\BaseOzetteCmdlet.cs" />
+    <Compile Include="Functions\Public\AddOzetteLocalSourceCommand.cs" />
+    <Compile Include="Functions\Public\SetOzetteNetworkCredentialCommand.cs" />
+    <Compile Include="Functions\Public\AddOzetteNetworkSourceCommand.cs" />
+    <Compile Include="Functions\Public\GetOzetteLocalSourcesCommand.cs" />
+    <Compile Include="Functions\Public\GetOzetteNetworkSourcesCommand.cs" />
+    <Compile Include="Functions\Public\InstallOzetteCloudBackupCommand.cs" />
+    <Compile Include="Functions\Public\UninstallOzetteCloudBackupCommand.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\Elevation.cs" />
+    <Compile Include="Utility\Installation.cs" />
+    <Compile Include="Utility\Uninstallation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="OzettePowerShell.psd1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\OzetteLibrary\OzetteLibrary.csproj">
+      <Project>{8A82834F-DF32-4911-8B3F-F4435B04B6A3}</Project>
+      <Name>OzetteLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\XmlDoc2CmdletDoc.0.2.12\build\XmlDoc2CmdletDoc.targets" Condition="Exists('..\packages\XmlDoc2CmdletDoc.0.2.12\build\XmlDoc2CmdletDoc.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\XmlDoc2CmdletDoc.0.2.12\build\XmlDoc2CmdletDoc.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\XmlDoc2CmdletDoc.0.2.12\build\XmlDoc2CmdletDoc.targets'))" />
+  </Target>
+</Project>
