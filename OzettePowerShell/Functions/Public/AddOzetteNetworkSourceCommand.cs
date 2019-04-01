@@ -21,8 +21,7 @@ namespace OzettePowerShell.Functions.Public
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Set-OzetteNetworkCredential -CredentialName "drobo-device" -ShareUser "drobo-private-user" -SharePassword ****</code>
-    ///   <code>C:\> Add-OzetteNetworkSource -UncPath "\\drobo-nas-device\private\documents\taxes" -CredentialName "drobo-device" -Priority Medium -Revisions 4 -MatchFilter *.pdf</code>
+    ///   <code>C:\> Set-OzetteNetworkCredential -CredentialName "drobo-device" -ShareUser "drobo-private-user" -SharePassword ****; Add-OzetteNetworkSource -UncPath "\\drobo-nas-device\private\documents\taxes" -CredentialName "drobo-device" -Priority Medium -Revisions 4 -MatchFilter *.pdf</code>
     ///   <para>Encrypts and stores the network resource credentials, and then adds the specified authenticated network share to backup.</para>
     ///   <para></para>
     /// </example>

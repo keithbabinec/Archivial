@@ -8,7 +8,7 @@ namespace OzettePowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Forces the re-scan of a Local Source being monitored by Ozette.</para>
-    ///   <para type="description">All sources are monitored for new or updated files on a regular schedule. This cmdlet is used to force a source to re-scan now, outside of its regular schedule.</para>
+    ///   <para type="description">All sources are monitored for new or updated files on a regular schedule. This cmdlet is used to request an immediate rescan, outside of its regular schedule. The rescan will start as soon as there is scanning engine availability.</para>
     ///   <para type="description">The automated scanning schedule for Low priority sources is once every 48 hours. Medium priority sources are scanned every 12 hours. High priority sources are scanned every hour.</para>
     ///   <para type="description">Please see the Get-OzetteLocalSources command to find the ID of an existing source you would like to rescan.</para>
     /// </summary>
@@ -24,7 +24,7 @@ namespace OzettePowerShell.Functions.Public
     /// </example>
     /// <example>
     ///   <code>C:\> Get-OzetteLocalSources | Where Path -like "*D:\temp*" | Start-OzetteLocalSourceRescan</code>
-    ///   <para>Forces a rescan of any Local Sources that match a UNC path filter.</para>
+    ///   <para>Forces a rescan of any Local Sources that match the path filter.</para>
     ///   <para></para>
     /// </example>
     [Cmdlet(VerbsLifecycle.Start, "OzetteLocalSourceRescan")]

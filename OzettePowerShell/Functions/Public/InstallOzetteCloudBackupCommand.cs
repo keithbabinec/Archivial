@@ -7,7 +7,7 @@ namespace OzettePowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Installs the Ozette Cloud Backup software on this computer.</para>
-    ///   <para type="description">Installs the Ozette Cloud Backup software on this computer. The default installation will be placed in the program files directory, but this can optionally be changed by specifying the -InstallDirectory parameter.</para>
+    ///   <para type="description">Installs the Ozette Cloud Backup software on this computer. The default installation will be placed in the Program Files directory, but this can optionally be changed by specifying the -InstallDirectory parameter.</para>
     ///   <para type="description">This command requires an elevated (run-as administrator) PowerShell prompt to complete. It will also prompt for comfirmation unless the -Force switch is applied.</para>
     /// </summary>
     /// <example>

@@ -15,12 +15,12 @@ namespace OzettePowerShell.Functions.Public
     ///   <para type="description">The optional MatchFilter parameter allows you to narrow the scope of files in the folder to be monitored. For example, by file extension. Any windows file path wildcard expression will be accepted here.</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Add-OzetteLocalSource -FolderPath "C:\users\keith\documents" -Priority High -Revisions 3</code>
+    ///   <code>C:\> Add-OzetteLocalSource -FolderPath "C:\users\test\documents" -Priority High -Revisions 3</code>
     ///   <para>Adds the specified folder to backup with high priority, and to retain up to 3 revisions of file history.</para>
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Add-OzetteLocalSource -FolderPath "C:\users\keith\music\playlists" -Priority High -Revisions 3 -MatchFilter *.m3u</code>
+    ///   <code>C:\> Add-OzetteLocalSource -FolderPath "C:\users\test\music\playlists" -Priority High -Revisions 3 -MatchFilter *.m3u</code>
     ///   <para>Adds the specified folder to backup with high priority, but only files that match the wildcard extension filter.</para>
     ///   <para></para>
     /// </example>

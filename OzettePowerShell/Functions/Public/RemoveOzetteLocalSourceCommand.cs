@@ -18,7 +18,7 @@ namespace OzettePowerShell.Functions.Public
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Get-OzetteLocalSource | Where Path -like "*C:\users\keith\documents*" | Remove-OzetteLocalSource</code>
+    ///   <code>C:\> Get-OzetteLocalSource | Where Path -like "*C:\users\test\documents*" | Remove-OzetteLocalSource</code>
     ///   <para>Removes any configured Local Source that matches a path containing the specified filter (using the pipeline scenario).</para>
     ///   <para></para>
     /// </example>

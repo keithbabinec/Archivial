@@ -7,7 +7,7 @@ namespace OzettePowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Returns all of the Local Source folders being monitored by Ozette.</para>
-    ///   <para type="description">Returns all of the Local Source folders being monitored by Ozette. A local source folder is one that resides on your computer (including directly attached external hard drives).</para>
+    ///   <para type="description">A Local Source is a folder on your computer (or a directly attached external drive) that Ozette backs up and automatically monitors for new and updated files.</para>
     ///   <para type="description">The output from this command can be piped to the Remove-OzetteLocalSource cmdlet.</para>
     /// </summary>
     /// <example>

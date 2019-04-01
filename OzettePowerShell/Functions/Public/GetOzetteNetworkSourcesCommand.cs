@@ -7,7 +7,7 @@ namespace OzettePowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Returns all of the Network Source folders being monitored by Ozette.</para>
-    ///   <para type="description">Returns all of the Network Source folders being monitored by Ozette. A network source folder is one that resides on your local network and is accessible via UNC path, and may or may not be authenticated.</para>
+    ///   <para type="description">A Network Source is a folder on your network (referenced by UNC Path) that Ozette backs up and automatically monitors for new and updated files.</para>
     ///   <para type="description">The output from this command can be piped to the Remove-OzetteNetworkSource cmdlet.</para>
     /// </summary>
     /// <example>

@@ -8,7 +8,7 @@ namespace OzettePowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Removes the stored network credential used for connecting to network resources.</para>
-    ///   <para type="description">Network Source locations that are authenticated will have an associated credential stored with them. This command is used to remove that stored credential.</para>
+    ///   <para type="description">Authenticated Network Source locations have an encrypted credential stored with them. This command is used to remove that stored credential.</para>
     ///   <para type="description">To view existing network credentials, run Get-OzetteNetworkCredentials. This command supports piping from Get-OzetteNetworkCredentials or manual invoke from credential name</para>
     /// </summary>
     /// <example>

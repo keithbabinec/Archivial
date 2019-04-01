@@ -6,7 +6,7 @@ namespace OzettePowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Uninstalls the Ozette Cloud Backup software from this computer.</para>
-    ///   <para type="description">Uninstalls the Ozette Cloud Backup software from this computer. It will permenantly delete the installation folder, state database, and log files. This action is not reversable.</para>
+    ///   <para type="description">Uninstalls the Ozette Cloud Backup software from this computer. This will permenantly delete the installation folder, state database, and log files. This action is not reversable.</para>
     ///   <para type="description">Although all local installation data is deleted, any of the data already backed up to a cloud provider will not be removed. You must remove that manually if you wish to delete that data.</para>
     ///   <para type="description">This command requires an elevated (run-as administrator) PowerShell prompt to complete. It will also prompt for comfirmation unless the -Force switch is applied.</para>
     /// </summary>
