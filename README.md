@@ -8,12 +8,6 @@ Data backup agent software for Windows that automatically archives your local da
   * [Feature Progress](#feature-progress)
   * [Upload Performance](#upload-performance)
 * [Installation](#installation)
-  * [Prerequisites](#prerequisites)
-  * [How to install Ozette](#how-to-install-ozette)
-* [Configuration](#configuration)
-  * [How to view backup progress](#how-to-view-backup-progress)
-  * [How to configure providers](#how-to-configure-providers)
-  * [How to configure sources](#how-to-configure-sources)
 
 # Meta
 
