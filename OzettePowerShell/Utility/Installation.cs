@@ -106,33 +106,24 @@ namespace OzettePowerShell.Utility
             var fileManifest = new List<string>()
             {
                 "Microsoft.Azure.KeyVault.Core.dll",
-                "Microsoft.Azure.KeyVault.Core.xml",
                 "Microsoft.Data.Tools.Schema.Sql.dll",
                 "Microsoft.Data.Tools.Utilities.dll",
                 "Microsoft.IdentityModel.Logging.dll",
                 "Microsoft.IdentityModel.Tokens.dll",
-                "Microsoft.IdentityModel.Tokens.xml",
                 "Microsoft.SqlServer.Dac.dll",
-                "Microsoft.SqlServer.Dac.xml",
                 "Microsoft.SqlServer.TransactSql.ScriptDom.dll",
-                "Microsoft.SqlServer.TransactSql.ScriptDom.xml",
                 "Microsoft.SqlServer.Types.dll",
                 "Microsoft.WindowsAzure.Storage.dll",
-                "Microsoft.WindowsAzure.Storage.xml",
                 "NCrontab.dll",
                 "Newtonsoft.Json.dll",
-                "Newtonsoft.Json.xml",
                 "OzetteClientAgent.exe",
                 "OzetteClientAgent.exe.config",
                 "OzetteDB.dacpac",
                 "OzetteDB.dll",
                 "OzetteLibrary.dll",
                 "System.IdentityModel.Tokens.Jwt.dll",
-                "System.IdentityModel.Tokens.Jwt.xml",
                 "System.Management.Automation.dll",
-                "System.Management.Automation.xml",
-                "Twilio.dll",
-                "Twilio.xml"
+                "Twilio.dll"
             };
 
             foreach (var file in fileManifest)
