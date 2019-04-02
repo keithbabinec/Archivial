@@ -8,12 +8,6 @@ Data backup agent software for Windows that automatically archives your local da
   * [Feature Progress](#feature-progress)
   * [Upload Performance](#upload-performance)
 * [Installation](#installation)
-  * [Prerequisites](#prerequisites)
-  * [How to install Ozette](#how-to-install-ozette)
-* [Configuration](#configuration)
-  * [How to view backup progress](#how-to-view-backup-progress)
-  * [How to configure providers](#how-to-configure-providers)
-  * [How to configure sources](#how-to-configure-sources)
 
 # Meta
 
@@ -52,6 +46,30 @@ Using the default Ozette options, an Intel Core i7 laptop, and an Xfinity 75/5 (
 
 ## How to install Ozette
 
-Updated installation and configuration notes coming shortly, due to recent move from a command-line installer to PowerShell cmdlet support.
+Ozette installation and management tasks are all performed through the [OzettePowerShell](https://www.powershellgallery.com/packages/OzettePowerShell/) module. The general idea is that you download the Ozette PowerShell module from PSGallery, then run the Ozette PowerShell commands to install, configure, or manage the software.
 
+### Step 1: Install OzettePowerShell Module (Management Tools)
+This command downloads the management tools.
+``` powershell
+Install-Module -Name OzettePowerShell -Scope AllUsers
+```
 
+### Step 2: Install and Start the Ozette Backup Agent
+After you have installed the OzettePowerShell module you can then run the product installation command. This will copy the program files, create the initial state database, then create and start the Ozette Client windows service (the backup agent).
+``` powershell
+Install-OzetteCloudBackup
+```
+
+## How to configure Ozette
+Once Ozette has been installed, you can run the configuration PowerShell commands available from the OzettePowerShell module. Getting started documentation is coming soon.
+
+### View the available commands
+``` powershell
+Get-Command -Module OzettePowerShell
+```
+
+### View command help
+Example: This views the full help documentation for the Set-OzetteAzureProviderOptions cmdlet, including examples.
+``` powershell
+Get-Help Set-OzetteAzureProviderOptions -Full
+```
