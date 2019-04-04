@@ -151,7 +151,7 @@ namespace OzetteLibrary.Client
         {
             try
             {
-                var storageProviders = await Database.GetProvidersAsync(ProviderTypes.Messaging);
+                var storageProviders = await Database.GetProvidersAsync(ProviderTypes.Storage);
 
                 if (storageProviders.Count > 0)
                 {
