@@ -1,9 +1,10 @@
 # Ozette Cloud Backup
 Data backup agent software for Windows that automatically archives your local data to a cloud storage provider.
 
-# Help Contents
+# Contents
 * [About](#about)
 * [Development Status](#development-status)
+* [Screenshots](#screenshots)
 * [Installation](#installation)
 * [Command Reference](#command-reference)
 
@@ -26,6 +27,28 @@ This project is still considered alpha phase and under active development. Break
 | Messaging Providers | SMS (Twilio) | Email (SendGrid) |
 | --- | --- | --- |
 | Backup Status | Complete | N/A |
+
+## Screenshots
+
+*Screenshot: PowerShell installation*
+
+![Screenshot: PowerShell installation](Doc/Screenshots/ps-install.PNG?raw=true "Screenshot: PowerShell installation")
+
+*Screenshot: Program Files / Local Logs*
+
+![Screenshot: Program Files / Local Logs](Doc/Screenshots/logs-folder.PNG?raw=true "Screenshot: Program Files / Local Logs")
+
+*Screenshot: Configuration through PowerShell*
+
+![Screenshot: Configuration through PowerShell](Doc/Screenshots/ps-config.png?raw=true "Screenshot: Configuration through PowerShell")
+
+*Screenshot: Files Backed up to Azure*
+
+![Screenshot: Files Backed up to Azure](Doc/Screenshots/azure-files.png?raw=true "Screenshot: Files Backed up to Azure")
+
+*Screenshot: Automated SMS/Text Status Updates*
+
+![Screenshot: Automated SMS/Text Status Updates](Doc/Screenshots/twilio-status.png?raw=true "Screenshot: Automated SMS/Text Status Updates")
 
 ## Installation
 
