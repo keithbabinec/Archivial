@@ -54,21 +54,21 @@ Install-OzetteCloudBackup
 ## Command Reference
 | Command | Description |
 | --- | --- |
-| [Add-OzetteLocalSource](Doc/Commands/v0.2.1/Add-OzetteLocalSource.md) | Adds a local folder to the Ozette backup folders list. |
-| [Add-OzetteNetworkSource](Doc/Commands/v0.2.1/Add-OzetteNetworkSource.md) | Adds a network (UNC path) folder to the Ozette backup folders list. |
-| [Get-OzetteCloudBackupStatus](Doc/Commands/v0.2.1/Get-OzetteCloudBackupStatus.md) | Returns the current status of the cloud backup progress. |
-| [Get-OzetteLocalSources](Doc/Commands/v0.2.1/Get-OzetteLocalSources.md) | Returns all of the Local Source folders being monitored by Ozette. |
-| [Get-OzetteNetworkCredentials](Doc/Commands/v0.2.1/Get-OzetteNetworkCredentials.md) | Returns all of the saved Network Credentials used to connect to Network Sources. |
-| [Get-OzetteNetworkSources](Doc/Commands/v0.2.1/Get-OzetteNetworkSources.md) | Returns all of the Network Source folders being monitored by Ozette. |
-| [Get-OzetteProviders](Doc/Commands/v0.2.1/Get-OzetteProviders.md) | Returns all of the configured Ozette Providers. |
-| [Install-OzetteCloudBackup](Doc/Commands/v0.2.1/Install-OzetteCloudBackup.md) | Installs the Ozette Cloud Backup software on this computer. |
-| [Remove-OzetteLocalSource](Doc/Commands/v0.2.1/Remove-OzetteLocalSource.md) | Removes the specified Local Source. |
-| [Remove-OzetteNetworkCredential](Doc/Commands/v0.2.1/Remove-OzetteNetworkCredential.md) | Removes the stored network credential used for connecting to network resources. |
-| [Remove-OzetteNetworkSource](Doc/Commands/v0.2.1/Remove-OzetteNetworkSource.md) | Removes the specified Network Source. |
-| [Remove-OzetteProvider](Doc/Commands/v0.2.1/Remove-OzetteProvider.md) | Removes the configured storage or messaging provider. |
-| [Set-OzetteAzureProviderOptions](Doc/Commands/v0.2.1/Set-OzetteAzureProviderOptions.md) | Configures the Azure cloud storage provider as a backup destination. |
-| [Set-OzetteNetworkCredential](Doc/Commands/v0.2.1/Set-OzetteNetworkCredential.md) | Saves the credentials required to connect to an authenticated network resource (such as a UNC path share). |
-| [Set-OzetteTwilioProviderOptions](Doc/Commands/v0.2.1/Set-OzetteTwilioProviderOptions.md) | Configures the Twilio messaging provider as a status update recipient. |
-| [Start-OzetteLocalSourceRescan](Doc/Commands/v0.2.1/Start-OzetteLocalSourceRescan.md) | Forces the re-scan of a Local Source being monitored by Ozette. |
-| [Start-OzetteNetworkSourceRescan](Doc/Commands/v0.2.1/Start-OzetteNetworkSourceRescan.md) | Forces the re-scan of a Network Source being monitored by Ozette. |
-| [Uninstall-OzetteCloudBackup](Doc/Commands/v0.2.1/Uninstall-OzetteCloudBackup.md) | Uninstalls the Ozette Cloud Backup software from this computer. |
+| [Add-OzetteLocalSource](Doc/Commands/Add-OzetteLocalSource.md) | Adds a local folder to the Ozette backup folders list. |
+| [Add-OzetteNetworkSource](Doc/Commands/Add-OzetteNetworkSource.md) | Adds a network (UNC path) folder to the Ozette backup folders list. |
+| [Get-OzetteCloudBackupStatus](Doc/Commands/Get-OzetteCloudBackupStatus.md) | Returns the current status of the cloud backup progress. |
+| [Get-OzetteLocalSources](Doc/Commands/Get-OzetteLocalSources.md) | Returns all of the Local Source folders being monitored by Ozette. |
+| [Get-OzetteNetworkCredentials](Doc/Commands/Get-OzetteNetworkCredentials.md) | Returns all of the saved Network Credentials used to connect to Network Sources. |
+| [Get-OzetteNetworkSources](Doc/Commands/Get-OzetteNetworkSources.md) | Returns all of the Network Source folders being monitored by Ozette. |
+| [Get-OzetteProviders](Doc/Commands/Get-OzetteProviders.md) | Returns all of the configured Ozette Providers. |
+| [Install-OzetteCloudBackup](Doc/Commands/Install-OzetteCloudBackup.md) | Installs the Ozette Cloud Backup software on this computer. |
+| [Remove-OzetteLocalSource](Doc/Commands/Remove-OzetteLocalSource.md) | Removes the specified Local Source. |
+| [Remove-OzetteNetworkCredential](Doc/Commands/Remove-OzetteNetworkCredential.md) | Removes the stored network credential used for connecting to network resources. |
+| [Remove-OzetteNetworkSource](Doc/Commands/Remove-OzetteNetworkSource.md) | Removes the specified Network Source. |
+| [Remove-OzetteProvider](Doc/Commands/Remove-OzetteProvider.md) | Removes the configured storage or messaging provider. |
+| [Set-OzetteAzureProviderOptions](Doc/Commands/Set-OzetteAzureProviderOptions.md) | Configures the Azure cloud storage provider as a backup destination. |
+| [Set-OzetteNetworkCredential](Doc/Commands/Set-OzetteNetworkCredential.md) | Saves the credentials required to connect to an authenticated network resource (such as a UNC path share). |
+| [Set-OzetteTwilioProviderOptions](Doc/Commands/Set-OzetteTwilioProviderOptions.md) | Configures the Twilio messaging provider as a status update recipient. |
+| [Start-OzetteLocalSourceRescan](Doc/Commands/Start-OzetteLocalSourceRescan.md) | Forces the re-scan of a Local Source being monitored by Ozette. |
+| [Start-OzetteNetworkSourceRescan](Doc/Commands/Start-OzetteNetworkSourceRescan.md) | Forces the re-scan of a Network Source being monitored by Ozette. |
+| [Uninstall-OzetteCloudBackup](Doc/Commands/Uninstall-OzetteCloudBackup.md) | Uninstalls the Ozette Cloud Backup software from this computer. |
