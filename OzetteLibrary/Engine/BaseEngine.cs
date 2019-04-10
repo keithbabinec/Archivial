@@ -5,6 +5,7 @@ using OzetteLibrary.MessagingProviders;
 using OzetteLibrary.StorageProviders;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Engine
 {
@@ -91,21 +92,20 @@ namespace OzetteLibrary.Engine
         protected CancellationTokenSource CancelSource { get; set; }
 
         /// <summary>
-        /// Sleeps the engine for the specified time, while checking periodically for stop request.
+        /// Sleeps the engine for the specified time.
         /// </summary>
         /// <param name="SleepTime"></param>
-        protected void ThreadSleepWithStopRequestCheck(TimeSpan SleepTime)
+        protected async Task WaitAsync(TimeSpan SleepTime)
         {
-            DateTime sleepUntil = DateTime.Now.Add(SleepTime);
-
-            while (CancelSource.IsCancellationRequested == false)
+            try
             {
-                Thread.Sleep(TimeSpan.FromMilliseconds(500));
-
-                if (DateTime.Now > sleepUntil)
-                {
-                    break;
-                }
+                await Task.Delay(SleepTime, CancelSource.Token).ConfigureAwait(false);
+            }
+            catch (TaskCanceledException)
+            {
+                // no-op.
+                // in this situation something has requested cancellation. 
+                // just let this exit safely.
             }
         }
     }

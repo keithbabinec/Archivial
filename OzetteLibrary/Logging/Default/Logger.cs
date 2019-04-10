@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OzetteLibrary.Logging.Default
 {
@@ -36,12 +37,7 @@ namespace OzetteLibrary.Logging.Default
         /// <param name="TraceLogFolderPath"></param>
         public void Start(string EventLogSource, string EventLogName, string TraceLogFolderPath)
         {
-            if (Running == true)
-            {
-                throw new InvalidOperationException("Logger has already been started.");
-            }
-
-            Running = true;
+            CancelSource = new CancellationTokenSource();
 
             SetupCustomWindowsEventLogIfNotPresent(EventLogSource, EventLogName);
             SetupTraceLogsFolderIfNotPresent(TraceLogFolderPath);
@@ -52,7 +48,7 @@ namespace OzetteLibrary.Logging.Default
 
             WriteSystemEvent(setupMessage.ToString(), EventLogEntryType.Information, EventIDs.LoggingInitialized, false);
 
-            Thread tmw = new Thread(() => TraceMessageWriter());
+            Thread tmw = new Thread(() => TraceMessageWriterAsync().Wait());
             tmw.Start();
         }
 
@@ -61,11 +57,7 @@ namespace OzetteLibrary.Logging.Default
         /// </summary>
         public void Stop()
         {
-            if (Running == true)
-            {
-                // this flags the running trace writer thread to exit.
-                Running = false;
-            }
+            CancelSource.Cancel();
         }
 
         /// <summary>
@@ -129,9 +121,9 @@ namespace OzetteLibrary.Logging.Default
         ///     They usually crop up from things like antivirus scans. If a single log message fails to write,
         ///     then this shouldn't crash the application. This function is a loop to write with retries and delays.
         /// </remarks>
-        public void TraceMessageWriter()
+        public async Task TraceMessageWriterAsync()
         {
-            while (Running == true)
+            while (true)
             {
                 string messageToWrite = null;
 
@@ -142,7 +134,7 @@ namespace OzetteLibrary.Logging.Default
 
                 if (messageToWrite == null)
                 {
-                    Thread.Sleep(TimeSpan.FromMilliseconds(500));
+                    await WaitAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
                 }
                 else
                 {
@@ -169,7 +161,14 @@ namespace OzetteLibrary.Logging.Default
                             }
                             else
                             {
-                                Thread.Sleep(TimeSpan.FromSeconds(1));
+                                if (CancelSource.IsCancellationRequested)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    await WaitAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+                                }
                             }
                         }
                     }
@@ -178,6 +177,11 @@ namespace OzetteLibrary.Logging.Default
                     {
                         WriteSystemEvent("Failed to write a message to the tracelog.", lastError, null, EventIDs.FailedToWriteToTraceLog, false);
                     }
+                }
+
+                if (CancelSource.IsCancellationRequested)
+                {
+                    break;
                 }
             }
         }
@@ -377,9 +381,9 @@ namespace OzetteLibrary.Logging.Default
         }
 
         /// <summary>
-        /// A flag to indicate if the logger is running.
+        /// A reference to the cancellation token source.
         /// </summary>
-        private volatile bool Running = false;
+        private CancellationTokenSource CancelSource { get; set; }
 
         /// <summary>
         /// A flag to indicate if we have initialized trace logs.
@@ -533,6 +537,24 @@ namespace OzetteLibrary.Logging.Default
             }
 
             return stackLog.ToString();
+        }
+
+        /// <summary>
+        /// Sleeps the engine for the specified time.
+        /// </summary>
+        /// <param name="SleepTime"></param>
+        private async Task WaitAsync(TimeSpan SleepTime)
+        {
+            try
+            {
+                await Task.Delay(SleepTime, CancelSource.Token).ConfigureAwait(false);
+            }
+            catch (TaskCanceledException)
+            {
+                // no-op.
+                // in this situation something has requested cancellation. 
+                // just let this exit safely.
+            }
         }
 
         /// <summary>

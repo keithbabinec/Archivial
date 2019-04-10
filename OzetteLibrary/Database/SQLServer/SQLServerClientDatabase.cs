@@ -287,7 +287,7 @@ namespace OzetteLibrary.Database.SQLServer
                         {
                             if (rdr.HasRows)
                             {
-                                await rdr.ReadAsync();
+                                await rdr.ReadAsync().ConfigureAwait(false);
 
                                 result.LastFullBackup = rdr.IsDBNull(0) ? (DateTime?)null : rdr.GetDateTime(0);
                                 result.LastDifferentialBackup = rdr.IsDBNull(1) ? (DateTime?)null : rdr.GetDateTime(1);
@@ -738,7 +738,7 @@ namespace OzetteLibrary.Database.SQLServer
                             {
                                 // first result set is the lookup result value (new, updated, or existing)
 
-                                await rdr.ReadAsync();
+                                await rdr.ReadAsync().ConfigureAwait(false);
 
                                 var item = new BackupFileLookup()
                                 {
@@ -1480,7 +1480,7 @@ namespace OzetteLibrary.Database.SQLServer
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
 
-                    foreach (var provider in await GetProvidersAsync(ProviderTypes.Storage))
+                    foreach (var provider in await GetProvidersAsync(ProviderTypes.Storage).ConfigureAwait(false))
                     {
                         using (SqlCommand cmd = new SqlCommand())
                         {

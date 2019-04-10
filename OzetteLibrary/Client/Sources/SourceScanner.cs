@@ -238,7 +238,7 @@ namespace OzetteLibrary.Client.Sources
 
             if (fileIndexLookup.Result == BackupFileLookupResult.New)
             {
-                await ProcessNewFileAsync(fileInfo, source);
+                await ProcessNewFileAsync(fileInfo, source).ConfigureAwait(false);
                 results.NewFilesFound++;
                 results.NewBytesFound += (ulong)fileInfo.Length;
             }

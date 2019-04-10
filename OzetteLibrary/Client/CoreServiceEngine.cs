@@ -31,13 +31,13 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStart()
         {
-            Thread hb = new Thread(() => CoreServiceHeartbeat());
+            Thread hb = new Thread(() => CoreServiceHeartbeatAsync().Wait());
             hb.Start();
 
             Thread dbBackup = new Thread(() => CoreServiceClientDatabaseBackupsAsync().Wait());
             dbBackup.Start();
 
-            Thread fm = new Thread(() => CoreServiceMetaFileManagement());
+            Thread fm = new Thread(() => CoreServiceMetaFileManagementAsync().Wait());
             fm.Start();
         }
 
@@ -53,7 +53,7 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Performs the core service heartbeat.
         /// </summary>
-        private void CoreServiceHeartbeat()
+        private async Task CoreServiceHeartbeatAsync()
         {
             try
             {
@@ -66,7 +66,7 @@ namespace OzetteLibrary.Client
                     // wait 15 minutes or until an engine stop was requested.
                     // then restart the loop.
 
-                    ThreadSleepWithStopRequestCheck(TimeSpan.FromMinutes(15));
+                    await WaitAsync(TimeSpan.FromMinutes(15)).ConfigureAwait(false);
 
                     if (CancelSource.Token.IsCancellationRequested)
                     {
@@ -96,14 +96,14 @@ namespace OzetteLibrary.Client
                     {
                         // pull the timestamps that recents backups have been completed.
                         // ask the schedule which backup type (if any) should be performed based onthe recent history.
-                        var recentBackups = await Database.GetClientDatabaseBackupStatusAsync();
+                        var recentBackups = await Database.GetClientDatabaseBackupStatusAsync().ConfigureAwait(false);
                         var backupToPerform = scheduler.NextDatabaseBackup(recentBackups);
 
                         if (backupToPerform != null)
                         {
                             // if a backup type was returned, then we can perform that backup type now.
-                            await Database.CreateDatabaseBackupAsync(backupToPerform.Value);
-                            await Database.SetClientDatabaseBackupCompletedAsync(backupToPerform.Value);
+                            await Database.CreateDatabaseBackupAsync(backupToPerform.Value).ConfigureAwait(false);
+                            await Database.SetClientDatabaseBackupCompletedAsync(backupToPerform.Value).ConfigureAwait(false);
                         }
                     }
                     catch (Exception ex)
@@ -111,7 +111,7 @@ namespace OzetteLibrary.Client
                         Logger.WriteTraceError("Failed to check for, or perform, a regularly scheduled backup of the client database.", ex, Logger.GenerateFullContextStackTrace());
                     }
 
-                    ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
+                    await WaitAsync(TimeSpan.FromSeconds(60)).ConfigureAwait(false);
 
                     if (CancelSource.Token.IsCancellationRequested)
                     {
@@ -129,7 +129,7 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Performs meta-file management in a long running thread.
         /// </summary>
-        private void CoreServiceMetaFileManagement()
+        private async Task CoreServiceMetaFileManagementAsync()
         {
             try
             {
@@ -141,7 +141,7 @@ namespace OzetteLibrary.Client
 
                     DeleteOldLogFiles();
 
-                    ThreadSleepWithStopRequestCheck(TimeSpan.FromMinutes(15));
+                    await WaitAsync(TimeSpan.FromMinutes(15)).ConfigureAwait(false);
 
                     if (CancelSource.Token.IsCancellationRequested)
                     {

@@ -82,7 +82,7 @@ namespace OzetteLibrary.Client
                 {
                     // always ensure we have providers configured.
 
-                    if (await StorageProvidersAreConfiguredAsync())
+                    if (await StorageProvidersAreConfiguredAsync().ConfigureAwait(false))
                     {
                         // check to see if we have any files to backup.
                         // return the next one to backup.
@@ -112,7 +112,7 @@ namespace OzetteLibrary.Client
 
                             while (!transferFinished)
                             {
-                                ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(2));
+                                await WaitAsync(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
 
                                 switch (transferTask.Status)
                                 {
@@ -147,7 +147,7 @@ namespace OzetteLibrary.Client
                         }
                         else
                         {
-                            ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
+                            await WaitAsync(TimeSpan.FromSeconds(60)).ConfigureAwait(false);
 
                             if (LastHeartbeatOrBackupCompleted.HasValue == false || LastHeartbeatOrBackupCompleted.Value < DateTime.Now.Add(TimeSpan.FromMinutes(-1)))
                             {
@@ -158,7 +158,7 @@ namespace OzetteLibrary.Client
                     }
                     else
                     {
-                        ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
+                        await WaitAsync(TimeSpan.FromSeconds(60)).ConfigureAwait(false);
 
                         if (LastHeartbeatOrBackupCompleted.HasValue == false || LastHeartbeatOrBackupCompleted.Value < DateTime.Now.Add(TimeSpan.FromMinutes(-1)))
                         {
@@ -197,13 +197,13 @@ namespace OzetteLibrary.Client
                 {
                     // otherwise check the database to see if we have any providers.
 
-                    var storageProviders = await Database.GetProvidersAsync(ProviderTypes.Storage);
+                    var storageProviders = await Database.GetProvidersAsync(ProviderTypes.Storage).ConfigureAwait(false);
 
                     if (storageProviders.Count > 0)
                     {
                         // attemp to configure the providers.
                         var connections = new ProviderConnections(Database);
-                        var storageProviderConnections = await connections.ConfigureStorageProviderConnectionsAsync(Logger);
+                        var storageProviderConnections = await connections.ConfigureStorageProviderConnectionsAsync(Logger).ConfigureAwait(false);
 
                         if (storageProviderConnections != null)
                         {

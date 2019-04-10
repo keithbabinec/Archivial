@@ -200,7 +200,7 @@ namespace OzetteLibrary.Client.Transfer
                     file.SetProviderToFailed(providerName);
 
                     // sets the error message/stack trace
-                    await Database.SetBackupFileAsFailedAsync(file, ex.ToString());
+                    await Database.SetBackupFileAsFailedAsync(file, ex.ToString()).ConfigureAwait(false);
                     await Database.RemoveFileFromBackupQueueAsync(file).ConfigureAwait(false);
                 }
                 finally

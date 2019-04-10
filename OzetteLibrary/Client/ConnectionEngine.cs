@@ -72,7 +72,7 @@ namespace OzetteLibrary.Client
                         }
                     }
 
-                    ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
+                    await WaitAsync(TimeSpan.FromMinutes(1)).ConfigureAwait(false);
 
                     if (CancelSource.Token.IsCancellationRequested)
                     {

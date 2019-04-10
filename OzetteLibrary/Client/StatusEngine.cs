@@ -67,7 +67,7 @@ namespace OzetteLibrary.Client
             {
                 while (true)
                 {
-                    if (await MessagingProvidersAreConfiguredAsync())
+                    if (await MessagingProvidersAreConfiguredAsync().ConfigureAwait(false))
                     {
                         if (await CanSendStatusUpdateAsync().ConfigureAwait(false))
                         {
@@ -77,7 +77,7 @@ namespace OzetteLibrary.Client
                         }
                     }
 
-                    ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
+                    await WaitAsync(TimeSpan.FromSeconds(60)).ConfigureAwait(false);
 
                     if (CancelSource.Token.IsCancellationRequested)
                     {
@@ -109,13 +109,13 @@ namespace OzetteLibrary.Client
                 {
                     // otherwise check the database to see if we have any providers.
 
-                    var messagingProviders = await Database.GetProvidersAsync(ProviderTypes.Messaging);
+                    var messagingProviders = await Database.GetProvidersAsync(ProviderTypes.Messaging).ConfigureAwait(false);
 
                     if (messagingProviders.Count > 0)
                     {
                         // attemp to configure the providers.
                         var connections = new ProviderConnections(Database);
-                        var messageProviderConnections = await connections.ConfigureMessagingProviderConnectionsAsync(Logger);
+                        var messageProviderConnections = await connections.ConfigureMessagingProviderConnectionsAsync(Logger).ConfigureAwait(false);
 
                         if (messageProviderConnections != null)
                         {

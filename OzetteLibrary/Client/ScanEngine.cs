@@ -76,7 +76,7 @@ namespace OzetteLibrary.Client
                     // make sure we actually have at least one storage provider configured.
                     // otherwise scanning files won't be helpful since we can't send them anywhere.
 
-                    if (await StorageProvidersHaveBeenConfiguredAsync())
+                    if (await StorageProvidersHaveBeenConfiguredAsync().ConfigureAwait(false))
                     {
                         // first: grab current options from the database
                         var scanOptions = await GetScanFrequenciesAsync(Database).ConfigureAwait(false);
@@ -130,7 +130,7 @@ namespace OzetteLibrary.Client
                         }
                     }
 
-                    ThreadSleepWithStopRequestCheck(TimeSpan.FromSeconds(60));
+                    await WaitAsync(TimeSpan.FromMinutes(1)).ConfigureAwait(false);
 
                     if (CancelSource.Token.IsCancellationRequested)
                     {
@@ -153,7 +153,7 @@ namespace OzetteLibrary.Client
         {
             try
             {
-                var storageProviders = await Database.GetProvidersAsync(ProviderTypes.Storage);
+                var storageProviders = await Database.GetProvidersAsync(ProviderTypes.Storage).ConfigureAwait(false);
 
                 if (storageProviders.Count > 0)
                 {
