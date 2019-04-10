@@ -5,10 +5,12 @@ using OzetteLibrary.Events;
 using OzetteLibrary.Logging;
 using OzetteLibrary.Exceptions;
 using System;
+using System.Linq;
 using System.Threading;
 using OzetteLibrary.Folders;
 using System.Threading.Tasks;
 using OzetteLibrary.Providers;
+using OzetteLibrary.ServiceCore;
 
 namespace OzetteLibrary.Client
 {
@@ -209,10 +211,32 @@ namespace OzetteLibrary.Client
                 // grab the current copy from DB (this includes last scanned timestamp)
                 var dbSources = await GetSourceLocationsFromDatabaseAsync().ConfigureAwait(false);
 
-                if (dbSources == null || dbSources.Count == 0)
+                if (dbSources.Any(x => x.Path == CoreSettings.DatabaseBackupsDirectory) == false)
                 {
-                    Logger.WriteTraceMessage("No scan sources are defined. No files will be backed up until scan sources have been added.");
-                    return null;
+                    // add the base meta DB backup folder.
+
+                    var databaseFolderSource = new LocalSourceLocation();
+                    databaseFolderSource.Path = CoreSettings.DatabaseBackupsDirectory;
+                    databaseFolderSource.FileMatchFilter = "*.bak";
+                    databaseFolderSource.RevisionCount = 1;
+                    databaseFolderSource.Priority = Files.FileBackupPriority.Meta;
+                    databaseFolderSource.DestinationContainerName = "ozette-core-database-backups";
+
+                    await Database.SetSourceLocationAsync(databaseFolderSource).ConfigureAwait(false);
+                }
+
+                if (dbSources.Any(x => x.Path == CoreSettings.LogFilesArchiveDirectory) == false)
+                {
+                    // add the base meta log backup folder.
+
+                    var logFolderSource = new LocalSourceLocation();
+                    logFolderSource.Path = CoreSettings.LogFilesArchiveDirectory;
+                    logFolderSource.FileMatchFilter = "*.bak";
+                    logFolderSource.RevisionCount = 1;
+                    logFolderSource.Priority = Files.FileBackupPriority.Meta;
+                    logFolderSource.DestinationContainerName = "ozette-core-log-backups";
+
+                    await Database.SetSourceLocationAsync(logFolderSource).ConfigureAwait(false);
                 }
 
                 return dbSources;

@@ -1,6 +1,8 @@
 ﻿using OzetteLibrary.ServiceCore;
 using OzettePowerShell.Exceptions;
 using OzettePowerShell.Utility;
+using System;
+using System.IO;
 using System.Management.Automation;
 
 namespace OzettePowerShell.Functions.Public
@@ -28,7 +30,7 @@ namespace OzettePowerShell.Functions.Public
         /// </summary>
         [Parameter(Mandatory = false)]
         [ValidateNotNullOrEmpty]
-        public string InstallDirectory = OzetteLibrary.Constants.CommandLine.DefaultInstallLocation;
+        public string InstallDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Ozette Cloud Backup");
 
         /// <summary>
         ///   <para type="description">Suppresses the confirmation prompt.</para>
