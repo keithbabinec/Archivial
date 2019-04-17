@@ -46,6 +46,36 @@ BEGIN
 	VALUES ( 'StatusUpdateSchedule', '0 8 * * *' )
 END
 
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'BackupEngineInstanceCount'))
+BEGIN
+    INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
+	VALUES ( 'BackupEngineInstanceCount', '4' )
+END
+
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'DatabaseBackupsRetentionInDays'))
+BEGIN
+    INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
+	VALUES ( 'DatabaseBackupsRetentionInDays', '7' )
+END
+
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'LogFilesRetentionInDays'))
+BEGIN
+    INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
+	VALUES ( 'LogFilesRetentionInDays', '30' )
+END
+
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'MasterExclusionList'))
+BEGIN
+    INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
+	VALUES ( 'MasterExclusionList', '' )
+END
+
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'ProtectionIv'))
+BEGIN
+    INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
+	VALUES ( 'ProtectionIv', '' )
+END
+
 RAISERROR ('Adding client database backup status record.', 0, 1) WITH NOWAIT
 
 IF (NOT EXISTS(SELECT 1 FROM [dbo].[ClientDatabaseBackupStatus]))

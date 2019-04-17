@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-	<DocumentationFile>bin\Debug\OzettePowerShell.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\OzettePowerShell.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\CmdletExecutionNotApprovedException.cs" />
     <Compile Include="Exceptions\CmdletNotElevatedException.cs" />
+    <Compile Include="Functions\Public\GetOzetteCloudBackupOptionsCommand.cs" />
     <Compile Include="Functions\Public\GetOzetteCloudBackupStatusCommand.cs" />
     <Compile Include="Functions\Public\GetOzetteNetworkCredentialsCommand.cs" />
     <Compile Include="Functions\Public\GetOzetteProvidersCommand.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Functions\Public\RemoveOzetteNetworkCredentialCommand.cs" />
     <Compile Include="Functions\Public\RemoveOzetteNetworkSourceCommand.cs" />
     <Compile Include="Functions\Public\RemoveOzetteProviderCommand.cs" />
+    <Compile Include="Functions\Public\SetOzetteCloudBackupOptionsCommand.cs" />
     <Compile Include="Functions\Public\SetOzetteAzureProviderOptionsCommand.cs" />
     <Compile Include="Functions\Public\SetOzetteTwilioProviderOptionsCommand.cs" />
     <Compile Include="Functions\Public\StartOzetteLocalSourceRescanCommand.cs" />

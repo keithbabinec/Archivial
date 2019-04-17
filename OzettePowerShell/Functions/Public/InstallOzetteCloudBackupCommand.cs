@@ -61,15 +61,8 @@ namespace OzettePowerShell.Functions.Public
             Installation.CreateCoreSettings(InstallDirectory);
 
             WriteVerbose("InstallationDirectory=" + CoreSettings.InstallationDirectory);
-            WriteVerbose("LogFilesDirectory=" + CoreSettings.LogFilesDirectory);
-            WriteVerbose("LogFilesArchiveDirectory=" + CoreSettings.LogFilesArchiveDirectory);
-            WriteVerbose("LogFilesRetentionInDays=" + CoreSettings.LogFilesRetentionInDays);
-            WriteVerbose("DatabaseDirectory=" + CoreSettings.DatabaseDirectory);
-            WriteVerbose("DatabaseBackupsDirectory=" + CoreSettings.DatabaseBackupsDirectory);
-            WriteVerbose("DatabaseBackupsRetentionInDays=" + CoreSettings.DatabaseBackupsRetentionInDays);
             WriteVerbose("EventlogName=" + CoreSettings.EventlogName);
             WriteVerbose("DatabaseConnectionString=" + CoreSettings.DatabaseConnectionString);
-            WriteVerbose("BackupEngineInstancesCount=" + CoreSettings.BackupEngineInstanceCount);
 
             WriteVerboseAndProgress(25, "Registering custom event log source.");
             Installation.CreateEventLogSource();

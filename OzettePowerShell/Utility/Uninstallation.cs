@@ -139,17 +139,9 @@ namespace OzettePowerShell.Utility
             var settings = new string[]
             {
                 BootstrapSettingNames.InstallationDirectory,
-                BootstrapSettingNames.LogFilesDirectory,
-                BootstrapSettingNames.LogFilesArchiveDirectory,
-                BootstrapSettingNames.LogFilesRetentionInDays,
-                BootstrapSettingNames.DatabaseDirectory,
-                BootstrapSettingNames.DatabaseBackupsDirectory,
-                BootstrapSettingNames.DatabaseBackupsRetentionInDays,
                 BootstrapSettingNames.EventlogName,
-                BootstrapSettingNames.BackupEngineInstancesCount,
                 BootstrapSettingNames.DatabasePublishIsRequired,
-                BootstrapSettingNames.DatabaseConnectionString,
-                BootstrapSettingNames.ProtectionIV
+                BootstrapSettingNames.DatabaseConnectionString
             };
 
             foreach (var setting in settings)

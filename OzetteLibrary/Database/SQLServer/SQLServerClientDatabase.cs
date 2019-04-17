@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Dac;
+using OzetteLibrary.Exceptions;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
@@ -379,7 +380,7 @@ namespace OzetteLibrary.Database.SQLServer
         /// Retrieves an application setting value from the database.
         /// </summary>
         /// <remarks>
-        /// Returns null if the setting is not found.
+        /// Throws <c>ApplicationCoreSettingMissingException</c> if the setting is not found.
         /// </remarks>
         /// <param name="OptionName">Option name</param>
         /// <returns>The setting value.</returns>
@@ -411,7 +412,7 @@ namespace OzetteLibrary.Database.SQLServer
                         }
                         else
                         {
-                            return null;
+                            throw new ApplicationCoreSettingMissingException();
                         }
                     }
                 }
