@@ -153,7 +153,7 @@ namespace OzettePowerShell.Functions.Public
                 db.SetApplicationOptionAsync(settingName, StatusUpdateSchedule).GetAwaiter().GetResult();
             }
 
-            if (MasterExclusionMatches.Length > 0)
+            if (MasterExclusionMatches != null)
             {
                 WriteVerbose("Updating application setting in the database: MasterExclusionMatches");
 
@@ -169,7 +169,7 @@ namespace OzettePowerShell.Functions.Public
                     }
                 }
 
-                db.SetApplicationOptionAsync(settingName, StatusUpdateSchedule).GetAwaiter().GetResult();
+                db.SetApplicationOptionAsync(settingName, sb.ToString()).GetAwaiter().GetResult();
             }
         }
     }

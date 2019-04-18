@@ -56,15 +56,16 @@ namespace OzettePowerShell.Functions.Public
             result.StatusUpdateSchedule = db.GetApplicationOptionAsync(statusUpdate).GetAwaiter().GetResult();
 
             WriteVerbose("Querying application setting in the database: MasterExclusionMatches");
-            var exclusions = OzetteLibrary.Constants.RuntimeSettingNames.MasterExclusionMatches;
+            var exclusionSettingName = OzetteLibrary.Constants.RuntimeSettingNames.MasterExclusionMatches;
+            var exclusionValue = db.GetApplicationOptionAsync(exclusionSettingName).GetAwaiter().GetResult();
 
-            if (exclusions.Length == 0)
+            if (exclusionValue.Length == 0)
             {
-                result.MasterExclusionMatches = new string[0];
+                result.MasterExclusionMatches = null;
             }
             else
             {
-                result.MasterExclusionMatches = exclusions.Split(';');
+                result.MasterExclusionMatches = exclusionValue.Split(';');
             }
 
             WriteObject(result);

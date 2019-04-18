@@ -64,10 +64,10 @@ BEGIN
 	VALUES ( 'LogFilesRetentionInDays', '30' )
 END
 
-IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'MasterExclusionList'))
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'MasterExclusionMatches'))
 BEGIN
     INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
-	VALUES ( 'MasterExclusionList', '' )
+	VALUES ( 'MasterExclusionMatches', '' )
 END
 
 IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'ProtectionIv'))
