@@ -180,7 +180,7 @@ namespace OzetteLibrary.Database.SQLServer
 
             if (string.IsNullOrWhiteSpace(existingIvKey))
             {
-                Logger.WriteTraceMessage("Protection IV key is hsa not been populated, creating it now.");
+                Logger.WriteTraceMessage("Protection IV key is has not been populated, creating it now.");
 
                 // this entropy/iv key is used only for saving/retrieving app secrets (like storage config tokens).
                 // it is not used for encrypting files in the cloud.

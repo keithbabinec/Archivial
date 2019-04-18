@@ -46,10 +46,10 @@ BEGIN
 	VALUES ( 'StatusUpdateSchedule', '0 8 * * *' )
 END
 
-IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'BackupEngineInstanceCount'))
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'BackupEngineInstancesCount'))
 BEGIN
     INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
-	VALUES ( 'BackupEngineInstanceCount', '4' )
+	VALUES ( 'BackupEngineInstancesCount', '4' )
 END
 
 IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'DatabaseBackupsRetentionInDays'))
