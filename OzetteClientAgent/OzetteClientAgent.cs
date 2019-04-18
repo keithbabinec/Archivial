@@ -433,7 +433,7 @@ namespace OzetteClientAgent
             {
                 BackupEngineInstances = new List<BackupEngine>();
 
-                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours;
+                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.BackupEngineInstancesCount;
                 var instanceCount = Convert.ToInt32(await ClientDatabase.GetApplicationOptionAsync(settingName).ConfigureAwait(false));
 
                 for (int i = 0; i < instanceCount; i++)
