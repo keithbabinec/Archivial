@@ -261,8 +261,10 @@ namespace OzetteLibrary.Client
             try
             {
                 var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
-                var ivkey = Convert.FromBase64String(CoreSettings.ProtectionIv);
-                var pds = new ProtectedDataStore(Database, scope, ivkey);
+                var settingName = Constants.RuntimeSettingNames.ProtectionIV;
+                var protectionIvEncodedString = await Database.GetApplicationOptionAsync(settingName).ConfigureAwait(false);
+                var ivBytes = Convert.FromBase64String(protectionIvEncodedString);
+                var pds = new ProtectedDataStore(Database, scope, ivBytes);
 
                 var result = new Tuple<string, string>(
                     await pds.GetApplicationSecretAsync(string.Format(Constants.Formats.NetCredentialUserNameKeyLookup, foundCred.CredentialName)).ConfigureAwait(false),

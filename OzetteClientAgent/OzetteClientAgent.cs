@@ -131,7 +131,10 @@ namespace OzetteClientAgent
                 return;
             }
 
-            if (!StartBackupEngines())
+            var beTask = StartBackupEnginesAsync();
+            beTask.Wait();
+
+            if (!beTask.Result)
             {
                 Stop();
                 return;
@@ -421,7 +424,7 @@ namespace OzetteClientAgent
         /// Starts the backup engines.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
-        private bool StartBackupEngines()
+        private async Task<bool> StartBackupEnginesAsync()
         {
             // each backup engine instance shares the same logger.
             // this means a single log file for all engine instances- and each engine will prepend its log messages with a context tag.
@@ -429,7 +432,9 @@ namespace OzetteClientAgent
             try
             {
                 BackupEngineInstances = new List<BackupEngine>();
-                var instanceCount = CoreSettings.BackupEngineInstanceCount;
+
+                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.BackupEngineInstancesCount;
+                var instanceCount = Convert.ToInt32(await ClientDatabase.GetApplicationOptionAsync(settingName).ConfigureAwait(false));
 
                 for (int i = 0; i < instanceCount; i++)
                 {

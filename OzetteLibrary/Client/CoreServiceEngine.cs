@@ -137,9 +137,9 @@ namespace OzetteLibrary.Client
                 {
                     MoveCompletedLogFiles();
 
-                    DeleteOldDatabaseBackups();
+                    await DeleteOldDatabaseBackupsAsync().ConfigureAwait(false);
 
-                    DeleteOldLogFiles();
+                    await DeleteOldLogFilesAsync().ConfigureAwait(false);
 
                     await WaitAsync(TimeSpan.FromMinutes(15)).ConfigureAwait(false);
 
@@ -201,13 +201,16 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Deletes old database backup files outside of the retention period.
         /// </summary>
-        private void DeleteOldDatabaseBackups()
+        private async Task DeleteOldDatabaseBackupsAsync()
         {
             try
             {
+                var settingName = Constants.RuntimeSettingNames.DatabaseBackupsRetentionInDays;
+                var backupsRetentionInDays = Convert.ToInt32(await Database.GetApplicationOptionAsync(settingName).ConfigureAwait(false));
+
                 var dirInfo = new DirectoryInfo(CoreSettings.DatabaseBackupsDirectory);
                 var files = dirInfo.EnumerateFiles();
-                var oldFileDate = DateTime.Now.AddDays(-CoreSettings.DatabaseBackupsRetentionInDays);
+                var oldFileDate = DateTime.Now.AddDays(-backupsRetentionInDays);
 
                 foreach (var file in files)
                 {
@@ -227,13 +230,16 @@ namespace OzetteLibrary.Client
         /// <summary>
         /// Deletes old log files outside of the retention period.
         /// </summary>
-        private void DeleteOldLogFiles()
+        private async Task DeleteOldLogFilesAsync()
         {
             try
             {
+                var settingName = Constants.RuntimeSettingNames.LogFilesRetentionInDays;
+                var logFilesRetentionInDays = Convert.ToInt32(await Database.GetApplicationOptionAsync(settingName).ConfigureAwait(false));
+
                 var dirInfo = new DirectoryInfo(CoreSettings.LogFilesArchiveDirectory);
                 var files = dirInfo.EnumerateFiles();
-                var oldFileDate = DateTime.Now.AddDays(-CoreSettings.LogFilesRetentionInDays);
+                var oldFileDate = DateTime.Now.AddDays(-logFilesRetentionInDays);
 
                 foreach (var file in files)
                 {

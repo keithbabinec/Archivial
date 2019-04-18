@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Dac;
+using OzetteLibrary.Exceptions;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
@@ -59,6 +61,19 @@ namespace OzetteLibrary.Database.SQLServer
         /// <returns></returns>
         public async Task PrepareDatabaseAsync()
         {
+            await CreateDatabaseIfMissingAsync();
+
+            PublishDatabaseSchemaIfRequired();
+
+            await CreateMandatoryAppSettingsIfMissingAsync();
+        }
+
+        /// <summary>
+        /// Creates the database files if missing.
+        /// </summary>
+        /// <returns></returns>
+        private async Task CreateDatabaseIfMissingAsync()
+        {
             Logger.WriteTraceMessage("Attempting to connect to the database engine.");
             Logger.WriteTraceMessage("Instance: " + Constants.Database.DefaultSqlExpressInstanceConnectionString);
 
@@ -82,11 +97,11 @@ namespace OzetteLibrary.Database.SQLServer
                         if (rdr.HasRows)
                         {
                             databasePresent = true;
-                            Logger.WriteTraceMessage("Database was found.");
+                            Logger.WriteTraceMessage("Database was found, it does not need to be created.");
                         }
                         else
                         {
-                            Logger.WriteTraceMessage("Database was not found.");
+                            Logger.WriteTraceMessage("Database was not found, it needs to be created.");
                         }
                     }
                 }
@@ -117,7 +132,13 @@ namespace OzetteLibrary.Database.SQLServer
                     }
                 }
             }
+        }
 
+        /// <summary>
+        /// Publishes the database schema if required.
+        /// </summary>
+        private void PublishDatabaseSchemaIfRequired()
+        {
             // publish the database package (.dacpac)
             // but only if we need to-- according to the publish flag.
 
@@ -150,6 +171,29 @@ namespace OzetteLibrary.Database.SQLServer
         }
 
         /// <summary>
+        /// Creates mandatory application settings if missing.
+        /// </summary>
+        /// <returns></returns>
+        private async Task CreateMandatoryAppSettingsIfMissingAsync()
+        {
+            var existingIvKey = await GetApplicationOptionAsync(Constants.RuntimeSettingNames.ProtectionIV).ConfigureAwait(false);
+
+            if (string.IsNullOrWhiteSpace(existingIvKey))
+            {
+                Logger.WriteTraceMessage("Protection IV key is has not been populated, creating it now.");
+
+                // this entropy/iv key is used only for saving/retrieving app secrets (like storage config tokens).
+                // it is not used for encrypting files in the cloud.
+                // the iv key must be 16 bytes.
+                var encryptionIvBytes = new byte[16];
+                new RNGCryptoServiceProvider().GetBytes(encryptionIvBytes);
+                var encryptionIvString = Convert.ToBase64String(encryptionIvBytes);
+
+                await SetApplicationOptionAsync(Constants.RuntimeSettingNames.ProtectionIV, encryptionIvString).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// An event handler for receiving DAC services messages.
         /// </summary>
         /// <param name="sender"></param>
@@ -165,11 +209,9 @@ namespace OzetteLibrary.Database.SQLServer
         /// <returns></returns>
         public async Task DeleteClientDatabaseAsync()
         {
-            // note: this method is not async because it runs from the PowerShell module, and had problems running in async.
-
             using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultSqlExpressInstanceConnectionString))
             {
-                sqlcon.Open();
+                await sqlcon.OpenAsync().ConfigureAwait(false);
 
                 bool databasePresent = false;
 
@@ -179,7 +221,7 @@ namespace OzetteLibrary.Database.SQLServer
                     cmd.CommandText = string.Format("SELECT 1 FROM sys.databases WHERE [Name] = '{0}'", Constants.Database.DatabaseName);
                     cmd.CommandType = System.Data.CommandType.Text;
 
-                    using (var rdr = cmd.ExecuteReader())
+                    using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
                     {
                         if (rdr.HasRows)
                         {
@@ -196,12 +238,12 @@ namespace OzetteLibrary.Database.SQLServer
                     {
                         cmd.Connection = sqlcon;
 
-                        var createDbCommand = string.Format("ALTER DATABASE [{0}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];", Constants.Database.DatabaseName);
+                        var deleteDbCommand = string.Format("ALTER DATABASE [{0}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];", Constants.Database.DatabaseName);
 
-                        cmd.CommandText = createDbCommand;
+                        cmd.CommandText = deleteDbCommand;
                         cmd.CommandType = System.Data.CommandType.Text;
 
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -379,7 +421,7 @@ namespace OzetteLibrary.Database.SQLServer
         /// Retrieves an application setting value from the database.
         /// </summary>
         /// <remarks>
-        /// Returns null if the setting is not found.
+        /// Throws <c>ApplicationCoreSettingMissingException</c> if the setting is not found.
         /// </remarks>
         /// <param name="OptionName">Option name</param>
         /// <returns>The setting value.</returns>
@@ -411,7 +453,7 @@ namespace OzetteLibrary.Database.SQLServer
                         }
                         else
                         {
-                            return null;
+                            throw new ApplicationCoreSettingMissingException();
                         }
                     }
                 }

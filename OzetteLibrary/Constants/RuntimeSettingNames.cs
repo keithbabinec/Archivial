@@ -9,6 +9,26 @@
     public class RuntimeSettingNames
     {
         /// <summary>
+        /// Option: ProtectionIV.
+        /// </summary>
+        public const string ProtectionIV = "ProtectionIV";
+
+        /// <summary>
+        /// Option: LogFilesRetentionInDays.
+        /// </summary>
+        public const string LogFilesRetentionInDays = "LogFilesRetentionInDays";
+
+        /// <summary>
+        /// Option: DatabaseBackupsRetentionInDays.
+        /// </summary>
+        public const string DatabaseBackupsRetentionInDays = "DatabaseBackupsRetentionInDays";
+
+        /// <summary>
+        /// Option: BackupEngineInstancesCount.
+        /// </summary>
+        public const string BackupEngineInstancesCount = "BackupEngineInstancesCount";
+
+        /// <summary>
         /// Option: LowPriorityScanFrequencyInHours.
         /// </summary>
         public const string LowPriorityScanFrequencyInHours = "LowPriorityScanFrequencyInHours";
@@ -32,16 +52,6 @@
         /// Option: StatusUpdateSchedule.
         /// </summary>
         public const string StatusUpdateSchedule = "StatusUpdateSchedule";
-
-        /// <summary>
-        /// Option: SourcesFilePath.
-        /// </summary>
-        public const string SourcesFilePath = "SourcesFilePath";
-
-        /// <summary>
-        /// Option: ProvidersFilePath.
-        /// </summary>
-        public const string ProvidersFilePath = "ProvidersFilePath";
 
         /// <summary>
         /// Option: AzureStorageAccountName.
@@ -72,5 +82,10 @@
         /// Option: TwilioDestinationPhones.
         /// </summary>
         public const string TwilioDestinationPhones = "TwilioDestinationPhones";
+
+        /// <summary>
+        /// Option: MasterExclusionMatches.
+        /// </summary>
+        public const string MasterExclusionMatches = "MasterExclusionMatches";
     }
 }

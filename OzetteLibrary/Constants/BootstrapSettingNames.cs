@@ -9,41 +9,6 @@
     public class BootstrapSettingNames
     {
         /// <summary>
-        /// The protection IV setting name.
-        /// </summary>
-        public const string ProtectionIV = "OZETTE_PROTECTIONIV";
-
-        /// <summary>
-        /// The log files path setting.
-        /// </summary>
-        public const string LogFilesDirectory = "OZETTE_LOGFILESDIRECTORY";
-
-        /// <summary>
-        /// The log files path setting.
-        /// </summary>
-        public const string LogFilesArchiveDirectory = "OZETTE_LOGFILESARCHIVEDIRECTORY";
-
-        /// <summary>
-        /// The log files retention setting.
-        /// </summary>
-        public const string LogFilesRetentionInDays = "OZETTE_LOGFILESRETENTIONINDAYS";
-
-        /// <summary>
-        /// The database directory path setting.
-        /// </summary>
-        public const string DatabaseDirectory = "OZETTE_DATABASEDIRECTORY";
-
-        /// <summary>
-        /// The database backups directory path setting.
-        /// </summary>
-        public const string DatabaseBackupsDirectory = "OZETTE_DATABASEBACKUPSDIRECTORY";
-
-        /// <summary>
-        /// The database backups retention in days.
-        /// </summary>
-        public const string DatabaseBackupsRetentionInDays = "OZETTE_DATABASEBACKUPSRETENTIONINDAYS";
-
-        /// <summary>
         /// The installation directory path.
         /// </summary>
         public const string InstallationDirectory = "OZETTE_INSTALLATIONDIRECTORY";
@@ -57,11 +22,6 @@
         /// The database connection string name.
         /// </summary>
         public const string DatabaseConnectionString = "OZETTE_DATABASECONNECTIONSTRING";
-
-        /// <summary>
-        /// The number of backup engine instances to run.
-        /// </summary>
-        public const string BackupEngineInstancesCount = "OZETTE_BACKUPENGINEINSTANCESCOUNT";
 
         /// <summary>
         /// A flag to indicate if the database needs to be published.

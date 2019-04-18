@@ -1,6 +1,7 @@
 ﻿using OzetteLibrary.Constants;
 using OzetteLibrary.Exceptions;
 using System;
+using System.IO;
 
 namespace OzetteLibrary.ServiceCore
 {
@@ -61,11 +62,7 @@ namespace OzetteLibrary.ServiceCore
         {
             get
             {
-                return GetCoreStringSetting(BootstrapSettingNames.LogFilesDirectory);
-            }
-            set
-            {
-                SetCoreStringSetting(BootstrapSettingNames.LogFilesDirectory, value);
+                return Path.Combine(InstallationDirectory, "Logs");
             }
         }
 
@@ -76,41 +73,7 @@ namespace OzetteLibrary.ServiceCore
         {
             get
             {
-                return GetCoreStringSetting(BootstrapSettingNames.LogFilesArchiveDirectory);
-            }
-            set
-            {
-                SetCoreStringSetting(BootstrapSettingNames.LogFilesArchiveDirectory, value);
-            }
-        }
-
-        /// <summary>
-        /// The log files retention length.
-        /// </summary>
-        public static int LogFilesRetentionInDays
-        {
-            get
-            {
-                return GetCoreIntSetting(BootstrapSettingNames.LogFilesRetentionInDays);
-            }
-            set
-            {
-                SetCoreIntSetting(BootstrapSettingNames.LogFilesRetentionInDays, value.ToString());
-            }
-        }
-
-        /// <summary>
-        /// The database backup files retention length.
-        /// </summary>
-        public static int DatabaseBackupsRetentionInDays
-        {
-            get
-            {
-                return GetCoreIntSetting(BootstrapSettingNames.DatabaseBackupsRetentionInDays);
-            }
-            set
-            {
-                SetCoreIntSetting(BootstrapSettingNames.DatabaseBackupsRetentionInDays, value.ToString());
+                return Path.Combine(InstallationDirectory, "Logs\\Archive");
             }
         }
 
@@ -121,11 +84,7 @@ namespace OzetteLibrary.ServiceCore
         {
             get
             {
-                return GetCoreStringSetting(BootstrapSettingNames.DatabaseDirectory);
-            }
-            set
-            {
-                SetCoreStringSetting(BootstrapSettingNames.DatabaseDirectory, value);
+                return Path.Combine(InstallationDirectory, "Database");
             }
         }
 
@@ -136,41 +95,7 @@ namespace OzetteLibrary.ServiceCore
         {
             get
             {
-                return GetCoreStringSetting(BootstrapSettingNames.DatabaseBackupsDirectory);
-            }
-            set
-            {
-                SetCoreStringSetting(BootstrapSettingNames.DatabaseBackupsDirectory, value);
-            }
-        }
-
-        /// <summary>
-        /// The encryption IV value.
-        /// </summary>
-        public static string ProtectionIv
-        {
-            get
-            {
-                return GetCoreStringSetting(BootstrapSettingNames.ProtectionIV);
-            }
-            set
-            {
-                SetCoreStringSetting(BootstrapSettingNames.ProtectionIV, value);
-            }
-        }
-
-        /// <summary>
-        /// The number of backup engine instances to use.
-        /// </summary>
-        public static int BackupEngineInstanceCount
-        {
-            get
-            {
-                return GetCoreIntSetting(BootstrapSettingNames.BackupEngineInstancesCount);
-            }
-            set
-            {
-                SetCoreIntSetting(BootstrapSettingNames.BackupEngineInstancesCount, value.ToString());
+                return Path.Combine(InstallationDirectory, "Database\\Backups");
             }
         }
 

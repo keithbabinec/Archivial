@@ -70,7 +70,11 @@ namespace OzettePowerShell.Functions.Public
             WriteVerbose("Initializing protected data store.");
 
             var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
-            var ivkey = Convert.FromBase64String(CoreSettings.ProtectionIv);
+
+            var settingName = OzetteLibrary.Constants.RuntimeSettingNames.ProtectionIV;
+            var protectionIvEncodedString = db.GetApplicationOptionAsync(settingName).GetAwaiter().GetResult();
+            var ivkey = Convert.FromBase64String(protectionIvEncodedString);
+
             var pds = new ProtectedDataStore(db, scope, ivkey);
 
             WriteVerbose("Saving encrypted Azure configuration setting: AzureStorageAccountName.");

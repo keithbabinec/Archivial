@@ -48,8 +48,10 @@ namespace OzetteLibrary.Providers
             try
             {
                 // establish the protected store.
-                var ivEncodedString = CoreSettings.ProtectionIv;
-                var ivBytes = Convert.FromBase64String(ivEncodedString);
+
+                var settingName = Constants.RuntimeSettingNames.ProtectionIV;
+                var protectionIvEncodedString = await Database.GetApplicationOptionAsync(settingName).ConfigureAwait(false);
+                var ivBytes = Convert.FromBase64String(protectionIvEncodedString);
 
                 ProtectedDataStore protectedStore = new ProtectedDataStore(Database, DataProtectionScope.LocalMachine, ivBytes);
 
@@ -137,8 +139,9 @@ namespace OzetteLibrary.Providers
             try
             {
                 // establish the database and protected store.
-                var ivEncodedString = CoreSettings.ProtectionIv;
-                var ivBytes = Convert.FromBase64String(ivEncodedString);
+                var settingName = Constants.RuntimeSettingNames.ProtectionIV;
+                var protectionIvEncodedString = await Database.GetApplicationOptionAsync(settingName).ConfigureAwait(false);
+                var ivBytes = Convert.FromBase64String(protectionIvEncodedString);
 
                 ProtectedDataStore protectedStore = new ProtectedDataStore(Database, DataProtectionScope.LocalMachine, ivBytes);
 

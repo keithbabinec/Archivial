@@ -146,6 +146,7 @@
     <Compile Include="Providers\ProviderCollection.cs" />
     <Compile Include="Providers\ProviderConnections.cs" />
     <Compile Include="Providers\ProviderTypes.cs" />
+    <Compile Include="ServiceCore\ApplicationOptionsResult.cs" />
     <Compile Include="StorageProviders\Azure\AzureStorageProviderUtilities.cs" />
     <Compile Include="StorageProviders\StorageProvider.cs" />
     <Compile Include="StorageProviders\StorageProviderConnectionsCollection.cs" />
@@ -158,7 +159,6 @@
     <Compile Include="Secrets\ProtectedDataStore.cs" />
     <Compile Include="ServiceCore\BackupProgress.cs" />
     <Compile Include="ServiceCore\CoreSettings.cs" />
-    <Compile Include="ServiceCore\ApplicationOption.cs" />
     <Compile Include="ServiceCore\StartupResults.cs" />
     <Compile Include="Files\FileBackupPriority.cs" />
     <Compile Include="Folders\ScanResults.cs" />

@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
-using System.Security.Cryptography;
 using System.ServiceProcess;
 using System.Threading;
 
@@ -17,33 +16,18 @@ namespace OzettePowerShell.Utility
         /// <summary>
         /// Sets the core application settings.
         /// </summary>
-        /// <param name="arguments"></param>
+        /// <param name="installationDirectory"></param>
         public static void CreateCoreSettings(string installationDirectory)
         {
             // set the core settings.
             CoreSettings.InstallationDirectory = installationDirectory;
-            CoreSettings.LogFilesDirectory = Path.Combine(installationDirectory, "Logs");
-            CoreSettings.LogFilesArchiveDirectory = Path.Combine(CoreSettings.LogFilesDirectory, "Archive");
-            CoreSettings.LogFilesRetentionInDays = 30;
-            CoreSettings.DatabaseDirectory = Path.Combine(installationDirectory, "Database");
-            CoreSettings.DatabaseBackupsDirectory = Path.Combine(CoreSettings.DatabaseDirectory, "Backups");
-            CoreSettings.DatabaseBackupsRetentionInDays = 7;
             CoreSettings.EventlogName = "Ozette";
-            CoreSettings.BackupEngineInstanceCount = 4;
 
             // setting this flag indicates publish is required on next service startup.
             CoreSettings.DatabasePublishIsRequired = true;
 
             var dbConnectionString = string.Format("Data Source=.\\SQLExpress;Initial Catalog={0};Integrated Security=SSPI;", OzetteLibrary.Constants.Database.DatabaseName);
             CoreSettings.DatabaseConnectionString = dbConnectionString;
-
-            // this entropy/iv key is used only for saving/retrieving app secrets (like storage config tokens).
-            // it is not used for encrypting files in the cloud.
-            // the iv key must be 16 bytes.
-            var encryptionIvBytes = new byte[16];
-            new RNGCryptoServiceProvider().GetBytes(encryptionIvBytes);
-            var encryptionIvString = Convert.ToBase64String(encryptionIvBytes);
-            CoreSettings.ProtectionIv = encryptionIvString;
         }
 
         /// <summary>
