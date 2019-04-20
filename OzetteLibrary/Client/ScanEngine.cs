@@ -35,8 +35,6 @@ namespace OzetteLibrary.Client
         /// </summary>
         public override void BeginStart()
         {
-            Scanner = new SourceScanner(Database, Logger);
-
             Logger.WriteTraceMessage("Scan engine is starting up.");
 
             Thread pl = new Thread(() => ProcessLoopAsync().Wait());
@@ -71,6 +69,9 @@ namespace OzetteLibrary.Client
         {
             try
             {
+                string[] exclusionPatterns = await GetGlobalExclusionMatchPatternsAsync();
+                Scanner = new SourceScanner(Database, Logger, exclusionPatterns);
+
                 while (true)
                 {
                     // make sure we actually have at least one storage provider configured.
@@ -142,6 +143,21 @@ namespace OzetteLibrary.Client
             catch (Exception ex)
             {
                 OnStopped(new EngineStoppedEventArgs(ex, InstanceID));
+            }
+        }
+
+        private async Task<string[]> GetGlobalExclusionMatchPatternsAsync()
+        {
+            var settingName = Constants.RuntimeSettingNames.MasterExclusionMatches;
+            var settingValue = await Database.GetApplicationOptionAsync(settingName).ConfigureAwait(false);
+
+            if (settingValue.Length == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return settingValue.Split(';');
             }
         }
 

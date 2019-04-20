@@ -1,13 +1,12 @@
 ﻿using OzetteLibrary.Crypto;
 using OzetteLibrary.Database;
-using OzetteLibrary.Events;
 using OzetteLibrary.Files;
 using OzetteLibrary.Folders;
 using OzetteLibrary.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,11 +18,12 @@ namespace OzetteLibrary.Client.Sources
     public class SourceScanner
     {
         /// <summary>
-        /// Default constructor that takes a <c>SourceLocation</c>, <c>IDatabase</c>, and <c>ILogger</c> as input.
+        /// Default constructor that takes a <c>IDatabase</c>, <c>ILogger</c>, and optional exclusion patterns as input.
         /// </summary>
         /// <param name="database"></param>
         /// <param name="logger"></param>
-        public SourceScanner(IClientDatabase database, ILogger logger)
+        /// <param name="exclusionPatterns"></param>
+        public SourceScanner(IClientDatabase database, ILogger logger, string[] exclusionPatterns)
         {
             if (database == null)
             {
@@ -37,6 +37,16 @@ namespace OzetteLibrary.Client.Sources
             Database = database;
             Logger = logger;
             Hasher = new Hasher(logger);
+
+            if (exclusionPatterns != null)
+            {
+                Exclusions = new Regex[exclusionPatterns.Length];
+
+                for (int i = 0; i < exclusionPatterns.Length; i++)
+                {
+                    Exclusions[i] = new Regex(exclusionPatterns[i]);
+                }
+            }
         }
 
         /// <summary>
@@ -55,10 +65,15 @@ namespace OzetteLibrary.Client.Sources
         private Hasher Hasher { get; set; }
 
         /// <summary>
+        /// A list of master exclusions.
+        /// </summary>
+        private Regex[] Exclusions { get; set; }
+
+        /// <summary>
         /// Performs a scan of a source location.
         /// </summary>
         /// <param name="source">The local source definition</param>
-        /// <param name="cancelToken"></param>
+        /// <param name="cancelToken">Cancellation token.</param>
         public async Task ScanAsync(SourceLocation source, CancellationToken cancelToken)
         {
             if (source == null)
@@ -204,8 +219,6 @@ namespace OzetteLibrary.Client.Sources
         /// </summary>
         /// <param name="results">Result counters object.</param>
         /// <param name="fileInfo">FileInfo details</param>
-        /// <param name="fileHash">The computed hash</param>
-        /// <param name="algorithm">Hash algorithm used to compute the hash</param>
         /// <param name="source">The source definition</param>
         private async Task ScanFileAsync(ScanResults results, FileInfo fileInfo, SourceLocation source)
         {
@@ -229,6 +242,17 @@ namespace OzetteLibrary.Client.Sources
                 results.TotalFilesFound++;
                 results.TotalBytesFound += (ulong)fileInfo.Length;
                 return;
+            }
+            if (Exclusions != null)
+            {
+                foreach (var exclusion in Exclusions)
+                {
+                    if (exclusion.IsMatch(fileInfo.Name))
+                    {
+                        // file is excluded due to an exclusion match pattern.
+                        return;
+                    }
+                }
             }
 
             // do a simple file lookup, based on the name/path, size, and date modified
