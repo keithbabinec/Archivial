@@ -169,6 +169,12 @@ namespace OzettePowerShell.Functions.Public
                     }
                 }
 
+                if (sb.Length > 0 && sb[sb.Length - 1] == ';')
+                {
+                    // remove the trailing separator. 
+                    sb.Remove(sb.Length - 1, 1);
+                }
+
                 db.SetApplicationOptionAsync(settingName, sb.ToString()).GetAwaiter().GetResult();
             }
         }
