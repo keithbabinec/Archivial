@@ -9,9 +9,11 @@ Data backup agent software for Windows that automatically archives your local da
 * [Command Reference](#command-reference)
 
 ## About
-Ozette is a lightweight but highly configurable backup agent that supports cloud storage destinations, automated progress notifications, and full management through PowerShell commands.
+Archivial is a lightweight but highly configurable backup agent that supports cloud storage destinations, automated progress notifications, and full management through PowerShell commands. 
 
 Pull request and integration builds are run via Azure DevOps CI. Releases are automatically published to the Github releases tab.
+
+This project was recently renamed from the former temporary codename (Ozette). References should be updated soon.
 
 [![Build status](https://ozette.visualstudio.com/ozette-project/_apis/build/status/ozette-project-CI)](https://ozette.visualstudio.com/ozette-project/_build/latest?definitionId=1)
 
