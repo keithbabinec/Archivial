@@ -34,23 +34,27 @@ This project is still considered alpha phase and under active development. Break
 
 *Screenshot: PowerShell installation*
 
-![Screenshot: PowerShell installation](Doc/Screenshots/ps-install.PNG?raw=true "Screenshot: PowerShell installation")
+![Screenshot: PowerShell installation](Doc/Screenshots/1-archivial-install.png?raw=true "Screenshot: PowerShell installation")
+
+*Screenshot: Application Configuration through PowerShell*
+
+![Screenshot: Application Configuration through PowerShell](Doc/Screenshots/2-archivial-configuration.png?raw=true "Screenshot: Application Configuration through PowerShell")
+
+*Screenshot: Help documentation inside PowerShell*
+
+![Screenshot: Help documentation inside PowerShell](Doc/Screenshots/3-archivial-help-from-ps.png?raw=true "Screenshot: Help documentation inside PowerShell")
 
 *Screenshot: Program Files / Local Logs*
 
-![Screenshot: Program Files / Local Logs](Doc/Screenshots/logs-folder.PNG?raw=true "Screenshot: Program Files / Local Logs")
-
-*Screenshot: Configuration through PowerShell*
-
-![Screenshot: Configuration through PowerShell](Doc/Screenshots/ps-config.png?raw=true "Screenshot: Configuration through PowerShell")
+![Screenshot: Program Files / Local Logs](Doc/Screenshots/4-archivial-text-logs.png?raw=true "Screenshot: Program Files / Local Logs")
 
 *Screenshot: Files Backed up to Azure*
 
-![Screenshot: Files Backed up to Azure](Doc/Screenshots/azure-files.png?raw=true "Screenshot: Files Backed up to Azure")
+![Screenshot: Files Backed up to Azure](Doc/Screenshots/5-archivial-data-in-azure.png?raw=true "Screenshot: Files Backed up to Azure")
 
 *Screenshot: Automated SMS/Text Status Updates*
 
-![Screenshot: Automated SMS/Text Status Updates](Doc/Screenshots/twilio-status.png?raw=true "Screenshot: Automated SMS/Text Status Updates")
+![Screenshot: Automated SMS/Text Status Updates](Doc/Screenshots/6-archivial-update-notify.png?raw=true "Screenshot: Automated SMS/Text Status Updates")
 
 ## Installation
 
