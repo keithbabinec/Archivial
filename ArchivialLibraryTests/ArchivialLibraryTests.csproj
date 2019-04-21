@@ -138,7 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="ozette.runsettings" />
+    <None Include="Archivial.runsettings" />
     <None Include="packages.config" />
     <None Include="TestFiles\Hasher\AnExtensionlessFile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
