@@ -1,24 +1,28 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Install-OzetteCloudBackup
+# Uninstall-ArchivialCloudBackup
 
 ## SYNOPSIS
-Installs the Ozette Cloud Backup software on this computer.
+Uninstalls the Archivial Cloud Backup software from this computer.
 
 ## SYNTAX
 
 ```
-Install-OzetteCloudBackup [-InstallDirectory <String>] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Uninstall-ArchivialCloudBackup [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Installs the Ozette Cloud Backup software on this computer.
-The default installation will be placed in the Program Files directory, but this can optionally be changed by specifying the -InstallDirectory parameter.
+Uninstalls the Archivial Cloud Backup software from this computer.
+This will permenantly delete the installation folder, state database, and log files.
+This action is not reversable.
+
+Although all local installation data is deleted, any of the data already backed up to a cloud provider will not be removed.
+You must remove that manually if you wish to delete that data.
 
 This command requires an elevated (run-as administrator) PowerShell prompt to complete.
 It will also prompt for comfirmation unless the -Force switch is applied.
@@ -27,35 +31,20 @@ It will also prompt for comfirmation unless the -Force switch is applied.
 
 ### EXAMPLE 1
 ```
-C:\> Install-OzetteCloudBackup
+C:\> Uninstall-ArchivialCloudBackup
 ```
 
-Starts the installation with default options.
+Starts the uninstallation process.
 The user will be prompted for confirmation.
 
 ### EXAMPLE 2
 ```
-C:\> Install-OzetteCloudBackup -InstallDirectory "D:\Applications\Ozette Cloud Backup" -Force
+C:\> Uninstall-ArchivialCloudBackup -Force
 ```
 
-Starts the installation to the custom directory and suppresses the confirmation prompt.
+Starts the uninstallation and suppresses the confirmation prompt.
 
 ## PARAMETERS
-
-### -InstallDirectory
-Specify a custom installation directory, otherwise the default Program Files location will be used.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: C:\Program Files\Ozette Cloud Backup
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Force
 Suppresses the confirmation prompt.

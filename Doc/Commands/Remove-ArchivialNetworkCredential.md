@@ -1,11 +1,11 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Remove-OzetteNetworkCredential
+# Remove-ArchivialNetworkCredential
 
 ## SYNOPSIS
 Removes the stored network credential used for connecting to network resources.
@@ -14,33 +14,33 @@ Removes the stored network credential used for connecting to network resources.
 
 ### ByName
 ```
-Remove-OzetteNetworkCredential -CredentialName <String> [<CommonParameters>]
+Remove-ArchivialNetworkCredential -CredentialName <String> [<CommonParameters>]
 ```
 
 ### ByObject
 ```
-Remove-OzetteNetworkCredential -NetCredential <NetCredential> [<CommonParameters>]
+Remove-ArchivialNetworkCredential -NetCredential <NetCredential> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 Authenticated Network Source locations have an encrypted credential stored with them.
 This command is used to remove that stored credential.
 
-To view existing network credentials, run Get-OzetteNetworkCredentials.
-This command supports piping from Get-OzetteNetworkCredentials or manual invoke from credential name
+To view existing network credentials, run Get-ArchivialNetworkCredentials.
+This command supports piping from Get-ArchivialNetworkCredentials or manual invoke from credential name
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-C:\> Remove-OzetteNetworkCredential -CredentialName "drobo-nas"
+C:\> Remove-ArchivialNetworkCredential -CredentialName "drobo-nas"
 ```
 
 Removes the stored network credential with the specified name.
 
 ### EXAMPLE 2
 ```
-C:\> Get-OzetteNetworkCredentials | Where CredentialName -eq "drobo-nas" | Remove-OzetteNetworkCredential
+C:\> Get-ArchivialNetworkCredentials | Where CredentialName -eq "drobo-nas" | Remove-ArchivialNetworkCredential
 ```
 
 Removes the stored network credential, but using the pipeline scenario.
@@ -82,7 +82,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### OzetteLibrary.Secrets.NetCredential
+### ArchivialLibrary.Secrets.NetCredential
 Specify the object (from pipeline) to remove.
 
 ## OUTPUTS

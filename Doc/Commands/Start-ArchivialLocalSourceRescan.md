@@ -1,25 +1,25 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Start-OzetteLocalSourceRescan
+# Start-ArchivialLocalSourceRescan
 
 ## SYNOPSIS
-Forces the re-scan of a Local Source being monitored by Ozette.
+Forces the re-scan of a Local Source being monitored by Archivial.
 
 ## SYNTAX
 
 ### ByName
 ```
-Start-OzetteLocalSourceRescan -SourceID <Int32> [<CommonParameters>]
+Start-ArchivialLocalSourceRescan -SourceID <Int32> [<CommonParameters>]
 ```
 
 ### ByObject
 ```
-Start-OzetteLocalSourceRescan -LocalSource <LocalSourceLocation> [<CommonParameters>]
+Start-ArchivialLocalSourceRescan -LocalSource <LocalSourceLocation> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,27 +31,27 @@ The automated scanning schedule for Low priority sources is once every 48 hours.
 Medium priority sources are scanned every 12 hours.
 High priority sources are scanned every hour.
 
-Please see the Get-OzetteLocalSources command to find the ID of an existing source you would like to rescan.
+Please see the Get-ArchivialLocalSources command to find the ID of an existing source you would like to rescan.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-C:\> Start-OzetteLocalSourceRescan -SourceID 2
+C:\> Start-ArchivialLocalSourceRescan -SourceID 2
 ```
 
 Forces a rescan of the Local Source with the specified ID.
 
 ### EXAMPLE 2
 ```
-C:\> Get-OzetteLocalSources | Start-OzetteLocalSourceRescan
+C:\> Get-ArchivialLocalSources | Start-ArchivialLocalSourceRescan
 ```
 
-Forces a rescan of all defined Local Sources being monitored by Ozette.
+Forces a rescan of all defined Local Sources being monitored by Archivial.
 
 ### EXAMPLE 3
 ```
-C:\> Get-OzetteLocalSources | Where Path -like "*D:\temp*" | Start-OzetteLocalSourceRescan
+C:\> Get-ArchivialLocalSources | Where Path -like "*D:\temp*" | Start-ArchivialLocalSourceRescan
 ```
 
 Forces a rescan of any Local Sources that match the path filter.
@@ -93,7 +93,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### OzetteLibrary.Folders.LocalSourceLocation
+### ArchivialLibrary.Folders.LocalSourceLocation
 Specify the Local Source object to rescan.
 
 ## OUTPUTS

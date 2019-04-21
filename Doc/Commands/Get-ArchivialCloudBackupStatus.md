@@ -1,11 +1,11 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Get-OzetteCloudBackupStatus
+# Get-ArchivialCloudBackupStatus
 
 ## SYNOPSIS
 Returns the current status of the cloud backup progress.
@@ -13,7 +13,7 @@ Returns the current status of the cloud backup progress.
 ## SYNTAX
 
 ```
-Get-OzetteCloudBackupStatus [<CommonParameters>]
+Get-ArchivialCloudBackupStatus [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -24,7 +24,7 @@ It includes details such as how many files are backed up, remaining, and percent
 
 ### EXAMPLE 1
 ```
-C:\> Get-OzetteCloudBackupStatus
+C:\> Get-ArchivialCloudBackupStatus
 ```
 
 Returns the current status of the cloud backup progress.

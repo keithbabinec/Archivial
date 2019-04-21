@@ -13,7 +13,7 @@ Archivial is a lightweight but highly configurable backup agent that supports cl
 
 Pull request and integration builds are run via Azure DevOps CI. Releases are automatically published to the Github releases tab.
 
-This project was recently renamed from the former temporary codename (Ozette). References should be updated soon.
+This project was recently renamed from the former temporary codename (Ozette). References are in the process of being updated.
 
 [![Build status](https://ozette.visualstudio.com/ozette-project/_apis/build/status/ozette-project-CI)](https://ozette.visualstudio.com/ozette-project/_build/latest?definitionId=1)
 
@@ -62,40 +62,40 @@ This project is still considered alpha phase and under active development. Break
 * SQL Server is required to maintain the state database. Express edition is available for free from Microsoft at [this link](https://www.microsoft.com/en-us/sql-server/sql-server-editions-express). 
 * Run the installer with the default options.
 
-### Step 2: Install OzettePowerShell Module (Management Tools)
-* Installation and management tasks are performed through the [OzettePowerShell](https://www.powershellgallery.com/packages/OzettePowerShell/) module. 
+### Step 2: Install ArchivialPowerShell Module (Management Tools)
+* Installation and management tasks are performed through the [OzettePowerShell](https://www.powershellgallery.com/packages/ArchivialPowerShell) module. 
 * Open an elevated (run-as Administrator) PowerShell prompt and then execute the following to install that module:
 ``` powershell
-Install-Module -Name OzettePowerShell -Scope AllUsers
+Install-Module -Name ArchivialPowerShell -Scope AllUsers
 ```
 
-### Step 3: Install and Start the Ozette Backup Agent
+### Step 3: Install and Start the Archivial Backup Agent
 * After installing the management tools, run the main installation command. 
-* This will copy the program files, create the initial state database, then create and start the Ozette Client windows service (the backup agent).
+* This will copy the program files, create the initial state database, then create and start the Archivial Client windows service (the backup agent).
 ``` powershell
-Install-OzetteCloudBackup
+Install-ArchivialCloudBackup
 ```
 
 ## Command Reference
 | Command | Description |
 | --- | --- |
-| [Add-OzetteLocalSource](Doc/Commands/Add-OzetteLocalSource.md) | Adds a local folder to the Ozette backup folders list. |
-| [Add-OzetteNetworkSource](Doc/Commands/Add-OzetteNetworkSource.md) | Adds a network (UNC path) folder to the Ozette backup folders list. |
-| [Get-OzetteCloudBackupOptions](Doc/Commands/Get-OzetteCloudBackupOptions.md) | Gets the application options for Ozette Cloud Backup. |
-| [Get-OzetteCloudBackupStatus](Doc/Commands/Get-OzetteCloudBackupStatus.md) | Returns the current status of the cloud backup progress. |
-| [Get-OzetteLocalSources](Doc/Commands/Get-OzetteLocalSources.md) | Returns all of the Local Source folders being monitored by Ozette. |
-| [Get-OzetteNetworkCredentials](Doc/Commands/Get-OzetteNetworkCredentials.md) | Returns all of the saved Network Credentials used to connect to Network Sources. |
-| [Get-OzetteNetworkSources](Doc/Commands/Get-OzetteNetworkSources.md) | Returns all of the Network Source folders being monitored by Ozette. |
-| [Get-OzetteProviders](Doc/Commands/Get-OzetteProviders.md) | Returns all of the configured Ozette Providers. |
-| [Install-OzetteCloudBackup](Doc/Commands/Install-OzetteCloudBackup.md) | Installs the Ozette Cloud Backup software on this computer. |
-| [Remove-OzetteLocalSource](Doc/Commands/Remove-OzetteLocalSource.md) | Removes the specified Local Source. |
-| [Remove-OzetteNetworkCredential](Doc/Commands/Remove-OzetteNetworkCredential.md) | Removes the stored network credential used for connecting to network resources. |
-| [Remove-OzetteNetworkSource](Doc/Commands/Remove-OzetteNetworkSource.md) | Removes the specified Network Source. |
-| [Remove-OzetteProvider](Doc/Commands/Remove-OzetteProvider.md) | Removes the configured storage or messaging provider. |
-| [Set-OzetteAzureProviderOptions](Doc/Commands/Set-OzetteAzureProviderOptions.md) | Configures the Azure cloud storage provider as a backup destination. |
-| [Set-OzetteCloudBackupOptions](Doc/Commands/Set-OzetteCloudBackupOptions.md) | Sets one or more application options for Ozette Cloud Backup. |
-| [Set-OzetteNetworkCredential](Doc/Commands/Set-OzetteNetworkCredential.md) | Saves the credentials required to connect to an authenticated network resource (such as a UNC path share). |
-| [Set-OzetteTwilioProviderOptions](Doc/Commands/Set-OzetteTwilioProviderOptions.md) | Configures the Twilio messaging provider as a status update recipient. |
-| [Start-OzetteLocalSourceRescan](Doc/Commands/Start-OzetteLocalSourceRescan.md) | Forces the re-scan of a Local Source being monitored by Ozette. |
-| [Start-OzetteNetworkSourceRescan](Doc/Commands/Start-OzetteNetworkSourceRescan.md) | Forces the re-scan of a Network Source being monitored by Ozette. |
-| [Uninstall-OzetteCloudBackup](Doc/Commands/Uninstall-OzetteCloudBackup.md) | Uninstalls the Ozette Cloud Backup software from this computer. |
+| [Add-ArchivialLocalSource](Doc/Commands/Add-ArchivialLocalSource.md) | Adds a local folder to the Archivial backup folders list. |
+| [Add-ArchivialNetworkSource](Doc/Commands/Add-ArchivialNetworkSource.md) | Adds a network (UNC path) folder to the Archivial backup folders list. |
+| [Get-ArchivialCloudBackupOptions](Doc/Commands/Get-ArchivialCloudBackupOptions.md) | Gets the application options for Archivial Cloud Backup. |
+| [Get-ArchivialCloudBackupStatus](Doc/Commands/Get-ArchivialCloudBackupStatus.md) | Returns the current status of the cloud backup progress. |
+| [Get-ArchivialLocalSources](Doc/Commands/Get-ArchivialLocalSources.md) | Returns all of the Local Source folders being monitored by Archivial. |
+| [Get-ArchivialNetworkCredentials](Doc/Commands/Get-ArchivialNetworkCredentials.md) | Returns all of the saved Network Credentials used to connect to Network Sources. |
+| [Get-ArchivialNetworkSources](Doc/Commands/Get-ArchivialNetworkSources.md) | Returns all of the Network Source folders being monitored by Archivial. |
+| [Get-ArchivialProviders](Doc/Commands/Get-ArchivialProviders.md) | Returns all of the configured Archivial Providers. |
+| [Install-ArchivialCloudBackup](Doc/Commands/Install-ArchivialCloudBackup.md) | Installs the Archivial Cloud Backup software on this computer. |
+| [Remove-ArchivialLocalSource](Doc/Commands/Remove-ArchivialLocalSource.md) | Removes the specified Local Source. |
+| [Remove-ArchivialNetworkCredential](Doc/Commands/Remove-ArchivialNetworkCredential.md) | Removes the stored network credential used for connecting to network resources. |
+| [Remove-ArchivialNetworkSource](Doc/Commands/Remove-ArchivialNetworkSource.md) | Removes the specified Network Source. |
+| [Remove-ArchivialProvider](Doc/Commands/Remove-ArchivialProvider.md) | Removes the configured storage or messaging provider. |
+| [Set-ArchivialAzureProviderOptions](Doc/Commands/Set-ArchivialAzureProviderOptions.md) | Configures the Azure cloud storage provider as a backup destination. |
+| [Set-ArchivialCloudBackupOptions](Doc/Commands/Set-ArchivialCloudBackupOptions.md) | Sets one or more application options for Archivial Cloud Backup. |
+| [Set-ArchivialNetworkCredential](Doc/Commands/Set-ArchivialNetworkCredential.md) | Saves the credentials required to connect to an authenticated network resource (such as a UNC path share). |
+| [Set-ArchivialTwilioProviderOptions](Doc/Commands/Set-ArchivialTwilioProviderOptions.md) | Configures the Twilio messaging provider as a status update recipient. |
+| [Start-ArchivialLocalSourceRescan](Doc/Commands/Start-ArchivialLocalSourceRescan.md) | Forces the re-scan of a Local Source being monitored by Archivial. |
+| [Start-ArchivialNetworkSourceRescan](Doc/Commands/Start-ArchivialNetworkSourceRescan.md) | Forces the re-scan of a Network Source being monitored by Archivial. |
+| [Uninstall-ArchivialCloudBackup](Doc/Commands/Uninstall-ArchivialCloudBackup.md) | Uninstalls the Archivial Cloud Backup software from this computer. |

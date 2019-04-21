@@ -1,11 +1,11 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Remove-OzetteNetworkSource
+# Remove-ArchivialNetworkSource
 
 ## SYNOPSIS
 Removes the specified Network Source.
@@ -14,34 +14,34 @@ Removes the specified Network Source.
 
 ### ByName
 ```
-Remove-OzetteNetworkSource -SourceID <Int32> [<CommonParameters>]
+Remove-ArchivialNetworkSource -SourceID <Int32> [<CommonParameters>]
 ```
 
 ### ByObject
 ```
-Remove-OzetteNetworkSource -NetworkSource <NetworkSourceLocation> [<CommonParameters>]
+Remove-ArchivialNetworkSource -NetworkSource <NetworkSourceLocation> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-A Network Source is a folder on your network (referenced by UNC Path) that Ozette backs up and automatically monitors for new and updated files.
+A Network Source is a folder on your network (referenced by UNC Path) that Archivial backs up and automatically monitors for new and updated files.
 
 Removing a Network Source means that new or updated files from that location will not be backed up anymore, but existing files already backed up to cloud storage will remain.
 
-To view existing Network Sources, run Get-OzetteNetworkSource.
-This command supports piping from Get-OzetteNetworkSource or manual invoke from the specified source ID.
+To view existing Network Sources, run Get-ArchivialNetworkSource.
+This command supports piping from Get-ArchivialNetworkSource or manual invoke from the specified source ID.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-C:\> Remove-OzetteNetworkSource -ID 3
+C:\> Remove-ArchivialNetworkSource -ID 3
 ```
 
 Removes the Network Source with the specified ID.
 
 ### EXAMPLE 2
 ```
-C:\> Get-OzetteNetworkSource | Where Path -like "*\\drobo-nas\documents*" | Remove-OzetteNetworkSource
+C:\> Get-ArchivialNetworkSource | Where Path -like "*\\drobo-nas\documents*" | Remove-ArchivialNetworkSource
 ```
 
 Removes any configured Network Source that matches a path containing the specified filter (using the pipeline scenario).
@@ -83,7 +83,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### OzetteLibrary.Folders.NetworkSourceLocation
+### ArchivialLibrary.Folders.NetworkSourceLocation
 Specify the object (from pipeline) to remove.
 
 ## OUTPUTS

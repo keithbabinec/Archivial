@@ -1,33 +1,33 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Get-OzetteCloudBackupOptions
+# Get-ArchivialCloudBackupOptions
 
 ## SYNOPSIS
-Gets the application options for Ozette Cloud Backup.
+Gets the application options for Archivial Cloud Backup.
 
 ## SYNTAX
 
 ```
-Get-OzetteCloudBackupOptions [<CommonParameters>]
+Get-ArchivialCloudBackupOptions [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Gets the application options for Ozette Cloud Backup.
-To change existing options, run Set-OzetteCloudBackupOptions
+Gets the application options for Archivial Cloud Backup.
+To change existing options, run Set-ArchivialCloudBackupOptions
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-C:\> Get-OzetteCloudBackupOptions
+C:\> Get-ArchivialCloudBackupOptions
 ```
 
-Returns the application options for Ozette Cloud Backup.
+Returns the application options for Archivial Cloud Backup.
 
 ## PARAMETERS
 

@@ -1,11 +1,11 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Set-OzetteAzureProviderOptions
+# Set-ArchivialAzureProviderOptions
 
 ## SYNOPSIS
 Configures the Azure cloud storage provider as a backup destination.
@@ -13,7 +13,7 @@ Configures the Azure cloud storage provider as a backup destination.
 ## SYNTAX
 
 ```
-Set-OzetteAzureProviderOptions -AzureStorageAccountName <String> -AzureStorageAccountToken <String>
+Set-ArchivialAzureProviderOptions -AzureStorageAccountName <String> -AzureStorageAccountToken <String>
  [<CommonParameters>]
 ```
 
@@ -23,9 +23,9 @@ This command will enable the Azure cloud storage provider for this purpose.
 
 This command assumes that you have already deployed an Azure storage account and have the access token ready.
 
-If your access token has changed, you can safely re-run this command with the new token, and then restart the Ozette Cloud Backup service for the changes to take effect.
+If your access token has changed, you can safely re-run this command with the new token, and then restart the Archivial Cloud Backup service for the changes to take effect.
 
-If you would like to disable this provider, please run the Remove-OzetteProvider cmdlet.
+If you would like to disable this provider, please run the Remove-ArchivialProvider cmdlet.
 
 All provided options here (account name and token) are encrypted before saving to the database.
 
@@ -33,7 +33,7 @@ All provided options here (account name and token) are encrypted before saving t
 
 ### EXAMPLE 1
 ```
-C:\> Set-OzetteAzureProviderOptions -AzureStorageAccountName "myaccount" -AzureStorageAccountToken "--my token--"
+C:\> Set-ArchivialAzureProviderOptions -AzureStorageAccountName "myaccount" -AzureStorageAccountToken "--my token--"
 ```
 
 Configures Azure as a cloud storage backup destination.

@@ -1,11 +1,11 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Set-OzetteTwilioProviderOptions
+# Set-ArchivialTwilioProviderOptions
 
 ## SYNOPSIS
 Configures the Twilio messaging provider as a status update recipient.
@@ -13,8 +13,8 @@ Configures the Twilio messaging provider as a status update recipient.
 ## SYNTAX
 
 ```
-Set-OzetteTwilioProviderOptions -TwilioAccountID <String> -TwilioAuthToken <String> -TwilioSourcePhone <String>
- -TwilioDestinationPhones <String> [<CommonParameters>]
+Set-ArchivialTwilioProviderOptions -TwilioAccountID <String> -TwilioAuthToken <String>
+ -TwilioSourcePhone <String> -TwilioDestinationPhones <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -25,9 +25,9 @@ This command assumes that you have already setup a Twilio account, phone number,
 Twilio expects phone numbers to be provided in the E.164 format.
 If providing multiple destination phone numbers, they can be seperated by a semicolon.
 
-If your access token has changed, you can safely re-run this command with the new token, and then restart the Ozette Cloud Backup service for the changes to take effect.
+If your access token has changed, you can safely re-run this command with the new token, and then restart the Archivial Cloud Backup service for the changes to take effect.
 
-If you would like to disable this provider, please run the Remove-OzetteProvider cmdlet.
+If you would like to disable this provider, please run the Remove-ArchivialProvider cmdlet.
 
 All provided options here (ex: account name, token, phone numbers) are encrypted before saving to the database.
 
@@ -35,7 +35,7 @@ All provided options here (ex: account name, token, phone numbers) are encrypted
 
 ### EXAMPLE 1
 ```
-C:\> Set-OzetteTwilioProviderOptions -TwilioAccountID "myaccount" -TwilioAuthToken "--token--" -TwilioSourcePhone "+12065551234" -TwilioDestinationPhones "+12065554567;+12065556789"
+C:\> Set-ArchivialTwilioProviderOptions -TwilioAccountID "myaccount" -TwilioAuthToken "--token--" -TwilioSourcePhone "+12065551234" -TwilioDestinationPhones "+12065554567;+12065556789"
 ```
 
 Configures Twilio as a status messaging recipient.

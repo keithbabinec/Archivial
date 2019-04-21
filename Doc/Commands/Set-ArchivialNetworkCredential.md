@@ -1,11 +1,11 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Set-OzetteNetworkCredential
+# Set-ArchivialNetworkCredential
 
 ## SYNOPSIS
 Saves the credentials required to connect to an authenticated network resource (such as a UNC path share).
@@ -13,7 +13,7 @@ Saves the credentials required to connect to an authenticated network resource (
 ## SYNTAX
 
 ```
-Set-OzetteNetworkCredential -CredentialName <String> -ShareUsername <String> -SharePassword <String>
+Set-ArchivialNetworkCredential -CredentialName <String> -ShareUsername <String> -SharePassword <String>
  [<CommonParameters>]
 ```
 
@@ -27,7 +27,7 @@ The credential username and password are both encrypted and saved to the databas
 
 ### EXAMPLE 1
 ```
-C:\> Set-OzetteNetworkCredential -CredentialName "drobo-device" -ShareUser "drobo-private-user" -SharePassword ****
+C:\> Set-ArchivialNetworkCredential -CredentialName "drobo-device" -ShareUser "drobo-private-user" -SharePassword ****
 ```
 
 Encrypts and stores the network resource credentials in the database.

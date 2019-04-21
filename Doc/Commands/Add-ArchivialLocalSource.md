@@ -1,28 +1,24 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Add-OzetteNetworkSource
+# Add-ArchivialLocalSource
 
 ## SYNOPSIS
-Adds a network (UNC path) folder to the Ozette backup folders list.
+Adds a local folder to the Archivial backup folders list.
 
 ## SYNTAX
 
 ```
-Add-OzetteNetworkSource -UncPath <String> -Priority <String> -Revisions <Int32> [-CredentialName <String>]
- [-MatchFilter <String>] [<CommonParameters>]
+Add-ArchivialLocalSource -FolderPath <String> -Priority <String> -Revisions <Int32> [-MatchFilter <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-A Network Source is a folder on your network (referenced by UNC Path) that you would like Ozette to backup and automatically monitor for new and updated files.
-
-Network Sources can be authenticated (require username/password), or unauthenticated (open access).
-If this Network Source requires authenticated access, you must provide the name of an already saved Network Credential (see examples).
-Network sources can use either a DNS or IP Address for the host.
+A Local Source is a folder on your computer (or a directly attached external drive) that you would like Archivial to backup and automatically monitor for new and updated files.
 
 The priority of the source determines how frequently it will be scanned for changes.
 The automated scanning schedule for Low priority sources is once every 48 hours.
@@ -37,22 +33,22 @@ Any windows file path wildcard expression will be accepted here.
 
 ### EXAMPLE 1
 ```
-C:\> Add-OzetteNetworkSource -UncPath "\\drobo-nas-device\public\media\music" -Priority Medium -Revisions 1
+C:\> Add-ArchivialLocalSource -FolderPath "C:\users\test\documents" -Priority High -Revisions 3
 ```
 
-Adds the specified unauthenticated network share to backup.
+Adds the specified folder to backup with high priority, and to retain up to 3 revisions of file history.
 
 ### EXAMPLE 2
 ```
-C:\> Set-OzetteNetworkCredential -CredentialName "drobo-device" -ShareUser "drobo-private-user" -SharePassword ****; Add-OzetteNetworkSource -UncPath "\\drobo-nas-device\private\documents\taxes" -CredentialName "drobo-device" -Priority Medium -Revisions 4 -MatchFilter *.pdf
+C:\> Add-ArchivialLocalSource -FolderPath "C:\users\test\music\playlists" -Priority High -Revisions 3 -MatchFilter *.m3u
 ```
 
-Encrypts and stores the network resource credentials, and then adds the specified authenticated network share to backup.
+Adds the specified folder to backup with high priority, but only files that match the wildcard extension filter.
 
 ## PARAMETERS
 
-### -UncPath
-Specify the UNC folder path that should be backed up and monitored.
+### -FolderPath
+Specify the folder path that should be backed up and monitored.
 
 ```yaml
 Type: String
@@ -92,21 +88,6 @@ Aliases:
 Required: True
 Position: Named
 Default value: 0
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -CredentialName
-Optionally specify the name of a stored credential to authenticate this share with.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

@@ -1,19 +1,19 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Set-OzetteCloudBackupOptions
+# Set-ArchivialCloudBackupOptions
 
 ## SYNOPSIS
-Sets one or more application options for Ozette Cloud Backup.
+Sets one or more application options for Archivial Cloud Backup.
 
 ## SYNTAX
 
 ```
-Set-OzetteCloudBackupOptions [-LogFilesRetentionInDays <Int32>] [-DatabaseBackupsRetentionInDays <Int32>]
+Set-ArchivialCloudBackupOptions [-LogFilesRetentionInDays <Int32>] [-DatabaseBackupsRetentionInDays <Int32>]
  [-BackupEngineInstancesCount <Int32>] [-LowPriorityScanFrequencyInHours <Int32>]
  [-MedPriorityScanFrequencyInHours <Int32>] [-HighPriorityScanFrequencyInHours <Int32>]
  [-ProtectionIV <String>] [-StatusUpdateSchedule <String>] [-MasterExclusionMatches <String[]>]
@@ -22,34 +22,34 @@ Set-OzetteCloudBackupOptions [-LogFilesRetentionInDays <Int32>] [-DatabaseBackup
 
 ## DESCRIPTION
 Specify at least one option to change.
-To see existing options, run Get-OzetteCloudBackupOptions
+To see existing options, run Get-ArchivialCloudBackupOptions
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-C:\> Set-OzetteCloudBackupOptions -LogFilesRetentionInDays 60
+C:\> Set-ArchivialCloudBackupOptions -LogFilesRetentionInDays 60
 ```
 
 Sets the local log file retention to 60 days.
 
 ### EXAMPLE 2
 ```
-C:\> Set-OzetteCloudBackupOptions -LowPriorityScanFrequencyInHours 4 -MedPriorityScanFrequencyInHours 2
+C:\> Set-ArchivialCloudBackupOptions -LowPriorityScanFrequencyInHours 4 -MedPriorityScanFrequencyInHours 2
 ```
 
 Sets low priority and medium priority scanning frequencies.
 
 ### EXAMPLE 3
 ```
-C:\> Set-OzetteCloudBackupOptions -StatusUpdateSchedule "0 8 * * *"
+C:\> Set-ArchivialCloudBackupOptions -StatusUpdateSchedule "0 8 * * *"
 ```
 
 Sets the status update notification schedule to once per day at 8am.
 
 ### EXAMPLE 4
 ```
-C:\> Set-OzetteCloudBackupOptions -MasterExclusionMatches "^._",".DS_Store"
+C:\> Set-ArchivialCloudBackupOptions -MasterExclusionMatches "^._",".DS_Store"
 ```
 
 Sets the master exclusions to exlude Mac OS related file system metadata files.

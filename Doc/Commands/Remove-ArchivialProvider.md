@@ -1,11 +1,11 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Remove-OzetteProvider
+# Remove-ArchivialProvider
 
 ## SYNOPSIS
 Removes the configured storage or messaging provider.
@@ -14,12 +14,12 @@ Removes the configured storage or messaging provider.
 
 ### ByName
 ```
-Remove-OzetteProvider -ProviderName <String> [<CommonParameters>]
+Remove-ArchivialProvider -ProviderName <String> [<CommonParameters>]
 ```
 
 ### ByObject
 ```
-Remove-OzetteProvider -Provider <Provider> [<CommonParameters>]
+Remove-ArchivialProvider -Provider <Provider> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -27,21 +27,21 @@ Providers are used to connect to external services for cloud storage backup or m
 
 Removing a cloud storage provider means that new or updated files will not be backed up to that provider anymore, but existing files stored at that provider will remain.
 
-To view existing configured providers, run Get-OzetteProviders.
-This command supports piping from Get-OzetteProviders or manual invoke from the provider name.
+To view existing configured providers, run Get-ArchivialProviders.
+This command supports piping from Get-ArchivialProviders or manual invoke from the provider name.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-C:\> Remove-OzetteProvider -ProviderName "Azure"
+C:\> Remove-ArchivialProvider -ProviderName "Azure"
 ```
 
 Removes the configured Azure provider.
 
 ### EXAMPLE 2
 ```
-C:\> Get-OzetteProvider | Where Name -eq "Azure" | Remove-OzetteProvider
+C:\> Get-ArchivialProvider | Where Name -eq "Azure" | Remove-ArchivialProvider
 ```
 
 Removes the configured Azure provider, but using the pipeline scenario.
@@ -83,7 +83,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### OzetteLibrary.Providers.Provider
+### ArchivialLibrary.Providers.Provider
 Specify the object (from pipeline) to remove.
 
 ## OUTPUTS

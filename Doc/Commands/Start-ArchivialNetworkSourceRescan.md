@@ -1,25 +1,25 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Start-OzetteNetworkSourceRescan
+# Start-ArchivialNetworkSourceRescan
 
 ## SYNOPSIS
-Forces the re-scan of a Network Source being monitored by Ozette.
+Forces the re-scan of a Network Source being monitored by Archivial.
 
 ## SYNTAX
 
 ### ByName
 ```
-Start-OzetteNetworkSourceRescan -SourceID <Int32> [<CommonParameters>]
+Start-ArchivialNetworkSourceRescan -SourceID <Int32> [<CommonParameters>]
 ```
 
 ### ByObject
 ```
-Start-OzetteNetworkSourceRescan -NetworkSource <NetworkSourceLocation> [<CommonParameters>]
+Start-ArchivialNetworkSourceRescan -NetworkSource <NetworkSourceLocation> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,27 +31,27 @@ The automated scanning schedule for Low priority sources is once every 48 hours.
 Medium priority sources are scanned every 12 hours.
 High priority sources are scanned every hour.
 
-Please see the Get-OzetteNetworkSources command to find the ID of an existing source you would like to rescan.
+Please see the Get-ArchivialNetworkSources command to find the ID of an existing source you would like to rescan.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-C:\> Start-OzetteNetworkSourceRescan -SourceID 2
+C:\> Start-ArchivialNetworkSourceRescan -SourceID 2
 ```
 
 Forces a rescan of the Network Source with the specified ID.
 
 ### EXAMPLE 2
 ```
-C:\> Get-OzetteNetworkSources | Start-OzetteNetworkSourceRescan
+C:\> Get-ArchivialNetworkSources | Start-ArchivialNetworkSourceRescan
 ```
 
-Forces a rescan of all defined Network Sources being monitored by Ozette.
+Forces a rescan of all defined Network Sources being monitored by Archivial.
 
 ### EXAMPLE 3
 ```
-C:\> Get-OzetteNetworkSources | Where Path -like "*\\drobo-nas\*" | Start-OzetteNetworkSourceRescan
+C:\> Get-ArchivialNetworkSources | Where Path -like "*\\drobo-nas\*" | Start-ArchivialNetworkSourceRescan
 ```
 
 Forces a rescan of any Network Sources that match the path filter.
@@ -93,7 +93,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### OzetteLibrary.Folders.NetworkSourceLocation
+### ArchivialLibrary.Folders.NetworkSourceLocation
 Specify the Network Source object to rescan.
 
 ## OUTPUTS

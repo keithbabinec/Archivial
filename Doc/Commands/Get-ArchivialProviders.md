@@ -1,38 +1,38 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Get-OzetteProviders
+# Get-ArchivialProviders
 
 ## SYNOPSIS
-Returns all of the configured Ozette Providers.
+Returns all of the configured Archivial Providers.
 
 ## SYNTAX
 
 ```
-Get-OzetteProviders [<CommonParameters>]
+Get-ArchivialProviders [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Returns all of the configured Ozette Providers.
-An Ozette Provider is a connection to an external service for either cloud storage (ex: Azure, AWS) or message notifications (ex: Sendgrid email, Twilio SMS/text).
+Returns all of the configured Archivial Providers.
+An Archivial Provider is a connection to an external service for either cloud storage (ex: Azure, AWS) or message notifications (ex: Sendgrid email, Twilio SMS/text).
 
 Note: Only the name and ID of the provider will be returned.
 The encrypted secure setting values will not returned in the output.
 
-The output from this command can be piped to the Remove-OzetteProvider cmdlet.
+The output from this command can be piped to the Remove-ArchivialProvider cmdlet.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-C:\> Get-OzetteProviders
+C:\> Get-ArchivialProviders
 ```
 
-Returns all of the configured Ozette Providers.
+Returns all of the configured Archivial Providers.
 
 ## PARAMETERS
 

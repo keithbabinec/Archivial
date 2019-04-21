@@ -1,11 +1,11 @@
 ---
-external help file: OzettePowerShell.dll-Help.xml
-Module Name: OzettePowerShell
+external help file: ArchivialPowerShell.dll-Help.xml
+Module Name: ArchivialPowerShell
 online version:
 schema: 2.0.0
 ---
 
-# Remove-OzetteLocalSource
+# Remove-ArchivialLocalSource
 
 ## SYNOPSIS
 Removes the specified Local Source.
@@ -14,34 +14,34 @@ Removes the specified Local Source.
 
 ### ByName
 ```
-Remove-OzetteLocalSource -SourceID <Int32> [<CommonParameters>]
+Remove-ArchivialLocalSource -SourceID <Int32> [<CommonParameters>]
 ```
 
 ### ByObject
 ```
-Remove-OzetteLocalSource -LocalSource <LocalSourceLocation> [<CommonParameters>]
+Remove-ArchivialLocalSource -LocalSource <LocalSourceLocation> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-A Local Source is a folder on your computer (or a directly attached external drive) that Ozette backs up and automatically monitors for new and updated files.
+A Local Source is a folder on your computer (or a directly attached external drive) that Archivial backs up and automatically monitors for new and updated files.
 
 Removing a Local Source means that new or updated files from that location will not be backed up anymore, but existing files already backed up to cloud storage will remain.
 
-To view existing Local Sources, run Get-OzetteLocalSource.
-This command supports piping from Get-OzetteLocalSource or manual invoke from the specified source ID.
+To view existing Local Sources, run Get-ArchivialLocalSource.
+This command supports piping from Get-ArchivialLocalSource or manual invoke from the specified source ID.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-C:\> Remove-OzetteLocalSource -ID 3
+C:\> Remove-ArchivialLocalSource -ID 3
 ```
 
 Removes the Local Source with the specified ID.
 
 ### EXAMPLE 2
 ```
-C:\> Get-OzetteLocalSource | Where Path -like "*C:\users\test\documents*" | Remove-OzetteLocalSource
+C:\> Get-ArchivialLocalSource | Where Path -like "*C:\users\test\documents*" | Remove-ArchivialLocalSource
 ```
 
 Removes any configured Local Source that matches a path containing the specified filter (using the pipeline scenario).
@@ -83,7 +83,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### OzetteLibrary.Folders.LocalSourceLocation
+### ArchivialLibrary.Folders.LocalSourceLocation
 Specify the object (from pipeline) to remove.
 
 ## OUTPUTS
