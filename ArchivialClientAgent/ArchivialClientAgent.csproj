@@ -7,8 +7,8 @@
     <ProjectGuid>{9030A857-1D28-4802-B559-55D17F681131}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OzetteClientAgent</RootNamespace>
-    <AssemblyName>OzetteClientAgent</AssemblyName>
+    <RootNamespace>ArchivialClientAgent</RootNamespace>
+    <AssemblyName>ArchivialClientAgent</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -67,9 +67,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OzetteLibrary\OzetteLibrary.csproj">
+    <ProjectReference Include="..\ArchivialLibrary\ArchivialLibrary.csproj">
       <Project>{8a82834f-df32-4911-8b3f-f4435b04b6a3}</Project>
-      <Name>OzetteLibrary</Name>
+      <Name>ArchivialLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

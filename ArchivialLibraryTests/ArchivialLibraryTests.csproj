@@ -6,8 +6,8 @@
     <ProjectGuid>{DA68959C-2515-4E87-B841-904C7E0CBD3F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OzetteLibraryTests</RootNamespace>
-    <AssemblyName>OzetteLibraryTests</AssemblyName>
+    <RootNamespace>ArchivialLibraryTests</RootNamespace>
+    <AssemblyName>ArchivialLibraryTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -137,9 +137,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OzetteLibrary\OzetteLibrary.csproj">
+    <ProjectReference Include="..\ArchivialLibrary\ArchivialLibrary.csproj">
       <Project>{8a82834f-df32-4911-8b3f-f4435b04b6a3}</Project>
-      <Name>OzetteLibrary</Name>
+      <Name>ArchivialLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

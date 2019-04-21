@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzetteLibrary", "OzetteLibrary\OzetteLibrary.csproj", "{8A82834F-DF32-4911-8B3F-F4435B04B6A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchivialLibrary", "ArchivialLibrary\ArchivialLibrary.csproj", "{8A82834F-DF32-4911-8B3F-F4435B04B6A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzetteLibraryTests", "OzetteLibraryTests\OzetteLibraryTests.csproj", "{DA68959C-2515-4E87-B841-904C7E0CBD3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchivialLibraryTests", "ArchivialLibraryTests\ArchivialLibraryTests.csproj", "{DA68959C-2515-4E87-B841-904C7E0CBD3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzetteClientAgent", "OzetteClientAgent\OzetteClientAgent.csproj", "{9030A857-1D28-4802-B559-55D17F681131}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchivialClientAgent", "ArchivialClientAgent\ArchivialClientAgent.csproj", "{9030A857-1D28-4802-B559-55D17F681131}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "OzetteDB", "OzetteDB\OzetteDB.sqlproj", "{E049849A-41D1-4CD2-B297-59837723B417}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ArchivialDB", "ArchivialDB\ArchivialDB.sqlproj", "{E049849A-41D1-4CD2-B297-59837723B417}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzettePowerShell", "OzettePowerShell\OzettePowerShell.csproj", "{E9CF78CA-881A-4179-9F26-84A7AC54748D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchivialPowerShell", "ArchivialPowerShell\ArchivialPowerShell.csproj", "{E9CF78CA-881A-4179-9F26-84A7AC54748D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

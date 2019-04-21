@@ -7,8 +7,8 @@
     <ProjectGuid>{E9CF78CA-881A-4179-9F26-84A7AC54748D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OzettePowerShell</RootNamespace>
-    <AssemblyName>OzettePowerShell</AssemblyName>
+    <RootNamespace>ArchivialPowerShell</RootNamespace>
+    <AssemblyName>ArchivialPowerShell</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\OzettePowerShell.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\ArchivialPowerShell.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -87,9 +87,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\OzetteLibrary\OzetteLibrary.csproj">
+    <ProjectReference Include="..\ArchivialLibrary\ArchivialLibrary.csproj">
       <Project>{8A82834F-DF32-4911-8B3F-F4435B04B6A3}</Project>
-      <Name>OzetteLibrary</Name>
+      <Name>ArchivialLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

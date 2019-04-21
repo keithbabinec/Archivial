@@ -7,8 +7,8 @@
     <ProjectGuid>{8A82834F-DF32-4911-8B3F-F4435B04B6A3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OzetteLibrary</RootNamespace>
-    <AssemblyName>OzetteLibrary</AssemblyName>
+    <RootNamespace>ArchivialLibrary</RootNamespace>
+    <AssemblyName>ArchivialLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
