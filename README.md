@@ -1,4 +1,4 @@
-# Ozette Cloud Backup
+# Archivial Cloud Backup
 Data backup agent software for Windows that automatically archives your local data to a cloud storage provider.
 
 # Contents
