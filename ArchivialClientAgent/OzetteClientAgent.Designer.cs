@@ -1,6 +1,6 @@
-﻿namespace OzetteClientAgent
+﻿namespace ArchivialClientAgent
 {
-    partial class OzetteClientAgent
+    partial class ArchivialClientAgent
     {
         /// <summary> 
         /// Required designer variable.

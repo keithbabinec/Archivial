@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Secrets
+﻿namespace ArchivialLibrary.Secrets
 {
     /// <summary>
     /// Describes a single network access credential.

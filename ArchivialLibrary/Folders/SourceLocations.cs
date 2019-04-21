@@ -1,8 +1,8 @@
-﻿using OzetteLibrary.Exceptions;
+﻿using ArchivialLibrary.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OzetteLibrary.Folders
+namespace ArchivialLibrary.Folders
 {
     /// <summary>
     /// Describes requested backup source locations.

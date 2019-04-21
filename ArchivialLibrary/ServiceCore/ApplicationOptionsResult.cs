@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.ServiceCore
+﻿namespace ArchivialLibrary.ServiceCore
 {
     /// <summary>
     /// A results class for the configured application options.

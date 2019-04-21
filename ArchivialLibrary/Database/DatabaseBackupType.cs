@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Database
+﻿namespace ArchivialLibrary.Database
 {
     /// <summary>
     /// Describes the different types of database backups that can be performed.

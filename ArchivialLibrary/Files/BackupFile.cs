@@ -1,15 +1,15 @@
-﻿using OzetteLibrary.Crypto;
-using OzetteLibrary.Exceptions;
-using OzetteLibrary.Folders;
-using OzetteLibrary.Providers;
-using OzetteLibrary.StorageProviders;
+﻿using ArchivialLibrary.Crypto;
+using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.Folders;
+using ArchivialLibrary.Providers;
+using ArchivialLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
-namespace OzetteLibrary.Files
+namespace ArchivialLibrary.Files
 {
     /// <summary>
     /// Describes a single file to be backed up.

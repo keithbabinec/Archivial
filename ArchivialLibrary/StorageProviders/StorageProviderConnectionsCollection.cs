@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OzetteLibrary.StorageProviders
+namespace ArchivialLibrary.StorageProviders
 {
     /// <summary>
     /// A collection class for storage provider connections.

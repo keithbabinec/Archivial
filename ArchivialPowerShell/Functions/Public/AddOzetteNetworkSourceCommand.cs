@@ -1,12 +1,12 @@
-﻿using OzetteLibrary.Exceptions;
-using OzetteLibrary.Files;
-using OzetteLibrary.Folders;
-using OzettePowerShell.Utility;
+﻿using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.Files;
+using ArchivialLibrary.Folders;
+using ArchivialPowerShell.Utility;
 using System;
 using System.Linq;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Adds a network (UNC path) folder to the Ozette backup folders list.</para>
@@ -60,7 +60,7 @@ namespace OzettePowerShell.Functions.Public
         /// </summary>
         [Parameter(Mandatory = false)]
         [ValidateNotNullOrEmpty]
-        public string MatchFilter = OzetteLibrary.Constants.CommandLine.DefaultSourceMatchFilter;
+        public string MatchFilter = ArchivialLibrary.Constants.CommandLine.DefaultSourceMatchFilter;
 
         protected override void ProcessRecord()
         {

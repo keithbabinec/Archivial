@@ -1,8 +1,8 @@
-﻿using OzetteLibrary.Crypto;
-using OzetteLibrary.Database;
-using OzetteLibrary.Files;
-using OzetteLibrary.Folders;
-using OzetteLibrary.Logging;
+﻿using ArchivialLibrary.Crypto;
+using ArchivialLibrary.Database;
+using ArchivialLibrary.Files;
+using ArchivialLibrary.Folders;
+using ArchivialLibrary.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Client.Sources
+namespace ArchivialLibrary.Client.Sources
 {
     /// <summary>
     /// Contains functionality for scanning a source location.

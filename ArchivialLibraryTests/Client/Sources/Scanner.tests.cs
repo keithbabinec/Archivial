@@ -1,11 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using OzetteLibrary.Database;
-using OzetteLibrary.Database.SQLServer;
-using OzetteLibrary.Files;
-using OzetteLibrary.Folders;
-using OzetteLibrary.Logging.Mock;
-using OzetteLibrary.Providers;
+using ArchivialLibrary.Database;
+using ArchivialLibrary.Database.SQLServer;
+using ArchivialLibrary.Files;
+using ArchivialLibrary.Folders;
+using ArchivialLibrary.Logging.Mock;
+using ArchivialLibrary.Providers;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,8 +23,8 @@ namespace OzetteLibraryTests.Client.Sources
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScannerConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
-            OzetteLibrary.Client.Sources.SourceScanner scanner = 
-                new OzetteLibrary.Client.Sources.SourceScanner(null, new MockLogger(), TestMatchPatterns);
+            ArchivialLibrary.Client.Sources.SourceScanner scanner = 
+                new ArchivialLibrary.Client.Sources.SourceScanner(null, new MockLogger(), TestMatchPatterns);
         }
 
         [TestMethod]
@@ -33,8 +33,8 @@ namespace OzetteLibraryTests.Client.Sources
         {
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
-            OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db, null, TestMatchPatterns);
+            ArchivialLibrary.Client.Sources.SourceScanner scanner =
+                new ArchivialLibrary.Client.Sources.SourceScanner(db, null, TestMatchPatterns);
         }
 
         [TestMethod]
@@ -43,8 +43,8 @@ namespace OzetteLibraryTests.Client.Sources
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
-            OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db, logger, TestMatchPatterns);
+            ArchivialLibrary.Client.Sources.SourceScanner scanner =
+                new ArchivialLibrary.Client.Sources.SourceScanner(db, logger, TestMatchPatterns);
 
             Assert.IsNotNull(scanner);
         }
@@ -55,8 +55,8 @@ namespace OzetteLibraryTests.Client.Sources
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
-            OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db, logger, null);
+            ArchivialLibrary.Client.Sources.SourceScanner scanner =
+                new ArchivialLibrary.Client.Sources.SourceScanner(db, logger, null);
 
             Assert.IsNotNull(scanner);
         }
@@ -73,8 +73,8 @@ namespace OzetteLibraryTests.Client.Sources
 
             db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).ReturnsAsync(new ProviderCollection());
 
-            OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger, TestMatchPatterns);
+            ArchivialLibrary.Client.Sources.SourceScanner scanner =
+                new ArchivialLibrary.Client.Sources.SourceScanner(db.Object, logger, TestMatchPatterns);
 
             var source = new LocalSourceLocation()
             {
@@ -100,8 +100,8 @@ namespace OzetteLibraryTests.Client.Sources
 
             db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).ReturnsAsync(new ProviderCollection());
 
-            OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger, TestMatchPatterns);
+            ArchivialLibrary.Client.Sources.SourceScanner scanner =
+                new ArchivialLibrary.Client.Sources.SourceScanner(db.Object, logger, TestMatchPatterns);
 
             var source = new LocalSourceLocation()
             {
@@ -128,8 +128,8 @@ namespace OzetteLibraryTests.Client.Sources
 
             db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).ReturnsAsync(new ProviderCollection());
 
-            OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger, TestMatchPatterns);
+            ArchivialLibrary.Client.Sources.SourceScanner scanner =
+                new ArchivialLibrary.Client.Sources.SourceScanner(db.Object, logger, TestMatchPatterns);
 
             var source = new LocalSourceLocation()
             {
@@ -164,8 +164,8 @@ namespace OzetteLibraryTests.Client.Sources
             var fileMatch = "*.dll";
             var exclusionPattern = new string[] { "(Ozette)" };
 
-            OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger, exclusionPattern);
+            ArchivialLibrary.Client.Sources.SourceScanner scanner =
+                new ArchivialLibrary.Client.Sources.SourceScanner(db.Object, logger, exclusionPattern);
 
             var source = new LocalSourceLocation()
             {
@@ -197,8 +197,8 @@ namespace OzetteLibraryTests.Client.Sources
 
             db.Setup(x => x.GetProvidersAsync(ProviderTypes.Storage)).ReturnsAsync(new ProviderCollection());
 
-            OzetteLibrary.Client.Sources.SourceScanner scanner =
-                new OzetteLibrary.Client.Sources.SourceScanner(db.Object, logger, TestMatchPatterns);
+            ArchivialLibrary.Client.Sources.SourceScanner scanner =
+                new ArchivialLibrary.Client.Sources.SourceScanner(db.Object, logger, TestMatchPatterns);
 
             var source = new LocalSourceLocation()
             {

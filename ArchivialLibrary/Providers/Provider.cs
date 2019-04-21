@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Providers
+﻿namespace ArchivialLibrary.Providers
 {
     /// <summary>
     /// Describes the basic information about a provider.

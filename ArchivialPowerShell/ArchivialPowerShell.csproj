@@ -85,10 +85,9 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ArchivialLibrary\ArchivialLibrary.csproj">
-      <Project>{8A82834F-DF32-4911-8B3F-F4435B04B6A3}</Project>
+      <Project>{8a82834f-df32-4911-8b3f-f4435b04b6a3}</Project>
       <Name>ArchivialLibrary</Name>
     </ProjectReference>
   </ItemGroup>

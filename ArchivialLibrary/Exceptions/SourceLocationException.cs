@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace OzetteLibrary.Exceptions
+namespace ArchivialLibrary.Exceptions
 {
     /// <summary>
     /// A base exception for source location errors.

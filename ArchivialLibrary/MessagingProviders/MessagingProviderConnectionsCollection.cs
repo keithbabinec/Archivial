@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OzetteLibrary.MessagingProviders
+namespace ArchivialLibrary.MessagingProviders
 {
     /// <summary>
     /// A collection class for Messaging provider connections.

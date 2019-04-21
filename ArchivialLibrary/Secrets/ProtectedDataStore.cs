@@ -1,11 +1,11 @@
-﻿using OzetteLibrary.Database;
-using OzetteLibrary.Exceptions;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Exceptions;
 using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Secrets
+namespace ArchivialLibrary.Secrets
 {
     /// <summary>
     /// An <c>ISecretStore</c> implementation that uses the Windows data protection API.

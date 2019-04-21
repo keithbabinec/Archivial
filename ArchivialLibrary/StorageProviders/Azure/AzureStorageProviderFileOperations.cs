@@ -2,17 +2,17 @@
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
-using OzetteLibrary.Constants;
-using OzetteLibrary.Crypto;
-using OzetteLibrary.Files;
-using OzetteLibrary.Folders;
-using OzetteLibrary.Logging;
+using ArchivialLibrary.Constants;
+using ArchivialLibrary.Crypto;
+using ArchivialLibrary.Files;
+using ArchivialLibrary.Folders;
+using ArchivialLibrary.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.StorageProviders.Azure
+namespace ArchivialLibrary.StorageProviders.Azure
 {
     /// <summary>
     /// Implements file operations for the Azure cloud storage provider.

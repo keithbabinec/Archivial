@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace OzetteLibrary.Exceptions
+namespace ArchivialLibrary.Exceptions
 {
     /// <summary>
     /// An exception for when the application secret is not found in the secret store.

@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Folders
+﻿namespace ArchivialLibrary.Folders
 {
     /// <summary>
     /// Describes different types of backup sources.

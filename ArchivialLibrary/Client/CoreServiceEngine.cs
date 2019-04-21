@@ -1,14 +1,14 @@
-﻿using OzetteLibrary.Database;
-using OzetteLibrary.Engine;
-using OzetteLibrary.Events;
-using OzetteLibrary.Logging;
-using OzetteLibrary.ServiceCore;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Engine;
+using ArchivialLibrary.Events;
+using ArchivialLibrary.Logging;
+using ArchivialLibrary.ServiceCore;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Client
+namespace ArchivialLibrary.Client
 {
     /// <summary>
     /// Contains functionality for the core windows service, such as core heartbeat and database backups.

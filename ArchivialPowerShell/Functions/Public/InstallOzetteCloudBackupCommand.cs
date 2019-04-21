@@ -1,11 +1,11 @@
-﻿using OzetteLibrary.ServiceCore;
-using OzettePowerShell.Exceptions;
-using OzettePowerShell.Utility;
+﻿using ArchivialLibrary.ServiceCore;
+using ArchivialPowerShell.Exceptions;
+using ArchivialPowerShell.Utility;
 using System;
 using System.IO;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Installs the Ozette Cloud Backup software on this computer.</para>

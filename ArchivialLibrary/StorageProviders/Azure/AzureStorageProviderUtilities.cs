@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OzetteLibrary.StorageProviders.Azure
+namespace ArchivialLibrary.StorageProviders.Azure
 {
     /// <summary>
     /// Provides utility functions for the Azure storage provider.

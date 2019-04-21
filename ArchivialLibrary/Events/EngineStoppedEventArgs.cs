@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OzetteLibrary.Events
+namespace ArchivialLibrary.Events
 {
     /// <summary>
     /// A custom event args object for when an engine stops.

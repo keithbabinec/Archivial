@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OzetteLibrary.Secrets
+namespace ArchivialLibrary.Secrets
 {
     /// <summary>
     /// A collection of <c>Provider</c> objects.

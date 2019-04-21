@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OzetteLibrary.Logging.Mock;
+using ArchivialLibrary.Logging.Mock;
 using System;
 
 namespace OzetteLibraryTests.StorageProviders.Azure
@@ -11,21 +11,21 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(ArgumentNullException))]
         public void AzureProviderFileOperationsConstructorThrowsOnMissingLogger()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderFileOperations(null, "storage account", "token");
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderFileOperations(null, "storage account", "token");
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderFileOperationsConstructorThrowsOnMissingStorageAccount()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderFileOperations(new MockLogger(), "  ", "token");
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderFileOperations(new MockLogger(), "  ", "token");
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderFileOperationsConstructorThrowsOnMissingSASToken()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderFileOperations(new MockLogger(), "storage account", "   ");
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderFileOperations(new MockLogger(), "storage account", "   ");
         }
     }
 }

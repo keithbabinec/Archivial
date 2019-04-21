@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OzetteLibrary.Logging.Mock;
+using ArchivialLibrary.Logging.Mock;
 using System;
 using System.Security.Cryptography;
 
@@ -11,7 +11,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCanCorrectlyConvertHashBytesToString()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] bytes = { 39, 16, 25, 68, 128, 64, 55, 27 };
 
@@ -21,7 +21,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCompareReturnsTrueForSameHash1()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] bytes1 = { 39, 16, 25, 68, 128, 64, 55, 27 };
             byte[] bytes2 = { 39, 16, 25, 68, 128, 64, 55, 27 };
@@ -32,7 +32,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCompareReturnsTrueForSameHash2()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] bytes1 = { 39, 16, 25, 68, 128, 64, 55, 27 };
             byte[] bytes2 = { 39, 16, 25, 68, 128, 64, 55, 27 };
@@ -43,7 +43,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCompareReturnsTrueForSameHash3()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] bytes1 = { 39, 16, 25, 68, 128, 64, 131, 150, 216, 25,
                                     111, 227, 135, 18, 122, 14, 163, 85, 226, 30 };
@@ -56,7 +56,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCompareReturnsTrueForSameHash4()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] bytes1 = { 234, 71, 228, 136, 179, 247, 148, 228, 21, 49, 132, 155,
                                     219, 239, 173, 165, 249, 35, 144, 199, 224, 127, 103,
@@ -77,7 +77,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCompareReturnsFalseForDifferentHashes1()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] bytes1 = { 235, 71, 228, 136, 179, 247, 148, 228, 21, 49, 132, 155,
                                     219, 239, 173, 165, 249, 35, 144, 199, 224, 127, 103,
@@ -98,7 +98,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCompareReturnsFalseForDifferentHashes2()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] bytes1 = { 234, 71, 228, 136, 179, 247, 148, 228, 21, 49, 132, 155,
                                     219, 239, 173, 165, 249, 35, 144, 199, 224, 127, 103,
@@ -119,7 +119,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCompareReturnsFalseForDifferentHashes3()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] bytes1 = { 234, 71, 228, 136, 179, 247, 148, 228, 21, 49, 132, 155,
                                     219, 239, 173, 165, 249, 35, 144, 199, 224, 127, 103,
@@ -140,7 +140,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCompareReturnsFalseForDifferentHashes4()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] bytes1 = { 234, 71, 228, 136, 179, 247, 148, 228, 21, 49, 132, 155,
                                     219, 239, 173, 165, 249, 35, 144, 199, 224, 127, 103,
@@ -161,7 +161,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCanCorrectlyGenerate20ByteSmallFileHash()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] actualHash = h.Generate20ByteFileHash(".\\TestFiles\\Hasher\\SmallFile.txt");
             byte[] expectedHash = { 39, 16, 25, 68, 128, 64, 131, 150, 216, 25,
@@ -173,7 +173,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCanCorrectlyGenerate32ByteSmallFileHash()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] actualHash = h.Generate32ByteFileHash(".\\TestFiles\\Hasher\\SmallFile.txt");
             byte[] expectedHash = { 105, 105, 114, 199, 90, 53, 52, 53, 173, 45,
@@ -186,7 +186,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCanCorrectlyGenerate64ByteSmallFileHash()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] actualHash = h.Generate64ByteFileHash(".\\TestFiles\\Hasher\\SmallFile.txt");
             byte[] expectedHash = { 30, 175, 186, 169, 203, 212, 173, 146, 227, 20, 65,
@@ -202,7 +202,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCanCorrectlyGenerate20ByteMediumFileHash()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] actualHash = h.Generate20ByteFileHash(".\\TestFiles\\Hasher\\MediumFile.mp3");
             byte[] expectedHash = { 59, 46, 56, 72, 141, 74, 31, 120, 17, 24, 52,
@@ -214,7 +214,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCanCorrectlyGenerate32ByteMediumFileHash()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] actualHash = h.Generate32ByteFileHash(".\\TestFiles\\Hasher\\MediumFile.mp3");
             byte[] expectedHash = { 59, 223, 174, 134, 63, 70, 226, 183, 168, 86, 148,
@@ -227,7 +227,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherCanCorrectlyGenerate64ByteMediumFileHash()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] actualHash = h.Generate64ByteFileHash(".\\TestFiles\\Hasher\\MediumFile.mp3");
             byte[] expectedHash = { 234, 71, 228, 136, 179, 247, 148, 228, 21, 49, 132, 155,
@@ -243,9 +243,9 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherGenerateDefaultHashReturnsCorrectLength1()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
-            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Files.FileBackupPriority.Low);
+            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", ArchivialLibrary.Files.FileBackupPriority.Low);
 
             Assert.AreEqual(20, actualHash.Length);
         }
@@ -253,9 +253,9 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherGenerateDefaultHashReturnsCorrectLength2()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
-            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Files.FileBackupPriority.Medium);
+            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", ArchivialLibrary.Files.FileBackupPriority.Medium);
 
             Assert.AreEqual(32, actualHash.Length);
         }
@@ -263,9 +263,9 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherGenerateDefaultHashReturnsCorrectLength3()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
-            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", OzetteLibrary.Files.FileBackupPriority.High);
+            byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", ArchivialLibrary.Files.FileBackupPriority.High);
 
             Assert.AreEqual(64, actualHash.Length);
         }
@@ -274,7 +274,7 @@ namespace OzetteLibraryTests.Crypto
         [ExpectedException(typeof(NotImplementedException))]
         public void HasherGenerateDefaultHashThrowsOnInvalidBackupPriority()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] actualHash = h.GenerateDefaultHash(".\\TestFiles\\Hasher\\SmallFile.txt", 0);
         }
@@ -282,9 +282,9 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherGetDefaultHashAlgorithmReturnsCorrectAlgorithm1()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
-            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.Low);
+            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(ArchivialLibrary.Files.FileBackupPriority.Low);
 
             Assert.AreEqual(HashAlgorithmName.SHA1, actual);
         }
@@ -292,9 +292,9 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherGetDefaultHashAlgorithmReturnsCorrectAlgorithm2()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
-            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.Medium);
+            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(ArchivialLibrary.Files.FileBackupPriority.Medium);
 
             Assert.AreEqual(HashAlgorithmName.SHA256, actual);
         }
@@ -302,9 +302,9 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherGetDefaultHashAlgorithmReturnsCorrectAlgorithm3()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
-            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(OzetteLibrary.Files.FileBackupPriority.High);
+            HashAlgorithmName actual = h.GetDefaultHashAlgorithm(ArchivialLibrary.Files.FileBackupPriority.High);
 
             Assert.AreEqual(HashAlgorithmName.SHA512, actual);
         }
@@ -313,7 +313,7 @@ namespace OzetteLibraryTests.Crypto
         [ExpectedException(typeof(NotImplementedException))]
         public void HasherGetDefaultHashAlgorithmThrowsOnInvalidBackupPriority()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             HashAlgorithmName actual = h.GetDefaultHashAlgorithm(0);
         }
@@ -322,7 +322,7 @@ namespace OzetteLibraryTests.Crypto
         [ExpectedException(typeof(ArgumentException))]
         public void HasherHashFileBlockFromByteArrayThrowsOnBadInput1()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
             h.HashFileBlockFromByteArray(HashAlgorithmName.SHA256, null);
         }
 
@@ -330,14 +330,14 @@ namespace OzetteLibraryTests.Crypto
         [ExpectedException(typeof(ArgumentException))]
         public void HasherHashFileBlockFromByteArrayThrowsOnBadInput2()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
             h.HashFileBlockFromByteArray(HashAlgorithmName.SHA256, new byte[0]);
         }
 
         [TestMethod]
         public void HasherHashFileBlockFromByteArrayCorrectlyHashesInput1()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
             var result = h.HashFileBlockFromByteArray(
                 HashAlgorithmName.SHA1,
                 new byte[]
@@ -359,7 +359,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherHashFileBlockFromByteArrayCorrectlyHashesInput2()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
             var result = h.HashFileBlockFromByteArray(
                 HashAlgorithmName.SHA256,
                 LargeByteStreamConstants.LargeByteStream);
@@ -375,7 +375,7 @@ namespace OzetteLibraryTests.Crypto
         [TestMethod]
         public void HasherConvertHashByteArrayToBase64EncodedStringReturnsValidBase64String()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             var input = new byte[]
             {
@@ -392,7 +392,7 @@ namespace OzetteLibraryTests.Crypto
         [ExpectedException(typeof(ArgumentException))]
         public void HasherConvertHashByteArrayToBase64EncodedStringThrowsOnNullByteArray()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] input = null;
 
@@ -403,7 +403,7 @@ namespace OzetteLibraryTests.Crypto
         [ExpectedException(typeof(ArgumentException))]
         public void HasherConvertHashByteArrayToBase64EncodedStringThrowsOnEmptyByteArray()
         {
-            OzetteLibrary.Crypto.Hasher h = new OzetteLibrary.Crypto.Hasher(new MockLogger());
+            ArchivialLibrary.Crypto.Hasher h = new ArchivialLibrary.Crypto.Hasher(new MockLogger());
 
             byte[] input = new byte[0];
 

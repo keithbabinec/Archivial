@@ -1,16 +1,16 @@
-﻿using OzetteLibrary.Client.Transfer;
-using OzetteLibrary.Database;
-using OzetteLibrary.Engine;
-using OzetteLibrary.Events;
-using OzetteLibrary.Files;
-using OzetteLibrary.Folders;
-using OzetteLibrary.Logging;
-using OzetteLibrary.Providers;
+﻿using ArchivialLibrary.Client.Transfer;
+using ArchivialLibrary.Database;
+using ArchivialLibrary.Engine;
+using ArchivialLibrary.Events;
+using ArchivialLibrary.Files;
+using ArchivialLibrary.Folders;
+using ArchivialLibrary.Logging;
+using ArchivialLibrary.Providers;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Client
+namespace ArchivialLibrary.Client
 {
     /// <summary>
     /// Contains core backup engine functionality.

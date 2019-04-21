@@ -1,18 +1,18 @@
-﻿using OzetteLibrary.Client.Sources;
-using OzetteLibrary.Database;
-using OzetteLibrary.Engine;
-using OzetteLibrary.Events;
-using OzetteLibrary.Logging;
-using OzetteLibrary.Exceptions;
+﻿using ArchivialLibrary.Client.Sources;
+using ArchivialLibrary.Database;
+using ArchivialLibrary.Engine;
+using ArchivialLibrary.Events;
+using ArchivialLibrary.Logging;
+using ArchivialLibrary.Exceptions;
 using System;
 using System.Linq;
 using System.Threading;
-using OzetteLibrary.Folders;
+using ArchivialLibrary.Folders;
 using System.Threading.Tasks;
-using OzetteLibrary.Providers;
-using OzetteLibrary.ServiceCore;
+using ArchivialLibrary.Providers;
+using ArchivialLibrary.ServiceCore;
 
-namespace OzetteLibrary.Client
+namespace ArchivialLibrary.Client
 {
     /// <summary>
     /// Contains core scan engine functionality.

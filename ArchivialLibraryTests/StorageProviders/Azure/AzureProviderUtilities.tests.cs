@@ -10,12 +10,12 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGetFileUriReturnsHttpsUri()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var storageAccount = "storage-account";
             var folderID = Guid.NewGuid().ToString();
             var fileID = Guid.NewGuid().ToString();
-            var containerName = string.Format("{0}-directory-{1}", OzetteLibrary.Constants.Logging.AppName, folderID).ToLower();
+            var containerName = string.Format("{0}-directory-{1}", ArchivialLibrary.Constants.Logging.AppName, folderID).ToLower();
 
             var uri = provider.GetFileUri(storageAccount, containerName, fileID);
 
@@ -26,14 +26,14 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGetFileUriReturnsCorrectlyFormattedFullURI()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var storageAccount = "storage-account";
             var folderID = "a4b78664-90c9-4957-90a1-66d9c70c0492";
             var fileID = "29164dbc-f17b-4643-8f40-868e13b98141";
 
-            var containerName = string.Format("{0}-directory-{1}", OzetteLibrary.Constants.Logging.AppName, folderID).ToLower();
-            var fileName = string.Format("{0}-file-{1}", OzetteLibrary.Constants.Logging.AppName, fileID).ToLower();
+            var containerName = string.Format("{0}-directory-{1}", ArchivialLibrary.Constants.Logging.AppName, folderID).ToLower();
+            var fileName = string.Format("{0}-file-{1}", ArchivialLibrary.Constants.Logging.AppName, fileID).ToLower();
 
             var computedUri = provider.GetFileUri(storageAccount, containerName, fileName);
 
@@ -47,14 +47,14 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderUtilitiesGetFileUriThrowsArgumentExceptionOnMissingStorageAccount()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var storageAccount = string.Empty; // should throw
             var folderID = "a4b78664-90c9-4957-90a1-66d9c70c0492";
             var fileID = "29164dbc-f17b-4643-8f40-868e13b98141";
 
-            var containerName = string.Format("{0}-directory-{1}", OzetteLibrary.Constants.Logging.AppName, folderID).ToLower();
-            var fileName = string.Format("{0}-file-{1}", OzetteLibrary.Constants.Logging.AppName, fileID).ToLower();
+            var containerName = string.Format("{0}-directory-{1}", ArchivialLibrary.Constants.Logging.AppName, folderID).ToLower();
+            var fileName = string.Format("{0}-file-{1}", ArchivialLibrary.Constants.Logging.AppName, fileID).ToLower();
 
             var computedUri = provider.GetFileUri(storageAccount, containerName, fileName);
         }
@@ -63,13 +63,13 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderUtilitiesGetFileUriThrowsArgumentExceptionOnMissingContainerName()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var storageAccount = "storage-account";
             var fileID = "29164dbc-f17b-4643-8f40-868e13b98141";
 
             var containerName = string.Empty; // should throw
-            var fileName = string.Format("{0}-file-{1}", OzetteLibrary.Constants.Logging.AppName, fileID).ToLower();
+            var fileName = string.Format("{0}-file-{1}", ArchivialLibrary.Constants.Logging.AppName, fileID).ToLower();
 
             var computedUri = provider.GetFileUri(storageAccount, containerName, fileName);
         }
@@ -77,11 +77,11 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGetContainerUriReturnsHttpsUri()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var storageAccount = "storage-account";
             var folderID = Guid.NewGuid().ToString();
-            var containerName = string.Format("{0}-directory-{1}", OzetteLibrary.Constants.Logging.AppName, folderID).ToLower();
+            var containerName = string.Format("{0}-directory-{1}", ArchivialLibrary.Constants.Logging.AppName, folderID).ToLower();
 
             var uri = provider.GetContainerUri(storageAccount, containerName);
 
@@ -92,11 +92,11 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGetContainerUriReturnsCorrectlyFormattedFullURI()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var storageAccount = "storage-account";
             var folderID = "a4b78664-90c9-4957-90a1-66d9c70c0492";
-            var containerName = string.Format("{0}-directory-{1}", OzetteLibrary.Constants.Logging.AppName, folderID).ToLower();
+            var containerName = string.Format("{0}-directory-{1}", ArchivialLibrary.Constants.Logging.AppName, folderID).ToLower();
 
             var computedUri = provider.GetContainerUri(storageAccount, containerName);
 
@@ -110,11 +110,11 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderUtilitiesGetContainerUriThrowsArgumentExceptionOnMissingStorageAccount()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var storageAccount = string.Empty; // should throw
             var folderID = "a4b78664-90c9-4957-90a1-66d9c70c0492";
-            var containerName = string.Format("{0}-directory-{1}", OzetteLibrary.Constants.Logging.AppName, folderID).ToLower();
+            var containerName = string.Format("{0}-directory-{1}", ArchivialLibrary.Constants.Logging.AppName, folderID).ToLower();
 
             var computedUri = provider.GetContainerUri(storageAccount, containerName);
         }
@@ -123,7 +123,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderUtilitiesGetContainerUriThrowsArgumentExceptionOnMissingContainerName()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var storageAccount = "storage-account";
             var containerName = string.Empty; // should throw
@@ -135,12 +135,12 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderUtilitiesGetFileUriThrowsArgumentExceptionOnMissingFileName()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var storageAccount = "storage-account";
             var folderID = "a4b78664-90c9-4957-90a1-66d9c70c0492";
 
-            var containerName = string.Format("{0}-directory-{1}", OzetteLibrary.Constants.Logging.AppName, folderID).ToLower();
+            var containerName = string.Format("{0}-directory-{1}", ArchivialLibrary.Constants.Logging.AppName, folderID).ToLower();
             var fileName = string.Empty; // should throw
 
             var computedUri = provider.GetFileUri(storageAccount, containerName, fileName);
@@ -149,7 +149,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGenerateBlockIdentifierBase64StringReturnsValidOutput()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             Guid fileID = new Guid("51690d6e-f42a-4581-8e45-660b859bb432");
             int blockID = 1;
@@ -164,7 +164,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderUtilitiesGenerateBlockIdentifierBase64StringThrowsOnMissingFileID()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             Guid fileID = Guid.Empty; // should throw
             int blockID = 1;
@@ -176,7 +176,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderUtilitiesGenerateBlockIdentifierBase64StringThrowsOnNegativeBlockNumber()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             Guid fileID = new Guid("51690d6e-f42a-4581-8e45-660b859bb432");
             int blockID = -1; // should throw
@@ -187,7 +187,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGenerateListOfBlocksToCommitReturnsValidOutputForSingleBlock()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             Guid fileID = new Guid("51690d6e-f42a-4581-8e45-660b859bb432");
             int blockID = 0;
@@ -207,7 +207,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGenerateListOfBlocksToCommitReturnsValidOutputForMultipleBlocks()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             Guid fileID = new Guid("51690d6e-f42a-4581-8e45-660b859bb432");
             int blockID = 4;
@@ -236,7 +236,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderUtilitiesGenerateListOfBlocksToCommitThrowsOnMissingFileID()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             Guid fileID = Guid.Empty; // should throw
             int blockID = 1;
@@ -248,7 +248,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(ArgumentException))]
         public void AzureProviderUtilitiesGenerateListOfBlocksToCommitThrowsOnMissingBlockNumber()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             Guid fileID = new Guid("51690d6e-f42a-4581-8e45-660b859bb432");
             int blockID = -1; // should throw
@@ -259,10 +259,10 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGetHydrationStatusFromAzureStateCorrectlyParsesNull()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var result = provider.GetHydrationStatusFromAzureState(null);
-            var expected = OzetteLibrary.StorageProviders.StorageProviderHydrationStatus.None.ToString();
+            var expected = ArchivialLibrary.StorageProviders.StorageProviderHydrationStatus.None.ToString();
 
             Assert.AreEqual(expected, result);
         }
@@ -270,10 +270,10 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGetHydrationStatusFromAzureStateCorrectlyParsesUnknown()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var result = provider.GetHydrationStatusFromAzureState(Microsoft.WindowsAzure.Storage.Blob.RehydrationStatus.Unknown);
-            var expected = OzetteLibrary.StorageProviders.StorageProviderHydrationStatus.None.ToString();
+            var expected = ArchivialLibrary.StorageProviders.StorageProviderHydrationStatus.None.ToString();
 
             Assert.AreEqual(expected, result);
         }
@@ -281,10 +281,10 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGetHydrationStatusFromAzureStateCorrectlyParsesPendingHot()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var result = provider.GetHydrationStatusFromAzureState(Microsoft.WindowsAzure.Storage.Blob.RehydrationStatus.PendingToHot);
-            var expected = OzetteLibrary.StorageProviders.StorageProviderHydrationStatus.MovingToActiveTier.ToString();
+            var expected = ArchivialLibrary.StorageProviders.StorageProviderHydrationStatus.MovingToActiveTier.ToString();
 
             Assert.AreEqual(expected, result);
         }
@@ -292,10 +292,10 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [TestMethod]
         public void AzureProviderUtilitiesGetHydrationStatusFromAzureStateCorrectlyParsesPendingCool()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var result = provider.GetHydrationStatusFromAzureState(Microsoft.WindowsAzure.Storage.Blob.RehydrationStatus.PendingToCool);
-            var expected = OzetteLibrary.StorageProviders.StorageProviderHydrationStatus.MovingToActiveTier.ToString();
+            var expected = ArchivialLibrary.StorageProviders.StorageProviderHydrationStatus.MovingToActiveTier.ToString();
 
             Assert.AreEqual(expected, result);
         }
@@ -304,7 +304,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
         [ExpectedException(typeof(NotImplementedException))]
         public void AzureProviderUtilitiesGetHydrationStatusFromAzureStateCorrectlyThrowsOnUnexpectedValue()
         {
-            var provider = new OzetteLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
+            var provider = new ArchivialLibrary.StorageProviders.Azure.AzureStorageProviderUtilities();
 
             var result = provider.GetHydrationStatusFromAzureState((Microsoft.WindowsAzure.Storage.Blob.RehydrationStatus)500); // not a real enum value
         }

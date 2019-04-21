@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OzetteLibrary.Database
+namespace ArchivialLibrary.Database
 {
     /// <summary>
     /// Describes when the database backup was last performed.

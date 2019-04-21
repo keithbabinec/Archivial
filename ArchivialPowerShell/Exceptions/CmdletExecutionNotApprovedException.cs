@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace OzettePowerShell.Exceptions
+namespace ArchivialPowerShell.Exceptions
 {
     public class CmdletExecutionNotApprovedException : Exception
     {

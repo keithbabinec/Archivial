@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OzetteLibrary.Exceptions;
-using OzetteLibrary.Folders;
+using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.Folders;
 using System;
 
 namespace OzetteLibraryTests.Folders
@@ -310,7 +310,7 @@ namespace OzetteLibraryTests.Folders
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = null;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.LowPriorityScanFrequencyInHours = 72;
             options.MedPriorityScanFrequencyInHours = 24;
             options.HighPriorityScanFrequencyInHours = 1;
@@ -333,9 +333,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddMinutes(-15);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.High;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.High;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.HighPriorityScanFrequencyInHours = 1;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -346,9 +346,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddMinutes(-59);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.High;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.High;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.HighPriorityScanFrequencyInHours = 1;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -359,9 +359,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddMinutes(-61);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.High;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.High;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.HighPriorityScanFrequencyInHours = 1;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -372,9 +372,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddMinutes(-125);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.High;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.High;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.HighPriorityScanFrequencyInHours = 1;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -385,9 +385,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddHours(-15);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.Medium;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.MedPriorityScanFrequencyInHours = 24;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -398,9 +398,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddHours(-23);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.Medium;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.MedPriorityScanFrequencyInHours = 24;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -411,9 +411,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddHours(-25);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.Medium;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.MedPriorityScanFrequencyInHours = 24;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -424,9 +424,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddHours(-125);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.Medium;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.Medium;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.MedPriorityScanFrequencyInHours = 24;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -437,9 +437,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddHours(-15);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.Low;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.LowPriorityScanFrequencyInHours = 72;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -450,9 +450,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddHours(-71);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.Low;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.LowPriorityScanFrequencyInHours = 72;
 
             Assert.IsFalse(loc.ShouldScan(options));
@@ -463,9 +463,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddHours(-73);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.Low;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.LowPriorityScanFrequencyInHours = 72;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -476,9 +476,9 @@ namespace OzetteLibraryTests.Folders
         {
             var loc = new LocalSourceLocation();
             loc.LastCompletedScan = DateTime.Now.AddHours(-1250);
-            loc.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
+            loc.Priority = ArchivialLibrary.Files.FileBackupPriority.Low;
 
-            var options = new OzetteLibrary.Folders.ScanFrequencies();
+            var options = new ArchivialLibrary.Folders.ScanFrequencies();
             options.LowPriorityScanFrequencyInHours = 72;
 
             Assert.IsTrue(loc.ShouldScan(options));
@@ -506,7 +506,7 @@ namespace OzetteLibraryTests.Folders
             loc3.ID = 2;
             loc3.FileMatchFilter = "*";
 
-            var locations = new OzetteLibrary.Folders.SourceLocations();
+            var locations = new ArchivialLibrary.Folders.SourceLocations();
             locations.Add(loc1);
             locations.Add(loc2);
             locations.Add(loc3);
@@ -537,7 +537,7 @@ namespace OzetteLibraryTests.Folders
             loc3.ID = 3;
             loc3.FileMatchFilter = "*";
 
-            var locations = new OzetteLibrary.Folders.SourceLocations();
+            var locations = new ArchivialLibrary.Folders.SourceLocations();
             locations.Add(loc1);
             locations.Add(loc2);
             locations.Add(loc3);
@@ -567,7 +567,7 @@ namespace OzetteLibraryTests.Folders
             loc3.ID = 3;
             loc3.FileMatchFilter = "*";
 
-            var locations = new OzetteLibrary.Folders.SourceLocations();
+            var locations = new ArchivialLibrary.Folders.SourceLocations();
             locations.Add(loc1);
             locations.Add(loc2);
             locations.Add(loc3);
@@ -587,7 +587,7 @@ namespace OzetteLibraryTests.Folders
             loc1.ID = 1;
             loc1.FileMatchFilter = "*";
 
-            var locations = new OzetteLibrary.Folders.SourceLocations();
+            var locations = new ArchivialLibrary.Folders.SourceLocations();
             locations.Add(loc1);
 
             // should throw

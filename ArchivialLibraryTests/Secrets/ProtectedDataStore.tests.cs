@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using OzetteLibrary.Database;
-using OzetteLibrary.Database.SQLServer;
-using OzetteLibrary.Exceptions;
-using OzetteLibrary.Logging.Mock;
-using OzetteLibrary.Secrets;
+using ArchivialLibrary.Database;
+using ArchivialLibrary.Database.SQLServer;
+using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.Logging.Mock;
+using ArchivialLibrary.Secrets;
 using System;
 using System.Threading.Tasks;
 
@@ -48,7 +48,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db.Object, scope, entropy);
 
-            await pds.GetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName).ConfigureAwait(false);
+            await pds.GetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -74,7 +74,7 @@ namespace OzetteLibraryTests.Secrets
 
             ProtectedDataStore pds = new ProtectedDataStore(db, scope, entropy);
 
-            await pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "").ConfigureAwait(false);
+            await pds.SetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, "").ConfigureAwait(false);
         }
     }
 }

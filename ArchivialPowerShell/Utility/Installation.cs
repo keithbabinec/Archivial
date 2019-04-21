@@ -1,4 +1,4 @@
-﻿using OzetteLibrary.ServiceCore;
+﻿using ArchivialLibrary.ServiceCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using System.Security.AccessControl;
 using System.ServiceProcess;
 using System.Threading;
 
-namespace OzettePowerShell.Utility
+namespace ArchivialPowerShell.Utility
 {
     public static class Installation
     {
@@ -26,7 +26,7 @@ namespace OzettePowerShell.Utility
             // setting this flag indicates publish is required on next service startup.
             CoreSettings.DatabasePublishIsRequired = true;
 
-            var dbConnectionString = string.Format("Data Source=.\\SQLExpress;Initial Catalog={0};Integrated Security=SSPI;", OzetteLibrary.Constants.Database.DatabaseName);
+            var dbConnectionString = string.Format("Data Source=.\\SQLExpress;Initial Catalog={0};Integrated Security=SSPI;", ArchivialLibrary.Constants.Database.DatabaseName);
             CoreSettings.DatabaseConnectionString = dbConnectionString;
         }
 
@@ -61,7 +61,7 @@ namespace OzettePowerShell.Utility
 
                 dirSecurity.AddAccessRule(
                     new FileSystemAccessRule(
-                        OzetteLibrary.Constants.Database.DefaultSqlExpressUserAccount,
+                        ArchivialLibrary.Constants.Database.DefaultSqlExpressUserAccount,
                         FileSystemRights.FullControl,
                         InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit,
                         PropagationFlags.None,
@@ -104,7 +104,7 @@ namespace OzettePowerShell.Utility
                 "OzetteClientAgent.exe.config",
                 "OzetteDB.dacpac",
                 "OzetteDB.dll",
-                "OzetteLibrary.dll",
+                "ArchivialLibrary.dll",
                 "System.IdentityModel.Tokens.Jwt.dll",
                 "System.Management.Automation.dll",
                 "Twilio.dll"

@@ -1,13 +1,13 @@
-﻿using OzetteLibrary.Database;
-using OzetteLibrary.Events;
-using OzetteLibrary.Logging;
-using OzetteLibrary.MessagingProviders;
-using OzetteLibrary.StorageProviders;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Events;
+using ArchivialLibrary.Logging;
+using ArchivialLibrary.MessagingProviders;
+using ArchivialLibrary.StorageProviders;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Engine
+namespace ArchivialLibrary.Engine
 {
     /// <summary>
     /// An abstract base class for deriving custom Engines.

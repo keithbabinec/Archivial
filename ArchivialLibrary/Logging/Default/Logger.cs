@@ -1,4 +1,4 @@
-﻿using OzetteLibrary.Constants;
+﻿using ArchivialLibrary.Constants;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Logging.Default
+namespace ArchivialLibrary.Logging.Default
 {
     /// <summary>
     /// Contains default logging and log setup functionality.

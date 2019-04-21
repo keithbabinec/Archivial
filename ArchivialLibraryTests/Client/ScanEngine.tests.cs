@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using OzetteLibrary.Database.SQLServer;
-using OzetteLibrary.Logging.Mock;
-using OzetteLibrary.MessagingProviders;
-using OzetteLibrary.StorageProviders;
+using ArchivialLibrary.Database.SQLServer;
+using ArchivialLibrary.Logging.Mock;
+using ArchivialLibrary.MessagingProviders;
+using ArchivialLibrary.StorageProviders;
 using System;
 using System.Threading;
 
@@ -36,8 +36,8 @@ namespace OzetteLibraryTests.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScanEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
-            OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(null, new MockLogger(), 0);
+            ArchivialLibrary.Client.ScanEngine engine =
+                new ArchivialLibrary.Client.ScanEngine(null, new MockLogger(), 0);
         }
 
         [TestMethod]
@@ -46,8 +46,8 @@ namespace OzetteLibraryTests.Client
         {
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
             
-            OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(db, null, 0);
+            ArchivialLibrary.Client.ScanEngine engine =
+                new ArchivialLibrary.Client.ScanEngine(db, null, 0);
         }
         
         [TestMethod]
@@ -56,8 +56,8 @@ namespace OzetteLibraryTests.Client
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
-            OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(db, logger, 0);
+            ArchivialLibrary.Client.ScanEngine engine =
+                new ArchivialLibrary.Client.ScanEngine(db, logger, 0);
 
             Assert.IsNotNull(engine);
         }
@@ -68,8 +68,8 @@ namespace OzetteLibraryTests.Client
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
-            OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(db, logger, 0);
+            ArchivialLibrary.Client.ScanEngine engine =
+                new ArchivialLibrary.Client.ScanEngine(db, logger, 0);
 
             engine.BeginStart();
             engine.BeginStop();
@@ -81,8 +81,8 @@ namespace OzetteLibraryTests.Client
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
 
-            OzetteLibrary.Client.ScanEngine engine =
-                new OzetteLibrary.Client.ScanEngine(db, logger, 0);
+            ArchivialLibrary.Client.ScanEngine engine =
+                new ArchivialLibrary.Client.ScanEngine(db, logger, 0);
 
             var signalStoppedEvent = new AutoResetEvent(false);
 

@@ -1,10 +1,10 @@
-﻿using OzetteLibrary.Database;
-using OzetteLibrary.Secrets;
-using OzettePowerShell.Utility;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Secrets;
+using ArchivialPowerShell.Utility;
 using System.Linq;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Removes the stored network credential used for connecting to network resources.</para>
@@ -64,8 +64,8 @@ namespace OzettePowerShell.Functions.Public
             database.RemoveNetCredentialAsync(credName).ConfigureAwait(false);
 
             // remove provider specific secrets
-            database.RemoveApplicationOptionAsync(string.Format(OzetteLibrary.Constants.Formats.NetCredentialUserNameKeyLookup, credName)).ConfigureAwait(false);
-            database.RemoveApplicationOptionAsync(string.Format(OzetteLibrary.Constants.Formats.NetCredentialUserPasswordKeyLookup, credName)).ConfigureAwait(false);
+            database.RemoveApplicationOptionAsync(string.Format(ArchivialLibrary.Constants.Formats.NetCredentialUserNameKeyLookup, credName)).ConfigureAwait(false);
+            database.RemoveApplicationOptionAsync(string.Format(ArchivialLibrary.Constants.Formats.NetCredentialUserPasswordKeyLookup, credName)).ConfigureAwait(false);
 
             WriteVerbose("Successfully removed the credential from the database.");
         }

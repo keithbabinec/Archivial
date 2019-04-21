@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Providers
+﻿namespace ArchivialLibrary.Providers
 {
     /// <summary>
     /// Describes possible provider types.

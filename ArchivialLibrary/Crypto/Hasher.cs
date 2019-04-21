@@ -2,10 +2,10 @@
 using System.Security.Cryptography;
 using System.IO;
 using System.Text;
-using OzetteLibrary.Logging;
-using OzetteLibrary.Files;
+using ArchivialLibrary.Logging;
+using ArchivialLibrary.Files;
 
-namespace OzetteLibrary.Crypto
+namespace ArchivialLibrary.Crypto
 {
     /// <summary>
     /// Contains functionality for hashing.

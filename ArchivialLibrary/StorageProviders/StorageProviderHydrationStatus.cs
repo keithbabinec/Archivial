@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.StorageProviders
+﻿namespace ArchivialLibrary.StorageProviders
 {
     /// <summary>
     /// Describes possible target cloud providers.

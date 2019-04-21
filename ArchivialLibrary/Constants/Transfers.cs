@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Constants
+﻿namespace ArchivialLibrary.Constants
 {
     /// <summary>
     /// A constants class for transfer strings and settings.

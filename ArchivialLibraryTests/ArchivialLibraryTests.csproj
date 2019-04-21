@@ -137,12 +137,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ArchivialLibrary\ArchivialLibrary.csproj">
-      <Project>{8a82834f-df32-4911-8b3f-f4435b04b6a3}</Project>
-      <Name>ArchivialLibrary</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="ozette.runsettings" />
     <None Include="packages.config" />
@@ -176,6 +170,12 @@
     <Content Include="TestFiles\TransferPayloads\payload9.data">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ArchivialLibrary\ArchivialLibrary.csproj">
+      <Project>{8a82834f-df32-4911-8b3f-f4435b04b6a3}</Project>
+      <Name>ArchivialLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

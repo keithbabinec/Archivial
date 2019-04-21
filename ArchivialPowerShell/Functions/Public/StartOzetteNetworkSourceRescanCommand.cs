@@ -1,10 +1,10 @@
-﻿using OzetteLibrary.Database;
-using OzetteLibrary.Folders;
-using OzettePowerShell.Utility;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Folders;
+using ArchivialPowerShell.Utility;
 using System.Linq;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Forces the re-scan of a Network Source being monitored by Ozette.</para>

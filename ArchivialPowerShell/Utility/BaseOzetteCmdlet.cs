@@ -1,11 +1,11 @@
-﻿using OzetteLibrary.Database.SQLServer;
-using OzetteLibrary.Exceptions;
-using OzetteLibrary.Logging.Default;
-using OzetteLibrary.ServiceCore;
+﻿using ArchivialLibrary.Database.SQLServer;
+using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.Logging.Default;
+using ArchivialLibrary.ServiceCore;
 using System;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Utility
+namespace ArchivialPowerShell.Utility
 {
     public class BaseOzetteCmdlet : Cmdlet
     {

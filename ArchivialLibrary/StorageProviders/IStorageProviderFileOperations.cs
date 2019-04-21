@@ -1,8 +1,8 @@
-﻿using OzetteLibrary.Files;
-using OzetteLibrary.Folders;
+﻿using ArchivialLibrary.Files;
+using ArchivialLibrary.Folders;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.StorageProviders
+namespace ArchivialLibrary.StorageProviders
 {
     /// <summary>
     /// Describes the required file operations for cloud providers.

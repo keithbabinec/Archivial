@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OzetteLibrary.Database
+namespace ArchivialLibrary.Database
 {
     /// <summary>
     /// Contains functionality for scheduling backups.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace OzetteLibrary.Events
+namespace ArchivialLibrary.Events
 {
     /// <summary>
     /// An easy implementation of IAsyncResult.

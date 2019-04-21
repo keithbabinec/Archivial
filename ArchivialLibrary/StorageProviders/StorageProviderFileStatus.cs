@@ -1,10 +1,10 @@
-﻿using OzetteLibrary.Constants;
-using OzetteLibrary.Exceptions;
-using OzetteLibrary.Files;
+﻿using ArchivialLibrary.Constants;
+using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.Files;
 using System;
 using System.Collections.Generic;
 
-namespace OzetteLibrary.StorageProviders
+namespace ArchivialLibrary.StorageProviders
 {
     /// <summary>
     /// Describes the status for a file under any cloud provider.

@@ -1,7 +1,7 @@
-﻿using OzetteLibrary.StorageProviders;
+﻿using ArchivialLibrary.StorageProviders;
 using System;
 
-namespace OzetteLibrary.Folders
+namespace ArchivialLibrary.Folders
 {
     /// <summary>
     /// A class that describes the local to remote path mapping for a directory.

@@ -1,9 +1,9 @@
-﻿using OzetteLibrary.Folders;
-using OzettePowerShell.Utility;
+﻿using ArchivialLibrary.Folders;
+using ArchivialPowerShell.Utility;
 using System.Linq;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Returns all of the Network Source folders being monitored by Ozette.</para>

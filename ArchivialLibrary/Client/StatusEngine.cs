@@ -1,16 +1,16 @@
-﻿using OzetteLibrary.Database;
-using OzetteLibrary.Engine;
-using OzetteLibrary.Events;
-using OzetteLibrary.Logging;
-using OzetteLibrary.MessagingProviders;
-using OzetteLibrary.Providers;
-using OzetteLibrary.ServiceCore;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Engine;
+using ArchivialLibrary.Events;
+using ArchivialLibrary.Logging;
+using ArchivialLibrary.MessagingProviders;
+using ArchivialLibrary.Providers;
+using ArchivialLibrary.ServiceCore;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Client
+namespace ArchivialLibrary.Client
 {
     /// <summary>
     /// Contains core status engine functionality.

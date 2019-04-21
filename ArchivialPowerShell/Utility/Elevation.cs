@@ -1,6 +1,6 @@
 ﻿using System.Security.Principal;
 
-namespace OzettePowerShell.Utility
+namespace ArchivialPowerShell.Utility
 {
     public static class Elevation
     {

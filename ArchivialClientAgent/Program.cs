@@ -1,6 +1,6 @@
 ﻿using System.ServiceProcess;
 
-namespace OzetteClientAgent
+namespace ArchivialClientAgent
 {
     static class Program
     {
@@ -12,7 +12,7 @@ namespace OzetteClientAgent
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new OzetteClientAgent()
+                new ArchivialClientAgent()
             };
             ServiceBase.Run(ServicesToRun);
         }

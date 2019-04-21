@@ -1,6 +1,6 @@
-﻿using OzetteLibrary.Files;
+﻿using ArchivialLibrary.Files;
 
-namespace OzetteLibrary.Constants
+namespace ArchivialLibrary.Constants
 {
     /// <summary>
     /// Constants for the command line tooling.

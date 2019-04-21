@@ -1,7 +1,7 @@
-﻿using OzettePowerShell.Utility;
+﻿using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Returns the current status of the cloud backup progress.</para>

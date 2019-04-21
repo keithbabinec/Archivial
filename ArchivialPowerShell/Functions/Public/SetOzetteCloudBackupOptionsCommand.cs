@@ -1,8 +1,8 @@
-﻿using OzettePowerShell.Utility;
+﻿using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 using System.Text;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Sets one or more application options for Ozette Cloud Backup.</para>
@@ -93,7 +93,7 @@ namespace OzettePowerShell.Functions.Public
             {
                 WriteVerbose("Updating application setting in the database: LogFilesRetentionInDays");
 
-                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.LogFilesRetentionInDays;
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.LogFilesRetentionInDays;
                 db.SetApplicationOptionAsync(settingName, LogFilesRetentionInDays.ToString()).GetAwaiter().GetResult();
             }
 
@@ -101,7 +101,7 @@ namespace OzettePowerShell.Functions.Public
             {
                 WriteVerbose("Updating application setting in the database: DatabaseBackupsRetentionInDays");
 
-                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.DatabaseBackupsRetentionInDays;
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.DatabaseBackupsRetentionInDays;
                 db.SetApplicationOptionAsync(settingName, DatabaseBackupsRetentionInDays.ToString()).GetAwaiter().GetResult();
             }
 
@@ -109,7 +109,7 @@ namespace OzettePowerShell.Functions.Public
             {
                 WriteVerbose("Updating application setting in the database: BackupEngineInstancesCount");
 
-                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.BackupEngineInstancesCount;
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.BackupEngineInstancesCount;
                 db.SetApplicationOptionAsync(settingName, BackupEngineInstancesCount.ToString()).GetAwaiter().GetResult();
             }
 
@@ -117,7 +117,7 @@ namespace OzettePowerShell.Functions.Public
             {
                 WriteVerbose("Updating application setting in the database: LowPriorityScanFrequencyInHours");
 
-                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours;
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours;
                 db.SetApplicationOptionAsync(settingName, LowPriorityScanFrequencyInHours.ToString()).GetAwaiter().GetResult();
             }
 
@@ -125,7 +125,7 @@ namespace OzettePowerShell.Functions.Public
             {
                 WriteVerbose("Updating application setting in the database: MedPriorityScanFrequencyInHours");
 
-                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.MedPriorityScanFrequencyInHours;
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.MedPriorityScanFrequencyInHours;
                 db.SetApplicationOptionAsync(settingName, MedPriorityScanFrequencyInHours.ToString()).GetAwaiter().GetResult();
             }
 
@@ -133,7 +133,7 @@ namespace OzettePowerShell.Functions.Public
             {
                 WriteVerbose("Updating application setting in the database: HighPriorityScanFrequencyInHours");
 
-                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours;
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.HighPriorityScanFrequencyInHours;
                 db.SetApplicationOptionAsync(settingName, HighPriorityScanFrequencyInHours.ToString()).GetAwaiter().GetResult();
             }
 
@@ -141,7 +141,7 @@ namespace OzettePowerShell.Functions.Public
             {
                 WriteVerbose("Updating application setting in the database: ProtectionIV");
 
-                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.ProtectionIV;
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.ProtectionIV;
                 db.SetApplicationOptionAsync(settingName, ProtectionIV).GetAwaiter().GetResult();
             }
 
@@ -149,7 +149,7 @@ namespace OzettePowerShell.Functions.Public
             {
                 WriteVerbose("Updating application setting in the database: StatusUpdateSchedule");
 
-                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.StatusUpdateSchedule;
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.StatusUpdateSchedule;
                 db.SetApplicationOptionAsync(settingName, StatusUpdateSchedule).GetAwaiter().GetResult();
             }
 
@@ -157,7 +157,7 @@ namespace OzettePowerShell.Functions.Public
             {
                 WriteVerbose("Updating application setting in the database: MasterExclusionMatches");
 
-                var settingName = OzetteLibrary.Constants.RuntimeSettingNames.MasterExclusionMatches;
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.MasterExclusionMatches;
 
                 StringBuilder sb = new StringBuilder();
 

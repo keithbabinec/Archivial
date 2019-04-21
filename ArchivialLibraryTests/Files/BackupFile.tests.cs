@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OzetteLibrary.Constants;
-using OzetteLibrary.Exceptions;
-using OzetteLibrary.Files;
-using OzetteLibrary.Folders;
-using OzetteLibrary.Providers;
-using OzetteLibrary.StorageProviders;
+using ArchivialLibrary.Constants;
+using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.Files;
+using ArchivialLibrary.Folders;
+using ArchivialLibrary.Providers;
+using ArchivialLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,16 +18,16 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGetTotalFileBlocksHandlesZeroFileLength()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 0;
-            Assert.AreEqual(0, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(0, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void BackupFileGetTotalFileBlocksThrowsWhenProvidedZeroBlockSize()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 1048576; // 1 MB
             file.CalculateTotalFileBlocks(0);
         }
@@ -35,95 +35,95 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks1()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 2097152; // 2 MB
-            Assert.AreEqual(1, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(1, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks2()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 4194304; // 4 MB
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks3()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 8388608; // 8 MB
-            Assert.AreEqual(4, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(4, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks4()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 310378496; // 310 MB
-            Assert.AreEqual(148, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(148, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks5()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 2097151; // just under 2 MB
-            Assert.AreEqual(1, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(1, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks7()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 2097153; // just over 2 MB
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks8()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 2619922; // over 2 MB, with a halfway populated 2nd block.
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks9()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 4194301; // just under 4 MB
-            Assert.AreEqual(2, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(2, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks10()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 4194308; // just over 4 MB
-            Assert.AreEqual(3, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(3, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks11()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 189643547895; // very large file size
-            Assert.AreEqual(90430, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(90430, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks12()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 43414941001; // very large file size
-            Assert.AreEqual(20702, file.CalculateTotalFileBlocks(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes));
+            Assert.AreEqual(20702, file.CalculateTotalFileBlocks(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes));
         }
 
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks13()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 7744931200569; // very large file size
             Assert.AreEqual(167955484, file.CalculateTotalFileBlocks(46113)); // unusual block size
         }
@@ -131,7 +131,7 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks14()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 1647999899992; // very large file size
             Assert.AreEqual(228539718, file.CalculateTotalFileBlocks(7211)); // unusual block size
         }
@@ -139,7 +139,7 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileGetTotalFileBlocksReturnsCorrectNumberOfBlocks15()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
             file.FileSizeBytes = 15677400000;
             Assert.AreEqual(154, file.CalculateTotalFileBlocks(102400000));
         }
@@ -147,8 +147,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileHasDataToTransferReturnsValidFalseExample1()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
-            file.OverallState = OzetteLibrary.Files.FileStatus.Synced;
+            var file = new ArchivialLibrary.Files.BackupFile();
+            file.OverallState = ArchivialLibrary.Files.FileStatus.Synced;
 
             Assert.IsFalse(file.HasDataToTransfer());
         }
@@ -156,8 +156,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileHasDataToTransferReturnsValidTrueExample1()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
-            file.OverallState = OzetteLibrary.Files.FileStatus.OutOfDate;
+            var file = new ArchivialLibrary.Files.BackupFile();
+            file.OverallState = ArchivialLibrary.Files.FileStatus.OutOfDate;
 
             Assert.IsTrue(file.HasDataToTransfer());
         }
@@ -165,8 +165,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileHasDataToTransferReturnsValidTrueExample2()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
-            file.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
+            var file = new ArchivialLibrary.Files.BackupFile();
+            file.OverallState = ArchivialLibrary.Files.FileStatus.Unsynced;
 
             Assert.IsTrue(file.HasDataToTransfer());
         }
@@ -174,8 +174,8 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileHasDataToTransferReturnsValidTrueExample3()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
-            file.OverallState = OzetteLibrary.Files.FileStatus.InProgress;
+            var file = new ArchivialLibrary.Files.BackupFile();
+            file.OverallState = ArchivialLibrary.Files.FileStatus.InProgress;
 
             Assert.IsTrue(file.HasDataToTransfer());
         }
@@ -183,21 +183,21 @@ namespace OzetteLibraryTests.Files
         [TestMethod]
         public void BackupFileResetCopyStateCorrectlyResetsState1()
         {
-            var provider1 = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS;
-            var provider2 = OzetteLibrary.StorageProviders.StorageProviderTypes.Azure;
+            var provider1 = ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS;
+            var provider2 = ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure;
 
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
 
             file.CopyState = new System.Collections.Generic.Dictionary
-                <OzetteLibrary.StorageProviders.StorageProviderTypes,
-                OzetteLibrary.StorageProviders.StorageProviderFileStatus>();
+                <ArchivialLibrary.StorageProviders.StorageProviderTypes,
+                ArchivialLibrary.StorageProviders.StorageProviderFileStatus>();
 
             file.CopyState.Add(
                 provider1,
-                new OzetteLibrary.StorageProviders.StorageProviderFileStatus()
+                new ArchivialLibrary.StorageProviders.StorageProviderFileStatus()
                 {
                     Provider = provider1,
-                    SyncStatus = OzetteLibrary.Files.FileStatus.InProgress
+                    SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress
                 });
 
             file.ResetCopyState(new ProviderCollection()
@@ -207,36 +207,36 @@ namespace OzetteLibraryTests.Files
             });
 
             Assert.AreEqual(2, file.CopyState.Count);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.CopyState[provider1].SyncStatus);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.CopyState[provider2].SyncStatus);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.Unsynced, file.CopyState[provider1].SyncStatus);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.Unsynced, file.CopyState[provider2].SyncStatus);
         }
 
         [TestMethod]
         public void BackupFileResetCopyStateCorrectlyResetsState2()
         {
-            var provider1 = OzetteLibrary.StorageProviders.StorageProviderTypes.AWS;
-            var provider2 = OzetteLibrary.StorageProviders.StorageProviderTypes.Azure;
+            var provider1 = ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS;
+            var provider2 = ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure;
 
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
 
             file.CopyState = new Dictionary
-                <OzetteLibrary.StorageProviders.StorageProviderTypes,
-                OzetteLibrary.StorageProviders.StorageProviderFileStatus>();
+                <ArchivialLibrary.StorageProviders.StorageProviderTypes,
+                ArchivialLibrary.StorageProviders.StorageProviderFileStatus>();
 
             file.CopyState.Add(
                 provider1,
-                new OzetteLibrary.StorageProviders.StorageProviderFileStatus()
+                new ArchivialLibrary.StorageProviders.StorageProviderFileStatus()
                 {
                     Provider = provider1,
-                    SyncStatus = OzetteLibrary.Files.FileStatus.Synced
+                    SyncStatus = ArchivialLibrary.Files.FileStatus.Synced
                 });
 
             file.CopyState.Add(
                 provider2,
-                new OzetteLibrary.StorageProviders.StorageProviderFileStatus()
+                new ArchivialLibrary.StorageProviders.StorageProviderFileStatus()
                 {
                     Provider = provider2,
-                    SyncStatus = OzetteLibrary.Files.FileStatus.Synced
+                    SyncStatus = ArchivialLibrary.Files.FileStatus.Synced
                 });
 
             file.ResetCopyState(new ProviderCollection()
@@ -245,7 +245,7 @@ namespace OzetteLibraryTests.Files
             });
 
             Assert.AreEqual(1, file.CopyState.Count);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.CopyState[provider1].SyncStatus);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.Unsynced, file.CopyState[provider1].SyncStatus);
         }
 
         [TestMethod]
@@ -253,15 +253,15 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadThrowsOnInvalidArgs1()
         {
             // no filestream
-            var file = new OzetteLibrary.Files.BackupFile();
-            file.GenerateNextTransferPayload(null, new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger()));
+            var file = new ArchivialLibrary.Files.BackupFile();
+            file.GenerateNextTransferPayload(null, new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger()));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void BackupFileGenerateNextTransferPayloadThrowsOnInvalidArgs2()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
 
             // no logger
             using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -274,13 +274,13 @@ namespace OzetteLibraryTests.Files
         [ExpectedException(typeof(InvalidOperationException))]
         public void BackupFileGenerateNextTransferPayloadThrowsOnInvalidFileState1()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
 
             // file is already synced
             using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                file.OverallState = OzetteLibrary.Files.FileStatus.Synced;
-                file.GenerateNextTransferPayload(filestream, new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger()));
+                file.OverallState = ArchivialLibrary.Files.FileStatus.Synced;
+                file.GenerateNextTransferPayload(filestream, new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger()));
             }
         }
 
@@ -288,14 +288,14 @@ namespace OzetteLibraryTests.Files
         [ExpectedException(typeof(InvalidOperationException))]
         public void BackupFileGenerateNextTransferPayloadThrowsOnInvalidFileState2()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
 
             // file priority is not set
             using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                file.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
-                file.Priority = OzetteLibrary.Files.FileBackupPriority.Unset;
-                file.GenerateNextTransferPayload(filestream, new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger()));
+                file.OverallState = ArchivialLibrary.Files.FileStatus.Unsynced;
+                file.Priority = ArchivialLibrary.Files.FileBackupPriority.Unset;
+                file.GenerateNextTransferPayload(filestream, new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger()));
             }
         }
 
@@ -303,15 +303,15 @@ namespace OzetteLibraryTests.Files
         [ExpectedException(typeof(InvalidOperationException))]
         public void BackupFileGenerateNextTransferPayloadThrowsOnInvalidFileState3()
         {
-            var file = new OzetteLibrary.Files.BackupFile();
+            var file = new ArchivialLibrary.Files.BackupFile();
 
             // copystate is not set
             using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                file.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
-                file.Priority = OzetteLibrary.Files.FileBackupPriority.Low;
+                file.OverallState = ArchivialLibrary.Files.FileStatus.Unsynced;
+                file.Priority = ArchivialLibrary.Files.FileBackupPriority.Low;
                 file.CopyState = null;
-                file.GenerateNextTransferPayload(filestream, new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger()));
+                file.GenerateNextTransferPayload(filestream, new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger()));
             }
         }
 
@@ -320,7 +320,7 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadThrowsOnInvalidFileState4()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // copy state is inconsistent
 
@@ -329,12 +329,12 @@ namespace OzetteLibraryTests.Files
                 new Provider() { ID = 1, Name = nameof(StorageProviderTypes.AWS), Type = ProviderTypes.Storage }
             });
 
-            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.Synced;
-            file.OverallState = OzetteLibrary.Files.FileStatus.Unsynced;
+            file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = ArchivialLibrary.Files.FileStatus.Synced;
+            file.OverallState = ArchivialLibrary.Files.FileStatus.Unsynced;
 
             using (var filestream = new FileStream(".\\TestFiles\\Hasher\\SmallFile.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                file.GenerateNextTransferPayload(filestream, new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger()));
+                file.GenerateNextTransferPayload(filestream, new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger()));
             }
         }
 
@@ -342,8 +342,8 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload1()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var hasher = new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger());
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
@@ -361,9 +361,9 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
-                Assert.AreEqual(OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
+                Assert.AreEqual(ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
 
-                Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
+                Assert.AreEqual(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
                 // assert that the contents of the payload match.
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload1.data"), payload.Data));
@@ -374,8 +374,8 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload2()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Medium };
-            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var hasher = new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger());
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
@@ -393,9 +393,9 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
-                Assert.AreEqual(OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
+                Assert.AreEqual(ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
 
-                Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
+                Assert.AreEqual(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
                 // assert that the contents of the payload match.
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload2.data"), payload.Data));
@@ -406,8 +406,8 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload3()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Medium };
-            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var hasher = new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger());
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // generate a payload for the second block (index 1)
 
@@ -416,8 +416,8 @@ namespace OzetteLibraryTests.Files
                 new Provider() { ID = 1, Name = nameof(StorageProviderTypes.AWS), Type = ProviderTypes.Storage }
             });
 
-            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].LastCompletedFileBlockIndex = 0;
-            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].LastCompletedFileBlockIndex = 0;
+            file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -430,9 +430,9 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
-                Assert.AreEqual(OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
+                Assert.AreEqual(ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
 
-                Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
+                Assert.AreEqual(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
                 // assert that the contents of the payload match.
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload3.data"), payload.Data));
@@ -443,8 +443,8 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload4()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var hasher = new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger());
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // generate a payload for a block in the middle (index 3)
 
@@ -453,8 +453,8 @@ namespace OzetteLibraryTests.Files
                 new Provider() { ID = 1, Name = nameof(StorageProviderTypes.AWS), Type = ProviderTypes.Storage }
             });
 
-            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].LastCompletedFileBlockIndex = 2;
-            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].LastCompletedFileBlockIndex = 2;
+            file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -467,9 +467,9 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
-                Assert.AreEqual(OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
+                Assert.AreEqual(ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
 
-                Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
+                Assert.AreEqual(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
                 // assert that the contents of the payload match.
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload4.data"), payload.Data));
@@ -480,8 +480,8 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload5()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var hasher = new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger());
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // generate a payload for the final block (index 4)
 
@@ -490,8 +490,8 @@ namespace OzetteLibraryTests.Files
                 new Provider() { ID = 1, Name = nameof(StorageProviderTypes.AWS), Type = ProviderTypes.Storage }
             });
 
-            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].LastCompletedFileBlockIndex = 3;
-            file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].LastCompletedFileBlockIndex = 3;
+            file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -504,7 +504,7 @@ namespace OzetteLibraryTests.Files
 
                 Assert.IsNotNull(payload.DestinationProviders);
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
-                Assert.AreEqual(OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
+                Assert.AreEqual(ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS, payload.DestinationProviders[0]);
 
                 Assert.AreEqual(102809, payload.Data.Length); // partial chunk
 
@@ -517,10 +517,10 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload6()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var hasher = new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger());
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
-            var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] { OzetteLibrary.StorageProviders.StorageProviderTypes.AWS, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure };
+            var providers = new ArchivialLibrary.StorageProviders.StorageProviderTypes[] { ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS, ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure };
 
             // generate a payload for the final block (index 4) for multiple providers
 
@@ -531,10 +531,10 @@ namespace OzetteLibraryTests.Files
             });
 
             file.CopyState[providers[0]].LastCompletedFileBlockIndex = 3;
-            file.CopyState[providers[0]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[providers[0]].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             file.CopyState[providers[1]].LastCompletedFileBlockIndex = 3;
-            file.CopyState[providers[1]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[providers[1]].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -561,13 +561,13 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload7()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var hasher = new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger());
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
-            var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] {
-                OzetteLibrary.StorageProviders.StorageProviderTypes.AWS,
-                OzetteLibrary.StorageProviders.StorageProviderTypes.Azure,
-                OzetteLibrary.StorageProviders.StorageProviderTypes.Google
+            var providers = new ArchivialLibrary.StorageProviders.StorageProviderTypes[] {
+                ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS,
+                ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure,
+                ArchivialLibrary.StorageProviders.StorageProviderTypes.Google
             };
 
             // generate a payload for a block in the middle (index 3) for multiple providers.
@@ -580,13 +580,13 @@ namespace OzetteLibraryTests.Files
             });
 
             file.CopyState[providers[0]].LastCompletedFileBlockIndex = 2;
-            file.CopyState[providers[0]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[providers[0]].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             file.CopyState[providers[1]].LastCompletedFileBlockIndex = 2;
-            file.CopyState[providers[1]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[providers[1]].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             file.CopyState[providers[2]].LastCompletedFileBlockIndex = 2;
-            file.CopyState[providers[2]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[providers[2]].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -603,7 +603,7 @@ namespace OzetteLibraryTests.Files
                 Assert.AreEqual(providers[1], payload.DestinationProviders[1]);
                 Assert.AreEqual(providers[2], payload.DestinationProviders[2]);
 
-                Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
+                Assert.AreEqual(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
                 // assert that the contents of the payload match.
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload7.data"), payload.Data));
@@ -614,13 +614,13 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload8()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var hasher = new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger());
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
-            var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] {
-                OzetteLibrary.StorageProviders.StorageProviderTypes.AWS,
-                OzetteLibrary.StorageProviders.StorageProviderTypes.Azure,
-                OzetteLibrary.StorageProviders.StorageProviderTypes.Google
+            var providers = new ArchivialLibrary.StorageProviders.StorageProviderTypes[] {
+                ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS,
+                ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure,
+                ArchivialLibrary.StorageProviders.StorageProviderTypes.Google
             };
 
             // generate a payload for a block in the middle (index 3)
@@ -634,13 +634,13 @@ namespace OzetteLibraryTests.Files
             });
 
             file.CopyState[providers[0]].LastCompletedFileBlockIndex = 4;
-            file.CopyState[providers[0]].SyncStatus = OzetteLibrary.Files.FileStatus.Synced;
+            file.CopyState[providers[0]].SyncStatus = ArchivialLibrary.Files.FileStatus.Synced;
 
             file.CopyState[providers[1]].LastCompletedFileBlockIndex = 2;
-            file.CopyState[providers[1]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[providers[1]].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             file.CopyState[providers[2]].LastCompletedFileBlockIndex = 2;
-            file.CopyState[providers[2]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[providers[2]].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -656,7 +656,7 @@ namespace OzetteLibraryTests.Files
                 Assert.AreEqual(providers[1], payload.DestinationProviders[0]);
                 Assert.AreEqual(providers[2], payload.DestinationProviders[1]);
 
-                Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
+                Assert.AreEqual(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
                 // assert that the contents of the payload match.
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload8.data"), payload.Data));
@@ -667,13 +667,13 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGenerateNextTransferPayloadReturnsCorrectPayload9()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var hasher = new OzetteLibrary.Crypto.Hasher(new OzetteLibrary.Logging.Mock.MockLogger());
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var hasher = new ArchivialLibrary.Crypto.Hasher(new ArchivialLibrary.Logging.Mock.MockLogger());
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
-            var providers = new OzetteLibrary.StorageProviders.StorageProviderTypes[] {
-                OzetteLibrary.StorageProviders.StorageProviderTypes.AWS,
-                OzetteLibrary.StorageProviders.StorageProviderTypes.Azure,
-                OzetteLibrary.StorageProviders.StorageProviderTypes.Google
+            var providers = new ArchivialLibrary.StorageProviders.StorageProviderTypes[] {
+                ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS,
+                ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure,
+                ArchivialLibrary.StorageProviders.StorageProviderTypes.Google
             };
 
             // generate a payload for a block in the middle (index 2)
@@ -688,13 +688,13 @@ namespace OzetteLibraryTests.Files
             });
 
             file.CopyState[providers[0]].LastCompletedFileBlockIndex = 4;
-            file.CopyState[providers[0]].SyncStatus = OzetteLibrary.Files.FileStatus.Synced;
+            file.CopyState[providers[0]].SyncStatus = ArchivialLibrary.Files.FileStatus.Synced;
 
             file.CopyState[providers[1]].LastCompletedFileBlockIndex = 2;
-            file.CopyState[providers[1]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[providers[1]].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             file.CopyState[providers[2]].LastCompletedFileBlockIndex = 1;
-            file.CopyState[providers[2]].SyncStatus = OzetteLibrary.Files.FileStatus.InProgress;
+            file.CopyState[providers[2]].SyncStatus = ArchivialLibrary.Files.FileStatus.InProgress;
 
             using (var filestream = new FileStream(file.FullSourcePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -711,7 +711,7 @@ namespace OzetteLibraryTests.Files
                 Assert.AreEqual(1, payload.DestinationProviders.Count);
                 Assert.AreEqual(providers[2], payload.DestinationProviders[0]);
 
-                Assert.AreEqual(OzetteLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
+                Assert.AreEqual(ArchivialLibrary.Constants.Transfers.TransferBlockSizeBytes, payload.Data.Length);
 
                 // assert that the contents of the payload match.
                 Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(File.ReadAllBytes(".\\TestFiles\\TransferPayloads\\payload9.data"), payload.Data));
@@ -723,9 +723,9 @@ namespace OzetteLibraryTests.Files
         public void BackupFileSetBlockAsSentThrowsOnInvalidBlockNumber()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
-            file.SetBlockAsSent(-5, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
+            file.SetBlockAsSent(-5, ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
         }
 
         [TestMethod]
@@ -733,10 +733,10 @@ namespace OzetteLibraryTests.Files
         public void BackupFileSetBlockAsSentThrowsOnFileAlreadySynced()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
-            file.OverallState = OzetteLibrary.Files.FileStatus.Synced;
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            file.OverallState = ArchivialLibrary.Files.FileStatus.Synced;
 
-            file.SetBlockAsSent(2, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
+            file.SetBlockAsSent(2, ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
         }
 
         [TestMethod]
@@ -744,106 +744,106 @@ namespace OzetteLibraryTests.Files
         public void BackupFileSetBlockAsSentThrowsOnMissingCopyState()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
-            file.OverallState = OzetteLibrary.Files.FileStatus.InProgress;
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            file.OverallState = ArchivialLibrary.Files.FileStatus.InProgress;
 
-            file.SetBlockAsSent(2, OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
+            file.SetBlockAsSent(2, ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
         }
 
         [TestMethod]
         public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState1()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
                 new Provider() { ID = 1, Name = nameof(StorageProviderTypes.AWS), Type = ProviderTypes.Storage }
             });
 
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
             // this example file has 5 total blocks
 
-            file.SetBlockAsSent(0, OzetteLibrary.StorageProviders.StorageProviderTypes.AWS);
+            file.SetBlockAsSent(0, ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS);
 
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.InProgress, file.OverallState);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.InProgress, file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
         }
 
         [TestMethod]
         public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState2()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
                 new Provider() { ID = 1, Name = nameof(StorageProviderTypes.AWS), Type = ProviderTypes.Storage }
             });
 
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
             // this example file has 5 total blocks
 
-            file.SetBlockAsSent(1, OzetteLibrary.StorageProviders.StorageProviderTypes.AWS);
+            file.SetBlockAsSent(1, ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS);
 
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.InProgress, file.OverallState);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.InProgress, file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
         }
 
         [TestMethod]
         public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState3()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
                 new Provider() { ID = 1, Name = nameof(StorageProviderTypes.AWS), Type = ProviderTypes.Storage }
             });
 
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
             // this example file has 5 total blocks
 
-            file.SetBlockAsSent(3, OzetteLibrary.StorageProviders.StorageProviderTypes.AWS);
+            file.SetBlockAsSent(3, ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS);
 
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.OverallState);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.InProgress, file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.InProgress, file.OverallState);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.InProgress, file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
         }
 
         [TestMethod]
         public void BackupFileSetBlockAsSentCorrectlySetsCopyStateAndOverallState4()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             file.ResetCopyState(new ProviderCollection()
             {
                 new Provider() { ID = 1, Name = nameof(StorageProviderTypes.AWS), Type = ProviderTypes.Storage }
             });
 
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Unsynced, file.OverallState);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.Unsynced, file.OverallState);
 
             // this example file has 5 total blocks
 
-            file.SetBlockAsSent(4, OzetteLibrary.StorageProviders.StorageProviderTypes.AWS);
+            file.SetBlockAsSent(4, ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS);
 
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.OverallState);
-            Assert.AreEqual(OzetteLibrary.Files.FileStatus.Synced, file.CopyState[OzetteLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.Synced, file.OverallState);
+            Assert.AreEqual(ArchivialLibrary.Files.FileStatus.Synced, file.CopyState[ArchivialLibrary.StorageProviders.StorageProviderTypes.AWS].SyncStatus);
         }
 
         [TestMethod]
         public void BackupFileGetRemoteFileNameReturnsCorrectlyFormattedNameForAzureProvider()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // reset auto-generated id for stable test result.
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
 
-            var remoteName = file.GetRemoteFileName(OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
+            var remoteName = file.GetRemoteFileName(ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
             var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v1.mp3";
 
             Assert.IsNotNull(remoteName);
@@ -854,12 +854,12 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGetRemoteFileNameReturnsCorrectlyFormattedExtensionlessNameForAzureProvider()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\AnExtensionlessFile"), source);
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\AnExtensionlessFile"), source);
 
             // reset auto-generated id for stable test result.
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
 
-            var remoteName = file.GetRemoteFileName(OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
+            var remoteName = file.GetRemoteFileName(ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
             var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v1";
 
             Assert.IsNotNull(remoteName);
@@ -870,7 +870,7 @@ namespace OzetteLibraryTests.Files
         public void BackupFileGetRemoteFileNameWithLaterRevisionReturnsCorrectlyFormattedNameForAzureProvider()
         {
             var source = new LocalSourceLocation() { ID = 1, Priority = FileBackupPriority.Low };
-            var file = new OzetteLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
+            var file = new ArchivialLibrary.Files.BackupFile(new FileInfo(".\\TestFiles\\Hasher\\MediumFile.mp3"), source);
 
             // reset auto-generated id for stable test result.
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
@@ -878,7 +878,7 @@ namespace OzetteLibraryTests.Files
             // force set the version
             file.FileRevisionNumber = 4;
 
-            var remoteName = file.GetRemoteFileName(OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
+            var remoteName = file.GetRemoteFileName(ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
             var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v4.mp3";
 
             Assert.IsNotNull(remoteName);

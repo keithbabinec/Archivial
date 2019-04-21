@@ -1,9 +1,9 @@
-﻿using OzetteLibrary.Constants;
-using OzetteLibrary.Exceptions;
+﻿using ArchivialLibrary.Constants;
+using ArchivialLibrary.Exceptions;
 using System;
 using System.IO;
 
-namespace OzetteLibrary.ServiceCore
+namespace ArchivialLibrary.ServiceCore
 {
     /// <summary>
     /// Contains functionality for retrieving core settings.

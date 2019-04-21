@@ -1,8 +1,8 @@
-﻿using OzetteLibrary.StorageProviders;
+﻿using ArchivialLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
 
-namespace OzetteLibrary.Files
+namespace ArchivialLibrary.Files
 {
     /// <summary>
     /// Describes the contents of a single transfer stream payload. 

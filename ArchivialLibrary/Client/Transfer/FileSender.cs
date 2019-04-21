@@ -1,16 +1,16 @@
 ﻿using System;
-using OzetteLibrary.Database;
-using OzetteLibrary.Logging;
+using ArchivialLibrary.Database;
+using ArchivialLibrary.Logging;
 using System.Threading;
-using OzetteLibrary.Crypto;
+using ArchivialLibrary.Crypto;
 using System.IO;
-using OzetteLibrary.Files;
-using OzetteLibrary.StorageProviders;
+using ArchivialLibrary.Files;
+using ArchivialLibrary.StorageProviders;
 using System.Threading.Tasks;
-using OzetteLibrary.Constants;
-using OzetteLibrary.Folders;
+using ArchivialLibrary.Constants;
+using ArchivialLibrary.Folders;
 
-namespace OzetteLibrary.Client.Transfer
+namespace ArchivialLibrary.Client.Transfer
 {
     public class FileSender
     {

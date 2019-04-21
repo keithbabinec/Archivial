@@ -1,8 +1,8 @@
-﻿using OzettePowerShell.Exceptions;
-using OzettePowerShell.Utility;
+﻿using ArchivialPowerShell.Exceptions;
+using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Uninstalls the Ozette Cloud Backup software from this computer.</para>

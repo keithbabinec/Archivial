@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using OzetteLibrary.Logging;
-using OzetteLibrary.ServiceCore;
+using ArchivialLibrary.Logging;
+using ArchivialLibrary.ServiceCore;
 using Twilio;
 using Twilio.Exceptions;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 
-namespace OzetteLibrary.MessagingProviders.Twilio
+namespace ArchivialLibrary.MessagingProviders.Twilio
 {
     /// <summary>
     /// Implements the required operations for the Twilio messaging provider.

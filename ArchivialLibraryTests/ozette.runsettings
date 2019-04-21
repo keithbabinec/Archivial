@@ -8,7 +8,7 @@
           <CodeCoverage>
             <ModulePaths>
               <Include>
-                <ModulePath>.*OzetteLibrary.dll$</ModulePath>
+                <ModulePath>.*ArchivialLibrary.dll$</ModulePath>
                 <!-- Add more ModulePath nodes here. -->
               </Include>
             </ModulePaths>

@@ -1,8 +1,8 @@
-﻿using OzetteLibrary.Exceptions;
-using OzetteLibrary.Files;
+﻿using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.Files;
 using System;
 
-namespace OzetteLibrary.Folders
+namespace ArchivialLibrary.Folders
 {
     /// <summary>
     /// Describes an abstract requested source backup location.

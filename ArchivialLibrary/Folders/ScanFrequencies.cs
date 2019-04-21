@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Folders
+﻿namespace ArchivialLibrary.Folders
 {
     /// <summary>
     /// Describes an options class for how often scans should occur.

@@ -1,13 +1,13 @@
-﻿using OzetteLibrary.MessagingProviders;
-using OzetteLibrary.Providers;
-using OzetteLibrary.Secrets;
-using OzetteLibrary.ServiceCore;
-using OzettePowerShell.Utility;
+﻿using ArchivialLibrary.MessagingProviders;
+using ArchivialLibrary.Providers;
+using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
+using ArchivialPowerShell.Utility;
 using System;
 using System.Linq;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Configures the Twilio messaging provider as a status update recipient.</para>
@@ -85,23 +85,23 @@ namespace OzettePowerShell.Functions.Public
 
             var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
 
-            var settingName = OzetteLibrary.Constants.RuntimeSettingNames.ProtectionIV;
+            var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.ProtectionIV;
             var protectionIvEncodedString = db.GetApplicationOptionAsync(settingName).GetAwaiter().GetResult();
             var ivkey = Convert.FromBase64String(protectionIvEncodedString);
 
             var pds = new ProtectedDataStore(db, scope, ivkey);
 
             WriteVerbose("Saving encrypted Twilio configuration setting: TwilioAccountID.");
-            pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAccountID, TwilioAccountID).GetAwaiter().GetResult();
+            pds.SetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioAccountID, TwilioAccountID).GetAwaiter().GetResult();
 
             WriteVerbose("Saving encrypted Twilio configuration setting: TwilioAuthToken.");
-            pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAuthToken, TwilioAuthToken).GetAwaiter().GetResult();
+            pds.SetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioAuthToken, TwilioAuthToken).GetAwaiter().GetResult();
 
             WriteVerbose("Saving encrypted Twilio configuration setting: TwilioSourcePhone.");
-            pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioSourcePhone, TwilioSourcePhone).GetAwaiter().GetResult();
+            pds.SetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioSourcePhone, TwilioSourcePhone).GetAwaiter().GetResult();
 
             WriteVerbose("Saving encrypted Twilio configuration setting: TwilioDestinationPhones.");
-            pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones, TwilioDestinationPhones).GetAwaiter().GetResult();
+            pds.SetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones, TwilioDestinationPhones).GetAwaiter().GetResult();
         }
     }
 }

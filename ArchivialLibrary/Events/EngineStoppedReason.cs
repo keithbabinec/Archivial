@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Events
+﻿namespace ArchivialLibrary.Events
 {
     /// <summary>
     /// Defines possible reasons that an engine may have stopped.

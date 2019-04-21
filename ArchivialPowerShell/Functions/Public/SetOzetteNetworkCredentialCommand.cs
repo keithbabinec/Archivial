@@ -1,12 +1,12 @@
-﻿using OzetteLibrary.Secrets;
-using OzetteLibrary.ServiceCore;
-using OzettePowerShell.Utility;
+﻿using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
+using ArchivialPowerShell.Utility;
 using System;
 using System.Linq;
 using System.Management.Automation;
 using System.Security.Cryptography;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Saves the credentials required to connect to an authenticated network resource (such as a UNC path share).</para>
@@ -69,7 +69,7 @@ namespace OzettePowerShell.Functions.Public
 
             var scope = DataProtectionScope.LocalMachine;
 
-            var settingName = OzetteLibrary.Constants.RuntimeSettingNames.ProtectionIV;
+            var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.ProtectionIV;
             var protectionIvEncodedString = db.GetApplicationOptionAsync(settingName).GetAwaiter().GetResult();
             var ivkey = Convert.FromBase64String(protectionIvEncodedString);
 
@@ -77,11 +77,11 @@ namespace OzettePowerShell.Functions.Public
 
             WriteVerbose("Saving encrypted username setting.");
 
-            pds.SetApplicationSecretAsync(string.Format(OzetteLibrary.Constants.Formats.NetCredentialUserNameKeyLookup, CredentialName), ShareUsername).GetAwaiter().GetResult();
+            pds.SetApplicationSecretAsync(string.Format(ArchivialLibrary.Constants.Formats.NetCredentialUserNameKeyLookup, CredentialName), ShareUsername).GetAwaiter().GetResult();
 
             WriteVerbose("Saving encrypted password setting.");
 
-            pds.SetApplicationSecretAsync(string.Format(OzetteLibrary.Constants.Formats.NetCredentialUserPasswordKeyLookup, CredentialName), SharePassword).ConfigureAwait(false);
+            pds.SetApplicationSecretAsync(string.Format(ArchivialLibrary.Constants.Formats.NetCredentialUserPasswordKeyLookup, CredentialName), SharePassword).ConfigureAwait(false);
 
             WriteVerbose("Successfully added or updated the network credentials.");
         }

@@ -1,18 +1,18 @@
-﻿using OzetteLibrary.Database;
-using OzetteLibrary.Exceptions;
-using OzetteLibrary.Logging;
-using OzetteLibrary.MessagingProviders;
-using OzetteLibrary.MessagingProviders.Twilio;
-using OzetteLibrary.Secrets;
-using OzetteLibrary.ServiceCore;
-using OzetteLibrary.StorageProviders;
-using OzetteLibrary.StorageProviders.Azure;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.Logging;
+using ArchivialLibrary.MessagingProviders;
+using ArchivialLibrary.MessagingProviders.Twilio;
+using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
+using ArchivialLibrary.StorageProviders;
+using ArchivialLibrary.StorageProviders.Azure;
 using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Providers
+namespace ArchivialLibrary.Providers
 {
     /// <summary>
     /// Contains functionality for setting up provider connections.

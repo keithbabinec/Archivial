@@ -6,16 +6,16 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Dac;
-using OzetteLibrary.Exceptions;
-using OzetteLibrary.Files;
-using OzetteLibrary.Folders;
-using OzetteLibrary.Logging;
-using OzetteLibrary.Providers;
-using OzetteLibrary.Secrets;
-using OzetteLibrary.ServiceCore;
-using OzetteLibrary.StorageProviders;
+using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.Files;
+using ArchivialLibrary.Folders;
+using ArchivialLibrary.Logging;
+using ArchivialLibrary.Providers;
+using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
+using ArchivialLibrary.StorageProviders;
 
-namespace OzetteLibrary.Database.SQLServer
+namespace ArchivialLibrary.Database.SQLServer
 {
     /// <summary>
     /// A SQL Server implementation of the client database. 

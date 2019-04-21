@@ -1,6 +1,6 @@
-﻿using OzetteLibrary.Constants;
-using OzetteLibrary.Database.SQLServer;
-using OzetteLibrary.ServiceCore;
+﻿using ArchivialLibrary.Constants;
+using ArchivialLibrary.Database.SQLServer;
+using ArchivialLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Threading;
 
-namespace OzettePowerShell.Utility
+namespace ArchivialPowerShell.Utility
 {
     public static class Uninstallation
     {

@@ -10,20 +10,20 @@ namespace OzetteLibraryTests.Folders
         [ExpectedException(typeof(NotImplementedException))]
         public void DirectoryMapItemGetRemotePathCorrectlyThrowsOnInvalidProvider()
         {
-            var item = new OzetteLibrary.Folders.DirectoryMapItem();
+            var item = new ArchivialLibrary.Folders.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
-            item.GetRemoteContainerName((OzetteLibrary.StorageProviders.StorageProviderTypes.Azure)-1);
+            item.GetRemoteContainerName((ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure)-1);
         }
 
         [TestMethod]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureLowerCase()
         {
-            var item = new OzetteLibrary.Folders.DirectoryMapItem();
+            var item = new ArchivialLibrary.Folders.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "C:\\Bin\\Programs";
 
-            var path = item.GetRemoteContainerName(OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
+            var path = item.GetRemoteContainerName(ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
 
             Assert.IsNotNull(path);
 
@@ -39,11 +39,11 @@ namespace OzetteLibraryTests.Folders
         [TestMethod]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureBetween3And63Chars()
         {
-            var item = new OzetteLibrary.Folders.DirectoryMapItem();
+            var item = new ArchivialLibrary.Folders.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
 
-            var path = item.GetRemoteContainerName(OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
+            var path = item.GetRemoteContainerName(ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
 
             Assert.IsNotNull(path);
 
@@ -54,11 +54,11 @@ namespace OzetteLibraryTests.Folders
         [TestMethod]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureOnlyLettersNumbersAndDashes()
         {
-            var item = new OzetteLibrary.Folders.DirectoryMapItem();
+            var item = new ArchivialLibrary.Folders.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
 
-            var path = item.GetRemoteContainerName(OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
+            var path = item.GetRemoteContainerName(ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
 
             Assert.IsNotNull(path);
 
@@ -74,11 +74,11 @@ namespace OzetteLibraryTests.Folders
         [TestMethod]
         public void DirectoryMapItemGetRemotePathReturnsValidPathForAzureStartsWithOnlyLetterOrNumber()
         {
-            var item = new OzetteLibrary.Folders.DirectoryMapItem();
+            var item = new ArchivialLibrary.Folders.DirectoryMapItem();
             item.ID = Guid.NewGuid();
             item.LocalPath = "c:\\bin\\programs";
 
-            var path = item.GetRemoteContainerName(OzetteLibrary.StorageProviders.StorageProviderTypes.Azure);
+            var path = item.GetRemoteContainerName(ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
 
             Assert.IsNotNull(path);
             Assert.IsTrue(path.Length > 0);

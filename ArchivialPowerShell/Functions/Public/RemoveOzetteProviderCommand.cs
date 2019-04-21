@@ -1,14 +1,14 @@
-﻿using OzetteLibrary.Database;
-using OzetteLibrary.MessagingProviders;
-using OzetteLibrary.Providers;
-using OzetteLibrary.StorageProviders;
-using OzettePowerShell.Utility;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.MessagingProviders;
+using ArchivialLibrary.Providers;
+using ArchivialLibrary.StorageProviders;
+using ArchivialPowerShell.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Removes the configured storage or messaging provider.</para>
@@ -72,16 +72,16 @@ namespace OzettePowerShell.Functions.Public
             if (providerToRemove.Name == StorageProviderTypes.Azure.ToString())
             {
                 // remove provider specific secrets
-                settingsToRemove.Add(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
-                settingsToRemove.Add(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountToken);
+                settingsToRemove.Add(ArchivialLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName);
+                settingsToRemove.Add(ArchivialLibrary.Constants.RuntimeSettingNames.AzureStorageAccountToken);
             }
             else if (providerToRemove.Name == MessagingProviderTypes.Twilio.ToString())
             {
                 // remove provider specific secrets
-                settingsToRemove.Add(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAccountID);
-                settingsToRemove.Add(OzetteLibrary.Constants.RuntimeSettingNames.TwilioAuthToken);
-                settingsToRemove.Add(OzetteLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones);
-                settingsToRemove.Add(OzetteLibrary.Constants.RuntimeSettingNames.TwilioSourcePhone);
+                settingsToRemove.Add(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioAccountID);
+                settingsToRemove.Add(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioAuthToken);
+                settingsToRemove.Add(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones);
+                settingsToRemove.Add(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioSourcePhone);
             }
             else
             {

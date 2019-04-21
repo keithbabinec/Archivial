@@ -1,6 +1,6 @@
-﻿using OzetteLibrary.Exceptions;
+﻿using ArchivialLibrary.Exceptions;
 
-namespace OzetteLibrary.Folders
+namespace ArchivialLibrary.Folders
 {
     /// <summary>
     /// Describes a requested source backup location on the local computer.

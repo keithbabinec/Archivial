@@ -1,12 +1,12 @@
-﻿using OzetteLibrary.Files;
-using OzetteLibrary.Folders;
-using OzetteLibrary.Secrets;
-using OzetteLibrary.ServiceCore;
+﻿using ArchivialLibrary.Files;
+using ArchivialLibrary.Folders;
+using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
 using System;
-using OzetteLibrary.Providers;
+using ArchivialLibrary.Providers;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Database
+namespace ArchivialLibrary.Database
 {
     /// <summary>
     /// A generic database interface for the client database.

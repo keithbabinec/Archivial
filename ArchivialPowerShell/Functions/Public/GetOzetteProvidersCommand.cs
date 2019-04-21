@@ -1,7 +1,7 @@
-﻿using OzettePowerShell.Utility;
+﻿using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Returns all of the configured Ozette Providers.</para>
@@ -23,7 +23,7 @@ namespace OzettePowerShell.Functions.Public
 
             WriteVerbose("Querying for configured providers.");
 
-            var allProviders = db.GetProvidersAsync(OzetteLibrary.Providers.ProviderTypes.Any).GetAwaiter().GetResult();
+            var allProviders = db.GetProvidersAsync(ArchivialLibrary.Providers.ProviderTypes.Any).GetAwaiter().GetResult();
 
             WriteVerbose(string.Format("Writing output results to pipeline (Objects: {0})", allProviders.Count));
 

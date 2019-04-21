@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Files
+﻿namespace ArchivialLibrary.Files
 {
     /// <summary>
     /// Describes the possible results of a file lookup attempt.

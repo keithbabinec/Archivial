@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.ServiceCore
+﻿namespace ArchivialLibrary.ServiceCore
 {
     /// <summary>
     /// Describes the overall backup progress status.

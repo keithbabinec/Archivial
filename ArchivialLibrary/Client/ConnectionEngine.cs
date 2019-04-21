@@ -1,10 +1,10 @@
-﻿using OzetteLibrary.Database;
-using OzetteLibrary.Engine;
-using OzetteLibrary.Events;
-using OzetteLibrary.Folders;
-using OzetteLibrary.Logging;
-using OzetteLibrary.Secrets;
-using OzetteLibrary.ServiceCore;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Engine;
+using ArchivialLibrary.Events;
+using ArchivialLibrary.Folders;
+using ArchivialLibrary.Logging;
+using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.Client
+namespace ArchivialLibrary.Client
 {
     /// <summary>
     /// Contains core connection engine functionality.

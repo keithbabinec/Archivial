@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.MessagingProviders
+﻿namespace ArchivialLibrary.MessagingProviders
 {
     /// <summary>
     /// Describes the different possible messaging providers.

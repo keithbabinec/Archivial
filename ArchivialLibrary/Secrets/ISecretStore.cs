@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace OzetteLibrary.Secrets
+namespace ArchivialLibrary.Secrets
 {
     /// <summary>
     /// A generic interface for interacting with application secrets.

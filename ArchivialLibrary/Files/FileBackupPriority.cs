@@ -1,4 +1,4 @@
-﻿namespace OzetteLibrary.Files
+﻿namespace ArchivialLibrary.Files
 {
     /// <summary>
     /// Describes the possible priorities for a file to be backed up.

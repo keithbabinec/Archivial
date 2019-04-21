@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace OzetteLibrary.Logging
+namespace ArchivialLibrary.Logging
 {
     /// <summary>
     /// A generic interface for logging functionality.

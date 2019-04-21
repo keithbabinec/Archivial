@@ -1,7 +1,7 @@
-﻿using OzetteLibrary.ServiceCore;
+﻿using ArchivialLibrary.ServiceCore;
 using System.Threading.Tasks;
 
-namespace OzetteLibrary.MessagingProviders
+namespace ArchivialLibrary.MessagingProviders
 {
     /// <summary>
     /// Describes the required operations for messaging providers.

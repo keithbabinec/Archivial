@@ -1,13 +1,13 @@
-﻿using OzetteLibrary.Providers;
-using OzetteLibrary.Secrets;
-using OzetteLibrary.ServiceCore;
-using OzetteLibrary.StorageProviders;
-using OzettePowerShell.Utility;
+﻿using ArchivialLibrary.Providers;
+using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
+using ArchivialLibrary.StorageProviders;
+using ArchivialPowerShell.Utility;
 using System;
 using System.Linq;
 using System.Management.Automation;
 
-namespace OzettePowerShell.Functions.Public
+namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Configures the Azure cloud storage provider as a backup destination.</para>
@@ -71,7 +71,7 @@ namespace OzettePowerShell.Functions.Public
 
             var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
 
-            var settingName = OzetteLibrary.Constants.RuntimeSettingNames.ProtectionIV;
+            var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.ProtectionIV;
             var protectionIvEncodedString = db.GetApplicationOptionAsync(settingName).GetAwaiter().GetResult();
             var ivkey = Convert.FromBase64String(protectionIvEncodedString);
 
@@ -79,11 +79,11 @@ namespace OzettePowerShell.Functions.Public
 
             WriteVerbose("Saving encrypted Azure configuration setting: AzureStorageAccountName.");
 
-            pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, AzureStorageAccountName).GetAwaiter().GetResult();
+            pds.SetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.AzureStorageAccountName, AzureStorageAccountName).GetAwaiter().GetResult();
 
             WriteVerbose("Saving encrypted Azure configuration setting: AzureStorageAccountToken.");
 
-            pds.SetApplicationSecretAsync(OzetteLibrary.Constants.RuntimeSettingNames.AzureStorageAccountToken, AzureStorageAccountToken).GetAwaiter().GetResult();
+            pds.SetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.AzureStorageAccountToken, AzureStorageAccountToken).GetAwaiter().GetResult();
         }
     }
 }

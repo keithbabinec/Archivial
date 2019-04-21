@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace OzetteLibrary.Logging.Mock
+namespace ArchivialLibrary.Logging.Mock
 {
     /// <summary>
     /// Contains mock functionality for logging and log setup.

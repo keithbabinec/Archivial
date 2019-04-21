@@ -1,7 +1,7 @@
-﻿using OzetteLibrary.Exceptions;
+﻿using ArchivialLibrary.Exceptions;
 using System;
 
-namespace OzetteLibrary.Folders
+namespace ArchivialLibrary.Folders
 {
     /// <summary>
     /// Describes a requested source backup location on a network/SMB share source.
