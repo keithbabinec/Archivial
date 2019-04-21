@@ -63,7 +63,7 @@ This project is still considered alpha phase and under active development. Break
 * Run the installer with the default options.
 
 ### Step 2: Install ArchivialPowerShell Module (Management Tools)
-* Installation and management tasks are performed through the [OzettePowerShell](https://www.powershellgallery.com/packages/ArchivialPowerShell) module. 
+* Installation and management tasks are performed through the [ArchivialPowerShell](https://www.powershellgallery.com/packages/ArchivialPowerShell) module. 
 * Open an elevated (run-as Administrator) PowerShell prompt and then execute the following to install that module:
 ``` powershell
 Install-Module -Name ArchivialPowerShell -Scope AllUsers
