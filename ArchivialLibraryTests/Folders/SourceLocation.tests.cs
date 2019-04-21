@@ -3,7 +3,7 @@ using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Folders;
 using System;
 
-namespace OzetteLibraryTests.Folders
+namespace ArchivialLibraryTests.Folders
 {
     [TestClass]
     public class SourceLocationTests

@@ -8,12 +8,12 @@ namespace ArchivialPowerShell.Functions.Public
     ///   <para type="description">Returns the current status of the cloud backup progress. It includes details such as how many files are backed up, remaining, and percentage complete.</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Get-OzetteCloudBackupStatus</code>
+    ///   <code>C:\> Get-ArchivialCloudBackupStatus</code>
     ///   <para>Returns the current status of the cloud backup progress.</para>
     ///   <para></para>
     /// </example>
-    [Cmdlet(VerbsCommon.Get, "OzetteCloudBackupStatus")]
-    public class GetOzetteCloudBackupStatusCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsCommon.Get, "ArchivialCloudBackupStatus")]
+    public class GetArchivialCloudBackupStatusCommand : BaseArchivialCmdlet
     {
         protected override void ProcessRecord()
         {

@@ -6,16 +6,16 @@ using System.Management.Automation;
 namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
-    ///   <para type="synopsis">Gets the application options for Ozette Cloud Backup.</para>
-    ///   <para type="description">Gets the application options for Ozette Cloud Backup. To change existing options, run Set-OzetteCloudBackupOptions</para>
+    ///   <para type="synopsis">Gets the application options for Archivial Cloud Backup.</para>
+    ///   <para type="description">Gets the application options for Archivial Cloud Backup. To change existing options, run Set-ArchivialCloudBackupOptions</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Get-OzetteCloudBackupOptions</code>
-    ///   <para>Returns the application options for Ozette Cloud Backup.</para>
+    ///   <code>C:\> Get-ArchivialCloudBackupOptions</code>
+    ///   <para>Returns the application options for Archivial Cloud Backup.</para>
     ///   <para></para>
     /// </example>
-    [Cmdlet(VerbsCommon.Get, "OzetteCloudBackupOptions")]
-    public class GetOzetteCloudBackupOptionsCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsCommon.Get, "ArchivialCloudBackupOptions")]
+    public class GetArchivialCloudBackupOptionsCommand : BaseArchivialCmdlet
     {
         protected override void ProcessRecord()
         {

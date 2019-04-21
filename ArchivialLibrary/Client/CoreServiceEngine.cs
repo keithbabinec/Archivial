@@ -61,7 +61,7 @@ namespace ArchivialLibrary.Client
                 {
                     // drop a heartbeat message in the log.
 
-                    Logger.WriteTraceMessage("Ozette core service heartbeat.");
+                    Logger.WriteTraceMessage("Archivial core service heartbeat.");
 
                     // wait 15 minutes or until an engine stop was requested.
                     // then restart the loop.
@@ -164,7 +164,7 @@ namespace ArchivialLibrary.Client
         /// <summary>
         /// The expected log file fragment.
         /// </summary>
-        private const string LogFileNameFragment = "Ozette";
+        private const string LogFileNameFragment = "Archivial";
 
         /// <summary>
         /// The expected database backup file extension.

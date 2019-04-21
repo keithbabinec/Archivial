@@ -88,7 +88,7 @@ namespace ArchivialLibrary.MessagingProviders.Twilio
             // since the message is multiple lines its just a bit easier read here.
 
             var format = new StringBuilder();
-            format.AppendLine("Ozette Backup Status {0} {1}"); // <MachineName> <Overall Percent Completed>
+            format.AppendLine("Archivial Backup Status {0} {1}"); // <MachineName> <Overall Percent Completed>
             format.AppendLine("Completed: {2} files / {3}"); // <Files Completed> <File Size Completed>
             format.AppendLine("Remaining: {4} files / {5}"); // <Files Remaining> <File Size Remaining>
 

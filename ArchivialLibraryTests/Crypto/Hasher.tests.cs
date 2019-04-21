@@ -3,7 +3,7 @@ using ArchivialLibrary.Logging.Mock;
 using System;
 using System.Security.Cryptography;
 
-namespace OzetteLibraryTests.Crypto
+namespace ArchivialLibraryTests.Crypto
 {
     [TestClass]
     public class HasherTests

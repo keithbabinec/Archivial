@@ -7,28 +7,28 @@ using System.Management.Automation;
 namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
-    ///   <para type="synopsis">Forces the re-scan of a Network Source being monitored by Ozette.</para>
+    ///   <para type="synopsis">Forces the re-scan of a Network Source being monitored by Archivial.</para>
     ///   <para type="description">All sources are monitored for new or updated files on a regular schedule. This cmdlet is used to request an immediate rescan, outside of its regular schedule. The rescan will start as soon as there is scanning engine availability.</para>
     ///   <para type="description">The automated scanning schedule for Low priority sources is once every 48 hours. Medium priority sources are scanned every 12 hours. High priority sources are scanned every hour.</para>
-    ///   <para type="description">Please see the Get-OzetteNetworkSources command to find the ID of an existing source you would like to rescan.</para>
+    ///   <para type="description">Please see the Get-ArchivialNetworkSources command to find the ID of an existing source you would like to rescan.</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Start-OzetteNetworkSourceRescan -SourceID 2</code>
+    ///   <code>C:\> Start-ArchivialNetworkSourceRescan -SourceID 2</code>
     ///   <para>Forces a rescan of the Network Source with the specified ID.</para>
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Get-OzetteNetworkSources | Start-OzetteNetworkSourceRescan</code>
-    ///   <para>Forces a rescan of all defined Network Sources being monitored by Ozette.</para>
+    ///   <code>C:\> Get-ArchivialNetworkSources | Start-ArchivialNetworkSourceRescan</code>
+    ///   <para>Forces a rescan of all defined Network Sources being monitored by Archivial.</para>
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Get-OzetteNetworkSources | Where Path -like "*\\drobo-nas\*" | Start-OzetteNetworkSourceRescan</code>
+    ///   <code>C:\> Get-ArchivialNetworkSources | Where Path -like "*\\drobo-nas\*" | Start-ArchivialNetworkSourceRescan</code>
     ///   <para>Forces a rescan of any Network Sources that match the path filter.</para>
     ///   <para></para>
     /// </example>
-    [Cmdlet(VerbsLifecycle.Start, "OzetteNetworkSourceRescan")]
-    public class StartOzetteNetworkSourceRescanCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsLifecycle.Start, "ArchivialNetworkSourceRescan")]
+    public class StartArchivialNetworkSourceRescanCommand : BaseArchivialCmdlet
     {
         /// <summary>
         ///   <para type="description">Specify the ID of the Network Source to rescan.</para>

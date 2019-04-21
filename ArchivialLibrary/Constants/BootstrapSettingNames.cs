@@ -11,21 +11,21 @@
         /// <summary>
         /// The installation directory path.
         /// </summary>
-        public const string InstallationDirectory = "OZETTE_INSTALLATIONDIRECTORY";
+        public const string InstallationDirectory = "ARCHIVIAL_INSTALLATIONDIRECTORY";
 
         /// <summary>
         /// The event log name.
         /// </summary>
-        public const string EventlogName = "OZETTE_EVENTLOGNAME";
+        public const string EventlogName = "ARCHIVIAL_EVENTLOGNAME";
 
         /// <summary>
         /// The database connection string name.
         /// </summary>
-        public const string DatabaseConnectionString = "OZETTE_DATABASECONNECTIONSTRING";
+        public const string DatabaseConnectionString = "ARCHIVIAL_DATABASECONNECTIONSTRING";
 
         /// <summary>
         /// A flag to indicate if the database needs to be published.
         /// </summary>
-        public const string DatabasePublishIsRequired = "OZETTE_DATABASEPUBLISHREQUIRED";
+        public const string DatabasePublishIsRequired = "ARCHIVIAL_DATABASEPUBLISHREQUIRED";
     }
 }

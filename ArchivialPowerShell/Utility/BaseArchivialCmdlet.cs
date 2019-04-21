@@ -7,7 +7,7 @@ using System.Management.Automation;
 
 namespace ArchivialPowerShell.Utility
 {
-    public class BaseOzetteCmdlet : Cmdlet
+    public class BaseArchivialCmdlet : Cmdlet
     {
         internal string ActivityName { get; set; }
 
@@ -31,7 +31,7 @@ namespace ArchivialPowerShell.Utility
 
         internal SQLServerClientDatabase GetDatabaseConnection()
         {
-            base.WriteVerbose("Preparing Ozette Database Connection.");
+            base.WriteVerbose("Preparing Archivial Database Connection.");
 
             string dbConnectionString = null;
 
@@ -42,12 +42,12 @@ namespace ArchivialPowerShell.Utility
             }
             catch (ApplicationCoreSettingMissingException)
             {
-                throw new ApplicationException("Cannot run the requested command. Ozette Cloud Backup installation is missing and the product must be installed first.");
+                throw new ApplicationException("Cannot run the requested command. Archivial Cloud Backup installation is missing and the product must be installed first.");
             }
 
             base.WriteVerbose("Database connection string: " + dbConnectionString);
 
-            var logger = new Logger("OzettePowerShell");
+            var logger = new Logger("ArchivialPowerShell");
             var db = new SQLServerClientDatabase(dbConnectionString, logger);
 
             return db;

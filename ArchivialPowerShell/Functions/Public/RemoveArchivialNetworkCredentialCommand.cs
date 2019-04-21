@@ -9,20 +9,20 @@ namespace ArchivialPowerShell.Functions.Public
     /// <summary>
     ///   <para type="synopsis">Removes the stored network credential used for connecting to network resources.</para>
     ///   <para type="description">Authenticated Network Source locations have an encrypted credential stored with them. This command is used to remove that stored credential.</para>
-    ///   <para type="description">To view existing network credentials, run Get-OzetteNetworkCredentials. This command supports piping from Get-OzetteNetworkCredentials or manual invoke from credential name</para>
+    ///   <para type="description">To view existing network credentials, run Get-ArchivialNetworkCredentials. This command supports piping from Get-ArchivialNetworkCredentials or manual invoke from credential name</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Remove-OzetteNetworkCredential -CredentialName "drobo-nas"</code>
+    ///   <code>C:\> Remove-ArchivialNetworkCredential -CredentialName "drobo-nas"</code>
     ///   <para>Removes the stored network credential with the specified name.</para>
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Get-OzetteNetworkCredentials | Where CredentialName -eq "drobo-nas" | Remove-OzetteNetworkCredential</code>
+    ///   <code>C:\> Get-ArchivialNetworkCredentials | Where CredentialName -eq "drobo-nas" | Remove-ArchivialNetworkCredential</code>
     ///   <para>Removes the stored network credential, but using the pipeline scenario.</para>
     ///   <para></para>
     /// </example>
-    [Cmdlet(VerbsCommon.Remove, "OzetteNetworkCredential")]
-    public class RemoveOzetteNetworkCredentialCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsCommon.Remove, "ArchivialNetworkCredential")]
+    public class RemoveArchivialNetworkCredentialCommand : BaseArchivialCmdlet
     {
         /// <summary>
         ///   <para type="description">Specify the name of the credential to remove.</para>

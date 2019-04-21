@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OzetteLibraryTests.StorageProviders.Azure
+namespace ArchivialLibraryTests.StorageProviders.Azure
 {
     [TestClass]
     public class AzureProviderUtilitiesTests
@@ -37,7 +37,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
 
             var computedUri = provider.GetFileUri(storageAccount, containerName, fileName);
 
-            var expected = "https://storage-account.blob.core.windows.net/ozette-directory-a4b78664-90c9-4957-90a1-66d9c70c0492/ozette-file-29164dbc-f17b-4643-8f40-868e13b98141";
+            var expected = "https://storage-account.blob.core.windows.net/archivial-directory-a4b78664-90c9-4957-90a1-66d9c70c0492/archivial-file-29164dbc-f17b-4643-8f40-868e13b98141";
 
             Assert.IsNotNull(computedUri);
             Assert.AreEqual(expected, computedUri);
@@ -100,7 +100,7 @@ namespace OzetteLibraryTests.StorageProviders.Azure
 
             var computedUri = provider.GetContainerUri(storageAccount, containerName);
 
-            var expected = "https://storage-account.blob.core.windows.net/ozette-directory-a4b78664-90c9-4957-90a1-66d9c70c0492";
+            var expected = "https://storage-account.blob.core.windows.net/archivial-directory-a4b78664-90c9-4957-90a1-66d9c70c0492";
 
             Assert.IsNotNull(computedUri);
             Assert.AreEqual(expected, computedUri);

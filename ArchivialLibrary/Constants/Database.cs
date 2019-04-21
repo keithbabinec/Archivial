@@ -8,7 +8,7 @@
         /// <summary>
         /// A string constant for the name of the database.
         /// </summary>
-        public const string DatabaseName = "OzetteDB";
+        public const string DatabaseName = "ArchivialDB";
 
         /// <summary>
         /// A string constant for the sqlexpress default instance.

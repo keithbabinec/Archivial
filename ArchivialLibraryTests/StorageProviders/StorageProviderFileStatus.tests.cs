@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OzetteLibraryTests.StorageProviders
+namespace ArchivialLibraryTests.StorageProviders
 {
     [TestClass]
     public class StorageProviderFileStatusTests

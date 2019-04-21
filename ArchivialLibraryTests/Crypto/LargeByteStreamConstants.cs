@@ -1,4 +1,4 @@
-﻿namespace OzetteLibraryTests.Crypto
+﻿namespace ArchivialLibraryTests.Crypto
 {
     public class LargeByteStreamConstants
     {

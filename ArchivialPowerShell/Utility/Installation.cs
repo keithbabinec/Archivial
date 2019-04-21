@@ -21,7 +21,7 @@ namespace ArchivialPowerShell.Utility
         {
             // set the core settings.
             CoreSettings.InstallationDirectory = installationDirectory;
-            CoreSettings.EventlogName = "Ozette";
+            CoreSettings.EventlogName = "Archivial";
 
             // setting this flag indicates publish is required on next service startup.
             CoreSettings.DatabasePublishIsRequired = true;
@@ -100,10 +100,10 @@ namespace ArchivialPowerShell.Utility
                 "Microsoft.WindowsAzure.Storage.dll",
                 "NCrontab.dll",
                 "Newtonsoft.Json.dll",
-                "OzetteClientAgent.exe",
-                "OzetteClientAgent.exe.config",
-                "OzetteDB.dacpac",
-                "OzetteDB.dll",
+                "ArchivialClientAgent.exe",
+                "ArchivialClientAgent.exe.config",
+                "ArchivialDB.dacpac",
+                "ArchivialDB.dll",
                 "ArchivialLibrary.dll",
                 "System.IdentityModel.Tokens.Jwt.dll",
                 "System.Management.Automation.dll",
@@ -131,11 +131,11 @@ namespace ArchivialPowerShell.Utility
         {
             var existingServices = ServiceController.GetServices();
 
-            if (existingServices.Any(x => x.ServiceName == "OzetteCloudBackup") == false)
+            if (existingServices.Any(x => x.ServiceName == "ArchivialCloudBackup") == false)
             {
                 var installArgs = string.Format(
-                    "create \"OzetteCloudBackup\" binPath= \"{0}\" start= \"auto\" DisplayName= \"Ozette Cloud Backup Agent\"",
-                    Path.Combine(CoreSettings.InstallationDirectory, "OzetteClientAgent.exe"));
+                    "create \"ArchivialCloudBackup\" binPath= \"{0}\" start= \"auto\" DisplayName= \"Archivial Cloud Backup Agent\"",
+                    Path.Combine(CoreSettings.InstallationDirectory, "ArchivialClientAgent.exe"));
 
                 Process createServiceProcess = new Process();
                 createServiceProcess.StartInfo = new ProcessStartInfo()
@@ -153,7 +153,7 @@ namespace ArchivialPowerShell.Utility
                 }
 
                 var setDescriptionArgs = string.Format(
-                    "description \"OzetteCloudBackup\" \"Ozette Cloud Backup is a data backup client service that copies data to cloud providers like Azure and AWS.\"",
+                    "description \"ArchivialCloudBackup\" \"Archivial Cloud Backup is a data backup client service that copies data to cloud providers like Azure and AWS.\"",
                     CoreSettings.InstallationDirectory);
 
                 Process setServiceDescriptionProcess = new Process();
@@ -182,7 +182,7 @@ namespace ArchivialPowerShell.Utility
             startService.StartInfo = new ProcessStartInfo()
             {
                 FileName = "sc.exe",
-                Arguments = "start OzetteCloudBackup"
+                Arguments = "start ArchivialCloudBackup"
             };
 
             startService.Start();
@@ -213,7 +213,7 @@ namespace ArchivialPowerShell.Utility
                     if (DateTime.Now > Timeout)
                     {
                         // we have exceeded the timeout.
-                        throw new System.TimeoutException("The Ozette Cloud Backup service has failed to initialize within the expected timeframe (10 minutes). There may be a problem with the service, please see the logs for details.");
+                        throw new System.TimeoutException("The Archivial Cloud Backup service has failed to initialize within the expected timeframe (10 minutes). There may be a problem with the service, please see the logs for details.");
                     }
                     else
                     {

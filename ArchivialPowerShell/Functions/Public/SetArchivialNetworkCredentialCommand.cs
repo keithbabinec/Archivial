@@ -14,12 +14,12 @@ namespace ArchivialPowerShell.Functions.Public
     ///   <para type="description">The credential username and password are both encrypted and saved to the database.</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Set-OzetteNetworkCredential -CredentialName "drobo-device" -ShareUser "drobo-private-user" -SharePassword ****</code>
+    ///   <code>C:\> Set-ArchivialNetworkCredential -CredentialName "drobo-device" -ShareUser "drobo-private-user" -SharePassword ****</code>
     ///   <para>Encrypts and stores the network resource credentials in the database.</para>
     ///   <para></para>
     /// </example>
-    [Cmdlet(VerbsCommon.Set, "OzetteNetworkCredential")]
-    public class SetOzetteNetworkCredentialCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsCommon.Set, "ArchivialNetworkCredential")]
+    public class SetArchivialNetworkCredentialCommand : BaseArchivialCmdlet
     {
         /// <summary>
         ///   <para type="description">Specify the friendly name (description) to refer to this stored credential.</para>

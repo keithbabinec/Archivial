@@ -7,7 +7,7 @@ using ArchivialLibrary.StorageProviders;
 using System;
 using System.Threading;
 
-namespace OzetteLibraryTests.Client
+namespace ArchivialLibraryTests.Client
 {
     [TestClass]
     public class ScanEngineTests

@@ -10,7 +10,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OzetteLibraryTests.Client.Sources
+namespace ArchivialLibraryTests.Client.Sources
 {
     [TestClass]
     public class ScannerTests
@@ -159,10 +159,10 @@ namespace OzetteLibraryTests.Client.Sources
 
             // testing the match + exclusion behavior together here.
             // we want files that end with .dll
-            // but exclude files that match the regex pattern for *Ozette*.
+            // but exclude files that match the regex pattern for *Archivial*.
 
             var fileMatch = "*.dll";
-            var exclusionPattern = new string[] { "(Ozette)" };
+            var exclusionPattern = new string[] { "(Archivial)" };
 
             ArchivialLibrary.Client.Sources.SourceScanner scanner =
                 new ArchivialLibrary.Client.Sources.SourceScanner(db.Object, logger, exclusionPattern);
@@ -179,10 +179,10 @@ namespace OzetteLibraryTests.Client.Sources
             await scanner.ScanAsync(source, cancelSource.Token).ConfigureAwait(false);
 
             // ensure we back up some dll files
-            // but ensure we don't back up any dll files that match the Ozette name.
+            // but ensure we don't back up any dll files that match the Archivial name.
 
             db.Verify(x => x.AddBackupFileAsync(It.IsAny<BackupFile>()), Times.AtLeastOnce);
-            db.Verify(x => x.AddBackupFileAsync(It.Is<BackupFile>(z => z.Filename.Contains("Ozette"))), Times.Never);
+            db.Verify(x => x.AddBackupFileAsync(It.Is<BackupFile>(z => z.Filename.Contains("Archivial"))), Times.Never);
         }
 
         [TestMethod]

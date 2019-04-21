@@ -13,17 +13,17 @@ namespace ArchivialPowerShell.Functions.Public
     ///   <para type="synopsis">Configures the Twilio messaging provider as a status update recipient.</para>
     ///   <para type="description">Messaging providers are an optional way to be automatically notified of your backup status/progress. This command configures the Twilio (SMS/Text) provider for that purpose.</para>
     ///   <para type="description">This command assumes that you have already setup a Twilio account, phone number, and have the required access token details ready. Twilio expects phone numbers to be provided in the E.164 format. If providing multiple destination phone numbers, they can be seperated by a semicolon.</para>
-    ///   <para type="description">If your access token has changed, you can safely re-run this command with the new token, and then restart the Ozette Cloud Backup service for the changes to take effect.</para>
-    ///   <para type="description">If you would like to disable this provider, please run the Remove-OzetteProvider cmdlet.</para>
+    ///   <para type="description">If your access token has changed, you can safely re-run this command with the new token, and then restart the Archivial Cloud Backup service for the changes to take effect.</para>
+    ///   <para type="description">If you would like to disable this provider, please run the Remove-ArchivialProvider cmdlet.</para>
     ///   <para type="description">All provided options here (ex: account name, token, phone numbers) are encrypted before saving to the database.</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Set-OzetteTwilioProviderOptions -TwilioAccountID "myaccount" -TwilioAuthToken "--token--" -TwilioSourcePhone "+12065551234" -TwilioDestinationPhones "+12065554567;+12065556789"</code>
+    ///   <code>C:\> Set-ArchivialTwilioProviderOptions -TwilioAccountID "myaccount" -TwilioAuthToken "--token--" -TwilioSourcePhone "+12065551234" -TwilioDestinationPhones "+12065554567;+12065556789"</code>
     ///   <para>Configures Twilio as a status messaging recipient.</para>
     ///   <para></para>
     /// </example>
-    [Cmdlet(VerbsCommon.Set, "OzetteTwilioProviderOptions")]
-    public class SetOzetteTwilioProviderOptionsCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsCommon.Set, "ArchivialTwilioProviderOptions")]
+    public class SetArchivialTwilioProviderOptionsCommand : BaseArchivialCmdlet
     {
         /// <summary>
         ///   <para type="description">Specify the Twilio Account ID.</para>

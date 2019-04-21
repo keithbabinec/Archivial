@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OzetteLibraryTests.Database
+namespace ArchivialLibraryTests.Database
 {
     [TestClass]
     public class DatabaseBackupSchedulerTests

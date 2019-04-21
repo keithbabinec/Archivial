@@ -18,19 +18,19 @@ namespace ArchivialPowerShell.Utility
         public static void StopClientService()
         {
             var existingServices = ServiceController.GetServices();
-            var ozetteService = existingServices.FirstOrDefault(x => x.ServiceName == "OzetteCloudBackup");
+            var ArchivialService = existingServices.FirstOrDefault(x => x.ServiceName == "ArchivialCloudBackup");
 
-            if (ozetteService != null && ozetteService.Status != ServiceControllerStatus.Stopped)
+            if (ArchivialService != null && ArchivialService.Status != ServiceControllerStatus.Stopped)
             {
-                ozetteService.Stop();
+                ArchivialService.Stop();
 
                 try
                 {
-                    ozetteService.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(60));
+                    ArchivialService.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(60));
                 }
                 catch (System.ServiceProcess.TimeoutException)
                 {
-                    throw new Exception("Failed to stop the OzetteCloudBackup windows service.");
+                    throw new Exception("Failed to stop the ArchivialCloudBackup windows service.");
                 }
 
                 // wait for the process to exit as well.
@@ -39,7 +39,7 @@ namespace ArchivialPowerShell.Utility
 
                 while (true)
                 {
-                    var processCheck = Process.GetProcessesByName("OzetteClientAgent.exe");
+                    var processCheck = Process.GetProcessesByName("ArchivialClientAgent.exe");
 
                     if (processCheck == null || processCheck.Length == 0)
                     {
@@ -48,7 +48,7 @@ namespace ArchivialPowerShell.Utility
 
                     if (DateTime.Now > timeoutTime)
                     {
-                        throw new Exception("Failed to stop the OzetteCloudBackup windows service, the process is still running and may be frozen.");
+                        throw new Exception("Failed to stop the ArchivialCloudBackup windows service, the process is still running and may be frozen.");
                     }
                 }
             }
@@ -61,9 +61,9 @@ namespace ArchivialPowerShell.Utility
         {
             var existingServices = ServiceController.GetServices();
 
-            if (existingServices.Any(x => x.ServiceName == "OzetteCloudBackup"))
+            if (existingServices.Any(x => x.ServiceName == "ArchivialCloudBackup"))
             {
-                var removalArgs = "delete \"OzetteCloudBackup\"";
+                var removalArgs = "delete \"ArchivialCloudBackup\"";
 
                 Process removeServiceProcess = new Process();
                 removeServiceProcess.StartInfo = new ProcessStartInfo()

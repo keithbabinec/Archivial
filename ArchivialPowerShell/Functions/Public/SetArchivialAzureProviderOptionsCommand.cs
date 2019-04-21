@@ -13,17 +13,17 @@ namespace ArchivialPowerShell.Functions.Public
     ///   <para type="synopsis">Configures the Azure cloud storage provider as a backup destination.</para>
     ///   <para type="description">In order to backup files to the cloud, at least one cloud storage provider must be configured. This command will enable the Azure cloud storage provider for this purpose.</para>
     ///   <para type="description">This command assumes that you have already deployed an Azure storage account and have the access token ready.</para>
-    ///   <para type="description">If your access token has changed, you can safely re-run this command with the new token, and then restart the Ozette Cloud Backup service for the changes to take effect.</para>
-    ///   <para type="description">If you would like to disable this provider, please run the Remove-OzetteProvider cmdlet.</para>
+    ///   <para type="description">If your access token has changed, you can safely re-run this command with the new token, and then restart the Archivial Cloud Backup service for the changes to take effect.</para>
+    ///   <para type="description">If you would like to disable this provider, please run the Remove-ArchivialProvider cmdlet.</para>
     ///   <para type="description">All provided options here (account name and token) are encrypted before saving to the database.</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Set-OzetteAzureProviderOptions -AzureStorageAccountName "myaccount" -AzureStorageAccountToken "--my token--"</code>
+    ///   <code>C:\> Set-ArchivialAzureProviderOptions -AzureStorageAccountName "myaccount" -AzureStorageAccountToken "--my token--"</code>
     ///   <para>Configures Azure as a cloud storage backup destination.</para>
     ///   <para></para>
     /// </example>
-    [Cmdlet(VerbsCommon.Set, "OzetteAzureProviderOptions")]
-    public class SetOzetteAzureProviderOptionsCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsCommon.Set, "ArchivialAzureProviderOptions")]
+    public class SetArchivialAzureProviderOptionsCommand : BaseArchivialCmdlet
     {
         /// <summary>
         ///   <para type="description">Specify the name of the Azure storage account to upload backup data to.</para>

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace OzetteLibraryTests.Files
+namespace ArchivialLibraryTests.Files
 {
     [TestClass]
     public class BackupFileTests
@@ -844,7 +844,7 @@ namespace OzetteLibraryTests.Files
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
 
             var remoteName = file.GetRemoteFileName(ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
-            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v1.mp3";
+            var expected = "archivial-file-387ef266-5635-4224-b8d3-980880ae1258-v1.mp3";
 
             Assert.IsNotNull(remoteName);
             Assert.AreEqual(expected, remoteName);
@@ -860,7 +860,7 @@ namespace OzetteLibraryTests.Files
             file.FileID = new Guid("387ef266-5635-4224-b8d3-980880ae1258");
 
             var remoteName = file.GetRemoteFileName(ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
-            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v1";
+            var expected = "archivial-file-387ef266-5635-4224-b8d3-980880ae1258-v1";
 
             Assert.IsNotNull(remoteName);
             Assert.AreEqual(expected, remoteName);
@@ -879,7 +879,7 @@ namespace OzetteLibraryTests.Files
             file.FileRevisionNumber = 4;
 
             var remoteName = file.GetRemoteFileName(ArchivialLibrary.StorageProviders.StorageProviderTypes.Azure);
-            var expected = "ozette-file-387ef266-5635-4224-b8d3-980880ae1258-v4.mp3";
+            var expected = "archivial-file-387ef266-5635-4224-b8d3-980880ae1258-v4.mp3";
 
             Assert.IsNotNull(remoteName);
             Assert.AreEqual(expected, remoteName);

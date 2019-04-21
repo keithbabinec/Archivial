@@ -8,7 +8,7 @@
         /// <summary>
         /// A string constant for the application name.
         /// </summary>
-        public const string AppName = "Ozette";
+        public const string AppName = "Archivial";
 
         /// <summary>
         /// A string constant for the backup component name.

@@ -236,7 +236,7 @@ namespace ArchivialLibrary.Client
                     databaseFolderSource.FileMatchFilter = "*.bak";
                     databaseFolderSource.RevisionCount = 1;
                     databaseFolderSource.Priority = Files.FileBackupPriority.Meta;
-                    databaseFolderSource.DestinationContainerName = "ozette-core-database-backups";
+                    databaseFolderSource.DestinationContainerName = "archivial-core-database-backups";
 
                     await Database.SetSourceLocationAsync(databaseFolderSource).ConfigureAwait(false);
                 }
@@ -250,7 +250,7 @@ namespace ArchivialLibrary.Client
                     logFolderSource.FileMatchFilter = "*.bak";
                     logFolderSource.RevisionCount = 1;
                     logFolderSource.Priority = Files.FileBackupPriority.Meta;
-                    logFolderSource.DestinationContainerName = "ozette-core-log-backups";
+                    logFolderSource.DestinationContainerName = "archivial-core-log-backups";
 
                     await Database.SetSourceLocationAsync(logFolderSource).ConfigureAwait(false);
                 }

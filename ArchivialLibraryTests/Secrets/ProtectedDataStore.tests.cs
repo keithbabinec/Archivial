@@ -8,7 +8,7 @@ using ArchivialLibrary.Secrets;
 using System;
 using System.Threading.Tasks;
 
-namespace OzetteLibraryTests.Secrets
+namespace ArchivialLibraryTests.Secrets
 {
     [TestClass]
     public class ProtectedDataStoreTests

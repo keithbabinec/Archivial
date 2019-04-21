@@ -8,22 +8,22 @@ namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
     ///   <para type="synopsis">Removes the specified Local Source.</para>
-    ///   <para type="description">A Local Source is a folder on your computer (or a directly attached external drive) that Ozette backs up and automatically monitors for new and updated files.</para>
+    ///   <para type="description">A Local Source is a folder on your computer (or a directly attached external drive) that Archivial backs up and automatically monitors for new and updated files.</para>
     ///	  <para type="description">Removing a Local Source means that new or updated files from that location will not be backed up anymore, but existing files already backed up to cloud storage will remain.</para>
-    ///   <para type="description">To view existing Local Sources, run Get-OzetteLocalSource. This command supports piping from Get-OzetteLocalSource or manual invoke from the specified source ID.</para>
+    ///   <para type="description">To view existing Local Sources, run Get-ArchivialLocalSource. This command supports piping from Get-ArchivialLocalSource or manual invoke from the specified source ID.</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Remove-OzetteLocalSource -ID 3</code>
+    ///   <code>C:\> Remove-ArchivialLocalSource -ID 3</code>
     ///   <para>Removes the Local Source with the specified ID.</para>
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Get-OzetteLocalSource | Where Path -like "*C:\users\test\documents*" | Remove-OzetteLocalSource</code>
+    ///   <code>C:\> Get-ArchivialLocalSource | Where Path -like "*C:\users\test\documents*" | Remove-ArchivialLocalSource</code>
     ///   <para>Removes any configured Local Source that matches a path containing the specified filter (using the pipeline scenario).</para>
     ///   <para></para>
     /// </example>
-    [Cmdlet(VerbsCommon.Remove, "OzetteLocalSource")]
-    public class RemoveOzetteLocalSourceCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsCommon.Remove, "ArchivialLocalSource")]
+    public class RemoveArchivialLocalSourceCommand : BaseArchivialCmdlet
     {
         /// <summary>
         ///   <para type="description">Specify the ID of the Local Source to remove.</para>

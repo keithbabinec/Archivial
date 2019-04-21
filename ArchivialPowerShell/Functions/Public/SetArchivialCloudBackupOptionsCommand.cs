@@ -5,31 +5,31 @@ using System.Text;
 namespace ArchivialPowerShell.Functions.Public
 {
     /// <summary>
-    ///   <para type="synopsis">Sets one or more application options for Ozette Cloud Backup.</para>
-    ///   <para type="description">Specify at least one option to change. To see existing options, run Get-OzetteCloudBackupOptions</para>
+    ///   <para type="synopsis">Sets one or more application options for Archivial Cloud Backup.</para>
+    ///   <para type="description">Specify at least one option to change. To see existing options, run Get-ArchivialCloudBackupOptions</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Set-OzetteCloudBackupOptions -LogFilesRetentionInDays 60</code>
+    ///   <code>C:\> Set-ArchivialCloudBackupOptions -LogFilesRetentionInDays 60</code>
     ///   <para>Sets the local log file retention to 60 days.</para>
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Set-OzetteCloudBackupOptions -LowPriorityScanFrequencyInHours 4 -MedPriorityScanFrequencyInHours 2</code>
+    ///   <code>C:\> Set-ArchivialCloudBackupOptions -LowPriorityScanFrequencyInHours 4 -MedPriorityScanFrequencyInHours 2</code>
     ///   <para>Sets low priority and medium priority scanning frequencies.</para>
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Set-OzetteCloudBackupOptions -StatusUpdateSchedule "0 8 * * *"</code>
+    ///   <code>C:\> Set-ArchivialCloudBackupOptions -StatusUpdateSchedule "0 8 * * *"</code>
     ///   <para>Sets the status update notification schedule to once per day at 8am.</para>
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Set-OzetteCloudBackupOptions -MasterExclusionMatches "^._",".DS_Store"</code>
+    ///   <code>C:\> Set-ArchivialCloudBackupOptions -MasterExclusionMatches "^._",".DS_Store"</code>
     ///   <para>Sets the master exclusions to exlude Mac OS related file system metadata files.</para>
     ///   <para></para>
     /// </example>
-    [Cmdlet(VerbsCommon.Set, "OzetteCloudBackupOptions")]
-    public class SetOzetteCloudBackupOptionsCommand : BaseOzetteCmdlet
+    [Cmdlet(VerbsCommon.Set, "ArchivialCloudBackupOptions")]
+    public class SetArchivialCloudBackupOptionsCommand : BaseArchivialCmdlet
     {
         /// <summary>
         ///   <para type="description">Optionally specify the length of time (in days) that locally stored log files should be retained.</para>

@@ -2,7 +2,7 @@
 using ArchivialLibrary.Logging.Mock;
 using System;
 
-namespace OzetteLibraryTests.StorageProviders.Azure
+namespace ArchivialLibraryTests.StorageProviders.Azure
 {
     [TestClass]
     public class AzureProviderFileOperationsTests
