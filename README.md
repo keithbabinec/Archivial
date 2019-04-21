@@ -13,8 +13,6 @@ Archivial is a lightweight but highly configurable backup agent that supports cl
 
 Pull request and integration builds are run via Azure DevOps CI. Releases are automatically published to the Github releases tab.
 
-This project was recently renamed from the former temporary codename (Ozette). References are in the process of being updated.
-
 [![Build status](https://ozette.visualstudio.com/ozette-project/_apis/build/status/ozette-project-CI)](https://ozette.visualstudio.com/ozette-project/_build/latest?definitionId=1)
 
 ## Development Status
