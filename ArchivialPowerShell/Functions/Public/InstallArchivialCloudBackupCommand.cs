@@ -1,4 +1,5 @@
-﻿using ArchivialLibrary.ServiceCore;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Exceptions;
 using ArchivialPowerShell.Utility;
 using System;
@@ -30,7 +31,7 @@ namespace ArchivialPowerShell.Functions.Public
         /// </summary>
         [Parameter(Mandatory = false)]
         [ValidateNotNullOrEmpty]
-        public string InstallDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Archivial Cloud Backup");
+        public string InstallDirectory { get; set; }
 
         /// <summary>
         ///   <para type="description">Suppresses the confirmation prompt.</para>
@@ -38,7 +39,10 @@ namespace ArchivialPowerShell.Functions.Public
         [Parameter(Mandatory = false)]
         public SwitchParameter Force = false;
 
-        public InstallArchivialCloudBackupCommand()
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public InstallArchivialCloudBackupCommand() : base()
         {
             ActivityName = "Installation";
             ActivityID = 1;
@@ -53,6 +57,10 @@ namespace ArchivialPowerShell.Functions.Public
             if (!Force && !ShouldProcess("Installing Archivial Cloud Backup Software", "Are you sure that you would like to install the Archivial Cloud Backup software?", "Install Archivial Cloud Backup"))
             {
                 throw new CmdletExecutionNotApprovedException("This action must be approved (or provide the -force switch) to run.");
+            }
+            if (InstallDirectory == null)
+            {
+                InstallDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Archivial Cloud Backup");
             }
 
             WriteVerbose("Starting Archivial Cloud Backup installation.");

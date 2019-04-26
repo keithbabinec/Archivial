@@ -1,4 +1,5 @@
-﻿using ArchivialLibrary.Secrets;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Secrets;
 using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Utility;
 using System;
@@ -41,6 +42,17 @@ namespace ArchivialPowerShell.Functions.Public
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string SharePassword { get; set; }
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public SetArchivialNetworkCredentialCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public SetArchivialNetworkCredentialCommand(IClientDatabase database) : base(database) { }
 
         protected override void ProcessRecord()
         {

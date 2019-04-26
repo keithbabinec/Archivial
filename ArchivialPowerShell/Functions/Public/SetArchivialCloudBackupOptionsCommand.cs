@@ -1,4 +1,5 @@
-﻿using ArchivialPowerShell.Utility;
+﻿using ArchivialLibrary.Database;
+using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 using System.Text;
 
@@ -84,6 +85,17 @@ namespace ArchivialPowerShell.Functions.Public
         /// </summary>
         [Parameter(Mandatory = false)]
         public string[] MasterExclusionMatches { get; set; }
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public SetArchivialCloudBackupOptionsCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public SetArchivialCloudBackupOptionsCommand(IClientDatabase database) : base(database) { }
 
         protected override void ProcessRecord()
         {

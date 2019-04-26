@@ -1,4 +1,5 @@
-﻿using ArchivialPowerShell.Exceptions;
+﻿using ArchivialLibrary.Database;
+using ArchivialPowerShell.Exceptions;
 using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
@@ -29,7 +30,20 @@ namespace ArchivialPowerShell.Functions.Public
         [Parameter(Mandatory = false)]
         public SwitchParameter Force = false;
 
-        public UninstallArchivialCloudBackupCommand()
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public UninstallArchivialCloudBackupCommand() : base()
+        {
+            ActivityName = "Uninstallation";
+            ActivityID = 2;
+        }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public UninstallArchivialCloudBackupCommand(IClientDatabase database) : base(database)
         {
             ActivityName = "Uninstallation";
             ActivityID = 2;

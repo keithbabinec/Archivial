@@ -1,4 +1,5 @@
-﻿using ArchivialLibrary.Providers;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Providers;
 using ArchivialLibrary.Secrets;
 using ArchivialLibrary.ServiceCore;
 using ArchivialLibrary.StorageProviders;
@@ -38,6 +39,17 @@ namespace ArchivialPowerShell.Functions.Public
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string AzureStorageAccountToken { get; set; }
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public SetArchivialAzureProviderOptionsCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public SetArchivialAzureProviderOptionsCommand(IClientDatabase database) : base(database) { }
 
         protected override void ProcessRecord()
         {

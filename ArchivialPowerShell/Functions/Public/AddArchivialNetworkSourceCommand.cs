@@ -1,4 +1,5 @@
-﻿using ArchivialLibrary.Exceptions;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
 using ArchivialPowerShell.Utility;
@@ -46,6 +47,7 @@ namespace ArchivialPowerShell.Functions.Public
         ///   <para type="description">Specify the maximum number of revisions to store in the cloud for the files in this folder.</para>
         /// </summary>
         [Parameter(Mandatory = true)]
+        [ValidateRange(1, int.MaxValue)]
         public int Revisions { get; set; }
 
         /// <summary>
@@ -60,7 +62,18 @@ namespace ArchivialPowerShell.Functions.Public
         /// </summary>
         [Parameter(Mandatory = false)]
         [ValidateNotNullOrEmpty]
-        public string MatchFilter = ArchivialLibrary.Constants.CommandLine.DefaultSourceMatchFilter;
+        public string MatchFilter { get; set; }
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public AddArchivialNetworkSourceCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public AddArchivialNetworkSourceCommand(IClientDatabase database) : base(database) { }
 
         protected override void ProcessRecord()
         {
@@ -70,9 +83,9 @@ namespace ArchivialPowerShell.Functions.Public
                 throw new ArgumentException(nameof(Priority) + " value was not valid.");
             }
 
-            if (Revisions <= 0)
+            if (MatchFilter == null)
             {
-                throw new ArgumentException(nameof(Revisions) + " value must be at least 1.");
+                MatchFilter = ArchivialLibrary.Constants.CommandLine.DefaultSourceMatchFilter;
             }
 
             var db = GetDatabaseConnection();

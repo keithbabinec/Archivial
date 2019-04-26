@@ -1,4 +1,5 @@
-﻿using ArchivialPowerShell.Utility;
+﻿using ArchivialLibrary.Database;
+using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
 namespace ArchivialPowerShell.Functions.Public
@@ -17,6 +18,17 @@ namespace ArchivialPowerShell.Functions.Public
     [Cmdlet(VerbsCommon.Get, "ArchivialProviders")]
     public class GetArchivialProvidersCommand : BaseArchivialCmdlet
     {
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public GetArchivialProvidersCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public GetArchivialProvidersCommand(IClientDatabase database) : base(database) { }
+
         protected override void ProcessRecord()
         {
             var db = GetDatabaseConnection();

@@ -1,4 +1,5 @@
-﻿using ArchivialPowerShell.Utility;
+﻿using ArchivialLibrary.Database;
+using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
 namespace ArchivialPowerShell.Functions.Public
@@ -17,6 +18,17 @@ namespace ArchivialPowerShell.Functions.Public
     [Cmdlet(VerbsCommon.Get, "ArchivialNetworkCredentials")]
     public class GetArchivialNetworkCredentialsCommand : BaseArchivialCmdlet
     {
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public GetArchivialNetworkCredentialsCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public GetArchivialNetworkCredentialsCommand(IClientDatabase database) : base(database) { }
+
         protected override void ProcessRecord()
         {
             var db = GetDatabaseConnection();

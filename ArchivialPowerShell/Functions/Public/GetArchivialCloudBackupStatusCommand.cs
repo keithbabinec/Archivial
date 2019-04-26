@@ -1,4 +1,5 @@
-﻿using ArchivialPowerShell.Utility;
+﻿using ArchivialLibrary.Database;
+using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
 namespace ArchivialPowerShell.Functions.Public
@@ -15,6 +16,17 @@ namespace ArchivialPowerShell.Functions.Public
     [Cmdlet(VerbsCommon.Get, "ArchivialCloudBackupStatus")]
     public class GetArchivialCloudBackupStatusCommand : BaseArchivialCmdlet
     {
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public GetArchivialCloudBackupStatusCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public GetArchivialCloudBackupStatusCommand(IClientDatabase database) : base(database) { }
+
         protected override void ProcessRecord()
         {
             var db = GetDatabaseConnection();

@@ -43,6 +43,17 @@ namespace ArchivialPowerShell.Functions.Public
         [ValidateNotNull]
         public NetworkSourceLocation NetworkSource { get; set; }
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public StartArchivialNetworkSourceRescanCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public StartArchivialNetworkSourceRescanCommand(IClientDatabase database) : base(database) { }
+
         private IClientDatabase database { get; set; }
 
         protected override void BeginProcessing()
