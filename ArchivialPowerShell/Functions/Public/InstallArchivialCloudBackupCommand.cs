@@ -1,4 +1,5 @@
-﻿using ArchivialLibrary.ServiceCore;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Exceptions;
 using ArchivialPowerShell.Utility;
 using System;
@@ -38,7 +39,10 @@ namespace ArchivialPowerShell.Functions.Public
         [Parameter(Mandatory = false)]
         public SwitchParameter Force = false;
 
-        public InstallArchivialCloudBackupCommand()
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public InstallArchivialCloudBackupCommand() : base()
         {
             ActivityName = "Installation";
             ActivityID = 1;

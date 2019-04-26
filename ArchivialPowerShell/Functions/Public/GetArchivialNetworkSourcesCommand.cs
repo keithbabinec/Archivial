@@ -1,4 +1,5 @@
-﻿using ArchivialLibrary.Folders;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Folders;
 using ArchivialPowerShell.Utility;
 using System.Linq;
 using System.Management.Automation;
@@ -18,6 +19,17 @@ namespace ArchivialPowerShell.Functions.Public
     [Cmdlet(VerbsCommon.Get, "ArchivialNetworkSources")]
     public class GetArchivialNetworkSourcesCommand : BaseArchivialCmdlet
     {
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public GetArchivialNetworkSourcesCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public GetArchivialNetworkSourcesCommand(IClientDatabase database) : base(database) { }
+
         protected override void ProcessRecord()
         {
             var db = GetDatabaseConnection();

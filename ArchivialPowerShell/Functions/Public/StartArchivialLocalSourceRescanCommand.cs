@@ -43,6 +43,17 @@ namespace ArchivialPowerShell.Functions.Public
         [ValidateNotNull]
         public LocalSourceLocation LocalSource { get; set; }
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public StartArchivialLocalSourceRescanCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public StartArchivialLocalSourceRescanCommand(IClientDatabase database) : base(database) { }
+
         private IClientDatabase database { get; set; }
 
         protected override void BeginProcessing()

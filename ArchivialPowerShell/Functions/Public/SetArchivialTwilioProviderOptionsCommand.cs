@@ -1,4 +1,5 @@
-﻿using ArchivialLibrary.MessagingProviders;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.MessagingProviders;
 using ArchivialLibrary.Providers;
 using ArchivialLibrary.Secrets;
 using ArchivialLibrary.ServiceCore;
@@ -52,6 +53,17 @@ namespace ArchivialPowerShell.Functions.Public
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string TwilioDestinationPhones { get; set; }
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public SetArchivialTwilioProviderOptionsCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public SetArchivialTwilioProviderOptionsCommand(IClientDatabase database) : base(database) { }
 
         protected override void ProcessRecord()
         {

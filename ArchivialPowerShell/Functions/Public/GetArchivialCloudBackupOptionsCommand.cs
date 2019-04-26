@@ -1,4 +1,5 @@
-﻿using ArchivialLibrary.ServiceCore;
+﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Utility;
 using System;
 using System.Management.Automation;
@@ -17,6 +18,17 @@ namespace ArchivialPowerShell.Functions.Public
     [Cmdlet(VerbsCommon.Get, "ArchivialCloudBackupOptions")]
     public class GetArchivialCloudBackupOptionsCommand : BaseArchivialCmdlet
     {
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public GetArchivialCloudBackupOptionsCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public GetArchivialCloudBackupOptionsCommand(IClientDatabase database) : base(database) { }
+
         protected override void ProcessRecord()
         {
             var db = GetDatabaseConnection();

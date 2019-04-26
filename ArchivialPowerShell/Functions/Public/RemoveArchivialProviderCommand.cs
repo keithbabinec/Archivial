@@ -43,6 +43,17 @@ namespace ArchivialPowerShell.Functions.Public
         [ValidateNotNull]
         public Provider Provider { get; set; }
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public RemoveArchivialProviderCommand() : base() { }
+
+        /// <summary>
+        /// A secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        public RemoveArchivialProviderCommand(IClientDatabase database) : base(database) { }
+
         private IClientDatabase database { get; set; }
 
         protected override void BeginProcessing()
