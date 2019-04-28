@@ -94,8 +94,6 @@ namespace ArchivialPowerShell.Functions.Public
                 WriteVerbose("Twilio is already configured as a messaging provider in the client database. No action required.");
             }
 
-            WriteVerbose("Initializing protected data store.");
-
             var pds = GetSecretStore();
 
             WriteVerbose("Saving encrypted Twilio configuration setting: TwilioAccountID.");
