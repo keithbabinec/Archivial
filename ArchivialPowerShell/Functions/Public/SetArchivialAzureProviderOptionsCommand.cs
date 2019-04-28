@@ -49,6 +49,7 @@ namespace ArchivialPowerShell.Functions.Public
         /// A secondary constructor for dependency injection.
         /// </summary>
         /// <param name="database"></param>
+        /// <param name="secretStore"></param>
         public SetArchivialAzureProviderOptionsCommand(IClientDatabase database, ISecretStore secretStore) : base(database, secretStore) { }
 
         protected override void ProcessRecord()

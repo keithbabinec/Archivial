@@ -6,12 +6,7 @@ using ArchivialLibrary.StorageProviders;
 using ArchivialPowerShell.Functions.Public;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArchivialPowerShellTests.Functions.Public
 {
@@ -78,6 +73,8 @@ namespace ArchivialPowerShellTests.Functions.Public
                     });
 
             var command = new SetArchivialAzureProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object);
+            command.AzureStorageAccountName = "FakeStorageAccount";
+            command.AzureStorageAccountToken = "FakeStorageAccountToken";
 
             var result = command.Invoke().GetEnumerator().MoveNext();
 
@@ -97,6 +94,8 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedDb.Setup(x => x.GetProvidersAsync(It.Is<ProviderTypes>(z => z == ProviderTypes.Storage))).ReturnsAsync(new ProviderCollection());
 
             var command = new SetArchivialAzureProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object);
+            command.AzureStorageAccountName = "FakeStorageAccount";
+            command.AzureStorageAccountToken = "FakeStorageAccountToken";
 
             var result = command.Invoke().GetEnumerator().MoveNext();
 
