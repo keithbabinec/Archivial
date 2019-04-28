@@ -52,7 +52,8 @@ namespace ArchivialPowerShell.Functions.Public
         /// A secondary constructor for dependency injection.
         /// </summary>
         /// <param name="database"></param>
-        public SetArchivialNetworkCredentialCommand(IClientDatabase database) : base(database) { }
+        /// <param name="secretStore"></param>
+        public SetArchivialNetworkCredentialCommand(IClientDatabase database, ISecretStore secretStore) : base(database, secretStore) { }
 
         protected override void ProcessRecord()
         {
@@ -77,15 +78,7 @@ namespace ArchivialPowerShell.Functions.Public
                 WriteVerbose("The specified network credential is already in the client database. No action required.");
             }
 
-            WriteVerbose("Initializing protected data store.");
-
-            var scope = DataProtectionScope.LocalMachine;
-
-            var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.ProtectionIV;
-            var protectionIvEncodedString = db.GetApplicationOptionAsync(settingName).GetAwaiter().GetResult();
-            var ivkey = Convert.FromBase64String(protectionIvEncodedString);
-
-            var pds = new ProtectedDataStore(db, scope, ivkey);
+            var pds = GetSecretStore();
 
             WriteVerbose("Saving encrypted username setting.");
 

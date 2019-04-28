@@ -13,13 +13,13 @@ namespace ArchivialPowerShell.Functions.Public
     /// <summary>
     ///   <para type="synopsis">Configures the Twilio messaging provider as a status update recipient.</para>
     ///   <para type="description">Messaging providers are an optional way to be automatically notified of your backup status/progress. This command configures the Twilio (SMS/Text) provider for that purpose.</para>
-    ///   <para type="description">This command assumes that you have already setup a Twilio account, phone number, and have the required access token details ready. Twilio expects phone numbers to be provided in the E.164 format. If providing multiple destination phone numbers, they can be seperated by a semicolon.</para>
+    ///   <para type="description">This command assumes that you have already setup a Twilio account, phone number, and have the required access token details ready. Twilio expects phone numbers to be provided in the E.164 format.</para>
     ///   <para type="description">If your access token has changed, you can safely re-run this command with the new token, and then restart the Archivial Cloud Backup service for the changes to take effect.</para>
     ///   <para type="description">If you would like to disable this provider, please run the Remove-ArchivialProvider cmdlet.</para>
     ///   <para type="description">All provided options here (ex: account name, token, phone numbers) are encrypted before saving to the database.</para>
     /// </summary>
     /// <example>
-    ///   <code>C:\> Set-ArchivialTwilioProviderOptions -TwilioAccountID "myaccount" -TwilioAuthToken "--token--" -TwilioSourcePhone "+12065551234" -TwilioDestinationPhones "+12065554567;+12065556789"</code>
+    ///   <code>C:\> Set-ArchivialTwilioProviderOptions -TwilioAccountID "myaccount" -TwilioAuthToken "--token--" -TwilioSourcePhone "+12065551234" -TwilioDestinationPhones @("+12065554567","+12065556789")</code>
     ///   <para>Configures Twilio as a status messaging recipient.</para>
     ///   <para></para>
     /// </example>
@@ -48,11 +48,11 @@ namespace ArchivialPowerShell.Functions.Public
         public string TwilioSourcePhone { get; set; }
 
         /// <summary>
-        ///   <para type="description">Specify the phone number(s) to send updates to. If multiple, seperate by semicolon.</para>
+        ///   <para type="description">Specify the phone number(s) to send updates to.</para>
         /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public string TwilioDestinationPhones { get; set; }
+        public string[] TwilioDestinationPhones { get; set; }
 
         /// <summary>
         /// Default constructor.
@@ -63,7 +63,8 @@ namespace ArchivialPowerShell.Functions.Public
         /// A secondary constructor for dependency injection.
         /// </summary>
         /// <param name="database"></param>
-        public SetArchivialTwilioProviderOptionsCommand(IClientDatabase database) : base(database) { }
+        /// <param name="secretStore"></param>
+        public SetArchivialTwilioProviderOptionsCommand(IClientDatabase database, ISecretStore secretStore) : base(database, secretStore) { }
 
         protected override void ProcessRecord()
         {
@@ -93,15 +94,7 @@ namespace ArchivialPowerShell.Functions.Public
                 WriteVerbose("Twilio is already configured as a messaging provider in the client database. No action required.");
             }
 
-            WriteVerbose("Initializing protected data store.");
-
-            var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
-
-            var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.ProtectionIV;
-            var protectionIvEncodedString = db.GetApplicationOptionAsync(settingName).GetAwaiter().GetResult();
-            var ivkey = Convert.FromBase64String(protectionIvEncodedString);
-
-            var pds = new ProtectedDataStore(db, scope, ivkey);
+            var pds = GetSecretStore();
 
             WriteVerbose("Saving encrypted Twilio configuration setting: TwilioAccountID.");
             pds.SetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioAccountID, TwilioAccountID).GetAwaiter().GetResult();
@@ -113,7 +106,10 @@ namespace ArchivialPowerShell.Functions.Public
             pds.SetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioSourcePhone, TwilioSourcePhone).GetAwaiter().GetResult();
 
             WriteVerbose("Saving encrypted Twilio configuration setting: TwilioDestinationPhones.");
-            pds.SetApplicationSecretAsync(ArchivialLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones, TwilioDestinationPhones).GetAwaiter().GetResult();
+
+            pds.SetApplicationSecretAsync(
+                ArchivialLibrary.Constants.RuntimeSettingNames.TwilioDestinationPhones,
+                string.Join(";", TwilioDestinationPhones)).GetAwaiter().GetResult();
         }
     }
 }
