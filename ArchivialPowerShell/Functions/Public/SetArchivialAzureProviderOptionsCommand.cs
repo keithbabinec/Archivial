@@ -49,7 +49,7 @@ namespace ArchivialPowerShell.Functions.Public
         /// A secondary constructor for dependency injection.
         /// </summary>
         /// <param name="database"></param>
-        public SetArchivialAzureProviderOptionsCommand(IClientDatabase database) : base(database) { }
+        public SetArchivialAzureProviderOptionsCommand(IClientDatabase database, ISecretStore secretStore) : base(database, secretStore) { }
 
         protected override void ProcessRecord()
         {
@@ -79,15 +79,7 @@ namespace ArchivialPowerShell.Functions.Public
                 WriteVerbose("Azure is already configured as a provider in the client database. No action required.");
             }
 
-            WriteVerbose("Initializing protected data store.");
-
-            var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
-
-            var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.ProtectionIV;
-            var protectionIvEncodedString = db.GetApplicationOptionAsync(settingName).GetAwaiter().GetResult();
-            var ivkey = Convert.FromBase64String(protectionIvEncodedString);
-
-            var pds = new ProtectedDataStore(db, scope, ivkey);
+            var pds = GetSecretStore();
 
             WriteVerbose("Saving encrypted Azure configuration setting: AzureStorageAccountName.");
 

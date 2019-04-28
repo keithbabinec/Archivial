@@ -2,6 +2,7 @@
 using ArchivialLibrary.Database.SQLServer;
 using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Logging.Default;
+using ArchivialLibrary.Secrets;
 using ArchivialLibrary.ServiceCore;
 using System;
 using System.Management.Automation;
@@ -17,6 +18,11 @@ namespace ArchivialPowerShell.Utility
         /// A reference to the client database.
         /// </summary>
         internal IClientDatabase Database { get; set; }
+
+        /// <summary>
+        /// A reference to the secret store.
+        /// </summary>
+        internal ISecretStore SecretStore { get; set; }
 
         /// <summary>
         /// The name of this cmdlet activity for progress tracking.
@@ -71,6 +77,17 @@ namespace ArchivialPowerShell.Utility
         }
 
         /// <summary>
+        /// Secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="database"></param>
+        /// <param name="secretStore"></param>
+        public BaseArchivialCmdlet(IClientDatabase database, ISecretStore secretStore)
+        {
+            Database = database;
+            SecretStore = secretStore;
+        }
+
+        /// <summary>
         /// Returns the database connection.
         /// </summary>
         /// <returns></returns>
@@ -101,8 +118,37 @@ namespace ArchivialPowerShell.Utility
                 var logger = new Logger("ArchivialPowerShell");
                 var db = new SQLServerClientDatabase(dbConnectionString, logger);
 
-                Database = db; 
+                Database = db;
                 return db;
+            }
+        }
+
+        /// <summary>
+        /// Returns the secret store.
+        /// </summary>
+        /// <returns></returns>
+        internal ISecretStore GetSecretStore()
+        {
+            if (SecretStore != null)
+            {
+                return SecretStore;
+            }
+            else
+            {
+                base.WriteVerbose("Initializing protected data store.");
+
+                var db = GetDatabaseConnection();
+
+                var scope = System.Security.Cryptography.DataProtectionScope.LocalMachine;
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.ProtectionIV;
+
+                var protectionIvEncodedString = db.GetApplicationOptionAsync(settingName).GetAwaiter().GetResult();
+                var ivkey = Convert.FromBase64String(protectionIvEncodedString);
+
+                var pds = new ProtectedDataStore(db, scope, ivkey);
+
+                SecretStore = pds;
+                return pds;
             }
         }
     }
