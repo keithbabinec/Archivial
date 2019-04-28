@@ -36,54 +36,63 @@ namespace ArchivialPowerShell.Functions.Public
         ///   <para type="description">Optionally specify the length of time (in days) that locally stored log files should be retained.</para>
         /// </summary>
         [Parameter(Mandatory = false)]
+        [ValidateRange(1, int.MaxValue)]
         public int LogFilesRetentionInDays { get; set; }
 
         /// <summary>
         ///   <para type="description">Optionally specify the length of time (in days) that locally stored database backups should be retrained.</para>
         /// </summary>
         [Parameter(Mandatory = false)]
+        [ValidateRange(1, int.MaxValue)]
         public int DatabaseBackupsRetentionInDays { get; set; }
 
         /// <summary>
         ///   <para type="description">Optionally specify the number of concurrent backup engine instances to run.</para>
         /// </summary>
         [Parameter(Mandatory = false)]
+        [ValidateRange(1, 128)]
         public int BackupEngineInstancesCount { get; set; }
 
         /// <summary>
         ///   <para type="description">Optionally specify how often (in hours) that low-priority folder scans should be performed.</para>
         /// </summary>
         [Parameter(Mandatory = false)]
+        [ValidateRange(1, int.MaxValue)]
         public int LowPriorityScanFrequencyInHours { get; set; }
 
         /// <summary>
         ///   <para type="description">Optionally specify how often (in hours) that medium-priority folder scans should be performed.</para>
         /// </summary>
         [Parameter(Mandatory = false)]
+        [ValidateRange(1, int.MaxValue)]
         public int MedPriorityScanFrequencyInHours { get; set; }
 
         /// <summary>
         ///   <para type="description">Optionally specify how often (in hours) that high-priority folder scans should be performed.</para>
         /// </summary>
         [Parameter(Mandatory = false)]
+        [ValidateRange(1, int.MaxValue)]
         public int HighPriorityScanFrequencyInHours { get; set; }
 
         /// <summary>
         ///   <para type="description">Optionally specify the local encryption initialization vector key. Key should be a crypto-random 16-byte array, expressed as a base64 encoded string.</para>
         /// </summary>
         [Parameter(Mandatory = false)]
+        [ValidateNotNullOrEmpty]
         public string ProtectionIV { get; set; }
 
         /// <summary>
         ///   <para type="description">Optionally specify the schedule for when status notification messages should be sent. Expressed as a cron schedule.</para>
         /// </summary>
         [Parameter(Mandatory = false)]
+        [ValidateNotNullOrEmpty]
         public string StatusUpdateSchedule { get; set; }
 
         /// <summary>
         ///   <para type="description">Optionally specify a set of regex match exclusions that should apply to all scanned folders.</para>
         /// </summary>
         [Parameter(Mandatory = false)]
+        [ValidateNotNullOrEmpty]
         public string[] MasterExclusionMatches { get; set; }
 
         /// <summary>
