@@ -52,7 +52,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: C:\Program Files\Archivial Cloud Backup
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
