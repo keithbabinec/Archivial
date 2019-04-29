@@ -1462,8 +1462,13 @@ namespace ArchivialLibrary.Database.SQLServer
                             cmd.CommandText = "dbo.SetCopyState";
                             cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
+                            if (!Enum.TryParse(provider.Name, out StorageProviderTypes storageProvider))
+                            {
+                                throw new InvalidOperationException("Unable to save file copy state. The specified provider is not a valid storage provider: " + provider.Name);
+                            }
+
                             cmd.Parameters.AddWithValue("@FileID", File.FileID);
-                            cmd.Parameters.AddWithValue("@StorageProvider", provider.Type);
+                            cmd.Parameters.AddWithValue("@StorageProvider", storageProvider);
                             cmd.Parameters.AddWithValue("@SyncStatus", FileStatus.Unsynced);
                             cmd.Parameters.AddWithValue("@HydrationStatus", StorageProviderHydrationStatus.None);
                             cmd.Parameters.AddWithValue("@LastCompletedFileBlockIndex", -1);
@@ -1530,8 +1535,13 @@ namespace ArchivialLibrary.Database.SQLServer
                             cmd.CommandText = "dbo.SetCopyState";
                             cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
+                            if (!Enum.TryParse(provider.Name, out StorageProviderTypes storageProvider))
+                            {
+                                throw new InvalidOperationException("Unable to update file copy state. The specified provider is not a valid storage provider: " + provider.Name);
+                            }
+
                             cmd.Parameters.AddWithValue("@FileID", File.FileID);
-                            cmd.Parameters.AddWithValue("@StorageProvider", provider.Type);
+                            cmd.Parameters.AddWithValue("@StorageProvider", storageProvider);
                             cmd.Parameters.AddWithValue("@SyncStatus", FileStatus.Unsynced);
                             cmd.Parameters.AddWithValue("@HydrationStatus", StorageProviderHydrationStatus.None);
                             cmd.Parameters.AddWithValue("@LastCompletedFileBlockIndex", -1);

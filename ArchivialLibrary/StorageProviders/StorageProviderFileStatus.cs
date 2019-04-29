@@ -79,6 +79,7 @@ namespace ArchivialLibrary.StorageProviders
         public void ResetState()
         {
             SyncStatus = FileStatus.Unsynced;
+            HydrationStatus = StorageProviderHydrationStatus.None;
             LastCompletedFileBlockIndex = -1;
             Metadata = null;
         }
