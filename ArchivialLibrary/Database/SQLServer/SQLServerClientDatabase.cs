@@ -1114,8 +1114,6 @@ namespace ArchivialLibrary.Database.SQLServer
                                 cmd.Parameters.AddWithValue("@LastCompletedScan", nsl.LastCompletedScan);
                             }
 
-                            cmd.Parameters.AddWithValue("@CredentialName", nsl.CredentialName);
-
                             if (nsl.CredentialName == null)
                             {
                                 cmd.Parameters.AddWithValue("@CredentialName", DBNull.Value);
