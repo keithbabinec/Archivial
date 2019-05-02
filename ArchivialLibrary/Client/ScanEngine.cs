@@ -247,7 +247,7 @@ namespace ArchivialLibrary.Client
 
                     var logFolderSource = new LocalSourceLocation();
                     logFolderSource.Path = CoreSettings.LogFilesArchiveDirectory;
-                    logFolderSource.FileMatchFilter = "*.bak";
+                    logFolderSource.FileMatchFilter = "*.log";
                     logFolderSource.RevisionCount = 1;
                     logFolderSource.Priority = Files.FileBackupPriority.Meta;
                     logFolderSource.DestinationContainerName = "archivial-core-log-backups";
