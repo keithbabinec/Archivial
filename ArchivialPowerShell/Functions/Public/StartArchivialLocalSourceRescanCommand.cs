@@ -34,6 +34,7 @@ namespace ArchivialPowerShell.Functions.Public
         ///   <para type="description">Specify the ID of the Local Source to rescan.</para>
         /// </summary>
         [Parameter(Mandatory = true, ParameterSetName = "ByName")]
+        [ValidateRange(0, int.MaxValue)]
         public int SourceID { get; set; }
 
         /// <summary>
