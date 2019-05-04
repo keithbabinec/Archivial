@@ -74,7 +74,9 @@
     <Compile Include="Functions\Public\GetArchivialNetworkSourcesCommandTests.cs" />
     <Compile Include="Functions\Public\GetArchivialProvidersCommandTests.cs" />
     <Compile Include="Functions\Public\RemoveArchivialLocalSourceCommandTests.cs" />
+    <Compile Include="Functions\Public\RemoveArchivialNetworkCredentialCommandTests.cs" />
     <Compile Include="Functions\Public\RemoveArchivialNetworkSourceCommandTests.cs" />
+    <Compile Include="Functions\Public\RemoveArchivialProviderCommandTests.cs" />
     <Compile Include="Functions\Public\SetArchivialAzureProviderOptionsCommandTests.cs" />
     <Compile Include="Functions\Public\SetArchivialCloudBackupOptionsCommandTests.cs" />
     <Compile Include="Functions\Public\SetArchivialNetworkCredentialCommandTests.cs" />
