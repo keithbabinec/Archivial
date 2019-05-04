@@ -9,46 +9,46 @@ using System.Threading.Tasks;
 namespace ArchivialPowerShellTests.Functions.Public
 {
     [TestClass]
-    public class StartArchivialNetworkSourceRescanCommandTests
+    public class RemoveArchivialNetworkSourceCommandTests
     {
         [TestMethod]
-        public void StartArchivialNetworkSourceRescanCommand_NetworkSourceParameter_HasRequiredAttributes()
+        public void RemoveArchivialNetworkSourceCommand_NetworkSourceParameter_HasRequiredAttributes()
         {
             Assert.IsTrue(
                 TypeHelpers.CmdletParameterHasAttribute(
-                    typeof(StartArchivialNetworkSourceRescanCommand),
-                    nameof(StartArchivialNetworkSourceRescanCommand.NetworkSource),
+                    typeof(RemoveArchivialNetworkSourceCommand),
+                    nameof(RemoveArchivialNetworkSourceCommand.NetworkSource),
                     typeof(ParameterAttribute))
             );
 
             Assert.IsTrue(
                 TypeHelpers.CmdletParameterHasAttribute(
-                    typeof(StartArchivialNetworkSourceRescanCommand),
-                    nameof(StartArchivialNetworkSourceRescanCommand.NetworkSource),
+                    typeof(RemoveArchivialNetworkSourceCommand),
+                    nameof(RemoveArchivialNetworkSourceCommand.NetworkSource),
                     typeof(ValidateNotNullAttribute))
             );
         }
 
         [TestMethod]
-        public void StartArchivialNetworkSourceRescanCommand_SourceIDParameter_HasRequiredAttributes()
+        public void RemoveArchivialNetworkSourceCommand_SourceIDParameter_HasRequiredAttributes()
         {
             Assert.IsTrue(
                 TypeHelpers.CmdletParameterHasAttribute(
-                    typeof(StartArchivialNetworkSourceRescanCommand),
-                    nameof(StartArchivialNetworkSourceRescanCommand.SourceID),
+                    typeof(RemoveArchivialNetworkSourceCommand),
+                    nameof(RemoveArchivialNetworkSourceCommand.SourceID),
                     typeof(ParameterAttribute))
             );
 
             Assert.IsTrue(
                 TypeHelpers.CmdletParameterHasAttribute(
-                    typeof(StartArchivialNetworkSourceRescanCommand),
-                    nameof(StartArchivialNetworkSourceRescanCommand.SourceID),
+                    typeof(RemoveArchivialNetworkSourceCommand),
+                    nameof(RemoveArchivialNetworkSourceCommand.SourceID),
                     typeof(ValidateRangeAttribute))
             );
         }
 
         [TestMethod]
-        public void StartArchivialNetworkSourceRescanCommand_CanQueueRescan_FromSourceId()
+        public void RemoveArchivialNetworkSourceCommand_CanRemoveSource_FromSourceId()
         {
             var mockedDb = new Mock<IClientDatabase>();
 
@@ -61,25 +61,25 @@ namespace ArchivialPowerShellTests.Functions.Public
                 }
             );
 
-            mockedDb.Setup(x => x.RescanSourceLocationAsync(It.IsAny<NetworkSourceLocation>()))
+            mockedDb.Setup(x => x.RemoveSourceLocationAsync(It.IsAny<NetworkSourceLocation>()))
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new StartArchivialNetworkSourceRescanCommand(mockedDb.Object)
+            var command = new RemoveArchivialNetworkSourceCommand(mockedDb.Object)
             {
                 SourceID = 1
             };
 
             var result = command.Invoke().GetEnumerator().MoveNext();
 
-            mockedDb.Verify(x => x.RescanSourceLocationAsync(It.IsAny<NetworkSourceLocation>()), Times.Once);
+            mockedDb.Verify(x => x.RemoveSourceLocationAsync(It.IsAny<NetworkSourceLocation>()), Times.Once);
 
             Assert.IsNotNull(databaseCommitedObject);
             Assert.AreEqual(1, databaseCommitedObject.ID);
         }
 
         [TestMethod]
-        public void StartArchivialNetworkSourceRescanCommand_CanQueueRescan_FromSourceObject()
+        public void RemoveArchivialNetworkSourceCommand_CanRemoveSource_FromSourceObject()
         {
             var mockedDb = new Mock<IClientDatabase>();
 
@@ -92,18 +92,18 @@ namespace ArchivialPowerShellTests.Functions.Public
                 }
             );
 
-            mockedDb.Setup(x => x.RescanSourceLocationAsync(It.IsAny<NetworkSourceLocation>()))
+            mockedDb.Setup(x => x.RemoveSourceLocationAsync(It.IsAny<NetworkSourceLocation>()))
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new StartArchivialNetworkSourceRescanCommand(mockedDb.Object)
+            var command = new RemoveArchivialNetworkSourceCommand(mockedDb.Object)
             {
                 NetworkSource = new NetworkSourceLocation() { ID = 1 }
             };
 
             var result = command.Invoke().GetEnumerator().MoveNext();
 
-            mockedDb.Verify(x => x.RescanSourceLocationAsync(It.IsAny<NetworkSourceLocation>()), Times.Once);
+            mockedDb.Verify(x => x.RemoveSourceLocationAsync(It.IsAny<NetworkSourceLocation>()), Times.Once);
 
             Assert.IsNotNull(databaseCommitedObject);
             Assert.AreEqual(1, databaseCommitedObject.ID);
@@ -111,7 +111,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
         [TestMethod]
         [ExpectedException(typeof(ItemNotFoundException))]
-        public void StartArchivialNetworkSourceRescanCommand_ThrowsIfSourceIsNotFound()
+        public void RemoveArchivialNetworkSourceCommand_ThrowsIfSourceIsNotFound()
         {
             var mockedDb = new Mock<IClientDatabase>();
 
@@ -124,11 +124,11 @@ namespace ArchivialPowerShellTests.Functions.Public
                 }
             );
 
-            mockedDb.Setup(x => x.RescanSourceLocationAsync(It.IsAny<NetworkSourceLocation>()))
+            mockedDb.Setup(x => x.RemoveSourceLocationAsync(It.IsAny<NetworkSourceLocation>()))
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new StartArchivialNetworkSourceRescanCommand(mockedDb.Object)
+            var command = new RemoveArchivialNetworkSourceCommand(mockedDb.Object)
             {
                 SourceID = 2
             };

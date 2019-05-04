@@ -29,6 +29,7 @@ namespace ArchivialPowerShell.Functions.Public
         ///   <para type="description">Specify the ID of the Network Source to remove.</para>
         /// </summary>
         [Parameter(Mandatory = true, ParameterSetName = "ByName")]
+        [ValidateRange(0, int.MaxValue)]
         public int SourceID { get; set; }
 
         /// <summary>
