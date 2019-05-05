@@ -19,5 +19,10 @@
         /// A string constant for the sqlexpress user account.
         /// </summary>
         public const string DefaultSqlExpressUserAccount = "NT SERVICE\\MSSQL$SQLEXPRESS";
+
+        /// <summary>
+        /// A string constant for the sqlexpress instance name.
+        /// </summary>
+        public const string DefaultSqlExpressInstanceName = "MSSQL$SQLEXPRESS";
     }
 }

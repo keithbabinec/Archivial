@@ -1,4 +1,5 @@
-﻿using ArchivialLibrary.ServiceCore;
+﻿using ArchivialLibrary.Constants;
+using ArchivialLibrary.ServiceCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,6 +14,24 @@ namespace ArchivialPowerShell.Utility
 {
     public static class Installation
     {
+        /// <summary>
+        /// Checks if the SQL Server prerequisite is available.
+        /// </summary>
+        /// <returns></returns>
+        public static bool SqlServerPrerequisiteIsAvailable()
+        {
+            var existingServices = ServiceController.GetServices();
+
+            if (existingServices.Any(x => x.ServiceName == Database.DefaultSqlExpressInstanceName) == false)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Sets the core application settings.
         /// </summary>
@@ -134,8 +153,10 @@ namespace ArchivialPowerShell.Utility
             if (existingServices.Any(x => x.ServiceName == "ArchivialCloudBackup") == false)
             {
                 var installArgs = string.Format(
-                    "create \"ArchivialCloudBackup\" binPath= \"{0}\" start= \"auto\" DisplayName= \"Archivial Cloud Backup Agent\"",
-                    Path.Combine(CoreSettings.InstallationDirectory, "ArchivialClientAgent.exe"));
+                    "create \"ArchivialCloudBackup\" binPath= \"{0}\" start= \"auto\" DisplayName= \"{1}\" depend= \"{2}\"",
+                    Path.Combine(CoreSettings.InstallationDirectory, "ArchivialClientAgent.exe"),
+                    "Archivial Cloud Backup Agent",
+                    Database.DefaultSqlExpressInstanceName);
 
                 Process createServiceProcess = new Process();
                 createServiceProcess.StartInfo = new ProcessStartInfo()

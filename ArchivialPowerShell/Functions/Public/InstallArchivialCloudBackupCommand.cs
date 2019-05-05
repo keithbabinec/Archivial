@@ -58,6 +58,11 @@ namespace ArchivialPowerShell.Functions.Public
             {
                 throw new CmdletExecutionNotApprovedException("This action must be approved (or provide the -force switch) to run.");
             }
+            if (!Installation.SqlServerPrerequisiteIsAvailable())
+            {
+                throw new CmdletPrerequisiteNotFoundException("Unable to install Archivial Cloud Backup. A required prerequisite (SQL Server Express) was not found.");
+            }
+
             if (InstallDirectory == null)
             {
                 InstallDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Archivial Cloud Backup");

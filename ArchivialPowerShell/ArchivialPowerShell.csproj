@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\CmdletExecutionNotApprovedException.cs" />
     <Compile Include="Exceptions\CmdletNotElevatedException.cs" />
+    <Compile Include="Exceptions\CmdletPrerequisiteNotFoundException.cs" />
     <Compile Include="Functions\Public\GetArchivialCloudBackupOptionsCommand.cs" />
     <Compile Include="Functions\Public\GetArchivialCloudBackupStatusCommand.cs" />
     <Compile Include="Functions\Public\GetArchivialNetworkCredentialsCommand.cs" />
