@@ -149,7 +149,7 @@ namespace ArchivialLibrary.Client.Transfer
 
                         // step 5B: send the transfer payload.
                         CancelToken.ThrowIfCancellationRequested();
-                        await SendTransferPayloadToFileTargetsAsync(File, Source, payload).ConfigureAwait(false);
+                        await SendTransferPayloadToFileTargetsAsync(File, Source, payload, CancelToken).ConfigureAwait(false);
                     }
 
                     // no more data to transfer, remove the file from the backup queue.
@@ -174,9 +174,11 @@ namespace ArchivialLibrary.Client.Transfer
         /// Sends the transfer payload to the target providers.
         /// </summary>
         /// <param name="file"></param>
+        /// <param name="source"></param>
         /// <param name="payload"></param>
+        /// <param name="cancelToken"></param>
         /// <returns></returns>
-        private async Task SendTransferPayloadToFileTargetsAsync(BackupFile file, SourceLocation source, TransferPayload payload)
+        private async Task SendTransferPayloadToFileTargetsAsync(BackupFile file, SourceLocation source, TransferPayload payload, CancellationToken cancelToken)
         {
             var directory = await Database.GetDirectoryMapItemAsync(file.Directory).ConfigureAwait(false);
 
@@ -189,7 +191,7 @@ namespace ArchivialLibrary.Client.Transfer
                     // upload this chunk to the destination cloud provider.
                     // note: the provider implementation will automatically handle retries of transient issues.
                     await destination.UploadFileBlockAsync(file, source, directory,
-                        payload.Data, (int)payload.CurrentBlockNumber, (int)payload.TotalBlocks).ConfigureAwait(false);
+                        payload.Data, (int)payload.CurrentBlockNumber, (int)payload.TotalBlocks, cancelToken).ConfigureAwait(false);
 
                     // flag the chunk as sent in the file status.
                     file.SetBlockAsSent((int)payload.CurrentBlockNumber, providerName);

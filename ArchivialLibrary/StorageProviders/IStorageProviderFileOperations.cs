@@ -1,5 +1,6 @@
 ﻿using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ArchivialLibrary.StorageProviders
@@ -30,6 +31,7 @@ namespace ArchivialLibrary.StorageProviders
         /// <param name="data">A byte array stream of file contents/data.</param>
         /// <param name="currentBlockIndex">The block number associated with the specified data.</param>
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
-        Task UploadFileBlockAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks);
+        /// <param name="cancelToken">The cancellation token.</param>
+        Task UploadFileBlockAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks, CancellationToken cancelToken);
     }
 }

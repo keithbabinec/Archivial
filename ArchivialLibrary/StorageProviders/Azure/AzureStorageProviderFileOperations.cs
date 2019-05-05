@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace ArchivialLibrary.StorageProviders.Azure
 {
@@ -169,7 +170,8 @@ namespace ArchivialLibrary.StorageProviders.Azure
         /// <param name="data">A byte array stream of file contents/data.</param>
         /// <param name="currentBlockIndex">The block number associated with the specified data.</param>
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
-        public async Task UploadFileBlockAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks)
+        /// <param name="cancelToken">The cancellation token.</param>
+        public async Task UploadFileBlockAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks, CancellationToken cancelToken)
         {
             string containerName = null;
 
@@ -190,6 +192,8 @@ namespace ArchivialLibrary.StorageProviders.Azure
             var isLastBlock = (currentBlockNumber == totalBlocks);
 
             await CreateBlobContainerIfMissingAsync(containerName, containerUri, directory).ConfigureAwait(false);
+
+            cancelToken.ThrowIfCancellationRequested();
 
             string blobName = null;
             string sasBlobUri = null;
@@ -218,11 +222,7 @@ namespace ArchivialLibrary.StorageProviders.Azure
 
             CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri), AzureStorage.Credentials);
 
-            using (var stream = new MemoryStream(data))
-            {
-                var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlockIndex);
-                await blob.PutBlockAsync(encodedBlockIdString, stream, null, null, WriteBlockRequestOptions, null).ConfigureAwait(false);
-            }
+            await UploadFileBlockWithRetryAsync(file, blob, data, currentBlockIndex, cancelToken).ConfigureAwait(false);
 
             // is this the first block or the last block? then run the block commit.
             // >> we need to commit once at the beginning to create the blob, which allows us to set metadata.
@@ -296,6 +296,50 @@ namespace ArchivialLibrary.StorageProviders.Azure
                     {
                         // wasn't a 409 (should re-throw).
                         throw;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Uploads a file block with retry logic.
+        /// </summary>
+        /// <param name="file">The backup file information.</param>
+        /// <param name="blob">The cloud block blob reference.</param>
+        /// <param name="data">The block of data to upload.</param>
+        /// <param name="currentBlockIndex">The block number to upload.</param>
+        /// <param name="cancelToken">The cancellation token.</param>
+        /// <returns></returns>
+        private async Task UploadFileBlockWithRetryAsync(BackupFile file, CloudBlockBlob blob, byte[] data, int currentBlockIndex, CancellationToken cancelToken)
+        {
+            using (var stream = new MemoryStream(data))
+            {
+                var encodedBlockIdString = ProviderUtilities.GenerateBlockIdentifierBase64String(file.FileID, currentBlockIndex);
+                int maxAttempts = 3;
+
+                for (int currentAttempt = 1; currentAttempt <= maxAttempts; currentAttempt++)
+                {
+                    cancelToken.ThrowIfCancellationRequested();
+
+                    try
+                    {
+                        await blob.PutBlockAsync(encodedBlockIdString, stream, null, null, WriteBlockRequestOptions, null, cancelToken).ConfigureAwait(false);
+                        break;
+                    }
+                    catch (StorageException ex)
+                    {
+                        if (ex.InnerException != null && ex.InnerException is TimeoutException)
+                        {
+                            // common scenario:
+                            // a windows azure storage timeout has occurred. give it a minute and try again.
+
+                            Logger.WriteTraceMessage("An Azure storage timeout exception has occurred while trying to upload the file block. Waiting a minute before trying again.");
+                            await Task.Delay(TimeSpan.FromSeconds(60), cancelToken);
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
             }
