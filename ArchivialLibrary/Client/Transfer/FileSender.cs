@@ -196,6 +196,12 @@ namespace ArchivialLibrary.Client.Transfer
                     // flag the chunk as sent in the file status.
                     file.SetBlockAsSent((int)payload.CurrentBlockNumber, providerName);
                 }
+                catch (OperationCanceledException)
+                {
+                    // cancellation was requested.
+                    // bubble up to the next level.
+                    throw;
+                }
                 catch (Exception ex)
                 {
                     Logger.WriteTraceError("An error occurred during a file transfer.", ex, Logger.GenerateFullContextStackTrace(), InstanceID);
