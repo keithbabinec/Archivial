@@ -7,44 +7,34 @@ RETURNS INT
 AS
 BEGIN
 	
-	SET ARITHABORT, NOCOUNT, XACT_ABORT ON;
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-
 	DECLARE @RevisionCount INT
 
 	-- parameter checks
 
-	IF @SourceID IS NULL
+	IF @SourceID IS NULL OR @SourceType IS NULL
 	BEGIN
-		;THROW 50000, 'SourceID must be populated.', 0
+		SET @RevisionCount = -1
 	END
-	IF @SourceType IS NULL
+	ELSE
 	BEGIN
-		;THROW 50000, 'SourceType must be populated.', 0
-	END
-	IF @SourceType < 0 OR @SourceType > 1
-	BEGIN
-		;THROW 50000, 'SourceType must be within range (0-1).', 0
-	END
-
-	-- grab source by ID and type.
-
-	IF @SourceType = 0
-	BEGIN
-		SELECT	@RevisionCount = [dbo].[LocalSourceLocations].[RevisionCount]
-		FROM	[dbo].[LocalSourceLocations]
-		WHERE	[dbo].[LocalSourceLocations].[ID] = @SourceID
-	END
-	ELSE IF @SourceType = 1
-	BEGIN
-		SELECT	@RevisionCount = [dbo].[NetworkSourceLocations].[RevisionCount]
-		FROM	[dbo].[NetworkSourceLocations]
-		WHERE	[dbo].[NetworkSourceLocations].[ID] = @SourceID
+		-- grab source by ID and type.
+		IF @SourceType = 0
+		BEGIN
+			SELECT	@RevisionCount = [dbo].[LocalSourceLocations].[RevisionCount]
+			FROM	[dbo].[LocalSourceLocations]
+			WHERE	[dbo].[LocalSourceLocations].[ID] = @SourceID
+		END
+		ELSE IF @SourceType = 1
+		BEGIN
+			SELECT	@RevisionCount = [dbo].[NetworkSourceLocations].[RevisionCount]
+			FROM	[dbo].[NetworkSourceLocations]
+			WHERE	[dbo].[NetworkSourceLocations].[ID] = @SourceID
+		END	
 	END
 
 	IF @RevisionCount IS NULL
 	BEGIN
-		;THROW 50000, 'Specified source was not found.', 0
+		SET @RevisionCount = -1
 	END
 
 	RETURN @RevisionCount
