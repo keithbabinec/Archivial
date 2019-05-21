@@ -41,7 +41,7 @@ namespace ArchivialLibrary.Client
             Thread pl = new Thread(() => ProcessLoopAsync().Wait());
             pl.Start();
 
-            Logger.WriteTraceMessage(string.Format("Backup engine is now running."), InstanceID);
+            Logger.WriteTraceMessage(string.Format("Cleanup engine is now running."), InstanceID);
         }
 
         /// <summary>
