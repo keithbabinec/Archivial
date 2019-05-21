@@ -101,6 +101,16 @@
         public const int StartedCoreServiceEngine = 1018;
 
         /// <summary>
+        /// Event ID: Started cleanup engine.
+        /// </summary>
+        public const int StartedCleanupEngine = 1019;
+
+        /// <summary>
+        /// Event ID: Stopped cleanup engine.
+        /// </summary>
+        public const int StoppedCleanupEngine = 1020;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;
@@ -209,5 +219,10 @@
         /// Event ID: Failed to grab the source for a file to be cleaned up.
         /// </summary>
         public const int FailedToGetSourceLocationForCleanupFile = 2021;
+
+        /// <summary>
+        /// Event ID: Failed cleanup engine.
+        /// </summary>
+        public const int FailedCleanupEngine = 2022;
     }
 }

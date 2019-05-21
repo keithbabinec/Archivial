@@ -81,17 +81,15 @@ namespace ArchivialClientAgent
         private List<BackupEngine> BackupEngineInstances { get; set; }
 
         /// <summary>
-        /// A flag that indicates if the core service stop has been requested.
+        /// A reference to the cleanup engine instances.
         /// </summary>
-        private bool ServiceStopHasBeenRequested { get; set; }
+        private List<CleanupEngine> CleanupEngineInstances { get; set; }
 
         /// <summary>
         /// Core application start.
         /// </summary>
         private void CoreStart()
         {
-            ServiceStopHasBeenRequested = false;
-
             StartLoggers();
 
             CoreLog.WriteSystemEvent(
@@ -140,6 +138,15 @@ namespace ArchivialClientAgent
                 return;
             }
 
+            var cleTask = StartCleanupEnginesAsync();
+            cleTask.Wait();
+
+            if (!cleTask.Result)
+            {
+                Stop();
+                return;
+            }
+
             CoreLog.WriteSystemEvent(
                 string.Format("Successfully started {0} client service.", ArchivialLibrary.Constants.Logging.AppName),
                 EventLogEntryType.Information, ArchivialLibrary.Constants.EventIDs.StartedService, true);
@@ -150,8 +157,6 @@ namespace ArchivialClientAgent
         /// </summary>
         protected override void OnStop()
         {
-            ServiceStopHasBeenRequested = true;
-
             if (CoreLog != null)
             {
                 CoreLog.WriteSystemEvent(
@@ -486,6 +491,79 @@ namespace ArchivialClientAgent
                 CoreLog.WriteSystemEvent(
                     string.Format("Backup Engine instance {0} has stopped.", e.EngineID),
                     EventLogEntryType.Information, ArchivialLibrary.Constants.EventIDs.StoppedBackupEngine, true);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unexpected EngineStoppedReason: " + e.Reason);
+            }
+        }
+
+        /// <summary>
+        /// Starts the cleanup engine(s).
+        /// </summary>
+        /// <returns>True if successful, otherwise false.</returns>
+        private async Task<bool> StartCleanupEnginesAsync()
+        {
+            // each cleanup engine instance shares the same logger.
+            // this means a single log file for all engine instances- and each engine will prepend its log messages with a context tag.
+
+            try
+            {
+                CleanupEngineInstances = new List<CleanupEngine>();
+
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.CleanupEngineInstancesCount;
+                var instanceCount = Convert.ToInt32(await ClientDatabase.GetApplicationOptionAsync(settingName).ConfigureAwait(false));
+
+                for (int i = 0; i < instanceCount; i++)
+                {
+                    var engineLog = new Logger(string.Format("{0}-{1}", ArchivialLibrary.Constants.Logging.CleanupComponentName, i));
+                    engineLog.Start(
+                        CoreSettings.EventlogName,
+                        CoreSettings.EventlogName,
+                        CoreSettings.LogFilesDirectory);
+
+                    var instance = new CleanupEngine(ClientDatabase, engineLog, i);
+                    instance.Stopped += Cleanup_Stopped;
+                    instance.BeginStart();
+
+                    CleanupEngineInstances.Add(instance);
+
+                    CoreLog.WriteSystemEvent(
+                        string.Format("Cleanup Engine instance {0} has started.", i),
+                        EventLogEntryType.Information, ArchivialLibrary.Constants.EventIDs.StartedCleanupEngine, true);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var message = "Failed to start the cleanup engine(s).";
+                var context = CoreLog.GenerateFullContextStackTrace();
+                CoreLog.WriteSystemEvent(message, ex, context, ArchivialLibrary.Constants.EventIDs.FailedCleanupEngine, true);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Callback event for when the cleanup engine has stopped.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Cleanup_Stopped(object sender, ArchivialLibrary.Events.EngineStoppedEventArgs e)
+        {
+            if (e.Reason == ArchivialLibrary.Events.EngineStoppedReason.Failed)
+            {
+                CoreLog.WriteSystemEvent(
+                    string.Format("Cleanup Engine instance {0} has failed.", e.EngineID),
+                    e.Exception,
+                    CoreLog.GenerateFullContextStackTrace(),
+                    ArchivialLibrary.Constants.EventIDs.FailedCleanupEngine, true);
+            }
+            else if (e.Reason == ArchivialLibrary.Events.EngineStoppedReason.StopRequested)
+            {
+                CoreLog.WriteSystemEvent(
+                    string.Format("Cleanup Engine instance {0} has stopped.", e.EngineID),
+                    EventLogEntryType.Information, ArchivialLibrary.Constants.EventIDs.StoppedCleanupEngine, true);
             }
             else
             {

@@ -16,6 +16,11 @@
         public const string BackupComponentName = "BackupEngine";
 
         /// <summary>
+        /// A string constant for the cleanup component name.
+        /// </summary>
+        public const string CleanupComponentName = "CleanupEngine";
+
+        /// <summary>
         /// A string constant for the scanner component name.
         /// </summary>
         public const string ScanningComponentName = "ScanEngine";
