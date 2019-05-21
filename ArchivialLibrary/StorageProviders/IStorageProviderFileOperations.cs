@@ -35,12 +35,12 @@ namespace ArchivialLibrary.StorageProviders
         Task UploadFileBlockAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks, CancellationToken cancelToken);
 
         /// <summary>
-        /// Deletes a single file from the cloud storage provider.
+        /// Deletes a single file revision from the cloud storage provider.
         /// </summary>
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="sourceLocation"><c>SourceLocation</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <param name="cancelToken">The canellation token.</param>
-        Task DeleteFileAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, CancellationToken cancelToken);
+        Task DeleteFileRevisionAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, CancellationToken cancelToken);
     }
 }

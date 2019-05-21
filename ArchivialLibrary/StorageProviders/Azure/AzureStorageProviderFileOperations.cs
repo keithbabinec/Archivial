@@ -262,13 +262,13 @@ namespace ArchivialLibrary.StorageProviders.Azure
         }
 
         /// <summary>
-        /// Deletes a single file from the Azure cloud storage provider.
+        /// Deletes a single file revision from the Azure cloud storage provider.
         /// </summary>
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="sourceLocation"><c>SourceLocation</c></param>
         /// <param name="directory"><c>DirectoryMapItem</c></param>
         /// <param name="cancelToken">The canellation token.</param>
-        public async Task DeleteFileAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, CancellationToken cancelToken)
+        public async Task DeleteFileRevisionAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, CancellationToken cancelToken)
         {
             int maxAttempts = 3;
 

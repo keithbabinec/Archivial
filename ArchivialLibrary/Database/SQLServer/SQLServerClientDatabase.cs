@@ -1354,6 +1354,94 @@ namespace ArchivialLibrary.Database.SQLServer
         }
 
         /// <summary>
+        /// Gets the next file that needs to be cleaned up.
+        /// </summary>
+        /// <remarks>
+        /// If no files need to be cleaned up, return null.
+        /// </remarks>
+        /// <param name="EngineInstanceID">The engine instance.</param>
+        /// <returns><c>BackupFile</c></returns>
+        public async Task<BackupFile> FindNextFileToCleanupAsync(int EngineInstanceID)
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.FindNextFileToCleanup";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@EngineInstanceID", EngineInstanceID);
+
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                        {
+                            if (rdr.HasRows)
+                            {
+                                await rdr.ReadAsync().ConfigureAwait(false);
+
+                                var file = new BackupFile()
+                                {
+                                    FileID = rdr.GetGuid(0),
+                                    Filename = rdr.GetString(1),
+                                    Directory = rdr.GetString(2),
+                                    FullSourcePath = rdr.GetString(3),
+                                    FileSizeBytes = rdr.GetInt64(4),
+                                    LastModified = rdr.GetDateTime(5),
+                                    TotalFileBlocks = rdr.GetInt32(6),
+                                    FileHash = rdr.IsDBNull(7) ? null : (byte[])rdr["FileHash"], // special handling for varbinary column
+                                    FileHashString = rdr.IsDBNull(8) ? null : rdr.GetString(8),
+                                    Priority = (FileBackupPriority)rdr.GetInt32(9),
+                                    SourceID = rdr.GetInt32(10),
+                                    SourceType = (SourceLocationType)rdr.GetInt32(11),
+                                    FileRevisionNumber = rdr.GetInt32(12),
+                                    HashAlgorithmType = rdr.IsDBNull(13) ? null : rdr.GetString(13),
+                                    LastChecked = rdr.GetDateTime(14),
+                                    LastUpdated = rdr.GetDateTime(15),
+                                    OverallState = (FileStatus)rdr.GetInt32(16),
+                                    CopyState = new Dictionary<StorageProviderTypes, StorageProviderFileStatus>()
+                                };
+
+                                if (await rdr.NextResultAsync().ConfigureAwait(false))
+                                {
+                                    while (await rdr.ReadAsync().ConfigureAwait(false))
+                                    {
+                                        file.CopyState.Add(
+                                            (StorageProviderTypes)rdr.GetInt32(0),
+                                            new StorageProviderFileStatus()
+                                            {
+                                                Provider = (StorageProviderTypes)rdr.GetInt32(0),
+                                                SyncStatus = (FileStatus)rdr.GetInt32(1),
+                                                HydrationStatus = (StorageProviderHydrationStatus)rdr.GetInt32(2),
+                                                LastCompletedFileBlockIndex = rdr.GetInt32(3)
+                                            });
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception("Failed to lookup next cleanup file. No copystate output was returned from the database.");
+                                }
+
+                                return file;
+                            }
+                            else
+                            {
+                                // no files found that require cleanup.
+                                return null;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Calculates and returns the overall backup progress.
         /// </summary>
         /// <returns></returns>
@@ -1798,6 +1886,41 @@ namespace ArchivialLibrary.Database.SQLServer
 
                         cmd.Parameters.AddWithValue("@ID", File.FileID);
                         cmd.Parameters.AddWithValue("@Priority", File.Priority);
+
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Removes a file from the cleanup file queue.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        public async Task RemoveFileFromCleanupQueueAsync(BackupFile File)
+        {
+            if (File == null)
+            {
+                throw new ArgumentException(nameof(File));
+            }
+
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.RemoveFileFromCleanupQueue";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ID", File.FileID);
 
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     }

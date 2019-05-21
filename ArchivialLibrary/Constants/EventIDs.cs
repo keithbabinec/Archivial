@@ -199,5 +199,15 @@
         /// Event ID: Failed to the source location for a backup file.
         /// </summary>
         public const int FailedToGetSourceLocationForBackupFile = 2019;
+
+        /// <summary>
+        /// Event ID: Failed to grab the next file that needs to be cleaned up.
+        /// </summary>
+        public const int FailedToGetNextFileToCleanup = 2020;
+
+        /// <summary>
+        /// Event ID: Failed to grab the source for a file to be cleaned up.
+        /// </summary>
+        public const int FailedToGetSourceLocationForCleanupFile = 2021;
     }
 }
