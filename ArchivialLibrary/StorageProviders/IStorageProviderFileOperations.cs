@@ -11,7 +11,7 @@ namespace ArchivialLibrary.StorageProviders
     public interface IStorageProviderFileOperations
     {
         /// <summary>
-        /// Returns the status of a file as it exists (or doesn't) in the cloud provider.
+        /// Returns the status of a file as it exists (or doesn't) in the cloud storage provider.
         /// </summary>
         /// <param name="file"><c>BackupFile</c></param>
         /// <param name="sourceLocation"><c>SourceLocation</c></param>
@@ -20,7 +20,7 @@ namespace ArchivialLibrary.StorageProviders
         Task<StorageProviderFileStatus> GetFileStatusAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory);
 
         /// <summary>
-        /// Uploads a single block of a file to the cloud provider.
+        /// Uploads a single block of a file to the cloud storage provider.
         /// </summary>
         /// <remarks>
         /// If this file is the only (or final) block in the file, the file should be committed and/or the transaction finalized.
@@ -33,5 +33,14 @@ namespace ArchivialLibrary.StorageProviders
         /// <param name="totalBlocks">The total number of blocks that this file is made of.</param>
         /// <param name="cancelToken">The cancellation token.</param>
         Task UploadFileBlockAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, byte[] data, int currentBlockIndex, int totalBlocks, CancellationToken cancelToken);
+
+        /// <summary>
+        /// Deletes a single file from the cloud storage provider.
+        /// </summary>
+        /// <param name="file"><c>BackupFile</c></param>
+        /// <param name="sourceLocation"><c>SourceLocation</c></param>
+        /// <param name="directory"><c>DirectoryMapItem</c></param>
+        /// <param name="cancelToken">The canellation token.</param>
+        Task DeleteFileAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, CancellationToken cancelToken);
     }
 }

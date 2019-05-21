@@ -262,6 +262,56 @@ namespace ArchivialLibrary.StorageProviders.Azure
         }
 
         /// <summary>
+        /// Deletes a single file from the Azure cloud storage provider.
+        /// </summary>
+        /// <param name="file"><c>BackupFile</c></param>
+        /// <param name="sourceLocation"><c>SourceLocation</c></param>
+        /// <param name="directory"><c>DirectoryMapItem</c></param>
+        /// <param name="cancelToken">The canellation token.</param>
+        public async Task DeleteFileAsync(BackupFile file, SourceLocation sourceLocation, DirectoryMapItem directory, CancellationToken cancelToken)
+        {
+            int maxAttempts = 3;
+
+            var sasBlobUri = ProviderUtilities.GetFileUri(AzureStorage.Credentials.AccountName, 
+                    directory.GetRemoteContainerName(StorageProviderTypes.Azure),
+                    file.GetRemoteFileName(StorageProviderTypes.Azure));
+
+            for (int currentAttempt = 1; currentAttempt <= maxAttempts; currentAttempt++)
+            {
+                cancelToken.ThrowIfCancellationRequested();
+
+                try
+                {
+                    CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri), AzureStorage.Credentials);
+                    await blob.DeleteIfExistsAsync(cancelToken).ConfigureAwait(false);
+
+                    break;
+                }
+                catch (StorageException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException is TimeoutException)
+                    {
+                        if (currentAttempt == maxAttempts)
+                        {
+                            // retries exhausted
+                            throw;
+                        }
+
+                        // special case handling:
+                        // a windows azure storage timeout has occurred. give it a minute and try again.
+
+                        Logger.WriteTraceMessage("An Azure storage timeout exception has occurred while trying to check (or delete) the blob. Waiting a minute before trying again.");
+                        await Task.Delay(TimeSpan.FromSeconds(60), cancelToken).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Creates the blob container if it is missing, with retries.
         /// </summary>
         /// <param name="containerName"></param>
