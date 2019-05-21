@@ -61,6 +61,7 @@
     <Folder Include="Tables" />
     <Folder Include="Stored Procedures" />
     <Folder Include="Scripts" />
+    <Folder Include="Functions" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\ApplicationOptions.sql" />
@@ -109,6 +110,8 @@
     <Build Include="Tables\MedPriBackupFilesQueue.sql" />
     <Build Include="Tables\HighPriBackupFilesQueue.sql" />
     <Build Include="Stored Procedures\GetSourceLocation.sql" />
+    <Build Include="Functions\GetSourceLocationRevisionCount.sql" />
+    <Build Include="Tables\FileCleanupQueue.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
