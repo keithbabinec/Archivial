@@ -179,6 +179,13 @@ namespace ArchivialClientAgent
                     instance.BeginStop();
                 }
             }
+            if (CleanupEngineInstances != null)
+            {
+                foreach (var instance in CleanupEngineInstances)
+                {
+                    instance.BeginStop();
+                }
+            }
             if (ConnectionEngineInstance != null)
             {
                 ConnectionEngineInstance.BeginStop();
