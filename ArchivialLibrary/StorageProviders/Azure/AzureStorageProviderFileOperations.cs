@@ -285,6 +285,8 @@ namespace ArchivialLibrary.StorageProviders.Azure
                     CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasBlobUri), AzureStorage.Credentials);
                     await blob.DeleteIfExistsAsync(cancelToken).ConfigureAwait(false);
 
+                    Logger.WriteTraceMessage("File revision successfully cleaned up.");
+
                     break;
                 }
                 catch (StorageException ex)

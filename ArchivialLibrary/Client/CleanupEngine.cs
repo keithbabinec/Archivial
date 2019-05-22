@@ -83,6 +83,9 @@ namespace ArchivialLibrary.Client
 
                         if (nextFileToCleanup != null)
                         {
+                            var nextFileMessage = string.Format("Detected a file revision to cleanup. FileName={0}, Revision={1}", nextFileToCleanup.FullSourcePath, nextFileToCleanup.FileRevisionNumber);
+                            Logger.WriteTraceMessage(nextFileMessage, InstanceID);
+
                             // lookup the source information for this file.
                             // it is required for the cleanup.
 
@@ -150,13 +153,11 @@ namespace ArchivialLibrary.Client
         {
             var directory = await Database.GetDirectoryMapItemAsync(file.Directory).ConfigureAwait(false);
 
-            foreach (var providerName in file.CopyState.Keys)
+            foreach (var provider in Providers)
             {
-                var destination = Providers[providerName];
-
                 try
                 {
-                    await destination.DeleteFileRevisionAsync(file, source, directory, cancelToken).ConfigureAwait(false);
+                    await provider.Value.DeleteFileRevisionAsync(file, source, directory, cancelToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
