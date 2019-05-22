@@ -40,8 +40,12 @@ BEGIN
 		BEGIN TRANSACTION
 
 		DECLARE @PreviousRevision INT
+		DECLARE @SourceType INT
+		DECLARE @SourceID INT
 
-		SELECT	@PreviousRevision = [dbo].[BackupFiles].[FileRevisionNumber]
+		SELECT	@PreviousRevision = [dbo].[BackupFiles].[FileRevisionNumber],
+				@SourceType = [dbo].[BackupFiles].[SourceType],
+				@SourceID = [dbo].[BackupFiles].[SourceID]
 		FROM	[dbo].[BackupFiles]
 		WHERE	[dbo].[BackupFiles].[ID] = @ID
 
@@ -49,6 +53,8 @@ BEGIN
 		BEGIN
 			;THROW 50000, 'File was not found in the BackupFiles table.', 0
 		END
+
+		DECLARE @MaxRevisionCount INT = [dbo].[GetSourceLocationRevisionCount](@SourceID, @SourceType)
 
 		UPDATE	[dbo].[BackupFiles]
 		SET		[dbo].[BackupFiles].[FileHash] = NULL,
@@ -64,6 +70,13 @@ BEGIN
 				[dbo].[BackupFiles].[OverallState] = 0, -- unsynced
 				[dbo].[BackupFiles].[StateMessage] = NULL
 		WHERE	[dbo].[BackupFiles].[ID] = @ID
+
+		DECLARE @RevisionToRemove INT = @PreviousRevision - @MaxRevisionCount
+
+		IF (@RevisionToRemove > 0)
+		BEGIN
+			INSERT INTO [dbo].[FileCleanupQueue] ( [FileID], [FileRevisionNumber], [AssignedInstanceID] ) VALUES ( @ID, @RevisionToRemove, -1 )
+		END
 
 		COMMIT TRANSACTION
 

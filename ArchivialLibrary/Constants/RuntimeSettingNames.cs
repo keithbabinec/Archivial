@@ -29,6 +29,11 @@
         public const string BackupEngineInstancesCount = "BackupEngineInstancesCount";
 
         /// <summary>
+        /// Option: CleanupEngineInstancesCount.
+        /// </summary>
+        public const string CleanupEngineInstancesCount = "CleanupEngineInstancesCount";
+
+        /// <summary>
         /// Option: LowPriorityScanFrequencyInHours.
         /// </summary>
         public const string LowPriorityScanFrequencyInHours = "LowPriorityScanFrequencyInHours";

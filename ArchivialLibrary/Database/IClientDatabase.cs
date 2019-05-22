@@ -170,6 +170,16 @@ namespace ArchivialLibrary.Database
         Task<BackupFile> FindNextFileToBackupAsync(int EngineInstanceID, FileBackupPriority Priority);
 
         /// <summary>
+        /// Gets the next file that needs to be cleaned up.
+        /// </summary>
+        /// <remarks>
+        /// If no files need to be cleaned up, return null.
+        /// </remarks>
+        /// <param name="EngineInstanceID">The engine instance.</param>
+        /// <returns><c>BackupFile</c></returns>
+        Task<BackupFile> FindNextFileToCleanupAsync(int EngineInstanceID);
+
+        /// <summary>
         /// Calculates and returns the overall backup progress.
         /// </summary>
         /// <returns></returns>
@@ -231,5 +241,12 @@ namespace ArchivialLibrary.Database
         /// <param name="File"></param>
         /// <returns></returns>
         Task RemoveFileFromBackupQueueAsync(BackupFile File);
+
+        /// <summary>
+        /// Removes a file from the cleanup file queue.
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        Task RemoveFileFromCleanupQueueAsync(BackupFile File);
     }
 }
