@@ -14,10 +14,10 @@ Sets one or more application options for Archivial Cloud Backup.
 
 ```
 Set-ArchivialCloudBackupOptions [-LogFilesRetentionInDays <Int32>] [-DatabaseBackupsRetentionInDays <Int32>]
- [-BackupEngineInstancesCount <Int32>] [-LowPriorityScanFrequencyInHours <Int32>]
- [-MedPriorityScanFrequencyInHours <Int32>] [-HighPriorityScanFrequencyInHours <Int32>]
- [-ProtectionIV <String>] [-StatusUpdateSchedule <String>] [-MasterExclusionMatches <String[]>]
- [<CommonParameters>]
+ [-BackupEngineInstancesCount <Int32>] [-BackupEngineStartupDelayInSeconds <Int32>]
+ [-LowPriorityScanFrequencyInHours <Int32>] [-MedPriorityScanFrequencyInHours <Int32>]
+ [-HighPriorityScanFrequencyInHours <Int32>] [-ProtectionIV <String>] [-StatusUpdateSchedule <String>]
+ [-MasterExclusionMatches <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -88,6 +88,22 @@ Accept wildcard characters: False
 
 ### -BackupEngineInstancesCount
 Optionally specify the number of concurrent backup engine instances to run.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BackupEngineStartupDelayInSeconds
+Optionally specify the time delay in seconds between the startup of each backup engine instance.
+This helps avoid sudden, excessive filesystem load by staggering the engine startups.
 
 ```yaml
 Type: Int32
