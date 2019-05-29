@@ -33,6 +33,11 @@ namespace ArchivialLibrary.Folders
         public ulong UpdatedBytesFound { get; set; }
 
         /// <summary>
+        /// The total number of all unsupported folders found.
+        /// </summary>
+        public long UnsupportedFoldersFound { get; set; }
+
+        /// <summary>
         /// The total number of unsupported files found.
         /// </summary>
         public long UnsupportedFilesFound { get; set; }
