@@ -179,6 +179,11 @@ namespace ArchivialLibrary.Client.Sources
             {
                 return directory.EnumerateFiles(matchFilter);
             }
+            catch (PathTooLongException)
+            {
+                Logger.WriteTraceWarning(string.Format("Cannot enumerate files in this directory, the path is too long: {0}", directory.FullName));
+                return null;
+            }
             catch (Exception ex)
             {
                 if (string.IsNullOrEmpty(matchFilter))
