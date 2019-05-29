@@ -47,6 +47,10 @@ namespace ArchivialPowerShell.Functions.Public
             var engineCount = ArchivialLibrary.Constants.RuntimeSettingNames.BackupEngineInstancesCount;
             result.BackupEngineInstancesCount = Convert.ToInt32(db.GetApplicationOptionAsync(engineCount).GetAwaiter().GetResult());
 
+            WriteVerbose("Querying application setting in the database: BackupEngineStartupDelayInSeconds");
+            var delaySeconds = ArchivialLibrary.Constants.RuntimeSettingNames.BackupEngineStartupDelayInSeconds;
+            result.BackupEngineStartupDelayInSeconds = Convert.ToInt32(db.GetApplicationOptionAsync(delaySeconds).GetAwaiter().GetResult());
+
             WriteVerbose("Querying application setting in the database: LowPriorityScanFrequencyInHours");
             var lowPri = ArchivialLibrary.Constants.RuntimeSettingNames.LowPriorityScanFrequencyInHours;
             result.LowPriorityScanFrequencyInHours = Convert.ToInt32(db.GetApplicationOptionAsync(lowPri).GetAwaiter().GetResult());

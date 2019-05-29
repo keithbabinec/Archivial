@@ -111,6 +111,11 @@
         public const int StoppedCleanupEngine = 1020;
 
         /// <summary>
+        /// Event ID: Waiting to start the next backup engine.
+        /// </summary>
+        public const int BackupEngineWaitingForNextStart = 1021;
+
+        /// <summary>
         /// Event ID: Failed to write to the trace log.
         /// </summary>
         public const int FailedToWriteToTraceLog = 2000;

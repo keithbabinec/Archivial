@@ -29,6 +29,11 @@
         public const string BackupEngineInstancesCount = "BackupEngineInstancesCount";
 
         /// <summary>
+        /// Option: BackupEngineStartupDelayInSeconds.
+        /// </summary>
+        public const string BackupEngineStartupDelayInSeconds = "BackupEngineStartupDelayInSeconds";
+
+        /// <summary>
         /// Option: CleanupEngineInstancesCount.
         /// </summary>
         public const string CleanupEngineInstancesCount = "CleanupEngineInstancesCount";

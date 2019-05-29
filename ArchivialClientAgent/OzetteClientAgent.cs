@@ -445,11 +445,20 @@ namespace ArchivialClientAgent
             {
                 BackupEngineInstances = new List<BackupEngine>();
 
-                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.BackupEngineInstancesCount;
-                var instanceCount = Convert.ToInt32(await ClientDatabase.GetApplicationOptionAsync(settingName).ConfigureAwait(false));
+                var instanceCountSettingName = ArchivialLibrary.Constants.RuntimeSettingNames.BackupEngineInstancesCount;
+                var instanceCount = Convert.ToInt32(await ClientDatabase.GetApplicationOptionAsync(instanceCountSettingName).ConfigureAwait(false));
+
+                var startupDelaySettingName = ArchivialLibrary.Constants.RuntimeSettingNames.BackupEngineStartupDelayInSeconds;
+                var startupDelaySeconds = Convert.ToInt32(await ClientDatabase.GetApplicationOptionAsync(startupDelaySettingName).ConfigureAwait(false));
 
                 for (int i = 0; i < instanceCount; i++)
                 {
+                    CoreLog.WriteSystemEvent(
+                        string.Format("Waiting {0} seconds between Backup Engine starts to reduce sudden filesystem load.", startupDelaySeconds),
+                        EventLogEntryType.Information, ArchivialLibrary.Constants.EventIDs.BackupEngineWaitingForNextStart, true);
+
+                    await Task.Delay(TimeSpan.FromSeconds(startupDelaySeconds)).ConfigureAwait(false);
+
                     var engineLog = new Logger(string.Format("{0}-{1}", ArchivialLibrary.Constants.Logging.BackupComponentName, i));
                     engineLog.Start(
                         CoreSettings.EventlogName,

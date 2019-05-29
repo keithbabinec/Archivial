@@ -52,6 +52,12 @@ BEGIN
 	VALUES ( 'BackupEngineInstancesCount', '4' )
 END
 
+IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'BackupEngineStartupDelayInSeconds'))
+BEGIN
+    INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )
+	VALUES ( 'BackupEngineStartupDelayInSeconds', '30' )
+END
+
 IF (NOT EXISTS(SELECT 1 FROM [dbo].[ApplicationOptions] WHERE [Name] = 'CleanupEngineInstancesCount'))
 BEGIN
     INSERT INTO	[dbo].[ApplicationOptions] ( [Name], [Value] )

@@ -65,6 +65,24 @@ namespace ArchivialPowerShellTests.Functions.Public
         }
 
         [TestMethod]
+        public void SetArchivialCloudBackupOptionsCommand_BackupEngineStartupDelayInSeconds_HasRequiredAttributes()
+        {
+            Assert.IsTrue(
+                TypeHelpers.CmdletParameterHasAttribute(
+                    typeof(SetArchivialCloudBackupOptionsCommand),
+                    nameof(SetArchivialCloudBackupOptionsCommand.BackupEngineStartupDelayInSeconds),
+                    typeof(ParameterAttribute))
+            );
+
+            Assert.IsTrue(
+                TypeHelpers.CmdletParameterHasAttribute(
+                    typeof(SetArchivialCloudBackupOptionsCommand),
+                    nameof(SetArchivialCloudBackupOptionsCommand.BackupEngineStartupDelayInSeconds),
+                    typeof(ValidateRangeAttribute))
+            );
+        }
+
+        [TestMethod]
         public void SetArchivialCloudBackupOptionsCommand_LowPriorityScanFrequencyInHours_HasRequiredAttributes()
         {
             Assert.IsTrue(
@@ -197,6 +215,9 @@ namespace ArchivialPowerShellTests.Functions.Public
                 It.Is<string>(z => z == RuntimeSettingNames.BackupEngineInstancesCount), It.IsAny<string>()), Times.Never);
 
             mockedDb.Verify(x => x.SetApplicationOptionAsync(
+                It.Is<string>(z => z == RuntimeSettingNames.BackupEngineStartupDelayInSeconds), It.IsAny<string>()), Times.Never);
+            
+            mockedDb.Verify(x => x.SetApplicationOptionAsync(
                 It.Is<string>(z => z == RuntimeSettingNames.LowPriorityScanFrequencyInHours), It.IsAny<string>()), Times.Never);
 
             mockedDb.Verify(x => x.SetApplicationOptionAsync(
@@ -273,6 +294,26 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             mockedDb.Verify(x => x.SetApplicationOptionAsync(
                 It.Is<string>(z => z == RuntimeSettingNames.BackupEngineInstancesCount), It.Is<string>(z => z == "8")), Times.Once);
+        }
+
+        [TestMethod]
+        public void SetArchivialCloudBackupOptionsCommand_SetsEngineStartupDelayInSeconds_WhenOptionIsProvided()
+        {
+            // setup 
+
+            var mockedDb = new Mock<IClientDatabase>();
+
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            command.BackupEngineStartupDelayInSeconds = 60;
+
+            // execute
+
+            var result = command.Invoke().GetEnumerator().MoveNext();
+
+            // verify
+
+            mockedDb.Verify(x => x.SetApplicationOptionAsync(
+                It.Is<string>(z => z == RuntimeSettingNames.BackupEngineStartupDelayInSeconds), It.Is<string>(z => z == "60")), Times.Once);
         }
 
         [TestMethod]

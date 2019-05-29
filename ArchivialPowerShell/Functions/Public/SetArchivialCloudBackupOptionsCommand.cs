@@ -54,6 +54,13 @@ namespace ArchivialPowerShell.Functions.Public
         public int BackupEngineInstancesCount { get; set; }
 
         /// <summary>
+        ///   <para type="description">Optionally specify the time delay in seconds between the startup of each backup engine instance. This helps avoid sudden, excessive filesystem load by staggering the engine startups.</para>
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        [ValidateRange(1, 3600)]
+        public int BackupEngineStartupDelayInSeconds { get; set; }
+
+        /// <summary>
         ///   <para type="description">Optionally specify how often (in hours) that low-priority folder scans should be performed.</para>
         /// </summary>
         [Parameter(Mandatory = false)]
@@ -132,6 +139,14 @@ namespace ArchivialPowerShell.Functions.Public
 
                 var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.BackupEngineInstancesCount;
                 db.SetApplicationOptionAsync(settingName, BackupEngineInstancesCount.ToString()).GetAwaiter().GetResult();
+            }
+
+            if (BackupEngineStartupDelayInSeconds > 0)
+            {
+                WriteVerbose("Updating application setting in the database: BackupEngineStartupDelayInSeconds");
+
+                var settingName = ArchivialLibrary.Constants.RuntimeSettingNames.BackupEngineStartupDelayInSeconds;
+                db.SetApplicationOptionAsync(settingName, BackupEngineStartupDelayInSeconds.ToString()).GetAwaiter().GetResult();
             }
 
             if (LowPriorityScanFrequencyInHours > 0)

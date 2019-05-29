@@ -18,6 +18,7 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.LogFilesRetentionInDays))).ReturnsAsync("30");
             mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.DatabaseBackupsRetentionInDays))).ReturnsAsync("7");
             mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.BackupEngineInstancesCount))).ReturnsAsync("4");
+            mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.BackupEngineStartupDelayInSeconds))).ReturnsAsync("60");
             mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.LowPriorityScanFrequencyInHours))).ReturnsAsync("24");
             mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.MedPriorityScanFrequencyInHours))).ReturnsAsync("12");
             mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.HighPriorityScanFrequencyInHours))).ReturnsAsync("1");
@@ -37,6 +38,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 Assert.AreEqual(30, options.LogFilesRetentionInDays);
                 Assert.AreEqual(7, options.DatabaseBackupsRetentionInDays);
                 Assert.AreEqual(4, options.BackupEngineInstancesCount);
+                Assert.AreEqual(60, options.BackupEngineStartupDelayInSeconds);
                 Assert.AreEqual(24, options.LowPriorityScanFrequencyInHours);
                 Assert.AreEqual(12, options.MedPriorityScanFrequencyInHours);
                 Assert.AreEqual(1, options.HighPriorityScanFrequencyInHours);

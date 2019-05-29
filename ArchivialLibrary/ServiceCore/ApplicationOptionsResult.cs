@@ -36,6 +36,11 @@
         public int BackupEngineInstancesCount { get; set; }
 
         /// <summary>
+        /// Option: BackupEngineStartupDelayInSeconds
+        /// </summary>
+        public int BackupEngineStartupDelayInSeconds { get; set; }
+
+        /// <summary>
         /// Option: DatabaseBackupsRetentionInDays
         /// </summary>
         public int DatabaseBackupsRetentionInDays { get; set; }
