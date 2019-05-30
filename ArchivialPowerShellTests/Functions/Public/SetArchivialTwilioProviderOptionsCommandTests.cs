@@ -113,7 +113,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                         }
                     });
 
-            var command = new SetArchivialTwilioProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object);
+            var command = new SetArchivialTwilioProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object, null);
             command.TwilioAccountID = "FakeAccountID";
             command.TwilioAuthToken = "FakeAuthToken";
             command.TwilioDestinationPhones = new string[] { "123456788", "123456789" };
@@ -138,7 +138,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             mockedDb.Setup(x => x.GetProvidersAsync(It.Is<ProviderTypes>(z => z == ProviderTypes.Messaging))).ReturnsAsync(new ProviderCollection());
 
-            var command = new SetArchivialTwilioProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object);
+            var command = new SetArchivialTwilioProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object, null);
             command.TwilioAccountID = "FakeAccountID";
             command.TwilioAuthToken = "FakeAuthToken";
             command.TwilioDestinationPhones = new string[] { "123456788", "123456789" };

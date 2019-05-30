@@ -72,7 +72,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                         }
                     });
 
-            var command = new SetArchivialAzureProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object);
+            var command = new SetArchivialAzureProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object, null);
             command.AzureStorageAccountName = "FakeStorageAccount";
             command.AzureStorageAccountToken = "FakeStorageAccountToken";
 
@@ -93,7 +93,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             mockedDb.Setup(x => x.GetProvidersAsync(It.Is<ProviderTypes>(z => z == ProviderTypes.Storage))).ReturnsAsync(new ProviderCollection());
 
-            var command = new SetArchivialAzureProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object);
+            var command = new SetArchivialAzureProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object, null);
             command.AzureStorageAccountName = "FakeStorageAccount";
             command.AzureStorageAccountToken = "FakeStorageAccountToken";
 

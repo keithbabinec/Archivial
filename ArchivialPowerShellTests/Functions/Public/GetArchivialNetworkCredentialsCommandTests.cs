@@ -20,7 +20,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                     new NetCredential()
                 });
 
-            var command = new GetArchivialNetworkCredentialsCommand(mockedDb.Object);
+            var command = new GetArchivialNetworkCredentialsCommand(mockedDb.Object, null, null);
 
             foreach (var result in command.Invoke())
             {

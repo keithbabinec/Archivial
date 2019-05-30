@@ -65,7 +65,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentProviderName = x);
 
-            var command = new RemoveArchivialProviderCommand(mockedDb.Object)
+            var command = new RemoveArchivialProviderCommand(mockedDb.Object, null, null)
             {
                 ProviderName = "Azure"
             };
@@ -97,7 +97,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentProviderName = x);
 
-            var command = new RemoveArchivialProviderCommand(mockedDb.Object)
+            var command = new RemoveArchivialProviderCommand(mockedDb.Object, null, null)
             {
                 Provider = new Provider() { Name = "Azure" }
             };
@@ -130,7 +130,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentProviderName = x);
 
-            var command = new RemoveArchivialProviderCommand(mockedDb.Object)
+            var command = new RemoveArchivialProviderCommand(mockedDb.Object, null, null)
             {
                 ProviderName = "AWS"
             };

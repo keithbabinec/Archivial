@@ -20,7 +20,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                     new Provider()
                 });
 
-            var command = new GetArchivialProvidersCommand(mockedDb.Object);
+            var command = new GetArchivialProvidersCommand(mockedDb.Object, null, null);
 
             foreach (var result in command.Invoke())
             {

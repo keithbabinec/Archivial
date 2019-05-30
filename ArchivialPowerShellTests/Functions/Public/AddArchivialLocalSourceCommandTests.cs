@@ -98,7 +98,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<LocalSourceLocation>(x => databaseCommitedObject = x);
             
-            var command = new AddArchivialLocalSourceCommand(mockedDb.Object)
+            var command = new AddArchivialLocalSourceCommand(mockedDb.Object, null, null)
             {
                 FolderPath = "C:\\folder\\path",
                 Priority = "Low",
@@ -134,7 +134,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 }
             );
 
-            var command = new AddArchivialLocalSourceCommand(mockedDb.Object)
+            var command = new AddArchivialLocalSourceCommand(mockedDb.Object, null, null)
             {
                 FolderPath = "C:\\folder\\path",
                 MatchFilter = "*",

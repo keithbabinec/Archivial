@@ -7,18 +7,33 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.ServiceProcess;
 using System.Threading;
 
-namespace ArchivialPowerShell.Utility
+namespace ArchivialPowerShell.Setup
 {
-    public static class Installation
+    /// <summary>
+    /// The Windows specific implementation of <c>ISetup</c>
+    /// </summary>
+    public class WindowsSetup : ISetup
     {
+        /// <summary>
+        /// Checks if this process is running elevated.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsRunningElevated()
+        {
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            WindowsPrincipal principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
+
         /// <summary>
         /// Checks if the SQL Server prerequisite is available.
         /// </summary>
         /// <returns></returns>
-        public static bool SqlServerPrerequisiteIsAvailable()
+        public bool SqlServerPrerequisiteIsAvailable()
         {
             var existingServices = ServiceController.GetServices();
 
@@ -36,7 +51,7 @@ namespace ArchivialPowerShell.Utility
         /// Sets the core application settings.
         /// </summary>
         /// <param name="installationDirectory"></param>
-        public static void CreateCoreSettings(string installationDirectory)
+        public void CreateCoreSettings(string installationDirectory)
         {
             // set the core settings.
             CoreSettings.InstallationDirectory = installationDirectory;
@@ -45,14 +60,14 @@ namespace ArchivialPowerShell.Utility
             // setting this flag indicates publish is required on next service startup.
             CoreSettings.DatabasePublishIsRequired = true;
 
-            var dbConnectionString = string.Format("Data Source=.\\SQLExpress;Initial Catalog={0};Integrated Security=SSPI;", ArchivialLibrary.Constants.Database.DatabaseName);
+            var dbConnectionString = string.Format("Data Source=.\\SQLExpress;Initial Catalog={0};Integrated Security=SSPI;", Database.DatabaseName);
             CoreSettings.DatabaseConnectionString = dbConnectionString;
         }
 
         /// <summary>
         /// Creates a custom event log and event source.
         /// </summary>
-        public static void CreateEventLogSource()
+        public void CreateEventLogSource()
         {
             if (EventLog.Exists(CoreSettings.EventlogName) == false)
             {
@@ -63,7 +78,7 @@ namespace ArchivialPowerShell.Utility
         /// <summary>
         /// Creates the installation directories.
         /// </summary>
-        public static void CreateInstallationDirectories()
+        public void CreateInstallationDirectories()
         {
             if (Directory.Exists(CoreSettings.InstallationDirectory) == false)
             {
@@ -101,7 +116,7 @@ namespace ArchivialPowerShell.Utility
         /// <summary>
         /// Copies the program files to the installation directory.
         /// </summary>
-        public static void CopyProgramFiles()
+        public void CopyProgramFiles()
         {
             var sourcePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -146,7 +161,7 @@ namespace ArchivialPowerShell.Utility
         /// <summary>
         /// Creates the client windows service.
         /// </summary>
-        public static void CreateClientService()
+        public void CreateClientService()
         {
             var existingServices = ServiceController.GetServices();
 
@@ -197,7 +212,7 @@ namespace ArchivialPowerShell.Utility
         /// <summary>
         /// Starts the client service.
         /// </summary>
-        public static void StartClientService()
+        public void StartClientService()
         {
             Process startService = new Process();
             startService.StartInfo = new ProcessStartInfo()
@@ -221,7 +236,7 @@ namespace ArchivialPowerShell.Utility
         /// <remarks>
         /// First time setup is done once the database is initialized, so check for the required publish flag/option state.
         /// </remarks>
-        public static void WaitForFirstTimeSetup()
+        public void WaitForFirstTimeSetup()
         {
             var Timeout = DateTime.Now.Add(TimeSpan.FromMinutes(10));
 
@@ -246,6 +261,144 @@ namespace ArchivialPowerShell.Utility
                     // setup has finished.
                     break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Stops the client windows service.
+        /// </summary>
+        public void StopClientService()
+        {
+            var existingServices = ServiceController.GetServices();
+            var ArchivialService = existingServices.FirstOrDefault(x => x.ServiceName == "ArchivialCloudBackup");
+
+            if (ArchivialService != null && ArchivialService.Status != ServiceControllerStatus.Stopped)
+            {
+                ArchivialService.Stop();
+
+                try
+                {
+                    ArchivialService.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(60));
+                }
+                catch (System.ServiceProcess.TimeoutException)
+                {
+                    throw new Exception("Failed to stop the ArchivialCloudBackup windows service.");
+                }
+
+                // wait for the process to exit as well.
+
+                var timeoutTime = DateTime.Now.Add(TimeSpan.FromSeconds(60));
+
+                while (true)
+                {
+                    var processCheck = Process.GetProcessesByName("ArchivialClientAgent.exe");
+
+                    if (processCheck == null || processCheck.Length == 0)
+                    {
+                        break;
+                    }
+
+                    if (DateTime.Now > timeoutTime)
+                    {
+                        throw new Exception("Failed to stop the ArchivialCloudBackup windows service, the process is still running and may be frozen.");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes the client windows service.
+        /// </summary>
+        public void DeleteClientService()
+        {
+            var existingServices = ServiceController.GetServices();
+
+            if (existingServices.Any(x => x.ServiceName == "ArchivialCloudBackup"))
+            {
+                var removalArgs = "delete \"ArchivialCloudBackup\"";
+
+                Process removeServiceProcess = new Process();
+                removeServiceProcess.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = "sc.exe",
+                    Arguments = removalArgs
+                };
+
+                removeServiceProcess.Start();
+                removeServiceProcess.WaitForExit();
+
+                if (removeServiceProcess.ExitCode != 0)
+                {
+                    throw new Exception("Failed to remove the windows service. Sc.exe returned an error code: " + removeServiceProcess.ExitCode);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes the installation directories.
+        /// </summary>
+        public void DeleteInstallationDirectories()
+        {
+            var installDirectory = CoreSettings.InstallationDirectory;
+            int attempts = 0;
+
+            while (true)
+            {
+                try
+                {
+                    if (Directory.Exists(installDirectory))
+                    {
+                        Directory.Delete(installDirectory, true);
+                        break;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                catch (Exception)
+                {
+                    if (attempts > 5)
+                    {
+                        throw;
+                    }
+                    else
+                    {
+                        attempts++;
+                        Thread.Sleep(TimeSpan.FromSeconds(5));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes the event log source.
+        /// </summary>
+        public void DeleteEventLogContents()
+        {
+            if (EventLog.Exists(CoreSettings.EventlogName))
+            {
+                var log = new EventLog(CoreSettings.EventlogName, Environment.MachineName, CoreSettings.EventlogName);
+                log.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Removes the core settings.
+        /// </summary>
+        public void DeleteCoreSettings()
+        {
+            var settings = new string[]
+            {
+                BootstrapSettingNames.InstallationDirectory,
+                BootstrapSettingNames.EventlogName,
+                BootstrapSettingNames.DatabasePublishIsRequired,
+                BootstrapSettingNames.DatabaseConnectionString
+            };
+
+            foreach (var setting in settings)
+            {
+                CoreSettings.RemoveCoreSetting(setting);
             }
         }
     }

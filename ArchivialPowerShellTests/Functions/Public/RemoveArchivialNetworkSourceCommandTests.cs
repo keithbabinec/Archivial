@@ -65,7 +65,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new RemoveArchivialNetworkSourceCommand(mockedDb.Object)
+            var command = new RemoveArchivialNetworkSourceCommand(mockedDb.Object, null, null)
             {
                 SourceID = 1
             };
@@ -96,7 +96,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new RemoveArchivialNetworkSourceCommand(mockedDb.Object)
+            var command = new RemoveArchivialNetworkSourceCommand(mockedDb.Object, null, null)
             {
                 NetworkSource = new NetworkSourceLocation() { ID = 1 }
             };
@@ -128,7 +128,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new RemoveArchivialNetworkSourceCommand(mockedDb.Object)
+            var command = new RemoveArchivialNetworkSourceCommand(mockedDb.Object, null, null)
             {
                 SourceID = 2
             };

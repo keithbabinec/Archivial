@@ -120,7 +120,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new AddArchivialNetworkSourceCommand(mockedDb.Object)
+            var command = new AddArchivialNetworkSourceCommand(mockedDb.Object, null, null)
             {
                 UncPath = "\\\\network\\path\\to\\folder",
                 Priority = "Low",
@@ -157,7 +157,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 }
             );
 
-            var command = new AddArchivialNetworkSourceCommand(mockedDb.Object)
+            var command = new AddArchivialNetworkSourceCommand(mockedDb.Object, null, null)
             {
                 UncPath = "\\\\network\\path\\to\\folder",
                 MatchFilter = "*",

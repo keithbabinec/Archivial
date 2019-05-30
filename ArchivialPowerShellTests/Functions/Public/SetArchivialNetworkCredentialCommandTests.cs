@@ -87,7 +87,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                         }
                     });
 
-            var command = new SetArchivialNetworkCredentialCommand(mockedDb.Object, mockedSecretStore.Object);
+            var command = new SetArchivialNetworkCredentialCommand(mockedDb.Object, mockedSecretStore.Object, null);
             command.CredentialName = "Credential";
             command.ShareUsername = "FakeUserName";
             command.SharePassword = "FakePW";
@@ -112,7 +112,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             mockedDb.Setup(x => x.GetNetCredentialsAsync()).ReturnsAsync(new NetCredentialsCollection());
 
-            var command = new SetArchivialNetworkCredentialCommand(mockedDb.Object, mockedSecretStore.Object);
+            var command = new SetArchivialNetworkCredentialCommand(mockedDb.Object, mockedSecretStore.Object, null);
             command.CredentialName = "Credential";
             command.ShareUsername = "FakeUserName";
             command.SharePassword = "FakePW";

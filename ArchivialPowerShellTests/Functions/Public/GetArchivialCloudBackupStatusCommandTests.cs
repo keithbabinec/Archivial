@@ -17,7 +17,7 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedDb.Setup(x => x.GetBackupProgressAsync())
                 .ReturnsAsync(new BackupProgress());
 
-            var command = new GetArchivialCloudBackupStatusCommand(mockedDb.Object);
+            var command = new GetArchivialCloudBackupStatusCommand(mockedDb.Object, null, null);
 
             foreach (var result in command.Invoke())
             {

@@ -1,4 +1,6 @@
 ﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Secrets;
+using ArchivialPowerShell.Setup;
 using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
@@ -22,10 +24,12 @@ namespace ArchivialPowerShell.Functions.Public
         public GetArchivialCloudBackupStatusCommand() : base() { }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
         /// <param name="database"></param>
-        public GetArchivialCloudBackupStatusCommand(IClientDatabase database) : base(database) { }
+        /// <param name="secretStore"></param>
+        /// <param name="setup"></param>
+        public GetArchivialCloudBackupStatusCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup) { }
 
         protected override void ProcessRecord()
         {

@@ -1,5 +1,7 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Folders;
+using ArchivialLibrary.Secrets;
+using ArchivialPowerShell.Setup;
 using ArchivialPowerShell.Utility;
 using System.Linq;
 using System.Management.Automation;
@@ -45,10 +47,12 @@ namespace ArchivialPowerShell.Functions.Public
         public RemoveArchivialLocalSourceCommand() : base() { }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
         /// <param name="database"></param>
-        public RemoveArchivialLocalSourceCommand(IClientDatabase database) : base(database) { }
+        /// <param name="secretStore"></param>
+        /// <param name="setup"></param>
+        public RemoveArchivialLocalSourceCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup) { }
 
         private IClientDatabase database { get; set; }
 

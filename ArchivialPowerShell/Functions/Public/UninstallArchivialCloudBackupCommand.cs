@@ -1,5 +1,7 @@
 ﻿using ArchivialLibrary.Database;
+using ArchivialLibrary.Secrets;
 using ArchivialPowerShell.Exceptions;
+using ArchivialPowerShell.Setup;
 using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
@@ -43,7 +45,9 @@ namespace ArchivialPowerShell.Functions.Public
         /// A secondary constructor for dependency injection.
         /// </summary>
         /// <param name="database"></param>
-        public UninstallArchivialCloudBackupCommand(IClientDatabase database) : base(database)
+        /// <param name="setup"></param>
+        /// <param name="secretStore"></param>
+        public UninstallArchivialCloudBackupCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup)
         {
             ActivityName = "Uninstallation";
             ActivityID = 2;
@@ -51,7 +55,9 @@ namespace ArchivialPowerShell.Functions.Public
 
         protected override void ProcessRecord()
         {
-            if (!Elevation.IsRunningElevated())
+            var setup = GetSetupHelper();
+
+            if (!setup.IsRunningElevated())
             {
                 throw new CmdletNotElevatedException("This cmdlet requires elevated (run-as administrator) privileges. Please re-launch the cmdlet in an elevated window.");
             }
@@ -65,22 +71,22 @@ namespace ArchivialPowerShell.Functions.Public
             var db = GetDatabaseConnection();
 
             WriteVerboseAndProgress(10, "Stopping ArchivialCloudBackup Windows Service.");
-            Uninstallation.StopClientService();
+            setup.StopClientService();
 
             WriteVerboseAndProgress(40, "Removing Archivial client database.");
             db.DeleteClientDatabaseAsync().GetAwaiter().GetResult();
 
             WriteVerboseAndProgress(55, "Removing ArchivialCloudBackup Windows Service.");
-            Uninstallation.DeleteClientService();
+            setup.DeleteClientService();
 
             WriteVerboseAndProgress(70, "Removing installation files and folders.");
-            Uninstallation.DeleteInstallationDirectories();
+            setup.DeleteInstallationDirectories();
 
             WriteVerboseAndProgress(80, "Removing custom event log source.");
-            Uninstallation.DeleteEventLogContents();
+            setup.DeleteEventLogContents();
 
             WriteVerboseAndProgress(90, "Removing core settings.");
-            Uninstallation.DeleteCoreSettings();
+            setup.DeleteCoreSettings();
 
             WriteVerboseAndProgress(100, "Uninstallation completed.");
         }

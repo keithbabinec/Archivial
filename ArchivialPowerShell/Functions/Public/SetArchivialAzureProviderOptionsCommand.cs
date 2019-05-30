@@ -3,6 +3,7 @@ using ArchivialLibrary.Providers;
 using ArchivialLibrary.Secrets;
 using ArchivialLibrary.ServiceCore;
 using ArchivialLibrary.StorageProviders;
+using ArchivialPowerShell.Setup;
 using ArchivialPowerShell.Utility;
 using System;
 using System.Linq;
@@ -46,11 +47,12 @@ namespace ArchivialPowerShell.Functions.Public
         public SetArchivialAzureProviderOptionsCommand() : base() { }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
         /// <param name="database"></param>
         /// <param name="secretStore"></param>
-        public SetArchivialAzureProviderOptionsCommand(IClientDatabase database, ISecretStore secretStore) : base(database, secretStore) { }
+        /// <param name="setup"></param>
+        public SetArchivialAzureProviderOptionsCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup) { }
 
         protected override void ProcessRecord()
         {

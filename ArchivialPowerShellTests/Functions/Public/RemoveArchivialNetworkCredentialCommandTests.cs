@@ -69,7 +69,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentCredentialName = x);
 
-            var command = new RemoveArchivialNetworkCredentialCommand(mockedDb.Object)
+            var command = new RemoveArchivialNetworkCredentialCommand(mockedDb.Object, null, null)
             {
                 CredentialName = "Test"
             };
@@ -101,7 +101,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentCredentialName = x);
 
-            var command = new RemoveArchivialNetworkCredentialCommand(mockedDb.Object)
+            var command = new RemoveArchivialNetworkCredentialCommand(mockedDb.Object, null, null)
             {
                 NetCredential = new NetCredential() { CredentialName = "Test" }
             };
@@ -134,7 +134,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentCredentialName = x);
 
-            var command = new RemoveArchivialNetworkCredentialCommand(mockedDb.Object)
+            var command = new RemoveArchivialNetworkCredentialCommand(mockedDb.Object, null, null)
             {
                 CredentialName = "TestTest"
             };

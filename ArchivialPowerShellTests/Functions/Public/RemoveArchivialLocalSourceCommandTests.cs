@@ -65,7 +65,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<LocalSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new RemoveArchivialLocalSourceCommand(mockedDb.Object)
+            var command = new RemoveArchivialLocalSourceCommand(mockedDb.Object, null, null)
             {
                 SourceID = 1
             };
@@ -96,7 +96,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<LocalSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new RemoveArchivialLocalSourceCommand(mockedDb.Object)
+            var command = new RemoveArchivialLocalSourceCommand(mockedDb.Object, null, null)
             {
                 LocalSource = new LocalSourceLocation() { ID = 1 }
             };
@@ -128,7 +128,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<LocalSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new RemoveArchivialLocalSourceCommand(mockedDb.Object)
+            var command = new RemoveArchivialLocalSourceCommand(mockedDb.Object, null, null)
             {
                 SourceID = 2
             };

@@ -4,6 +4,7 @@ using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Logging.Default;
 using ArchivialLibrary.Secrets;
 using ArchivialLibrary.ServiceCore;
+using ArchivialPowerShell.Setup;
 using System;
 using System.Management.Automation;
 
@@ -14,6 +15,11 @@ namespace ArchivialPowerShell.Utility
     /// </summary>
     public class BaseArchivialCmdlet : Cmdlet
     {
+        /// <summary>
+        /// A reference to the setup helper utility.
+        /// </summary>
+        internal ISetup SetupHelper;
+
         /// <summary>
         /// A reference to the client database.
         /// </summary>
@@ -71,20 +77,13 @@ namespace ArchivialPowerShell.Utility
         /// Secondary constructor for dependency injection.
         /// </summary>
         /// <param name="database"></param>
-        public BaseArchivialCmdlet(IClientDatabase database)
-        {
-            Database = database;
-        }
-
-        /// <summary>
-        /// Secondary constructor for dependency injection.
-        /// </summary>
-        /// <param name="database"></param>
         /// <param name="secretStore"></param>
-        public BaseArchivialCmdlet(IClientDatabase database, ISecretStore secretStore)
+        /// <param name="setup"></param>
+        public BaseArchivialCmdlet(IClientDatabase database, ISecretStore secretStore, ISetup setup)
         {
             Database = database;
             SecretStore = secretStore;
+            SetupHelper = setup;
         }
 
         /// <summary>
@@ -149,6 +148,26 @@ namespace ArchivialPowerShell.Utility
 
                 SecretStore = pds;
                 return pds;
+            }
+        }
+
+        /// <summary>
+        /// Returns the setup helper.
+        /// </summary>
+        /// <returns></returns>
+        internal ISetup GetSetupHelper()
+        {
+            if (SetupHelper != null)
+            {
+                return SetupHelper;
+            }
+            else
+            {
+                base.WriteVerbose("Initializing setup helper.");
+
+                SetupHelper = new WindowsSetup();
+
+                return SetupHelper;
             }
         }
     }

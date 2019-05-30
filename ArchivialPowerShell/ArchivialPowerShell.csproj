@@ -66,6 +66,8 @@
     <Compile Include="Functions\Public\SetArchivialTwilioProviderOptionsCommand.cs" />
     <Compile Include="Functions\Public\StartArchivialLocalSourceRescanCommand.cs" />
     <Compile Include="Functions\Public\StartArchivialNetworkSourceRescanCommand.cs" />
+    <Compile Include="Setup\ISetup.cs" />
+    <Compile Include="Setup\WindowsSetup.cs" />
     <Compile Include="Utility\BaseArchivialCmdlet.cs" />
     <Compile Include="Functions\Public\AddArchivialLocalSourceCommand.cs" />
     <Compile Include="Functions\Public\SetArchivialNetworkCredentialCommand.cs" />
@@ -75,9 +77,6 @@
     <Compile Include="Functions\Public\InstallArchivialCloudBackupCommand.cs" />
     <Compile Include="Functions\Public\UninstallArchivialCloudBackupCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility\Elevation.cs" />
-    <Compile Include="Utility\Installation.cs" />
-    <Compile Include="Utility\Uninstallation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

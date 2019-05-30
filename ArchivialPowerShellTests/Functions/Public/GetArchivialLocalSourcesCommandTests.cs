@@ -20,7 +20,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                     new LocalSourceLocation()
                 });
 
-            var command = new GetArchivialLocalSourcesCommand(mockedDb.Object);
+            var command = new GetArchivialLocalSourcesCommand(mockedDb.Object, null, null);
 
             foreach (var result in command.Invoke())
             {
@@ -40,7 +40,7 @@ namespace ArchivialPowerShellTests.Functions.Public
                     new NetworkSourceLocation()
                 });
 
-            var command = new GetArchivialLocalSourcesCommand(mockedDb.Object);
+            var command = new GetArchivialLocalSourcesCommand(mockedDb.Object, null, null);
 
             foreach (var result in command.Invoke())
             {

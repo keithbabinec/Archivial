@@ -197,7 +197,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
 
             // execute
 
@@ -243,7 +243,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
             command.LogFilesRetentionInDays = 5;
 
             // execute
@@ -263,7 +263,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
             command.DatabaseBackupsRetentionInDays = 7;
 
             // execute
@@ -283,7 +283,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
             command.BackupEngineInstancesCount = 8;
 
             // execute
@@ -303,7 +303,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
             command.BackupEngineStartupDelayInSeconds = 60;
 
             // execute
@@ -323,7 +323,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
             command.LowPriorityScanFrequencyInHours = 24;
 
             // execute
@@ -343,7 +343,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
             command.MedPriorityScanFrequencyInHours = 12;
 
             // execute
@@ -363,7 +363,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
             command.HighPriorityScanFrequencyInHours = 2;
 
             // execute
@@ -383,7 +383,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
             command.ProtectionIV = "key";
 
             // execute
@@ -403,7 +403,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
             command.StatusUpdateSchedule = "0 8 * * *";
 
             // execute
@@ -423,7 +423,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
             command.MasterExclusionMatches = new string[] { "^._", ".DS_Store" };
 
             // execute

@@ -2,6 +2,8 @@
 using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
+using ArchivialLibrary.Secrets;
+using ArchivialPowerShell.Setup;
 using ArchivialPowerShell.Utility;
 using System;
 using System.Linq;
@@ -60,12 +62,14 @@ namespace ArchivialPowerShell.Functions.Public
         /// Default constructor.
         /// </summary>
         public AddArchivialLocalSourceCommand() : base() { }
-        
+
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
         /// <param name="database"></param>
-        public AddArchivialLocalSourceCommand(IClientDatabase database) : base(database) { }
+        /// <param name="secretStore"></param>
+        /// <param name="setup"></param>
+        public AddArchivialLocalSourceCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup) { }
 
         /// <summary>
         /// Cmdlet invocation.

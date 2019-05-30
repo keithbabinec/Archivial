@@ -26,7 +26,7 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.StatusUpdateSchedule))).ReturnsAsync("*/5 * * * *");
             mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.MasterExclusionMatches))).ReturnsAsync("^._;.DS_Store");
 
-            var command = new GetArchivialCloudBackupOptionsCommand(mockedDb.Object);
+            var command = new GetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
 
             foreach (var result in command.Invoke())
             {
