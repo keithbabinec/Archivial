@@ -95,5 +95,43 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var result = command.Invoke().GetEnumerator().MoveNext();
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(CmdletExecutionFailedDamagedProductInstallation))]
+        public void InstallArchivialCloudBackupCommand_Throws_IfProductIsDamaged()
+        {
+            // setup 
+
+            var mockedSetup = new Mock<ISetup>();
+            mockedSetup.Setup(x => x.IsRunningElevated()).Returns(true);
+            mockedSetup.Setup(x => x.SqlServerPrerequisiteIsAvailable()).Returns(true);
+            mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ThrowsAsync(new CmdletExecutionFailedDamagedProductInstallation());
+
+            var command = new InstallArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            command.Force = true;
+
+            // execute
+
+            var result = command.Invoke().GetEnumerator().MoveNext();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CmdletExecutionFailedProductAlreadyInstalled))]
+        public void InstallArchivialCloudBackupCommand_Throws_IfProductIsAlreadyInstalled()
+        {
+            // setup 
+
+            var mockedSetup = new Mock<ISetup>();
+            mockedSetup.Setup(x => x.IsRunningElevated()).Returns(true);
+            mockedSetup.Setup(x => x.SqlServerPrerequisiteIsAvailable()).Returns(true);
+            mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ReturnsAsync(new Version(1,0,0,0));
+
+            var command = new InstallArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            command.Force = true;
+
+            // execute
+
+            var result = command.Invoke().GetEnumerator().MoveNext();
+        }
     }
 }

@@ -4,6 +4,7 @@ using ArchivialPowerShell.Functions.Public;
 using ArchivialPowerShell.Setup;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Threading.Tasks;
 
 namespace ArchivialPowerShellTests.Functions.Public
@@ -21,6 +22,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedSetup = new Mock<ISetup>();
             mockedSetup.Setup(x => x.IsRunningElevated()).Returns(true);
+            mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ReturnsAsync(new Version(1, 0, 0, 0));
 
             var command = new UninstallArchivialCloudBackupCommand(mockedDb.Object, null, mockedSetup.Object);
             command.Force = true;
@@ -40,6 +42,56 @@ namespace ArchivialPowerShellTests.Functions.Public
         }
 
         [TestMethod]
+        public void UninstallArchivialCloudBackupCommand_DoesNotUninstall_IfProductIsntInstalled()
+        {
+            // setup 
+
+            var mockedDb = new Mock<IClientDatabase>();
+            mockedDb.Setup(x => x.DeleteClientDatabaseAsync()).Returns(Task.CompletedTask);
+
+            var mockedSetup = new Mock<ISetup>();
+            mockedSetup.Setup(x => x.IsRunningElevated()).Returns(true);
+            mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ReturnsAsync((Version)null);
+
+            var command = new UninstallArchivialCloudBackupCommand(mockedDb.Object, null, mockedSetup.Object);
+            command.Force = true;
+
+            // execute
+
+            var result = command.Invoke().GetEnumerator().MoveNext();
+
+            // verify
+
+            mockedSetup.Verify(x => x.StopClientService(), Times.Never);
+            mockedDb.Verify(x => x.DeleteClientDatabaseAsync(), Times.Never);
+            mockedSetup.Verify(x => x.DeleteClientService(), Times.Never);
+            mockedSetup.Verify(x => x.DeleteInstallationDirectories(), Times.Never);
+            mockedSetup.Verify(x => x.DeleteEventLogContents(), Times.Never);
+            mockedSetup.Verify(x => x.DeleteCoreSettings(), Times.Never);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CmdletExecutionFailedDamagedProductInstallation))]
+        public void UninstallArchivialCloudBackupCommand_Throws_IfProductIsDamaged()
+        {
+            // setup 
+
+            var mockedDb = new Mock<IClientDatabase>();
+            mockedDb.Setup(x => x.DeleteClientDatabaseAsync()).Returns(Task.CompletedTask);
+
+            var mockedSetup = new Mock<ISetup>();
+            mockedSetup.Setup(x => x.IsRunningElevated()).Returns(true);
+            mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ThrowsAsync(new CmdletExecutionFailedDamagedProductInstallation());
+
+            var command = new UninstallArchivialCloudBackupCommand(mockedDb.Object, null, mockedSetup.Object);
+            command.Force = true;
+
+            // execute
+
+            var result = command.Invoke().GetEnumerator().MoveNext();
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(CmdletNotElevatedException))]
         public void UninstallArchivialCloudBackupCommand_Throws_IfUserIsNotElevated()
         {
@@ -48,6 +100,7 @@ namespace ArchivialPowerShellTests.Functions.Public
             var mockedSetup = new Mock<ISetup>();
 
             mockedSetup.Setup(x => x.IsRunningElevated()).Returns(false);
+            mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ReturnsAsync(new Version(1,0,0,0));
 
             var command = new UninstallArchivialCloudBackupCommand(null, null, mockedSetup.Object);
 

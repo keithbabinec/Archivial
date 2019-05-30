@@ -1,7 +1,19 @@
-﻿namespace ArchivialPowerShell.Setup
+﻿using System;
+using System.Threading.Tasks;
+
+namespace ArchivialPowerShell.Setup
 {
+    /// <summary>
+    /// Describes functionality for product setup (install, upgrade, and removal).
+    /// </summary>
     public interface ISetup
     {
+        /// <summary>
+        /// Gets the installed version of the product.
+        /// </summary>
+        /// <returns></returns>
+        Task<Version> GetInstalledVersionAsync();
+
         /// <summary>
         /// Checks if this process is running elevated.
         /// </summary>

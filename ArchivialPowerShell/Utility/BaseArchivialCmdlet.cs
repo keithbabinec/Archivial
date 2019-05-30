@@ -165,7 +165,7 @@ namespace ArchivialPowerShell.Utility
             {
                 base.WriteVerbose("Initializing setup helper.");
 
-                SetupHelper = new WindowsSetup();
+                SetupHelper = new WindowsSetup(GetDatabaseConnection());
 
                 return SetupHelper;
             }

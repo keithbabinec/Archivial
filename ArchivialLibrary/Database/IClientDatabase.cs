@@ -14,6 +14,12 @@ namespace ArchivialLibrary.Database
     public interface IClientDatabase
     {
         /// <summary>
+        /// Checks to see if the database is present/installed.
+        /// </summary>
+        /// <returns></returns>
+        Task<bool> DatabaseIsPresentAsync();
+
+        /// <summary>
         /// Prepares the database.
         /// </summary>
         /// <returns></returns>

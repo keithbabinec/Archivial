@@ -56,6 +56,48 @@ namespace ArchivialLibrary.Database.SQLServer
         private ILogger Logger;
 
         /// <summary>
+        /// Checks to see if the database is present/installed.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> DatabaseIsPresentAsync()
+        {
+            Logger.WriteTraceMessage("Attempting to connect to the database engine.");
+            Logger.WriteTraceMessage("Instance: " + Constants.Database.DefaultSqlExpressInstanceConnectionString);
+
+            using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultSqlExpressInstanceConnectionString))
+            {
+                await sqlcon.OpenAsync().ConfigureAwait(false);
+
+                Logger.WriteTraceMessage("Successfully connected to the database engine.");
+                Logger.WriteTraceMessage(string.Format("Checking if database ({0}) is present.", Constants.Database.DatabaseName));
+
+                bool databasePresent = false;
+
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = sqlcon;
+                    cmd.CommandText = string.Format("SELECT 1 FROM sys.databases WHERE [Name] = '{0}'", Constants.Database.DatabaseName);
+                    cmd.CommandType = System.Data.CommandType.Text;
+
+                    using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                    {
+                        if (rdr.HasRows)
+                        {
+                            databasePresent = true;
+                            Logger.WriteTraceMessage("Database was found.");
+                        }
+                        else
+                        {
+                            Logger.WriteTraceMessage("Database was not found.");
+                        }
+                    }
+                }
+
+                return databasePresent;
+            }
+        }
+
+        /// <summary>
         /// Prepares the database.
         /// </summary>
         /// <returns></returns>

@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\CmdletExecutionFailedDamagedProductInstallation.cs" />
+    <Compile Include="Exceptions\CmdletExecutionFailedProductAlreadyInstalled.cs" />
     <Compile Include="Exceptions\CmdletExecutionNotApprovedException.cs" />
     <Compile Include="Exceptions\CmdletNotElevatedException.cs" />
     <Compile Include="Exceptions\CmdletPrerequisiteNotFoundException.cs" />

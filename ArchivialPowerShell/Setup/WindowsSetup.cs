@@ -1,5 +1,7 @@
 ﻿using ArchivialLibrary.Constants;
+using ArchivialLibrary.Database;
 using ArchivialLibrary.ServiceCore;
+using ArchivialPowerShell.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,6 +12,7 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.ServiceProcess;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ArchivialPowerShell.Setup
 {
@@ -18,6 +21,68 @@ namespace ArchivialPowerShell.Setup
     /// </summary>
     public class WindowsSetup : ISetup
     {
+        /// <summary>
+        /// A reference to the database instance.
+        /// </summary>
+        private IClientDatabase DatabaseClient { get; set; }
+
+        /// <summary>
+        /// A constructor that accepts a database instance.
+        /// </summary>
+        /// <param name="client"></param>
+        public WindowsSetup(IClientDatabase client)
+        {
+            if (client == null)
+            {
+                throw new ArgumentNullException(nameof(client));
+            }
+
+            DatabaseClient = client;
+        }
+
+        /// <summary>
+        /// Gets the installed version of the product.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Version> GetInstalledVersionAsync()
+        {
+            // 3 major components should be present to detect a valid installation.
+            // - the binaries (lib, svc executable)
+            // - the daemon
+            // - the database
+
+            var libVersion = GetInstalledBinaryVersion();
+            var serviceIsPresent = WindowsServiceIsPresent();
+            var databaseIsPresent = await DatabaseClient.DatabaseIsPresentAsync().ConfigureAwait(false);
+
+            if (libVersion == null && !serviceIsPresent && !databaseIsPresent)
+            {
+                // if all the components are missing, return null (product is not installed).
+                return null;
+            }
+            else if (libVersion != null && serviceIsPresent && databaseIsPresent)
+            {
+                // if all the components are present, return the version.
+                return libVersion;
+            }
+            else
+            {
+                // if some of the components are missing (but not all), throw since the installation is damaged.
+                throw new CmdletExecutionFailedDamagedProductInstallation("The Archivial Cloud Backup product installation appears to be damaged or partially installed.");
+            }
+        }
+
+        private Version GetInstalledBinaryVersion()
+        {
+            return null;
+        }
+
+        private bool WindowsServiceIsPresent()
+        {
+            var existingServices = ServiceController.GetServices();
+            return existingServices.Any(x => x.ServiceName == "ArchivialCloudBackup");
+        }
+
         /// <summary>
         /// Checks if this process is running elevated.
         /// </summary>
@@ -95,7 +160,7 @@ namespace ArchivialPowerShell.Setup
 
                 dirSecurity.AddAccessRule(
                     new FileSystemAccessRule(
-                        ArchivialLibrary.Constants.Database.DefaultSqlExpressUserAccount,
+                        Database.DefaultSqlExpressUserAccount,
                         FileSystemRights.FullControl,
                         InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit,
                         PropagationFlags.None,

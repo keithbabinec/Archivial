@@ -66,6 +66,14 @@ namespace ArchivialPowerShell.Functions.Public
                 throw new CmdletExecutionNotApprovedException("This action must be approved (or provide the -force switch) to run.");
             }
 
+            var installedVersion = setup.GetInstalledVersionAsync().GetAwaiter().GetResult();
+
+            if (installedVersion == null)
+            {
+                WriteWarning("Archivial Cloud Backup is not installed. There are no components to remove.");
+                return;
+            }
+
             WriteVerbose("Removing Archivial Cloud Backup installation.");
 
             var db = GetDatabaseConnection();

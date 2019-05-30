@@ -79,6 +79,13 @@ namespace ArchivialPowerShell.Functions.Public
                 throw new CmdletPrerequisiteNotFoundException("Unable to install Archivial Cloud Backup. A required prerequisite (SQL Server Express) was not found.");
             }
 
+            var installedVersion = setup.GetInstalledVersionAsync().GetAwaiter().GetResult();
+
+            if (installedVersion != null)
+            {
+                throw new CmdletExecutionFailedProductAlreadyInstalled("Unable to install Archivial Cloud Backup. The product is already installed. Please use the 'Update-ArchivialCloudBackup' command if you need to update your installation.");
+            }
+
             if (InstallDirectory == null)
             {
                 InstallDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Archivial Cloud Backup");
