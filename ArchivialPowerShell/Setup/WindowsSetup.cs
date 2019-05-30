@@ -72,11 +72,36 @@ namespace ArchivialPowerShell.Setup
             }
         }
 
+        /// <summary>
+        /// Gets the binary version of the installed product.
+        /// </summary>
+        /// <returns></returns>
         private Version GetInstalledBinaryVersion()
         {
+            var programDirectory = CoreSettings.InstallationDirectory;
+
+            if (string.IsNullOrWhiteSpace(programDirectory))
+            {
+                return null;
+            }
+            else
+            {
+                var agentLibPath = Path.Combine(programDirectory, "ArchivialLibrary.dll");
+
+                if (File.Exists(agentLibPath))
+                {
+                    var agentLib = FileVersionInfo.GetVersionInfo(agentLibPath);
+                    return new Version(agentLib.FileVersion);
+                }
+            }
+
             return null;
         }
 
+        /// <summary>
+        /// Checks to see if the windows service is present.
+        /// </summary>
+        /// <returns></returns>
         private bool WindowsServiceIsPresent()
         {
             var existingServices = ServiceController.GetServices();
@@ -228,9 +253,7 @@ namespace ArchivialPowerShell.Setup
         /// </summary>
         public void CreateClientService()
         {
-            var existingServices = ServiceController.GetServices();
-
-            if (existingServices.Any(x => x.ServiceName == "ArchivialCloudBackup") == false)
+            if (!WindowsServiceIsPresent())
             {
                 var installArgs = string.Format(
                     "create \"ArchivialCloudBackup\" binPath= \"{0}\" start= \"auto\" DisplayName= \"{1}\" depend= \"{2}\"",
