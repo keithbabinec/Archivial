@@ -4,12 +4,8 @@ using ArchivialPowerShell.Setup;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArchivialPowerShellTests.Functions.Public
 {
