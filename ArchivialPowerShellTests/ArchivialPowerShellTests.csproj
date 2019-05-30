@@ -73,6 +73,7 @@
     <Compile Include="Functions\Public\GetArchivialNetworkCredentialsCommandTests.cs" />
     <Compile Include="Functions\Public\GetArchivialNetworkSourcesCommandTests.cs" />
     <Compile Include="Functions\Public\GetArchivialProvidersCommandTests.cs" />
+    <Compile Include="Functions\Public\InstallArchivialCloudBackupCommandTests.cs" />
     <Compile Include="Functions\Public\RemoveArchivialLocalSourceCommandTests.cs" />
     <Compile Include="Functions\Public\RemoveArchivialNetworkCredentialCommandTests.cs" />
     <Compile Include="Functions\Public\RemoveArchivialNetworkSourceCommandTests.cs" />
