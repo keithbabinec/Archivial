@@ -83,12 +83,13 @@ namespace ArchivialPowerShell.Functions.Public
 
             if (psModuleVersion == installedVersion)
             {
-                WriteWarning("Archivial Cloud Backup software is already up to date, there is nothing to update.");
+                WriteWarning(string.Format("Archivial Cloud Backup software is already up to date (version {0}), there is nothing to update.", installedVersion.ToString()));
                 return;
             }
             if (psModuleVersion < installedVersion)
             {
-                throw new CmdletExecutionFailedCannotDowngradeSoftwareException("Unable to update Archivial Cloud Backup. The version tied to this module is older than your current installation, which would lead to a downgrade.");
+                throw new CmdletExecutionFailedCannotDowngradeSoftwareException(
+                    string.Format("Unable to update Archivial Cloud Backup. The version tied to this module (version {0}) is older than your current installation (version {1}), which would lead to a downgrade.", psModuleVersion.ToString(), installedVersion.ToString()));
             }
 
             WriteVerbose("Starting Archivial Cloud Backup software update.");

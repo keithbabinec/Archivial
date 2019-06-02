@@ -114,7 +114,7 @@ namespace ArchivialPowerShell.Utility
 
                 base.WriteVerbose("Database connection string: " + dbConnectionString);
 
-                var logger = new Logger("ArchivialPowerShell");
+                var logger = new ConsoleLogger(false);
                 var db = new SQLServerClientDatabase(dbConnectionString, logger);
 
                 Database = db;
