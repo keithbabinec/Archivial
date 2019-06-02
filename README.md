@@ -135,3 +135,4 @@ Uninstall-Module -Name ArchivialPowerShell -AllVersions
 | [Start-ArchivialLocalSourceRescan](Doc/Commands/Start-ArchivialLocalSourceRescan.md) | Forces the re-scan of a Local Source being monitored by Archivial. |
 | [Start-ArchivialNetworkSourceRescan](Doc/Commands/Start-ArchivialNetworkSourceRescan.md) | Forces the re-scan of a Network Source being monitored by Archivial. |
 | [Uninstall-ArchivialCloudBackup](Doc/Commands/Uninstall-ArchivialCloudBackup.md) | Uninstalls the Archivial Cloud Backup software from this computer. |
+| [Update-ArchivialCloudBackup](Doc/Commands/Update-ArchivialCloudBackup.md) | Updates the Archivial Cloud Backup software on this computer. |

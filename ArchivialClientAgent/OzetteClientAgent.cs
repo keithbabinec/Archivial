@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using ArchivialLibrary.Database.SQLServer;
 using System.Threading.Tasks;
 using ArchivialLibrary.Database;
+using System.Reflection;
 
 namespace ArchivialClientAgent
 {
@@ -93,7 +94,7 @@ namespace ArchivialClientAgent
             StartLoggers();
 
             CoreLog.WriteSystemEvent(
-                string.Format("Starting {0} client service.", ArchivialLibrary.Constants.Logging.AppName),
+                string.Format("Starting {0} client service version {1}.", ArchivialLibrary.Constants.Logging.AppName, Assembly.GetExecutingAssembly().GetName().Version.ToString()),
                 EventLogEntryType.Information, ArchivialLibrary.Constants.EventIDs.StartingService, true);
 
             var dbTask = ConfigureDatabaseAsync();

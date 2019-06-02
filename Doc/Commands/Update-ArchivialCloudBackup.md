@@ -5,60 +5,44 @@ online version:
 schema: 2.0.0
 ---
 
-# Install-ArchivialCloudBackup
+# Update-ArchivialCloudBackup
 
 ## SYNOPSIS
-Installs the Archivial Cloud Backup software on this computer.
+Updates the Archivial Cloud Backup software on this computer.
 
 ## SYNTAX
 
 ```
-Install-ArchivialCloudBackup [-InstallDirectory <String>] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Update-ArchivialCloudBackup [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Installs the Archivial Cloud Backup software on this computer.
-The default installation will be placed in the Program Files directory, but this can optionally be changed by specifying the -InstallDirectory parameter.
+IMPORTANT: The Archivial version that will be installed with this command is tied to the version number of this module.
+For example if this module is Archivial PowerShell version v1.0.0, then running this command will attempt to upgrade your current installation to v1.0.0.
+
+To ensure you upgrade using the latest software, always update this PowerShell module (then restart PowerShell) before running this upgrade command.
+See the examples for more details.
 
 This command requires an elevated (run-as administrator) PowerShell prompt to complete.
 It will also prompt for comfirmation unless the -Force switch is applied.
-
-Note: This command is used for fresh installations.
-For upgrades to existing installations use the Update-ArchivialCloudBackup command.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-C:\> Install-ArchivialCloudBackup
+C:\> $latestVersion = (Find-Module -Name ArchivialPowerShell).Version
 ```
 
-Starts the installation with default options.
-The user will be prompted for confirmation.
+C:\\\> Update-Module -Name ArchivialPowerShell -RequiredVersion $latestVersion
 
-### EXAMPLE 2
-```
-C:\> Install-ArchivialCloudBackup -InstallDirectory "D:\Applications\Archivial Cloud Backup" -Force
-```
+The two above commands will update your Archivial PowerShell module to latest.
+After that has completed, close and restart the PowerShell window.
 
-Starts the installation to the custom directory and suppresses the confirmation prompt.
+C:\\\> Update-ArchivialCloudBackup
+
+With the latest management tools installed, this command updates your installation.
 
 ## PARAMETERS
-
-### -InstallDirectory
-Specify a custom installation directory, otherwise the default Program Files location will be used.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Force
 Suppresses the confirmation prompt.
