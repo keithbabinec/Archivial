@@ -71,7 +71,7 @@ namespace ArchivialPowerShellTests.Functions.Public
         }
 
         [TestMethod]
-        [ExpectedException(typeof(CmdletExecutionFailedDamagedProductInstallation))]
+        [ExpectedException(typeof(CmdletExecutionFailedDamagedProductInstallationException))]
         public void UninstallArchivialCloudBackupCommand_Throws_IfProductIsDamaged()
         {
             // setup 
@@ -81,7 +81,7 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedSetup = new Mock<ISetup>();
             mockedSetup.Setup(x => x.IsRunningElevated()).Returns(true);
-            mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ThrowsAsync(new CmdletExecutionFailedDamagedProductInstallation());
+            mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ThrowsAsync(new CmdletExecutionFailedDamagedProductInstallationException());
 
             var command = new UninstallArchivialCloudBackupCommand(mockedDb.Object, null, mockedSetup.Object);
             command.Force = true;

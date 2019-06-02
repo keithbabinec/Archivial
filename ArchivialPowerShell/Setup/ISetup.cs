@@ -15,6 +15,12 @@ namespace ArchivialPowerShell.Setup
         Task<Version> GetInstalledVersionAsync();
 
         /// <summary>
+        /// Gets the running PowerShell module version.
+        /// </summary>
+        /// <returns></returns>
+        Version GetPowerShellModuleVersion();
+
+        /// <summary>
         /// Checks if this process is running elevated.
         /// </summary>
         /// <returns></returns>

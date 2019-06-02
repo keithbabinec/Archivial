@@ -50,8 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exceptions\CmdletExecutionFailedDamagedProductInstallation.cs" />
-    <Compile Include="Exceptions\CmdletExecutionFailedProductAlreadyInstalled.cs" />
+    <Compile Include="Exceptions\CmdletExecutionFailedCannotDowngradeSoftwareException.cs" />
+    <Compile Include="Exceptions\CmdletExecutionFailedDamagedProductInstallationException.cs" />
+    <Compile Include="Exceptions\CmdletExecutionFailedProductAlreadyInstalledException.cs" />
+    <Compile Include="Exceptions\CmdletExecutionFailedProductNotInstalledException.cs" />
     <Compile Include="Exceptions\CmdletExecutionNotApprovedException.cs" />
     <Compile Include="Exceptions\CmdletNotElevatedException.cs" />
     <Compile Include="Exceptions\CmdletPrerequisiteNotFoundException.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="Functions\Public\SetArchivialTwilioProviderOptionsCommand.cs" />
     <Compile Include="Functions\Public\StartArchivialLocalSourceRescanCommand.cs" />
     <Compile Include="Functions\Public\StartArchivialNetworkSourceRescanCommand.cs" />
+    <Compile Include="Functions\Public\UpdateArchivialCloudBackupCommand.cs" />
     <Compile Include="Setup\ISetup.cs" />
     <Compile Include="Setup\WindowsSetup.cs" />
     <Compile Include="Utility\BaseArchivialCmdlet.cs" />

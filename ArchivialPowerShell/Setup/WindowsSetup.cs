@@ -68,8 +68,17 @@ namespace ArchivialPowerShell.Setup
             else
             {
                 // if some of the components are missing (but not all), throw since the installation is damaged.
-                throw new CmdletExecutionFailedDamagedProductInstallation("The Archivial Cloud Backup product installation appears to be damaged or partially installed.");
+                throw new CmdletExecutionFailedDamagedProductInstallationException("The Archivial Cloud Backup product installation appears to be damaged or partially installed.");
             }
+        }
+
+        /// <summary>
+        /// Gets the running PowerShell module version.
+        /// </summary>
+        /// <returns></returns>
+        public Version GetPowerShellModuleVersion()
+        {
+            return Assembly.GetExecutingAssembly().GetName().Version;
         }
 
         /// <summary>

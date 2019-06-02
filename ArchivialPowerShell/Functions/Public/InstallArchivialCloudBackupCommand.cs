@@ -14,6 +14,7 @@ namespace ArchivialPowerShell.Functions.Public
     ///   <para type="synopsis">Installs the Archivial Cloud Backup software on this computer.</para>
     ///   <para type="description">Installs the Archivial Cloud Backup software on this computer. The default installation will be placed in the Program Files directory, but this can optionally be changed by specifying the -InstallDirectory parameter.</para>
     ///   <para type="description">This command requires an elevated (run-as administrator) PowerShell prompt to complete. It will also prompt for comfirmation unless the -Force switch is applied.</para>
+    ///   <para type="description">Note: This command is used for fresh installations. For upgrades to existing installations use the Update-ArchivialCloudBackup command.</para>
     /// </summary>
     /// <example>
     ///   <code>C:\> Install-ArchivialCloudBackup</code>
@@ -83,7 +84,7 @@ namespace ArchivialPowerShell.Functions.Public
 
             if (installedVersion != null)
             {
-                throw new CmdletExecutionFailedProductAlreadyInstalled("Unable to install Archivial Cloud Backup. The product is already installed. Please use the 'Update-ArchivialCloudBackup' command if you need to update your installation.");
+                throw new CmdletExecutionFailedProductAlreadyInstalledException("Unable to install Archivial Cloud Backup. The product is already installed. Please use the 'Update-ArchivialCloudBackup' command if you need to update your installation.");
             }
 
             if (InstallDirectory == null)

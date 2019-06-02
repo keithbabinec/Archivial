@@ -97,7 +97,7 @@ namespace ArchivialPowerShellTests.Functions.Public
         }
 
         [TestMethod]
-        [ExpectedException(typeof(CmdletExecutionFailedDamagedProductInstallation))]
+        [ExpectedException(typeof(CmdletExecutionFailedDamagedProductInstallationException))]
         public void InstallArchivialCloudBackupCommand_Throws_IfProductIsDamaged()
         {
             // setup 
@@ -105,7 +105,7 @@ namespace ArchivialPowerShellTests.Functions.Public
             var mockedSetup = new Mock<ISetup>();
             mockedSetup.Setup(x => x.IsRunningElevated()).Returns(true);
             mockedSetup.Setup(x => x.SqlServerPrerequisiteIsAvailable()).Returns(true);
-            mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ThrowsAsync(new CmdletExecutionFailedDamagedProductInstallation());
+            mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ThrowsAsync(new CmdletExecutionFailedDamagedProductInstallationException());
 
             var command = new InstallArchivialCloudBackupCommand(null, null, mockedSetup.Object);
             command.Force = true;
@@ -116,7 +116,7 @@ namespace ArchivialPowerShellTests.Functions.Public
         }
 
         [TestMethod]
-        [ExpectedException(typeof(CmdletExecutionFailedProductAlreadyInstalled))]
+        [ExpectedException(typeof(CmdletExecutionFailedProductAlreadyInstalledException))]
         public void InstallArchivialCloudBackupCommand_Throws_IfProductIsAlreadyInstalled()
         {
             // setup 
