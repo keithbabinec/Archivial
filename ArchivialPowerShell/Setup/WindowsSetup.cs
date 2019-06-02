@@ -253,7 +253,32 @@ namespace ArchivialPowerShell.Setup
                     throw new FileNotFoundException("A required setup file was missing: " + sourceFileFullPath);
                 }
 
-                File.Copy(sourceFileFullPath, destFileFullPath, true);
+                var copyAttempts = 0;
+                var maxAttempts = 5;
+                var waitTimeSeconds = 5;
+
+                while (true)
+                {
+                    try
+                    {
+                        File.Copy(sourceFileFullPath, destFileFullPath, true);
+                        break;
+                    }
+                    catch (IOException)
+                    {
+                        copyAttempts++;
+
+                        if (copyAttempts >= maxAttempts)
+                        {
+                            throw;
+                        }
+                        else
+                        {
+                            // wait a few seconds and try again
+                            Thread.Sleep(TimeSpan.FromSeconds(waitTimeSeconds));
+                        }
+                    }
+                }
             }
         }
 
