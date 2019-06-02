@@ -95,5 +95,10 @@ namespace ArchivialPowerShell.Setup
         /// Removes the core settings.
         /// </summary>
         void DeleteCoreSettings();
+
+        /// <summary>
+        /// Sets the database publish required core option to true/enabled.
+        /// </summary>
+        void SetDatabasePublishRequiredCoreOption();
     }
 }

@@ -498,5 +498,13 @@ namespace ArchivialPowerShell.Setup
                 CoreSettings.RemoveCoreSetting(setting);
             }
         }
+
+        /// <summary>
+        /// Sets the database publish required core option to true/enabled.
+        /// </summary>
+        public void SetDatabasePublishRequiredCoreOption()
+        {
+            CoreSettings.DatabasePublishIsRequired = true;
+        }
     }
 }

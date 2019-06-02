@@ -103,7 +103,7 @@ namespace ArchivialPowerShell.Functions.Public
 
             // set db publish flag
             WriteVerboseAndProgress(50, "Updating setup/publish options.");
-            CoreSettings.DatabasePublishIsRequired = true;
+            setup.SetDatabasePublishRequiredCoreOption();
 
             // start services
             WriteVerboseAndProgress(60, "Starting ArchivialCloudBackup windows service.");

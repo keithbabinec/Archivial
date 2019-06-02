@@ -13,7 +13,7 @@ namespace ArchivialPowerShellTests.Functions.Public
     public class InstallArchivialCloudBackupCommandTests
     {
         [TestMethod]
-        public void InstallArchivialCloudBackupCommand_LogFilesRetentionInDays_HasRequiredAttributes()
+        public void InstallArchivialCloudBackupCommand_InstallDirectory_HasRequiredAttributes()
         {
             Assert.IsTrue(
                 TypeHelpers.CmdletParameterHasAttribute(
