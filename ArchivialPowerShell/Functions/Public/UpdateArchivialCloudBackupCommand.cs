@@ -1,15 +1,6 @@
-﻿using ArchivialLibrary.Database;
-using ArchivialLibrary.Secrets;
-using ArchivialLibrary.ServiceCore;
-using ArchivialPowerShell.Exceptions;
-using ArchivialPowerShell.Setup;
+﻿using ArchivialPowerShell.Exceptions;
 using ArchivialPowerShell.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArchivialPowerShell.Functions.Public
 {
@@ -46,12 +37,10 @@ namespace ArchivialPowerShell.Functions.Public
         }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        /// <param name="setup"></param>
-        /// <param name="secretStore"></param>
-        public UpdateArchivialCloudBackupCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup)
+        /// <param name="dependencies"></param>
+        public UpdateArchivialCloudBackupCommand(CmdletDependencies dependencies) : base(dependencies)
         {
             ActivityName = "Update";
             ActivityID = 3;

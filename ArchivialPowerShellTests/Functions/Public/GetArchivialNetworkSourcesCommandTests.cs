@@ -1,6 +1,8 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Folders;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -20,7 +22,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                     new NetworkSourceLocation()
                 });
 
-            var command = new GetArchivialNetworkSourcesCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new GetArchivialNetworkSourcesCommand(depedencies);
 
             foreach (var result in command.Invoke())
             {
@@ -40,7 +50,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                     new LocalSourceLocation()
                 });
 
-            var command = new GetArchivialNetworkSourcesCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new GetArchivialNetworkSourcesCommand(depedencies);
 
             foreach (var result in command.Invoke())
             {

@@ -6,6 +6,7 @@ using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
 using ArchivialLibrary.Logging;
 using ArchivialLibrary.Providers;
+using ArchivialLibrary.ServiceCore;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,10 +24,12 @@ namespace ArchivialLibrary.Client
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
+        /// <param name="coreSettings">The core settings accessor.</param>
         public BackupEngine(IClientDatabase database,
                             ILogger logger,
-                            int instanceID)
-            : base(database, logger, instanceID) { }
+                            int instanceID,
+                            ICoreSettings coreSettings)
+            : base(database, logger, instanceID, coreSettings) { }
 
         /// <summary>
         /// Begins to start the backup engine, returns immediately to the caller.

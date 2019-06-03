@@ -27,7 +27,9 @@ namespace ArchivialLibrary.Database.SQLServer
         /// </summary>
         /// <remarks>Instance of the logger.</remarks>
         /// <param name="connectionString"></param>
-        public SQLServerClientDatabase(string connectionString, ILogger logger)
+        /// <param name="logger"></param>
+        /// <param name="coreSettings"></param>
+        public SQLServerClientDatabase(string connectionString, ILogger logger, ICoreSettings coreSettings)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
@@ -37,9 +39,14 @@ namespace ArchivialLibrary.Database.SQLServer
             {
                 throw new ArgumentException(nameof(logger));
             }
-            
+            if (coreSettings == null)
+            {
+                throw new ArgumentException(nameof(coreSettings));
+            }
+
             DatabaseConnectionString = connectionString;
             Logger = logger;
+            CoreSettings = coreSettings;
         }
 
         /// <summary>
@@ -54,6 +61,11 @@ namespace ArchivialLibrary.Database.SQLServer
         /// An instance of the logger.
         /// </summary>
         private ILogger Logger;
+
+        /// <summary>
+        /// An instance of the core settings accessor.
+        /// </summary>
+        private ICoreSettings CoreSettings;
 
         /// <summary>
         /// Checks to see if the database is present/installed.
@@ -158,7 +170,7 @@ namespace ArchivialLibrary.Database.SQLServer
                     {
                         cmd.Connection = sqlcon;
 
-                        var fileName = string.Format("{0}\\{1}.mdf", CoreSettings.DatabaseDirectory, Constants.Database.DatabaseName);
+                        var fileName = string.Format("{0}\\{1}.mdf", CoreSettings.GetDatabaseDirectory(), Constants.Database.DatabaseName);
 
                         Logger.WriteTraceMessage("Database File: " + fileName);
 
@@ -184,11 +196,11 @@ namespace ArchivialLibrary.Database.SQLServer
             // publish the database package (.dacpac)
             // but only if we need to-- according to the publish flag.
 
-            if (CoreSettings.DatabasePublishIsRequired)
+            if (CoreSettings.GetDatabasePublishIsRequired())
             {
                 Logger.WriteTraceMessage("Database publish is required, starting publish now.");
 
-                var packagePath = string.Format("{0}\\{1}.dacpac", CoreSettings.InstallationDirectory, Constants.Database.DatabaseName);
+                var packagePath = string.Format("{0}\\{1}.dacpac", CoreSettings.GetInstallationDirectory(), Constants.Database.DatabaseName);
 
                 Logger.WriteTraceMessage("Database package file: " + packagePath);
 
@@ -202,7 +214,7 @@ namespace ArchivialLibrary.Database.SQLServer
                     services.Message += dacMessages_Received;
                     services.Deploy(package, Constants.Database.DatabaseName, true, options);
 
-                    CoreSettings.DatabasePublishIsRequired = false;
+                    CoreSettings.SetDatabasePublishIsRequired(false);
                     Logger.WriteTraceMessage("Database publish completed.");
                 }
             }
@@ -308,8 +320,8 @@ namespace ArchivialLibrary.Database.SQLServer
                 {
                     cmd.Connection = sqlcon;
 
-                    var fileName = string.Format("{0}\\{1}.{2}.{3}.bak", 
-                        CoreSettings.DatabaseBackupsDirectory, 
+                    var fileName = string.Format("{0}\\{1}.{2}.{3}.bak",
+                        CoreSettings.GetDatabaseBackupsDirectory(),
                         Constants.Database.DatabaseName,
                         DateTime.Now.ToString(Constants.Logging.SortableFilesDateTimeFormat),
                         BackupType);

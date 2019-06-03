@@ -1,7 +1,4 @@
-﻿using ArchivialLibrary.Database;
-using ArchivialLibrary.Secrets;
-using ArchivialPowerShell.Exceptions;
-using ArchivialPowerShell.Setup;
+﻿using ArchivialPowerShell.Exceptions;
 using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
@@ -42,12 +39,10 @@ namespace ArchivialPowerShell.Functions.Public
         }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        /// <param name="setup"></param>
-        /// <param name="secretStore"></param>
-        public UninstallArchivialCloudBackupCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup)
+        /// <param name="dependencies"></param>
+        public UninstallArchivialCloudBackupCommand(CmdletDependencies dependencies) : base(dependencies)
         {
             ActivityName = "Uninstallation";
             ActivityID = 2;

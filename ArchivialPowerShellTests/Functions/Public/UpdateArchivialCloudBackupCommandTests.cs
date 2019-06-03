@@ -1,6 +1,8 @@
-﻿using ArchivialPowerShell.Exceptions;
+﻿using ArchivialLibrary.ServiceCore;
+using ArchivialPowerShell.Exceptions;
 using ArchivialPowerShell.Functions.Public;
 using ArchivialPowerShell.Setup;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -21,7 +23,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ReturnsAsync(new Version(1,0,0,0));
             mockedSetup.Setup(x => x.GetPowerShellModuleVersion()).Returns(new Version(1,0,0,1));
 
-            var command = new UpdateArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                Setup = mockedSetup.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new UpdateArchivialCloudBackupCommand(depedencies);
             command.Force = true;
 
             // execute
@@ -47,7 +57,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             mockedSetup.Setup(x => x.IsRunningElevated()).Returns(false);
 
-            var command = new UpdateArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                Setup = mockedSetup.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new UpdateArchivialCloudBackupCommand(depedencies);
 
             // execute
 
@@ -65,7 +83,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedSetup.Setup(x => x.IsRunningElevated()).Returns(true);
             mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ReturnsAsync((Version)null);
 
-            var command = new UpdateArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                Setup = mockedSetup.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new UpdateArchivialCloudBackupCommand(depedencies);
 
             // execute
 
@@ -84,7 +110,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ReturnsAsync(new Version(1,0,0,1));
             mockedSetup.Setup(x => x.GetPowerShellModuleVersion()).Returns(new Version(1,0,0,0));
 
-            var command = new UpdateArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                Setup = mockedSetup.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new UpdateArchivialCloudBackupCommand(depedencies);
 
             // execute
 
@@ -102,7 +136,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ReturnsAsync(new Version(1, 0, 0, 0));
             mockedSetup.Setup(x => x.GetPowerShellModuleVersion()).Returns(new Version(1, 0, 0, 0));
 
-            var command = new UpdateArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                Setup = mockedSetup.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new UpdateArchivialCloudBackupCommand(depedencies);
 
             // execute
 

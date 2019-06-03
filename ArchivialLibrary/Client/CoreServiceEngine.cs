@@ -21,10 +21,12 @@ namespace ArchivialLibrary.Client
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
+        /// <param name="coreSettings">The core settings accessor.</param>
         public CoreServiceEngine(IClientDatabase database,
                             ILogger logger,
-                            int instanceID)
-            : base(database, logger, instanceID) { }
+                            int instanceID,
+                            ICoreSettings coreSettings)
+            : base(database, logger, instanceID, coreSettings) { }
 
         /// <summary>
         /// Begins to start the core service engine, returns immediately to the caller.
@@ -178,7 +180,7 @@ namespace ArchivialLibrary.Client
         {
             try
             {
-                var dirInfo = new DirectoryInfo(CoreSettings.LogFilesDirectory);
+                var dirInfo = new DirectoryInfo(CoreSettings.GetLogFilesDirectory());
                 var files = dirInfo.EnumerateFiles();
                 var oldFileDate = DateTime.Now.AddHours(-24);
 
@@ -186,7 +188,7 @@ namespace ArchivialLibrary.Client
                 {
                     if (file.Name.StartsWith(LogFileNameFragment) && file.Extension == LogFileExtension && file.LastWriteTime < oldFileDate)
                     {
-                        var newFileName = Path.Combine(CoreSettings.LogFilesArchiveDirectory, file.Name);
+                        var newFileName = Path.Combine(CoreSettings.GetLogFilesArchiveDirectory(), file.Name);
                         Logger.WriteTraceMessage(string.Format("Moving completed log file {0} to the archive folder.", file.Name), InstanceID);
                         file.MoveTo(newFileName);
                     }
@@ -208,7 +210,7 @@ namespace ArchivialLibrary.Client
                 var settingName = Constants.RuntimeSettingNames.DatabaseBackupsRetentionInDays;
                 var backupsRetentionInDays = Convert.ToInt32(await Database.GetApplicationOptionAsync(settingName).ConfigureAwait(false));
 
-                var dirInfo = new DirectoryInfo(CoreSettings.DatabaseBackupsDirectory);
+                var dirInfo = new DirectoryInfo(CoreSettings.GetDatabaseBackupsDirectory());
                 var files = dirInfo.EnumerateFiles();
                 var oldFileDate = DateTime.Now.AddDays(-backupsRetentionInDays);
 
@@ -237,7 +239,7 @@ namespace ArchivialLibrary.Client
                 var settingName = Constants.RuntimeSettingNames.LogFilesRetentionInDays;
                 var logFilesRetentionInDays = Convert.ToInt32(await Database.GetApplicationOptionAsync(settingName).ConfigureAwait(false));
 
-                var dirInfo = new DirectoryInfo(CoreSettings.LogFilesArchiveDirectory);
+                var dirInfo = new DirectoryInfo(CoreSettings.GetLogFilesArchiveDirectory());
                 var files = dirInfo.EnumerateFiles();
                 var oldFileDate = DateTime.Now.AddDays(-logFilesRetentionInDays);
 
@@ -245,7 +247,7 @@ namespace ArchivialLibrary.Client
                 {
                     if (file.Name.StartsWith(LogFileNameFragment) && file.Extension == LogFileExtension && file.LastWriteTime < oldFileDate)
                     {
-                        var newFileName = Path.Combine(CoreSettings.LogFilesArchiveDirectory, file.Name);
+                        var newFileName = Path.Combine(CoreSettings.GetLogFilesArchiveDirectory(), file.Name);
                         Logger.WriteTraceMessage(string.Format("Removing log file [{0}] that has exceeded the retention period.", file.Name), InstanceID);
                         file.Delete();
                     }

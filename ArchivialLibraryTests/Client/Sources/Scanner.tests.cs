@@ -9,6 +9,7 @@ using ArchivialLibrary.Providers;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchivialLibrary.ServiceCore;
 
 namespace ArchivialLibraryTests.Client.Sources
 {
@@ -18,6 +19,8 @@ namespace ArchivialLibraryTests.Client.Sources
         private const string TestConnectionString = "fakedb";
 
         private string[] TestMatchPatterns = new string[] { "^._", ".DS_Store" };
+
+        private ICoreSettings SharedMockedCoreSettings = new Mock<ICoreSettings>().Object;
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -31,7 +34,7 @@ namespace ArchivialLibraryTests.Client.Sources
         [ExpectedException(typeof(ArgumentNullException))]
         public void ScannerConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
             ArchivialLibrary.Client.Sources.SourceScanner scanner =
                 new ArchivialLibrary.Client.Sources.SourceScanner(db, null, TestMatchPatterns);
@@ -41,7 +44,7 @@ namespace ArchivialLibraryTests.Client.Sources
         public void ScannerConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
             ArchivialLibrary.Client.Sources.SourceScanner scanner =
                 new ArchivialLibrary.Client.Sources.SourceScanner(db, logger, TestMatchPatterns);
@@ -53,7 +56,7 @@ namespace ArchivialLibraryTests.Client.Sources
         public void ScannerConstructorDoesNotThrowMatchPatternsAreNotProvided()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
             ArchivialLibrary.Client.Sources.SourceScanner scanner =
                 new ArchivialLibrary.Client.Sources.SourceScanner(db, logger, null);

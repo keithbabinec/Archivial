@@ -47,6 +47,11 @@ namespace ArchivialClientAgent
         private ILogger CoreLog { get; set; }
 
         /// <summary>
+        /// A reference to the core settings accessor.
+        /// </summary>
+        private ICoreSettings CoreSettings { get; set; }
+
+        /// <summary>
         /// A reference to the backup engine log.
         /// </summary>
         private ILogger ScanEngineLog { get; set; }
@@ -91,6 +96,8 @@ namespace ArchivialClientAgent
         /// </summary>
         private void CoreStart()
         {
+            CoreSettings = new WindowsCoreSettings();
+
             StartLoggers();
 
             CoreLog.WriteSystemEvent(
@@ -211,15 +218,15 @@ namespace ArchivialClientAgent
         {
             CoreLog = new Logger(ArchivialLibrary.Constants.Logging.CoreServiceComponentName);
             CoreLog.Start(
-                CoreSettings.EventlogName,
-                CoreSettings.EventlogName,
-                CoreSettings.LogFilesDirectory);
+                CoreSettings.GetEventlogName(),
+                CoreSettings.GetEventlogName(),
+                CoreSettings.GetLogFilesDirectory());
 
             ScanEngineLog = new Logger(ArchivialLibrary.Constants.Logging.ScanningComponentName);
             ScanEngineLog.Start(
-                CoreSettings.EventlogName,
-                CoreSettings.EventlogName,
-                CoreSettings.LogFilesDirectory);
+                CoreSettings.GetEventlogName(),
+                CoreSettings.GetEventlogName(),
+                CoreSettings.GetLogFilesDirectory());
         }
 
         /// <summary>
@@ -230,7 +237,7 @@ namespace ArchivialClientAgent
         {
             try
             {
-                ClientDatabase = new SQLServerClientDatabase(CoreSettings.DatabaseConnectionString, CoreLog);
+                ClientDatabase = new SQLServerClientDatabase(CoreSettings.GetDatabaseConnectionString(), CoreLog, CoreSettings);
                 await ClientDatabase.PrepareDatabaseAsync().ConfigureAwait(false);
 
                 return true;
@@ -252,7 +259,7 @@ namespace ArchivialClientAgent
         {
             try
             {
-                CoreServiceEngineInstance = new CoreServiceEngine(ClientDatabase, CoreLog, 0);
+                CoreServiceEngineInstance = new CoreServiceEngine(ClientDatabase, CoreLog, 0, CoreSettings);
                 CoreServiceEngineInstance.Stopped += Connection_Stopped;
                 CoreServiceEngineInstance.BeginStart();
 
@@ -279,7 +286,7 @@ namespace ArchivialClientAgent
         {
             try
             {
-                ConnectionEngineInstance = new ConnectionEngine(ClientDatabase, CoreLog);
+                ConnectionEngineInstance = new ConnectionEngine(ClientDatabase, CoreLog, 0, CoreSettings);
                 ConnectionEngineInstance.Stopped += Connection_Stopped;
                 ConnectionEngineInstance.BeginStart();
 
@@ -333,7 +340,7 @@ namespace ArchivialClientAgent
         {
             try
             {
-                StatusEngineInstance = new StatusEngine(ClientDatabase, CoreLog, 0);
+                StatusEngineInstance = new StatusEngine(ClientDatabase, CoreLog, 0, CoreSettings);
                 StatusEngineInstance.Stopped += Status_Stopped;
                 StatusEngineInstance.BeginStart();
 
@@ -387,7 +394,7 @@ namespace ArchivialClientAgent
         {
             try
             {
-                ScanEngineInstance = new ScanEngine(ClientDatabase, ScanEngineLog, 0);
+                ScanEngineInstance = new ScanEngine(ClientDatabase, ScanEngineLog, 0, CoreSettings);
                 ScanEngineInstance.Stopped += Scan_Stopped;
                 ScanEngineInstance.BeginStart();
 
@@ -462,11 +469,11 @@ namespace ArchivialClientAgent
 
                     var engineLog = new Logger(string.Format("{0}-{1}", ArchivialLibrary.Constants.Logging.BackupComponentName, i));
                     engineLog.Start(
-                        CoreSettings.EventlogName,
-                        CoreSettings.EventlogName,
-                        CoreSettings.LogFilesDirectory);
+                        CoreSettings.GetEventlogName(),
+                        CoreSettings.GetEventlogName(),
+                        CoreSettings.GetLogFilesDirectory());
 
-                    var instance = new BackupEngine(ClientDatabase, engineLog, i);
+                    var instance = new BackupEngine(ClientDatabase, engineLog, i, CoreSettings);
                     instance.Stopped += Backup_Stopped;
                     instance.BeginStart();
 
@@ -535,11 +542,11 @@ namespace ArchivialClientAgent
                 {
                     var engineLog = new Logger(string.Format("{0}-{1}", ArchivialLibrary.Constants.Logging.CleanupComponentName, i));
                     engineLog.Start(
-                        CoreSettings.EventlogName,
-                        CoreSettings.EventlogName,
-                        CoreSettings.LogFilesDirectory);
+                        CoreSettings.GetEventlogName(),
+                        CoreSettings.GetEventlogName(),
+                        CoreSettings.GetLogFilesDirectory());
 
-                    var instance = new CleanupEngine(ClientDatabase, engineLog, i);
+                    var instance = new CleanupEngine(ClientDatabase, engineLog, i, CoreSettings);
                     instance.Stopped += Cleanup_Stopped;
                     instance.BeginStart();
 

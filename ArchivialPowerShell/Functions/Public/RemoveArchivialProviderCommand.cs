@@ -1,9 +1,7 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.MessagingProviders;
 using ArchivialLibrary.Providers;
-using ArchivialLibrary.Secrets;
 using ArchivialLibrary.StorageProviders;
-using ArchivialPowerShell.Setup;
 using ArchivialPowerShell.Utility;
 using System;
 using System.Collections.Generic;
@@ -53,10 +51,8 @@ namespace ArchivialPowerShell.Functions.Public
         /// <summary>
         /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        /// <param name="secretStore"></param>
-        /// <param name="setup"></param>
-        public RemoveArchivialProviderCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup) { }
+        /// <param name="dependencies"></param>
+        public RemoveArchivialProviderCommand(CmdletDependencies dependencies) : base(dependencies) { }
 
         private IClientDatabase database { get; set; }
 

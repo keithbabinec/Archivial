@@ -1,9 +1,6 @@
-﻿using ArchivialLibrary.Database;
-using ArchivialLibrary.Exceptions;
+﻿using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
-using ArchivialLibrary.Secrets;
-using ArchivialPowerShell.Setup;
 using ArchivialPowerShell.Utility;
 using System;
 using System.Linq;
@@ -74,10 +71,8 @@ namespace ArchivialPowerShell.Functions.Public
         /// <summary>
         /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        /// <param name="secretStore"></param>
-        /// <param name="setup"></param>
-        public AddArchivialNetworkSourceCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup) { }
+        /// <param name="dependencies"></param>
+        public AddArchivialNetworkSourceCommand(CmdletDependencies dependencies) : base(dependencies) { }
 
         protected override void ProcessRecord()
         {

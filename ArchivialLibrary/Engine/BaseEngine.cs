@@ -1,8 +1,7 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Events;
 using ArchivialLibrary.Logging;
-using ArchivialLibrary.MessagingProviders;
-using ArchivialLibrary.StorageProviders;
+using ArchivialLibrary.ServiceCore;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,11 +22,9 @@ namespace ArchivialLibrary.Engine
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
-        protected BaseEngine(IClientDatabase database, ILogger logger, int instanceID)
+        /// <param name="coreSettings">The core settings accessor.</param>
+        protected BaseEngine(IClientDatabase database, ILogger logger, int instanceID, ICoreSettings coreSettings)
         {
-            // note: its ok to have no messaging providers (zero count).
-            // it is not ok to have zero backup providers.
-
             if (database == null)
             {
                 throw new ArgumentNullException(nameof(database));
@@ -35,6 +32,10 @@ namespace ArchivialLibrary.Engine
             if (logger == null)
             {
                 throw new ArgumentNullException(nameof(logger));
+            }
+            if (coreSettings == null)
+            {
+                throw new ArgumentNullException(nameof(coreSettings));
             }
             if (instanceID < 0)
             {
@@ -44,6 +45,7 @@ namespace ArchivialLibrary.Engine
             Database = database;
             Logger = logger;
             InstanceID = instanceID;
+            CoreSettings = coreSettings;
             CancelSource = new CancellationTokenSource();
         }
 
@@ -85,6 +87,11 @@ namespace ArchivialLibrary.Engine
         /// A reference to the database.
         /// </summary>
         protected IClientDatabase Database { get; set; }
+
+        /// <summary>
+        /// A reference to the core settings accessor.
+        /// </summary>
+        protected ICoreSettings CoreSettings { get; set; }
 
         /// <summary>
         /// A reference to the engine cancellation token source.

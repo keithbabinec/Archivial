@@ -1,7 +1,5 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Folders;
-using ArchivialLibrary.Secrets;
-using ArchivialPowerShell.Setup;
 using ArchivialPowerShell.Utility;
 using System.Linq;
 using System.Management.Automation;
@@ -54,10 +52,8 @@ namespace ArchivialPowerShell.Functions.Public
         /// <summary>
         /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        /// <param name="secretStore"></param>
-        /// <param name="setup"></param>
-        public StartArchivialNetworkSourceRescanCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup) { }
+        /// <param name="dependencies"></param>
+        public StartArchivialNetworkSourceRescanCommand(CmdletDependencies dependencies) : base(dependencies) { }
 
         private IClientDatabase database { get; set; }
 

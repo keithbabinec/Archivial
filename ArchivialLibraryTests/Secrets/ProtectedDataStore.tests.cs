@@ -7,6 +7,7 @@ using ArchivialLibrary.Logging.Mock;
 using ArchivialLibrary.Secrets;
 using System;
 using System.Threading.Tasks;
+using ArchivialLibrary.ServiceCore;
 
 namespace ArchivialLibraryTests.Secrets
 {
@@ -14,6 +15,8 @@ namespace ArchivialLibraryTests.Secrets
     public class ProtectedDataStoreTests
     {
         private const string TestConnectionString = "fakedb";
+
+        private ICoreSettings SharedMockedCoreSettings = new Mock<ICoreSettings>().Object;
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -29,7 +32,7 @@ namespace ArchivialLibraryTests.Secrets
         [ExpectedException(typeof(ArgumentException))]
         public void ProtectedDataStoreConstructorThrowsOnNoEntropy()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
             var entropy = new byte[] { };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
@@ -55,7 +58,7 @@ namespace ArchivialLibraryTests.Secrets
         [ExpectedException(typeof(ArgumentException))]
         public async Task ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionNameIsProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 
@@ -68,7 +71,7 @@ namespace ArchivialLibraryTests.Secrets
         [ExpectedException(typeof(ArgumentException))]
         public async Task ProtectedDataStoreSetApplicationSecretThrowsWhenNoOptionValueIsProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
             var entropy = new byte[] { 123, 2, 15, 212, 174, 141, 233, 86 };
             var scope = System.Security.Cryptography.DataProtectionScope.CurrentUser;
 

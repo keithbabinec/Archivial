@@ -82,6 +82,7 @@
     <Compile Include="Functions\Public\InstallArchivialCloudBackupCommand.cs" />
     <Compile Include="Functions\Public\UninstallArchivialCloudBackupCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\CmdletDependencies.cs" />
     <Compile Include="Utility\ConsoleLogger.cs" />
   </ItemGroup>
   <ItemGroup>

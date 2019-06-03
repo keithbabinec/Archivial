@@ -27,17 +27,28 @@ namespace ArchivialPowerShell.Setup
         private IClientDatabase DatabaseClient { get; set; }
 
         /// <summary>
+        /// A reference to the core settings accessor.
+        /// </summary>
+        private ICoreSettings CoreSettings { get; set; }
+
+        /// <summary>
         /// A constructor that accepts a database instance.
         /// </summary>
         /// <param name="client"></param>
-        public WindowsSetup(IClientDatabase client)
+        /// <param name="coreSettings"></param>
+        public WindowsSetup(IClientDatabase client, ICoreSettings coreSettings)
         {
             if (client == null)
             {
                 throw new ArgumentNullException(nameof(client));
             }
+            if (coreSettings == null)
+            {
+                throw new ArgumentNullException(nameof(coreSettings));
+            }
 
             DatabaseClient = client;
+            CoreSettings = coreSettings;
         }
 
         /// <summary>
@@ -87,7 +98,7 @@ namespace ArchivialPowerShell.Setup
         /// <returns></returns>
         private Version GetInstalledBinaryVersion()
         {
-            var programDirectory = CoreSettings.InstallationDirectory;
+            var programDirectory = CoreSettings.GetInstallationDirectory();
 
             if (string.IsNullOrWhiteSpace(programDirectory))
             {
@@ -153,14 +164,14 @@ namespace ArchivialPowerShell.Setup
         public void CreateCoreSettings(string installationDirectory)
         {
             // set the core settings.
-            CoreSettings.InstallationDirectory = installationDirectory;
-            CoreSettings.EventlogName = "Archivial";
+            CoreSettings.SetInstallationDirectory(installationDirectory);
+            CoreSettings.SetEventlogName("Archivial");
 
             // setting this flag indicates publish is required on next service startup.
-            CoreSettings.DatabasePublishIsRequired = true;
+            CoreSettings.SetDatabasePublishIsRequired(true);
 
             var dbConnectionString = string.Format("Data Source=.\\SQLExpress;Initial Catalog={0};Integrated Security=SSPI;", Database.DatabaseName);
-            CoreSettings.DatabaseConnectionString = dbConnectionString;
+            CoreSettings.SetDatabaseConnectionString(dbConnectionString);
         }
 
         /// <summary>
@@ -168,9 +179,9 @@ namespace ArchivialPowerShell.Setup
         /// </summary>
         public void CreateEventLogSource()
         {
-            if (EventLog.Exists(CoreSettings.EventlogName) == false)
+            if (EventLog.Exists(CoreSettings.GetEventlogName()) == false)
             {
-                EventLog.CreateEventSource(CoreSettings.EventlogName, CoreSettings.EventlogName);
+                EventLog.CreateEventSource(CoreSettings.GetEventlogName(), CoreSettings.GetEventlogName());
             }
         }
 
@@ -179,17 +190,17 @@ namespace ArchivialPowerShell.Setup
         /// </summary>
         public void CreateInstallationDirectories()
         {
-            if (Directory.Exists(CoreSettings.InstallationDirectory) == false)
+            if (Directory.Exists(CoreSettings.GetInstallationDirectory()) == false)
             {
-                Directory.CreateDirectory(CoreSettings.InstallationDirectory);
+                Directory.CreateDirectory(CoreSettings.GetInstallationDirectory());
             }
 
-            if (Directory.Exists(CoreSettings.DatabaseDirectory) == false)
+            if (Directory.Exists(CoreSettings.GetDatabaseDirectory()) == false)
             {
-                Directory.CreateDirectory(CoreSettings.DatabaseDirectory);
-                Directory.CreateDirectory(CoreSettings.DatabaseBackupsDirectory);
+                Directory.CreateDirectory(CoreSettings.GetDatabaseDirectory());
+                Directory.CreateDirectory(CoreSettings.GetDatabaseBackupsDirectory());
 
-                var dirInfo = new DirectoryInfo(CoreSettings.DatabaseDirectory);
+                var dirInfo = new DirectoryInfo(CoreSettings.GetDatabaseDirectory());
                 var dirSecurity = dirInfo.GetAccessControl();
 
                 dirSecurity.AddAccessRule(
@@ -205,10 +216,10 @@ namespace ArchivialPowerShell.Setup
                 dirInfo.SetAccessControl(dirSecurity);
             }
 
-            if (Directory.Exists(CoreSettings.LogFilesDirectory) == false)
+            if (Directory.Exists(CoreSettings.GetLogFilesDirectory()) == false)
             {
-                Directory.CreateDirectory(CoreSettings.LogFilesDirectory);
-                Directory.CreateDirectory(CoreSettings.LogFilesArchiveDirectory);
+                Directory.CreateDirectory(CoreSettings.GetLogFilesDirectory());
+                Directory.CreateDirectory(CoreSettings.GetLogFilesArchiveDirectory());
             }
         }
 
@@ -246,7 +257,7 @@ namespace ArchivialPowerShell.Setup
             foreach (var file in fileManifest)
             {
                 var sourceFileFullPath = Path.Combine(sourcePath, file);
-                var destFileFullPath = Path.Combine(CoreSettings.InstallationDirectory, file);
+                var destFileFullPath = Path.Combine(CoreSettings.GetInstallationDirectory(), file);
 
                 if (File.Exists(sourceFileFullPath) == false)
                 {
@@ -291,7 +302,7 @@ namespace ArchivialPowerShell.Setup
             {
                 var installArgs = string.Format(
                     "create \"ArchivialCloudBackup\" binPath= \"{0}\" start= \"auto\" DisplayName= \"{1}\" depend= \"{2}\"",
-                    Path.Combine(CoreSettings.InstallationDirectory, "ArchivialClientAgent.exe"),
+                    Path.Combine(CoreSettings.GetInstallationDirectory(), "ArchivialClientAgent.exe"),
                     "Archivial Cloud Backup Agent",
                     Database.DefaultSqlExpressInstanceName);
 
@@ -312,7 +323,7 @@ namespace ArchivialPowerShell.Setup
 
                 var setDescriptionArgs = string.Format(
                     "description \"ArchivialCloudBackup\" \"Archivial Cloud Backup is a data backup client service that copies data to cloud providers like Azure and AWS.\"",
-                    CoreSettings.InstallationDirectory);
+                    CoreSettings.GetInstallationDirectory());
 
                 Process setServiceDescriptionProcess = new Process();
                 setServiceDescriptionProcess.StartInfo = new ProcessStartInfo()
@@ -364,7 +375,7 @@ namespace ArchivialPowerShell.Setup
 
             while (true)
             {
-                if (CoreSettings.DatabasePublishIsRequired)
+                if (CoreSettings.GetDatabasePublishIsRequired())
                 {
                     // setup is still running.
 
@@ -461,7 +472,7 @@ namespace ArchivialPowerShell.Setup
         /// </summary>
         public void DeleteInstallationDirectories()
         {
-            var installDirectory = CoreSettings.InstallationDirectory;
+            var installDirectory = CoreSettings.GetInstallationDirectory();
             int attempts = 0;
 
             while (true)
@@ -498,9 +509,9 @@ namespace ArchivialPowerShell.Setup
         /// </summary>
         public void DeleteEventLogContents()
         {
-            if (EventLog.Exists(CoreSettings.EventlogName))
+            if (EventLog.Exists(CoreSettings.GetEventlogName()))
             {
-                var log = new EventLog(CoreSettings.EventlogName, Environment.MachineName, CoreSettings.EventlogName);
+                var log = new EventLog(CoreSettings.GetEventlogName(), Environment.MachineName, CoreSettings.GetEventlogName());
                 log.Clear();
             }
         }
@@ -529,7 +540,7 @@ namespace ArchivialPowerShell.Setup
         /// </summary>
         public void SetDatabasePublishRequiredCoreOption()
         {
-            CoreSettings.DatabasePublishIsRequired = true;
+            CoreSettings.SetDatabasePublishIsRequired(true);
         }
     }
 }

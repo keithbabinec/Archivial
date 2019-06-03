@@ -1,6 +1,8 @@
 ﻿using ArchivialLibrary.Constants;
 using ArchivialLibrary.Database;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Management.Automation;
@@ -197,7 +199,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
 
             // execute
 
@@ -243,7 +253,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
             command.LogFilesRetentionInDays = 5;
 
             // execute
@@ -263,7 +281,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
             command.DatabaseBackupsRetentionInDays = 7;
 
             // execute
@@ -283,7 +309,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
             command.BackupEngineInstancesCount = 8;
 
             // execute
@@ -303,7 +337,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
             command.BackupEngineStartupDelayInSeconds = 60;
 
             // execute
@@ -323,7 +365,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
             command.LowPriorityScanFrequencyInHours = 24;
 
             // execute
@@ -343,7 +393,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
             command.MedPriorityScanFrequencyInHours = 12;
 
             // execute
@@ -363,7 +421,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
             command.HighPriorityScanFrequencyInHours = 2;
 
             // execute
@@ -383,7 +449,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
             command.ProtectionIV = "key";
 
             // execute
@@ -403,7 +477,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
             command.StatusUpdateSchedule = "0 8 * * *";
 
             // execute
@@ -423,7 +505,15 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             var mockedDb = new Mock<IClientDatabase>();
 
-            var command = new SetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialCloudBackupOptionsCommand(depedencies);
             command.MasterExclusionMatches = new string[] { "^._", ".DS_Store" };
 
             // execute

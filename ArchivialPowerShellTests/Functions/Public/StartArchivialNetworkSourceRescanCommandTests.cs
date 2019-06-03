@@ -1,6 +1,8 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Folders;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Management.Automation;
@@ -65,7 +67,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new StartArchivialNetworkSourceRescanCommand(mockedDb.Object, null, null)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new StartArchivialNetworkSourceRescanCommand(depedencies)
             {
                 SourceID = 1
             };
@@ -96,7 +106,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new StartArchivialNetworkSourceRescanCommand(mockedDb.Object, null, null)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new StartArchivialNetworkSourceRescanCommand(depedencies)
             {
                 NetworkSource = new NetworkSourceLocation() { ID = 1 }
             };
@@ -128,7 +146,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new StartArchivialNetworkSourceRescanCommand(mockedDb.Object, null, null)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new StartArchivialNetworkSourceRescanCommand(depedencies)
             {
                 SourceID = 2
             };

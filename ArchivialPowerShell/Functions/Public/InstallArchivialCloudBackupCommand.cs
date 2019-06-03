@@ -1,8 +1,4 @@
-﻿using ArchivialLibrary.Database;
-using ArchivialLibrary.Secrets;
-using ArchivialLibrary.ServiceCore;
-using ArchivialPowerShell.Exceptions;
-using ArchivialPowerShell.Setup;
+﻿using ArchivialPowerShell.Exceptions;
 using ArchivialPowerShell.Utility;
 using System;
 using System.IO;
@@ -52,12 +48,10 @@ namespace ArchivialPowerShell.Functions.Public
         }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        /// <param name="setup"></param>
-        /// <param name="secretStore"></param>
-        public InstallArchivialCloudBackupCommand(IClientDatabase database, ISecretStore secretStore, ISetup setup) : base(database, secretStore, setup)
+        /// <param name="dependencies"></param>
+        public InstallArchivialCloudBackupCommand(CmdletDependencies dependencies) : base(dependencies)
         {
             ActivityName = "Installation";
             ActivityID = 1;
@@ -66,6 +60,7 @@ namespace ArchivialPowerShell.Functions.Public
         protected override void ProcessRecord()
         {
             var setup = GetSetupHelper();
+            var coreSettings = GetCoreSettingsAccessor();
 
             if (!setup.IsRunningElevated())
             {
@@ -97,9 +92,9 @@ namespace ArchivialPowerShell.Functions.Public
             WriteVerboseAndProgress(10, "Applying core settings.");
             setup.CreateCoreSettings(InstallDirectory);
 
-            WriteVerbose("InstallationDirectory=" + CoreSettings.InstallationDirectory);
-            WriteVerbose("EventlogName=" + CoreSettings.EventlogName);
-            WriteVerbose("DatabaseConnectionString=" + CoreSettings.DatabaseConnectionString);
+            WriteVerbose("InstallationDirectory=" + coreSettings.GetInstallationDirectory());
+            WriteVerbose("EventlogName=" + coreSettings.GetEventlogName());
+            WriteVerbose("DatabaseConnectionString=" + coreSettings.GetDatabaseConnectionString());
 
             WriteVerboseAndProgress(25, "Registering custom event log source.");
             setup.CreateEventLogSource();

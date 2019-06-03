@@ -1,6 +1,8 @@
-﻿using ArchivialPowerShell.Exceptions;
+﻿using ArchivialLibrary.ServiceCore;
+using ArchivialPowerShell.Exceptions;
 using ArchivialPowerShell.Functions.Public;
 using ArchivialPowerShell.Setup;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -40,7 +42,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedSetup.Setup(x => x.IsRunningElevated()).Returns(true);
             mockedSetup.Setup(x => x.SqlServerPrerequisiteIsAvailable()).Returns(true);
 
-            var command = new InstallArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                Setup = mockedSetup.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new InstallArchivialCloudBackupCommand(depedencies);
             command.Force = true;
 
             // execute
@@ -71,7 +81,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedSetup.Setup(x => x.IsRunningElevated()).Returns(false);
             mockedSetup.Setup(x => x.SqlServerPrerequisiteIsAvailable()).Returns(true);
 
-            var command = new InstallArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                Setup = mockedSetup.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new InstallArchivialCloudBackupCommand(depedencies);
 
             // execute
 
@@ -89,7 +107,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedSetup.Setup(x => x.IsRunningElevated()).Returns(true);
             mockedSetup.Setup(x => x.SqlServerPrerequisiteIsAvailable()).Returns(false);
 
-            var command = new InstallArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                Setup = mockedSetup.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new InstallArchivialCloudBackupCommand(depedencies);
 
             // execute
 
@@ -107,7 +133,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedSetup.Setup(x => x.SqlServerPrerequisiteIsAvailable()).Returns(true);
             mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ThrowsAsync(new CmdletExecutionFailedDamagedProductInstallationException());
 
-            var command = new InstallArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                Setup = mockedSetup.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new InstallArchivialCloudBackupCommand(depedencies);
             command.Force = true;
 
             // execute
@@ -126,7 +160,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedSetup.Setup(x => x.SqlServerPrerequisiteIsAvailable()).Returns(true);
             mockedSetup.Setup(x => x.GetInstalledVersionAsync()).ReturnsAsync(new Version(1,0,0,0));
 
-            var command = new InstallArchivialCloudBackupCommand(null, null, mockedSetup.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                Setup = mockedSetup.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new InstallArchivialCloudBackupCommand(depedencies);
             command.Force = true;
 
             // execute

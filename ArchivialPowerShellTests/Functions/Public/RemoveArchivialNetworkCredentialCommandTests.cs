@@ -1,6 +1,8 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -69,7 +71,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentCredentialName = x);
 
-            var command = new RemoveArchivialNetworkCredentialCommand(mockedDb.Object, null, null)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new RemoveArchivialNetworkCredentialCommand(depedencies)
             {
                 CredentialName = "Test"
             };
@@ -101,7 +111,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentCredentialName = x);
 
-            var command = new RemoveArchivialNetworkCredentialCommand(mockedDb.Object, null, null)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new RemoveArchivialNetworkCredentialCommand(depedencies)
             {
                 NetCredential = new NetCredential() { CredentialName = "Test" }
             };
@@ -134,7 +152,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentCredentialName = x);
 
-            var command = new RemoveArchivialNetworkCredentialCommand(mockedDb.Object, null, null)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new RemoveArchivialNetworkCredentialCommand(depedencies)
             {
                 CredentialName = "TestTest"
             };

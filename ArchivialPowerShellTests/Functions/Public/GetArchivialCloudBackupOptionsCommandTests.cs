@@ -2,6 +2,7 @@
 using ArchivialLibrary.Database;
 using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -26,7 +27,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.StatusUpdateSchedule))).ReturnsAsync("*/5 * * * *");
             mockedDb.Setup(x => x.GetApplicationOptionAsync(It.Is<string>(z => z == RuntimeSettingNames.MasterExclusionMatches))).ReturnsAsync("^._;.DS_Store");
 
-            var command = new GetArchivialCloudBackupOptionsCommand(mockedDb.Object, null, null);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new GetArchivialCloudBackupOptionsCommand(depedencies);
 
             foreach (var result in command.Invoke())
             {

@@ -2,10 +2,9 @@
 using Moq;
 using ArchivialLibrary.Database.SQLServer;
 using ArchivialLibrary.Logging.Mock;
-using ArchivialLibrary.MessagingProviders;
-using ArchivialLibrary.StorageProviders;
 using System;
 using System.Threading;
+using ArchivialLibrary.ServiceCore;
 
 namespace ArchivialLibraryTests.Client
 {
@@ -14,50 +13,34 @@ namespace ArchivialLibraryTests.Client
     {
         private const string TestConnectionString = "fakedb";
 
-        private StorageProviderConnectionsCollection GenerateMockStorageProviders()
-        {
-            var providers = new StorageProviderConnectionsCollection();
-            var mockedProvider = new Mock<IStorageProviderFileOperations>();
-            providers.Add(StorageProviderTypes.Azure, mockedProvider.Object);
-
-            return providers;
-        }
-
-        private MessagingProviderConnectionsCollection GenerateMockMessagingProviders()
-        {
-            var providers = new MessagingProviderConnectionsCollection();
-            var mockedProvider = new Mock<IMessagingProviderOperations>();
-            providers.Add(MessagingProviderTypes.Twilio, mockedProvider.Object);
-
-            return providers;
-        }
+        private ICoreSettings SharedMockedCoreSettings = new Mock<ICoreSettings>().Object;
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ConnectionEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
             ArchivialLibrary.Client.ConnectionEngine engine =
-                new ArchivialLibrary.Client.ConnectionEngine(null, new MockLogger());
+                new ArchivialLibrary.Client.ConnectionEngine(null, new MockLogger(), 0, SharedMockedCoreSettings);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ConnectionEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
             ArchivialLibrary.Client.ConnectionEngine engine =
-                new ArchivialLibrary.Client.ConnectionEngine(db, null);
+                new ArchivialLibrary.Client.ConnectionEngine(db, null, 0, SharedMockedCoreSettings);
         }
 
         [TestMethod]
         public void ConnectionEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
             ArchivialLibrary.Client.ConnectionEngine engine =
-                new ArchivialLibrary.Client.ConnectionEngine(db, logger);
+                new ArchivialLibrary.Client.ConnectionEngine(db, logger, 0, SharedMockedCoreSettings);
 
             Assert.IsNotNull(engine);
         }
@@ -66,10 +49,10 @@ namespace ArchivialLibraryTests.Client
         public void ConnectionEngineCanStartAndStop()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
             ArchivialLibrary.Client.ConnectionEngine engine =
-                new ArchivialLibrary.Client.ConnectionEngine(db, logger);
+                new ArchivialLibrary.Client.ConnectionEngine(db, logger, 0, SharedMockedCoreSettings);
 
             engine.BeginStart();
             engine.BeginStop();
@@ -79,10 +62,10 @@ namespace ArchivialLibraryTests.Client
         public void ConnectionEngineTriggersStoppedEventWhenEngineHasStopped()
         {
             var logger = new MockLogger();
-            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger());
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
             ArchivialLibrary.Client.ConnectionEngine engine =
-                new ArchivialLibrary.Client.ConnectionEngine(db, logger);
+                new ArchivialLibrary.Client.ConnectionEngine(db, logger, 0, SharedMockedCoreSettings);
 
             var signalStoppedEvent = new AutoResetEvent(false);
 
