@@ -49,10 +49,10 @@ namespace ArchivialPowerShell.Functions.Public
         public RemoveArchivialProviderCommand() : base() { }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        public RemoveArchivialProviderCommand(IClientDatabase database) : base(database) { }
+        /// <param name="dependencies"></param>
+        public RemoveArchivialProviderCommand(CmdletDependencies dependencies) : base(dependencies) { }
 
         private IClientDatabase database { get; set; }
 

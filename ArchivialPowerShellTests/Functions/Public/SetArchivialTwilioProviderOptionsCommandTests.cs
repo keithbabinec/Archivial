@@ -3,7 +3,9 @@ using ArchivialLibrary.Database;
 using ArchivialLibrary.MessagingProviders;
 using ArchivialLibrary.Providers;
 using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -113,7 +115,16 @@ namespace ArchivialPowerShellTests.Functions.Public
                         }
                     });
 
-            var command = new SetArchivialTwilioProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                SecretStore = mockedSecretStore.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialTwilioProviderOptionsCommand(depedencies);
             command.TwilioAccountID = "FakeAccountID";
             command.TwilioAuthToken = "FakeAuthToken";
             command.TwilioDestinationPhones = new string[] { "123456788", "123456789" };
@@ -138,7 +149,16 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             mockedDb.Setup(x => x.GetProvidersAsync(It.Is<ProviderTypes>(z => z == ProviderTypes.Messaging))).ReturnsAsync(new ProviderCollection());
 
-            var command = new SetArchivialTwilioProviderOptionsCommand(mockedDb.Object, mockedSecretStore.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object,
+                SecretStore = mockedSecretStore.Object
+            };
+
+            var command = new SetArchivialTwilioProviderOptionsCommand(depedencies);
             command.TwilioAccountID = "FakeAccountID";
             command.TwilioAuthToken = "FakeAuthToken";
             command.TwilioDestinationPhones = new string[] { "123456788", "123456789" };

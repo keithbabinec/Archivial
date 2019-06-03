@@ -1,6 +1,7 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -17,7 +18,15 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedDb.Setup(x => x.GetBackupProgressAsync())
                 .ReturnsAsync(new BackupProgress());
 
-            var command = new GetArchivialCloudBackupStatusCommand(mockedDb.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new GetArchivialCloudBackupStatusCommand(depedencies);
 
             foreach (var result in command.Invoke())
             {

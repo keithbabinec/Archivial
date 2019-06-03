@@ -1,7 +1,9 @@
 ﻿using ArchivialLibrary.Constants;
 using ArchivialLibrary.Database;
 using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Management.Automation;
@@ -87,7 +89,16 @@ namespace ArchivialPowerShellTests.Functions.Public
                         }
                     });
 
-            var command = new SetArchivialNetworkCredentialCommand(mockedDb.Object, mockedSecretStore.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                SecretStore = mockedSecretStore.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialNetworkCredentialCommand(depedencies);
             command.CredentialName = "Credential";
             command.ShareUsername = "FakeUserName";
             command.SharePassword = "FakePW";
@@ -112,7 +123,16 @@ namespace ArchivialPowerShellTests.Functions.Public
 
             mockedDb.Setup(x => x.GetNetCredentialsAsync()).ReturnsAsync(new NetCredentialsCollection());
 
-            var command = new SetArchivialNetworkCredentialCommand(mockedDb.Object, mockedSecretStore.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                SecretStore = mockedSecretStore.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new SetArchivialNetworkCredentialCommand(depedencies);
             command.CredentialName = "Credential";
             command.ShareUsername = "FakeUserName";
             command.SharePassword = "FakePW";

@@ -50,10 +50,10 @@ namespace ArchivialPowerShell.Functions.Public
         public StartArchivialNetworkSourceRescanCommand() : base() { }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        public StartArchivialNetworkSourceRescanCommand(IClientDatabase database) : base(database) { }
+        /// <param name="dependencies"></param>
+        public StartArchivialNetworkSourceRescanCommand(CmdletDependencies dependencies) : base(dependencies) { }
 
         private IClientDatabase database { get; set; }
 

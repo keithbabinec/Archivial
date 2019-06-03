@@ -23,6 +23,9 @@ The default installation will be placed in the Program Files directory, but this
 This command requires an elevated (run-as administrator) PowerShell prompt to complete.
 It will also prompt for comfirmation unless the -Force switch is applied.
 
+Note: This command is used for fresh installations.
+For upgrades to existing installations use the Update-ArchivialCloudBackup command.
+
 ## EXAMPLES
 
 ### EXAMPLE 1

@@ -2,7 +2,9 @@
 using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Management.Automation;
@@ -97,8 +99,16 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedDb.Setup(x => x.SetSourceLocationAsync(It.IsAny<LocalSourceLocation>()))
                 .Returns(Task.CompletedTask)
                 .Callback<LocalSourceLocation>(x => databaseCommitedObject = x);
-            
-            var command = new AddArchivialLocalSourceCommand(mockedDb.Object)
+
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new AddArchivialLocalSourceCommand(depedencies)
             {
                 FolderPath = "C:\\folder\\path",
                 Priority = "Low",
@@ -134,7 +144,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 }
             );
 
-            var command = new AddArchivialLocalSourceCommand(mockedDb.Object)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new AddArchivialLocalSourceCommand(depedencies)
             {
                 FolderPath = "C:\\folder\\path",
                 MatchFilter = "*",

@@ -1,6 +1,8 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Providers;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -20,7 +22,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                     new Provider()
                 });
 
-            var command = new GetArchivialProvidersCommand(mockedDb.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new GetArchivialProvidersCommand(depedencies);
 
             foreach (var result in command.Invoke())
             {

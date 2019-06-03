@@ -1,5 +1,4 @@
-﻿using ArchivialLibrary.Database;
-using ArchivialLibrary.Exceptions;
+﻿using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
 using ArchivialPowerShell.Utility;
@@ -70,10 +69,10 @@ namespace ArchivialPowerShell.Functions.Public
         public AddArchivialNetworkSourceCommand() : base() { }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        public AddArchivialNetworkSourceCommand(IClientDatabase database) : base(database) { }
+        /// <param name="dependencies"></param>
+        public AddArchivialNetworkSourceCommand(CmdletDependencies dependencies) : base(dependencies) { }
 
         protected override void ProcessRecord()
         {

@@ -1,5 +1,4 @@
-﻿using ArchivialLibrary.Database;
-using ArchivialPowerShell.Utility;
+﻿using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 using System.Text;
 
@@ -108,10 +107,10 @@ namespace ArchivialPowerShell.Functions.Public
         public SetArchivialCloudBackupOptionsCommand() : base() { }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        public SetArchivialCloudBackupOptionsCommand(IClientDatabase database) : base(database) { }
+        /// <param name="dependencies"></param>
+        public SetArchivialCloudBackupOptionsCommand(CmdletDependencies dependencies) : base(dependencies) { }
 
         protected override void ProcessRecord()
         {

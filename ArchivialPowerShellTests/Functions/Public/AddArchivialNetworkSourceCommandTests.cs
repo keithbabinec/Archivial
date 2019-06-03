@@ -2,7 +2,9 @@
 using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -120,7 +122,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<NetworkSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new AddArchivialNetworkSourceCommand(mockedDb.Object)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new AddArchivialNetworkSourceCommand(depedencies)
             {
                 UncPath = "\\\\network\\path\\to\\folder",
                 Priority = "Low",
@@ -157,7 +167,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 }
             );
 
-            var command = new AddArchivialNetworkSourceCommand(mockedDb.Object)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new AddArchivialNetworkSourceCommand(depedencies)
             {
                 UncPath = "\\\\network\\path\\to\\folder",
                 MatchFilter = "*",

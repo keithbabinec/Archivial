@@ -1,6 +1,8 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Providers;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Management.Automation;
@@ -65,7 +67,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentProviderName = x);
 
-            var command = new RemoveArchivialProviderCommand(mockedDb.Object)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new RemoveArchivialProviderCommand(depedencies)
             {
                 ProviderName = "Azure"
             };
@@ -97,7 +107,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentProviderName = x);
 
-            var command = new RemoveArchivialProviderCommand(mockedDb.Object)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new RemoveArchivialProviderCommand(depedencies)
             {
                 Provider = new Provider() { Name = "Azure" }
             };
@@ -130,7 +148,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<string>(x => databaseSentProviderName = x);
 
-            var command = new RemoveArchivialProviderCommand(mockedDb.Object)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new RemoveArchivialProviderCommand(depedencies)
             {
                 ProviderName = "AWS"
             };

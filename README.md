@@ -1,15 +1,19 @@
 # Archivial Cloud Backup
-Data backup agent software for Windows that automatically archives your local data to a cloud storage provider.
+Archivial is data backup software for Windows that automatically archives your local data to a cloud storage provider. 
 
 # Contents
 * [About](#about)
 * [Development Status](#development-status)
 * [Screenshots](#screenshots)
-* [Installation](#installation)
+* [Install Archivial](#install-archivial)
+* [Update Archivial](#update-archivial)
+* [Remove Archivial](#remove-archivial)
 * [Command Reference](#command-reference)
 
 ## About
 Archivial is a lightweight but highly configurable backup agent that supports cloud storage destinations, automated progress notifications, and full management through PowerShell commands. 
+
+The [ArchivialPowerShell](https://www.powershellgallery.com/packages/ArchivialPowerShell) module package contains the Archivial installation and management commands and can be installed from PSGallery. 
 
 Pull request and integration builds are run via Azure DevOps CI. Releases are automatically published to the Github releases tab.
 
@@ -54,7 +58,7 @@ This project is still considered alpha phase and under active development. Break
 
 ![Screenshot: Automated SMS/Text Status Updates](Doc/Screenshots/6-archivial-update-notify.png?raw=true "Screenshot: Automated SMS/Text Status Updates")
 
-## Installation
+## Install Archivial
 
 ### Prerequisites
 * A Windows Operating System running .NET 4.6.1 (or later).
@@ -71,11 +75,41 @@ This project is still considered alpha phase and under active development. Break
 Install-Module -Name ArchivialPowerShell -Scope AllUsers
 ```
 
-### Step 3: Install and Start the Archivial Backup Agent
+### Step 3: Install and Start the Archivial Cloud Backup agent.
 * After installing the management tools, run the main installation command. 
 * This will copy the program files, create the initial state database, then create and start the Archivial Client windows service (the backup agent).
 ``` powershell
 Install-ArchivialCloudBackup
+```
+
+## Update Archivial
+
+### Step 1: Update ArchivialPowerShell Module (Management Tools)
+* Open an elevated (run-as Administrator) PowerShell prompt and then execute the following to update your module to latest.
+* NOTE: If you have already loaded the ArchivialPowerShell module in your current session, then you will need to close then reopen PowerShell before you can perform the upgrade command in step 2.
+``` powershell
+$latestVersion = (Find-Module -Name ArchivialPowerShell).Version
+Update-Module -Name ArchivialPowerShell -RequiredVersion $latestVersion
+```
+
+### Step 2: Update your Archivial Cloud Backup software installation
+* Open an elevated (run-as Administrator) PowerShell prompt and then execute the following:
+``` powershell
+Update-ArchivialCloudBackup
+```
+
+## Remove Archivial
+
+### Step 1: Remove your Archivial Cloud Backup software installation
+* Open an elevated (run-as Administrator) PowerShell prompt and then execute the following:
+``` powershell
+Uninstall-ArchivialCloudBackup
+```
+
+### Step 2: Remove ArchivialPowerShell Module (Management Tools)
+* Open an elevated (run-as Administrator) PowerShell prompt and then execute the following to remove that module:
+``` powershell
+Uninstall-Module -Name ArchivialPowerShell -AllVersions
 ```
 
 ## Command Reference
@@ -101,3 +135,4 @@ Install-ArchivialCloudBackup
 | [Start-ArchivialLocalSourceRescan](Doc/Commands/Start-ArchivialLocalSourceRescan.md) | Forces the re-scan of a Local Source being monitored by Archivial. |
 | [Start-ArchivialNetworkSourceRescan](Doc/Commands/Start-ArchivialNetworkSourceRescan.md) | Forces the re-scan of a Network Source being monitored by Archivial. |
 | [Uninstall-ArchivialCloudBackup](Doc/Commands/Uninstall-ArchivialCloudBackup.md) | Uninstalls the Archivial Cloud Backup software from this computer. |
+| [Update-ArchivialCloudBackup](Doc/Commands/Update-ArchivialCloudBackup.md) | Updates the Archivial Cloud Backup software on this computer. |

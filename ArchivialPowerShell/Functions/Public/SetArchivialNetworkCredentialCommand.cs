@@ -1,11 +1,7 @@
-﻿using ArchivialLibrary.Database;
-using ArchivialLibrary.Secrets;
-using ArchivialLibrary.ServiceCore;
+﻿using ArchivialLibrary.Secrets;
 using ArchivialPowerShell.Utility;
-using System;
 using System.Linq;
 using System.Management.Automation;
-using System.Security.Cryptography;
 
 namespace ArchivialPowerShell.Functions.Public
 {
@@ -49,11 +45,10 @@ namespace ArchivialPowerShell.Functions.Public
         public SetArchivialNetworkCredentialCommand() : base() { }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        /// <param name="secretStore"></param>
-        public SetArchivialNetworkCredentialCommand(IClientDatabase database, ISecretStore secretStore) : base(database, secretStore) { }
+        /// <param name="dependencies"></param>
+        public SetArchivialNetworkCredentialCommand(CmdletDependencies dependencies) : base(dependencies) { }
 
         protected override void ProcessRecord()
         {

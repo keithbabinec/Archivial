@@ -1,6 +1,8 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Secrets;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -20,7 +22,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                     new NetCredential()
                 });
 
-            var command = new GetArchivialNetworkCredentialsCommand(mockedDb.Object);
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new GetArchivialNetworkCredentialsCommand(depedencies);
 
             foreach (var result in command.Invoke())
             {

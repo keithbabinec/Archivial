@@ -1,9 +1,9 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Database.SQLServer;
 using ArchivialLibrary.Exceptions;
-using ArchivialLibrary.Logging.Default;
 using ArchivialLibrary.Secrets;
 using ArchivialLibrary.ServiceCore;
+using ArchivialPowerShell.Setup;
 using System;
 using System.Management.Automation;
 
@@ -15,6 +15,11 @@ namespace ArchivialPowerShell.Utility
     public class BaseArchivialCmdlet : Cmdlet
     {
         /// <summary>
+        /// A reference to the setup helper utility.
+        /// </summary>
+        internal ISetup SetupHelper;
+
+        /// <summary>
         /// A reference to the client database.
         /// </summary>
         internal IClientDatabase Database { get; set; }
@@ -23,6 +28,11 @@ namespace ArchivialPowerShell.Utility
         /// A reference to the secret store.
         /// </summary>
         internal ISecretStore SecretStore { get; set; }
+
+        /// <summary>
+        /// A reference to the core settings accessor.
+        /// </summary>
+        internal ICoreSettings CoreSettings { get; set; }
 
         /// <summary>
         /// The name of this cmdlet activity for progress tracking.
@@ -70,21 +80,13 @@ namespace ArchivialPowerShell.Utility
         /// <summary>
         /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        public BaseArchivialCmdlet(IClientDatabase database)
+        /// <param name="dependencies"></param>
+        public BaseArchivialCmdlet(CmdletDependencies dependencies)
         {
-            Database = database;
-        }
-
-        /// <summary>
-        /// Secondary constructor for dependency injection.
-        /// </summary>
-        /// <param name="database"></param>
-        /// <param name="secretStore"></param>
-        public BaseArchivialCmdlet(IClientDatabase database, ISecretStore secretStore)
-        {
-            Database = database;
-            SecretStore = secretStore;
+            Database = dependencies.ClientDatabase;
+            SecretStore = dependencies.SecretStore;
+            SetupHelper = dependencies.Setup;
+            CoreSettings = dependencies.CoreSettings;
         }
 
         /// <summary>
@@ -101,12 +103,13 @@ namespace ArchivialPowerShell.Utility
             {
                 base.WriteVerbose("Preparing Archivial Database Connection.");
 
+                var coreSettings = GetCoreSettingsAccessor();
+
                 string dbConnectionString = null;
 
                 try
                 {
-                    dbConnectionString = CoreSettings.DatabaseConnectionString;
-
+                    dbConnectionString = coreSettings.GetDatabaseConnectionString();
                 }
                 catch (ApplicationCoreSettingMissingException)
                 {
@@ -115,8 +118,8 @@ namespace ArchivialPowerShell.Utility
 
                 base.WriteVerbose("Database connection string: " + dbConnectionString);
 
-                var logger = new Logger("ArchivialPowerShell");
-                var db = new SQLServerClientDatabase(dbConnectionString, logger);
+                var logger = new ConsoleLogger(false);
+                var db = new SQLServerClientDatabase(dbConnectionString, logger, coreSettings);
 
                 Database = db;
                 return db;
@@ -149,6 +152,46 @@ namespace ArchivialPowerShell.Utility
 
                 SecretStore = pds;
                 return pds;
+            }
+        }
+
+        /// <summary>
+        /// Returns the setup helper.
+        /// </summary>
+        /// <returns></returns>
+        internal ISetup GetSetupHelper()
+        {
+            if (SetupHelper != null)
+            {
+                return SetupHelper;
+            }
+            else
+            {
+                base.WriteVerbose("Initializing setup helper.");
+
+                SetupHelper = new WindowsSetup(GetDatabaseConnection(), GetCoreSettingsAccessor());
+
+                return SetupHelper;
+            }
+        }
+
+        /// <summary>
+        /// Returns the core settings accessor.
+        /// </summary>
+        /// <returns></returns>
+        internal ICoreSettings GetCoreSettingsAccessor()
+        {
+            if (CoreSettings != null)
+            {
+                return CoreSettings;
+            }
+            else
+            {
+                base.WriteVerbose("Initializing core settings accessor.");
+
+                CoreSettings = new WindowsCoreSettings();
+
+                return CoreSettings;
             }
         }
     }

@@ -25,10 +25,12 @@ namespace ArchivialLibrary.Client
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
         /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
+        /// <param name="coreSettings">The core settings accessor.</param>
         public ScanEngine(IClientDatabase database,
                           ILogger logger,
-                          int instanceID)
-            : base(database, logger, instanceID) { }
+                          int instanceID,
+                          ICoreSettings coreSettings)
+            : base(database, logger, instanceID, coreSettings) { }
 
         /// <summary>
         /// Begins to start the scanning engine, returns immediately to the caller.
@@ -227,12 +229,12 @@ namespace ArchivialLibrary.Client
                 // grab the current copy from DB (this includes last scanned timestamp)
                 var dbSources = await GetSourceLocationsFromDatabaseAsync().ConfigureAwait(false);
 
-                if (dbSources.Any(x => x.Path == CoreSettings.DatabaseBackupsDirectory) == false)
+                if (dbSources.Any(x => x.Path == CoreSettings.GetDatabaseBackupsDirectory()) == false)
                 {
                     // add the base meta DB backup folder.
 
                     var databaseFolderSource = new LocalSourceLocation();
-                    databaseFolderSource.Path = CoreSettings.DatabaseBackupsDirectory;
+                    databaseFolderSource.Path = CoreSettings.GetDatabaseBackupsDirectory();
                     databaseFolderSource.FileMatchFilter = "*.bak";
                     databaseFolderSource.RevisionCount = 1;
                     databaseFolderSource.Priority = Files.FileBackupPriority.Meta;
@@ -241,12 +243,12 @@ namespace ArchivialLibrary.Client
                     await Database.SetSourceLocationAsync(databaseFolderSource).ConfigureAwait(false);
                 }
 
-                if (dbSources.Any(x => x.Path == CoreSettings.LogFilesArchiveDirectory) == false)
+                if (dbSources.Any(x => x.Path == CoreSettings.GetLogFilesArchiveDirectory()) == false)
                 {
                     // add the base meta log backup folder.
 
                     var logFolderSource = new LocalSourceLocation();
-                    logFolderSource.Path = CoreSettings.LogFilesArchiveDirectory;
+                    logFolderSource.Path = CoreSettings.GetLogFilesArchiveDirectory();
                     logFolderSource.FileMatchFilter = "*.log";
                     logFolderSource.RevisionCount = 1;
                     logFolderSource.Priority = Files.FileBackupPriority.Meta;

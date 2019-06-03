@@ -45,10 +45,10 @@ namespace ArchivialPowerShell.Functions.Public
         public RemoveArchivialLocalSourceCommand() : base() { }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        public RemoveArchivialLocalSourceCommand(IClientDatabase database) : base(database) { }
+        /// <param name="dependencies"></param>
+        public RemoveArchivialLocalSourceCommand(CmdletDependencies dependencies) : base(dependencies) { }
 
         private IClientDatabase database { get; set; }
 

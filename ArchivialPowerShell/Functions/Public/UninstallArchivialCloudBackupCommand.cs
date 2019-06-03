@@ -1,5 +1,4 @@
-﻿using ArchivialLibrary.Database;
-using ArchivialPowerShell.Exceptions;
+﻿using ArchivialPowerShell.Exceptions;
 using ArchivialPowerShell.Utility;
 using System.Management.Automation;
 
@@ -40,10 +39,10 @@ namespace ArchivialPowerShell.Functions.Public
         }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        public UninstallArchivialCloudBackupCommand(IClientDatabase database) : base(database)
+        /// <param name="dependencies"></param>
+        public UninstallArchivialCloudBackupCommand(CmdletDependencies dependencies) : base(dependencies)
         {
             ActivityName = "Uninstallation";
             ActivityID = 2;
@@ -51,7 +50,9 @@ namespace ArchivialPowerShell.Functions.Public
 
         protected override void ProcessRecord()
         {
-            if (!Elevation.IsRunningElevated())
+            var setup = GetSetupHelper();
+
+            if (!setup.IsRunningElevated())
             {
                 throw new CmdletNotElevatedException("This cmdlet requires elevated (run-as administrator) privileges. Please re-launch the cmdlet in an elevated window.");
             }
@@ -60,27 +61,35 @@ namespace ArchivialPowerShell.Functions.Public
                 throw new CmdletExecutionNotApprovedException("This action must be approved (or provide the -force switch) to run.");
             }
 
+            var installedVersion = setup.GetInstalledVersionAsync().GetAwaiter().GetResult();
+
+            if (installedVersion == null)
+            {
+                WriteWarning("Archivial Cloud Backup is not installed. There are no components to remove.");
+                return;
+            }
+
             WriteVerbose("Removing Archivial Cloud Backup installation.");
 
             var db = GetDatabaseConnection();
 
             WriteVerboseAndProgress(10, "Stopping ArchivialCloudBackup Windows Service.");
-            Uninstallation.StopClientService();
+            setup.StopClientService();
 
             WriteVerboseAndProgress(40, "Removing Archivial client database.");
             db.DeleteClientDatabaseAsync().GetAwaiter().GetResult();
 
             WriteVerboseAndProgress(55, "Removing ArchivialCloudBackup Windows Service.");
-            Uninstallation.DeleteClientService();
+            setup.DeleteClientService();
 
             WriteVerboseAndProgress(70, "Removing installation files and folders.");
-            Uninstallation.DeleteInstallationDirectories();
+            setup.DeleteInstallationDirectories();
 
             WriteVerboseAndProgress(80, "Removing custom event log source.");
-            Uninstallation.DeleteEventLogContents();
+            setup.DeleteEventLogContents();
 
             WriteVerboseAndProgress(90, "Removing core settings.");
-            Uninstallation.DeleteCoreSettings();
+            setup.DeleteCoreSettings();
 
             WriteVerboseAndProgress(100, "Uninstallation completed.");
         }

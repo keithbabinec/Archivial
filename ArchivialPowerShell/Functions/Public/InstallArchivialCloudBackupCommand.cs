@@ -1,6 +1,4 @@
-﻿using ArchivialLibrary.Database;
-using ArchivialLibrary.ServiceCore;
-using ArchivialPowerShell.Exceptions;
+﻿using ArchivialPowerShell.Exceptions;
 using ArchivialPowerShell.Utility;
 using System;
 using System.IO;
@@ -12,6 +10,7 @@ namespace ArchivialPowerShell.Functions.Public
     ///   <para type="synopsis">Installs the Archivial Cloud Backup software on this computer.</para>
     ///   <para type="description">Installs the Archivial Cloud Backup software on this computer. The default installation will be placed in the Program Files directory, but this can optionally be changed by specifying the -InstallDirectory parameter.</para>
     ///   <para type="description">This command requires an elevated (run-as administrator) PowerShell prompt to complete. It will also prompt for comfirmation unless the -Force switch is applied.</para>
+    ///   <para type="description">Note: This command is used for fresh installations. For upgrades to existing installations use the Update-ArchivialCloudBackup command.</para>
     /// </summary>
     /// <example>
     ///   <code>C:\> Install-ArchivialCloudBackup</code>
@@ -48,9 +47,22 @@ namespace ArchivialPowerShell.Functions.Public
             ActivityID = 1;
         }
 
+        /// <summary>
+        /// Secondary constructor for dependency injection.
+        /// </summary>
+        /// <param name="dependencies"></param>
+        public InstallArchivialCloudBackupCommand(CmdletDependencies dependencies) : base(dependencies)
+        {
+            ActivityName = "Installation";
+            ActivityID = 1;
+        }
+
         protected override void ProcessRecord()
         {
-            if (!Elevation.IsRunningElevated())
+            var setup = GetSetupHelper();
+            var coreSettings = GetCoreSettingsAccessor();
+
+            if (!setup.IsRunningElevated())
             {
                 throw new CmdletNotElevatedException("This cmdlet requires elevated (run-as administrator) privileges. Please re-launch the cmdlet in an elevated window.");
             }
@@ -58,9 +70,16 @@ namespace ArchivialPowerShell.Functions.Public
             {
                 throw new CmdletExecutionNotApprovedException("This action must be approved (or provide the -force switch) to run.");
             }
-            if (!Installation.SqlServerPrerequisiteIsAvailable())
+            if (!setup.SqlServerPrerequisiteIsAvailable())
             {
                 throw new CmdletPrerequisiteNotFoundException("Unable to install Archivial Cloud Backup. A required prerequisite (SQL Server Express) was not found.");
+            }
+
+            var installedVersion = setup.GetInstalledVersionAsync().GetAwaiter().GetResult();
+
+            if (installedVersion != null)
+            {
+                throw new CmdletExecutionFailedProductAlreadyInstalledException("Unable to install Archivial Cloud Backup. The product is already installed. Please use the 'Update-ArchivialCloudBackup' command if you need to update your installation.");
             }
 
             if (InstallDirectory == null)
@@ -71,29 +90,29 @@ namespace ArchivialPowerShell.Functions.Public
             WriteVerbose("Starting Archivial Cloud Backup installation.");
 
             WriteVerboseAndProgress(10, "Applying core settings.");
-            Installation.CreateCoreSettings(InstallDirectory);
+            setup.CreateCoreSettings(InstallDirectory);
 
-            WriteVerbose("InstallationDirectory=" + CoreSettings.InstallationDirectory);
-            WriteVerbose("EventlogName=" + CoreSettings.EventlogName);
-            WriteVerbose("DatabaseConnectionString=" + CoreSettings.DatabaseConnectionString);
+            WriteVerbose("InstallationDirectory=" + coreSettings.GetInstallationDirectory());
+            WriteVerbose("EventlogName=" + coreSettings.GetEventlogName());
+            WriteVerbose("DatabaseConnectionString=" + coreSettings.GetDatabaseConnectionString());
 
             WriteVerboseAndProgress(25, "Registering custom event log source.");
-            Installation.CreateEventLogSource();
+            setup.CreateEventLogSource();
 
             WriteVerboseAndProgress(40, "Creating installation directories.");
-            Installation.CreateInstallationDirectories();
+            setup.CreateInstallationDirectories();
 
             WriteVerboseAndProgress(55, "Copying program files to the installation directory.");
-            Installation.CopyProgramFiles();
+            setup.CopyProgramFiles();
 
             WriteVerboseAndProgress(70, "Configuring ArchivialCloudBackup Windows Service.");
-            Installation.CreateClientService();
+            setup.CreateClientService();
 
             WriteVerboseAndProgress(85, "Starting ArchivialCloudBackup Windows Service.");
-            Installation.StartClientService();
+            setup.StartClientService();
 
             WriteVerboseAndProgress(90, "Waiting for ArchivialCloudBackup Windows Service to finish initializing.");
-            Installation.WaitForFirstTimeSetup();
+            setup.WaitForFirstTimeSetup();
 
             WriteVerboseAndProgress(100, "Installation completed.");
         }

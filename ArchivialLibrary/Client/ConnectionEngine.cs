@@ -24,11 +24,13 @@ namespace ArchivialLibrary.Client
         /// </summary>
         /// <param name="database">The client database connection.</param>
         /// <param name="logger">A logging instance.</param>
-        /// <param name="instanceID">An optional parameter to specify the engine instance ID. Default value is 0.</param>
+        /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
+        /// <param name="coreSettings">The core settings accessor.</param>
         public ConnectionEngine(IClientDatabase database,
                                 ILogger logger,
-                                int instanceID = 0)
-            : base(database, logger, instanceID) { }
+                                int instanceID,
+                                ICoreSettings coreSettings)
+            : base(database, logger, instanceID, coreSettings) { }
 
         /// <summary>
         /// Begins to start the connection engine, returns immediately to the caller.

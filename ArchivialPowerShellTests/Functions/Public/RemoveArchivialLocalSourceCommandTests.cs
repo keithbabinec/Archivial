@@ -1,6 +1,8 @@
 ﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Folders;
+using ArchivialLibrary.ServiceCore;
 using ArchivialPowerShell.Functions.Public;
+using ArchivialPowerShell.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Management.Automation;
@@ -65,7 +67,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<LocalSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new RemoveArchivialLocalSourceCommand(mockedDb.Object)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new RemoveArchivialLocalSourceCommand(depedencies)
             {
                 SourceID = 1
             };
@@ -96,7 +106,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<LocalSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new RemoveArchivialLocalSourceCommand(mockedDb.Object)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new RemoveArchivialLocalSourceCommand(depedencies)
             {
                 LocalSource = new LocalSourceLocation() { ID = 1 }
             };
@@ -128,7 +146,15 @@ namespace ArchivialPowerShellTests.Functions.Public
                 .Returns(Task.CompletedTask)
                 .Callback<LocalSourceLocation>(x => databaseCommitedObject = x);
 
-            var command = new RemoveArchivialLocalSourceCommand(mockedDb.Object)
+            var mockedCoreSettings = new Mock<ICoreSettings>();
+
+            var depedencies = new CmdletDependencies()
+            {
+                ClientDatabase = mockedDb.Object,
+                CoreSettings = mockedCoreSettings.Object
+            };
+
+            var command = new RemoveArchivialLocalSourceCommand(depedencies)
             {
                 SourceID = 2
             };

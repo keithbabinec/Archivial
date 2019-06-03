@@ -44,10 +44,10 @@ namespace ArchivialPowerShell.Functions.Public
         public RemoveArchivialNetworkCredentialCommand() : base() { }
 
         /// <summary>
-        /// A secondary constructor for dependency injection.
+        /// Secondary constructor for dependency injection.
         /// </summary>
-        /// <param name="database"></param>
-        public RemoveArchivialNetworkCredentialCommand(IClientDatabase database) : base(database) { }
+        /// <param name="dependencies"></param>
+        public RemoveArchivialNetworkCredentialCommand(CmdletDependencies dependencies) : base(dependencies) { }
 
         private IClientDatabase database { get; set; } 
 
