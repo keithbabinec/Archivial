@@ -31,15 +31,13 @@ It will also prompt for comfirmation unless the -Force switch is applied.
 ### EXAMPLE 1
 ```
 C:\> $latestVersion = (Find-Module -Name ArchivialPowerShell).Version
+C:\> Update-Module -Name ArchivialPowerShell -RequiredVersion $latestVersion
 ```
-
-C:\\\> Update-Module -Name ArchivialPowerShell -RequiredVersion $latestVersion
-
 The two above commands will update your Archivial PowerShell module to latest.
 After that has completed, close and restart the PowerShell window.
-
-C:\\\> Update-ArchivialCloudBackup
-
+```
+C:\> Update-ArchivialCloudBackup
+```
 With the latest management tools installed, this command updates your installation.
 
 ## PARAMETERS
