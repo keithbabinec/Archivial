@@ -1,5 +1,4 @@
-﻿using ArchivialLibrary.Client;
-using ArchivialLibrary.Logging;
+﻿using ArchivialLibrary.Logging;
 using ArchivialLibrary.Logging.Default;
 using ArchivialLibrary.ServiceCore;
 using System;
@@ -11,6 +10,7 @@ using ArchivialLibrary.Database.SQLServer;
 using System.Threading.Tasks;
 using ArchivialLibrary.Database;
 using System.Reflection;
+using ArchivialLibrary.Engine;
 
 namespace ArchivialClientAgent
 {

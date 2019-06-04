@@ -1,5 +1,4 @@
 ﻿using ArchivialLibrary.Database;
-using ArchivialLibrary.Engine;
 using ArchivialLibrary.Events;
 using ArchivialLibrary.Folders;
 using ArchivialLibrary.Logging;
@@ -12,7 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ArchivialLibrary.Client
+namespace ArchivialLibrary.Engine
 {
     /// <summary>
     /// Contains core connection engine functionality.

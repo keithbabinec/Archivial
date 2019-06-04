@@ -1,22 +1,21 @@
-﻿using ArchivialLibrary.Client.Transfer;
-using ArchivialLibrary.Database;
-using ArchivialLibrary.Engine;
+﻿using ArchivialLibrary.Database;
 using ArchivialLibrary.Events;
 using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
 using ArchivialLibrary.Logging;
 using ArchivialLibrary.Providers;
 using ArchivialLibrary.ServiceCore;
+using ArchivialLibrary.StorageProviders;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ArchivialLibrary.Client
+namespace ArchivialLibrary.Engine
 {
     /// <summary>
-    /// Contains core backup engine functionality.
+    /// Contains core cleanup engine functionality.
     /// </summary>
-    public class BackupEngine : BaseEngine
+    public class CleanupEngine : BaseEngine
     {
         /// <summary>
         /// Constructor that accepts a database and logger.
@@ -25,38 +24,33 @@ namespace ArchivialLibrary.Client
         /// <param name="logger">A logging instance.</param>
         /// <param name="instanceID">A parameter to specify the engine instance ID.</param>
         /// <param name="coreSettings">The core settings accessor.</param>
-        public BackupEngine(IClientDatabase database,
+        public CleanupEngine(IClientDatabase database,
                             ILogger logger,
                             int instanceID,
                             ICoreSettings coreSettings)
             : base(database, logger, instanceID, coreSettings) { }
 
         /// <summary>
-        /// Begins to start the backup engine, returns immediately to the caller.
+        /// Begins to start the cleanup engine, returns immediately to the caller.
         /// </summary>
         public override void BeginStart()
         {
-            Logger.WriteTraceMessage(string.Format("Backup engine is starting up."), InstanceID);
+            Logger.WriteTraceMessage(string.Format("Cleanup engine is starting up."), InstanceID);
 
             Thread pl = new Thread(() => ProcessLoopAsync().Wait());
             pl.Start();
 
-            Logger.WriteTraceMessage(string.Format("Backup engine is now running."), InstanceID);
+            Logger.WriteTraceMessage(string.Format("Cleanup engine is now running."), InstanceID);
         }
 
         /// <summary>
-        /// Begins to stop the backup engine, returns immediately to the caller.
+        /// Begins to stop the cleanup engine, returns immediately to the caller.
         /// </summary>
         public override void BeginStop()
         {
             CancelSource.Cancel();
-            Logger.WriteTraceMessage("Backup engine is shutting down by request.", InstanceID);
+            Logger.WriteTraceMessage("Cleanup engine is shutting down by request.", InstanceID);
         }
-
-        /// <summary>
-        /// The file copy/transfer utility.
-        /// </summary>
-        private FileSender Sender { get; set; }
 
         /// <summary>
         /// The last time a heartbeat message or file backup was completed.
@@ -64,15 +58,9 @@ namespace ArchivialLibrary.Client
         private DateTime? LastHeartbeatOrBackupCompleted { get; set; }
 
         /// <summary>
-        /// An ordered collection of backup queues to query for files to backup.
+        /// A reference to the provider connections.
         /// </summary>
-        private FileBackupPriority[] OrderedBackupQueues = new FileBackupPriority[] 
-        {
-            FileBackupPriority.Meta,
-            FileBackupPriority.High,
-            FileBackupPriority.Medium,
-            FileBackupPriority.Low
-        };
+        private StorageProviderConnectionsCollection Providers { get; set; }
 
         /// <summary>
         /// Core processing loop.
@@ -90,60 +78,30 @@ namespace ArchivialLibrary.Client
                         // check to see if we have any files to backup.
                         // return the next one to backup.
 
-                        var nextFileToBackup = await SafeGetNextFileToBackupAsync().ConfigureAwait(false);
+                        var nextFileToCleanup = await SafeGetNextFileToCleanupAsync().ConfigureAwait(false);
 
-                        if (nextFileToBackup != null)
+                        if (nextFileToCleanup != null)
                         {
-                            // lookup the source information for this file.
-                            // it is required for the backup.
+                            var nextFileMessage = string.Format("Detected a file revision to cleanup. FileName={0}, Revision={1}", nextFileToCleanup.FullSourcePath, nextFileToCleanup.FileRevisionNumber);
+                            Logger.WriteTraceMessage(nextFileMessage, InstanceID);
 
-                            var nextFileSource = await SafeGetSourceFromSourceIdAndType(nextFileToBackup.SourceID, nextFileToBackup.SourceType).ConfigureAwait(false);
+                            // lookup the source information for this file.
+                            // it is required for the cleanup.
+
+                            var nextFileSource = await SafeGetSourceFromSourceIdAndType(nextFileToCleanup.SourceID, nextFileToCleanup.SourceType).ConfigureAwait(false);
 
                             if (nextFileSource == null)
                             {
-                                var message = string.Format("Unable to backup file ({0}). An error has occurred while looking up the Source information.", nextFileToBackup.FullSourcePath);
+                                var message = string.Format("Unable to cleanup file revision ({0}). An error has occurred while looking up the Source information.", nextFileToCleanup.FullSourcePath);
                                 Logger.WriteTraceMessage(message, InstanceID);
 
-                                await Database.SetBackupFileAsFailedAsync(nextFileToBackup, message).ConfigureAwait(false);
-                                await Database.RemoveFileFromBackupQueueAsync(nextFileToBackup).ConfigureAwait(false);
+                                await Database.RemoveFileFromCleanupQueueAsync(nextFileToCleanup).ConfigureAwait(false);
                             }
 
-                            // initiate the file-send operation.
+                            // initiate the file revision cleanup operation.
 
-                            var transferFinished = false;
-                            var transferTask = Sender.TransferAsync(nextFileToBackup, nextFileSource, CancelSource.Token);
-
-                            while (!transferFinished)
-                            {
-                                await WaitAsync(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
-
-                                switch (transferTask.Status)
-                                {
-                                    case TaskStatus.RanToCompletion:
-                                    case TaskStatus.Faulted:
-                                    case TaskStatus.Canceled:
-                                        {
-                                            // task has completed, failed, or canceled.
-                                            // quit the status loop.
-                                            transferFinished = true;
-                                            LastHeartbeatOrBackupCompleted = DateTime.Now;
-                                            break;
-                                        }
-                                    default:
-                                        {
-                                            // task is still starting or running.
-                                            // do nothing here.
-                                            break;
-                                        }
-                                }
-
-                                if (CancelSource.Token.IsCancellationRequested)
-                                {
-                                    // stop was requested.
-                                    // stop the currently in-progress file send operation.
-                                    break;
-                                }
-                            }
+                            await DeleteFileRevisionInStorageProvidersAsync(nextFileToCleanup, nextFileSource, CancelSource.Token).ConfigureAwait(false);
+                            await Database.RemoveFileFromCleanupQueueAsync(nextFileToCleanup).ConfigureAwait(false);
 
                             // do not sleep here.
                             // immediately move to backing up the next file.
@@ -155,7 +113,7 @@ namespace ArchivialLibrary.Client
                             if (LastHeartbeatOrBackupCompleted.HasValue == false || LastHeartbeatOrBackupCompleted.Value < DateTime.Now.Add(TimeSpan.FromMinutes(-1)))
                             {
                                 LastHeartbeatOrBackupCompleted = DateTime.Now;
-                                Logger.WriteTraceMessage("Backup engine heartbeat: no recent activity.", InstanceID);
+                                Logger.WriteTraceMessage("Cleanup engine heartbeat: no recent activity.", InstanceID);
                             }
                         }
                     }
@@ -166,7 +124,7 @@ namespace ArchivialLibrary.Client
                         if (LastHeartbeatOrBackupCompleted.HasValue == false || LastHeartbeatOrBackupCompleted.Value < DateTime.Now.Add(TimeSpan.FromMinutes(-1)))
                         {
                             LastHeartbeatOrBackupCompleted = DateTime.Now;
-                            Logger.WriteTraceMessage("Backup engine heartbeat: no recent activity.", InstanceID);
+                            Logger.WriteTraceMessage("Cleanup engine heartbeat: no recent activity.", InstanceID);
                         }
                     }
 
@@ -184,6 +142,39 @@ namespace ArchivialLibrary.Client
         }
 
         /// <summary>
+        /// Removes the specified file revision in the configured cloud storage providers.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="source"></param>
+        /// <param name="cancelToken"></param>
+        /// <returns></returns>
+        private async Task DeleteFileRevisionInStorageProvidersAsync(BackupFile file, SourceLocation source, CancellationToken cancelToken)
+        {
+            var directory = await Database.GetDirectoryMapItemAsync(file.Directory).ConfigureAwait(false);
+
+            foreach (var provider in Providers)
+            {
+                try
+                {
+                    await provider.Value.DeleteFileRevisionAsync(file, source, directory, cancelToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    // cancellation was requested.
+                    // bubble up to the next level.
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteTraceError("An error occurred during a file revision cleanup.", ex, Logger.GenerateFullContextStackTrace(), InstanceID);
+
+                    // sets the error message/stack trace
+                    await Database.RemoveFileFromBackupQueueAsync(file).ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
         /// Checks to see if storage providers are configured.
         /// </summary>
         /// <returns></returns>
@@ -191,9 +182,9 @@ namespace ArchivialLibrary.Client
         {
             try
             {
-                if (Sender != null)
+                if (Providers != null)
                 {
-                    // if we have already setup the sender, we are configured.
+                    // providers are already configured.
                     return true;
                 }
                 else
@@ -210,7 +201,7 @@ namespace ArchivialLibrary.Client
 
                         if (storageProviderConnections != null)
                         {
-                            Sender = new FileSender(Database, Logger, storageProviderConnections, InstanceID);
+                            Providers = storageProviderConnections;
                             return true;
                         }
                         else
@@ -221,7 +212,7 @@ namespace ArchivialLibrary.Client
                     else
                     {
                         // no providers setup yet.
-                        Logger.WriteTraceWarning("No storage providers have been configured yet. The backup engine(s) won't work until these have been configured.");
+                        Logger.WriteTraceWarning("No storage providers have been configured yet. The cleanup engine(s) won't work until these have been configured.");
                         return false;
                     }
                 }
@@ -234,38 +225,22 @@ namespace ArchivialLibrary.Client
         }
 
         /// <summary>
-        /// Grabs the next file that needs to be backed up.
+        /// Grabs the next file that needs to be cleaned up.
         /// </summary>
         /// <remarks>
         /// This function is marked as safe and should not throw exceptions.
         /// </remarks>
         /// <returns></returns>
-        private async Task<BackupFile> SafeGetNextFileToBackupAsync()
+        private async Task<BackupFile> SafeGetNextFileToCleanupAsync()
         {
             try
             {
-                // there are 4 different priority queues: Low, Med, High, and Meta (system/reserved).
-                // check the queues in priority order to determine the next file to backup.
-
-                BackupFile nextFile = null;
-
-                foreach (var queuePriority in OrderedBackupQueues)
-                {
-                    nextFile = await Database.FindNextFileToBackupAsync(InstanceID, queuePriority).ConfigureAwait(false);
-
-                    if (nextFile != null)
-                    {
-                        // no need to look at additional queues-- we found one.
-                        break;
-                    }
-                }
-
-                return nextFile;
+                return await Database.FindNextFileToCleanupAsync(InstanceID).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                string err = "Failed to capture the next file ready for backup.";
-                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetNextFileToBackup, true, InstanceID);
+                string err = "Failed to capture the next file revision ready for cleanup.";
+                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetNextFileToCleanup, true, InstanceID);
 
                 return null;
             }
@@ -286,7 +261,7 @@ namespace ArchivialLibrary.Client
             catch (Exception ex)
             {
                 string err = string.Format("Failed to lookup the source {0} of type {1}.", sourceID, sourceType);
-                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetSourceLocationForBackupFile, true, InstanceID);
+                Logger.WriteSystemEvent(err, ex, Logger.GenerateFullContextStackTrace(), Constants.EventIDs.FailedToGetSourceLocationForCleanupFile, true, InstanceID);
 
                 return null;
             }

@@ -5,11 +5,12 @@ using ArchivialLibrary.Logging.Mock;
 using System;
 using System.Threading;
 using ArchivialLibrary.ServiceCore;
+using ArchivialLibrary.Engine;
 
-namespace ArchivialLibraryTests.Client
+namespace ArchivialLibraryTests.Engine
 {
     [TestClass]
-    public class BackupEngineTests
+    public class ScanEngineTests
     {
         private const string TestConnectionString = "fakedb";
 
@@ -17,55 +18,50 @@ namespace ArchivialLibraryTests.Client
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void BackupEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
+        public void ScanEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
-            ArchivialLibrary.Client.BackupEngine engine =
-                new ArchivialLibrary.Client.BackupEngine(null, new MockLogger(), 0, SharedMockedCoreSettings);
+            var engine = new ScanEngine(null, new MockLogger(), 0, SharedMockedCoreSettings);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void BackupEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
+        public void ScanEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.BackupEngine engine =
-                new ArchivialLibrary.Client.BackupEngine(db, null, 0, SharedMockedCoreSettings);
+            var engine = new ScanEngine(db, null, 0, SharedMockedCoreSettings);
         }
-
+        
         [TestMethod]
-        public void BackupEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
+        public void ScanEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.BackupEngine engine =
-                new ArchivialLibrary.Client.BackupEngine(db, logger, 0, SharedMockedCoreSettings);
+            var engine = new ScanEngine(db, logger, 0, SharedMockedCoreSettings);
 
             Assert.IsNotNull(engine);
         }
 
         [TestMethod]
-        public void BackupEngineCanStartAndStop()
+        public void ScanEngineCanStartAndStop()
         {
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.BackupEngine engine =
-                new ArchivialLibrary.Client.BackupEngine(db, logger, 0, SharedMockedCoreSettings);
+            var engine = new ScanEngine(db, logger, 0, SharedMockedCoreSettings);
 
             engine.BeginStart();
             engine.BeginStop();
         }
 
         [TestMethod]
-        public void BackupEngineTriggersStoppedEventWhenEngineHasStopped()
+        public void ScanEngineTriggersStoppedEventWhenEngineHasStopped()
         {
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.BackupEngine engine =
-                new ArchivialLibrary.Client.BackupEngine(db, logger, 0, SharedMockedCoreSettings);
+            var engine = new ScanEngine(db, logger, 0, SharedMockedCoreSettings);
 
             var signalStoppedEvent = new AutoResetEvent(false);
 
