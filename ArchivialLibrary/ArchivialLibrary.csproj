@@ -92,6 +92,7 @@
     <Compile Include="Engine\CleanupEngine.cs" />
     <Compile Include="Engine\ConnectionEngine.cs" />
     <Compile Include="Engine\CoreServiceEngine.cs" />
+    <Compile Include="Engine\RestoreEngine.cs" />
     <Compile Include="Engine\StatusEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
     <Compile Include="Constants\CommandLine.cs" />
