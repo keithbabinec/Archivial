@@ -115,7 +115,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Engine\BackupEngine.tests.cs" />
+    <Compile Include="Engine\CleanupEngine.tests.cs" />
     <Compile Include="Engine\ConnectionEngine.tests.cs" />
+    <Compile Include="Engine\CoreServiceEngine.tests.cs" />
     <Compile Include="Engine\ScanEngine.tests.cs" />
     <Compile Include="Client\Sources\Scanner.tests.cs" />
     <Compile Include="Engine\StatusEngine.tests.cs" />
