@@ -33,6 +33,15 @@ namespace ArchivialLibraryTests.Engine
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void BackupEngineConstructorThrowsExceptionWhenNoCoreSettingsProvided()
+        {
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
+
+            var engine = new BackupEngine(db, new MockLogger(), 0, null);
+        }
+
+        [TestMethod]
         public void BackupEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();

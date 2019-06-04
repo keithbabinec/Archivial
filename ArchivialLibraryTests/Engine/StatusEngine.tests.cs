@@ -33,6 +33,15 @@ namespace ArchivialLibraryTests.Engine
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void StatusEngineConstructorThrowsExceptionWhenNoCoreSettingsProvided()
+        {
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
+
+            var engine = new StatusEngine(db, new MockLogger(), 0, null);
+        }
+
+        [TestMethod]
         public void StatusEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();

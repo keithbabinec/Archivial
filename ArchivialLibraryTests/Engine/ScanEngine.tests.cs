@@ -31,7 +31,16 @@ namespace ArchivialLibraryTests.Engine
 
             var engine = new ScanEngine(db, null, 0, SharedMockedCoreSettings);
         }
-        
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ScanEngineConstructorThrowsExceptionWhenNoCoreSettingsProvided()
+        {
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
+
+            var engine = new ScanEngine(db, new MockLogger(), 0, null);
+        }
+
         [TestMethod]
         public void ScanEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
