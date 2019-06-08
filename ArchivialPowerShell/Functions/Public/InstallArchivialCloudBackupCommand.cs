@@ -10,7 +10,10 @@ namespace ArchivialPowerShell.Functions.Public
     ///   <para type="synopsis">Installs the Archivial Cloud Backup software on this computer.</para>
     ///   <para type="description">Installs the Archivial Cloud Backup software on this computer. The default installation will be placed in the Program Files directory, but this can optionally be changed by specifying the -InstallDirectory parameter.</para>
     ///   <para type="description">This command requires an elevated (run-as administrator) PowerShell prompt to complete. It will also prompt for comfirmation unless the -Force switch is applied.</para>
-    ///   <para type="description">Note: This command is used for fresh installations. For upgrades to existing installations use the Update-ArchivialCloudBackup command.</para>
+    ///   <para type="description">IMPORTANT: SQL Server is required to maintain the state database. You can use any edition, but here are links to the two recommended free versions:</para>
+    ///   <para type="description">1) SQL Server Express Edition is available for free from Microsoft at https://www.microsoft.com/en-us/sql-server/sql-server-editions-express. </para>
+    ///   <para type="description">2) SQL Server Express with Advanced Services Edition is also free under the Visual Studio Dev Essentials program (https://visualstudio.microsoft.com/dev-essentials/). This version features full-text search, which Archivial is capable of leveraging for faster search on very large databases.</para>
+    ///   <para type="description">NOTE: This command is used for fresh installations. For upgrades to existing installations use the Update-ArchivialCloudBackup command.</para>
     /// </summary>
     /// <example>
     ///   <code>C:\> Install-ArchivialCloudBackup</code>
