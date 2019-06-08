@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ArchivialLibrary.Constants;
-using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
 using ArchivialLibrary.Providers;
@@ -8,7 +7,10 @@ using ArchivialLibrary.StorageProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Security.Cryptography;
+using ArchivialLibrary.Crypto;
+using ArchivialLibrary.Logging.Mock;
+using ArchivialLibraryTests.Crypto;
 
 namespace ArchivialLibraryTests.Files
 {
@@ -1213,6 +1215,79 @@ namespace ArchivialLibraryTests.Files
             Assert.IsTrue(hasChanged);
             Assert.AreEqual(FileStatus.Synced, file.CopyState[StorageProviderTypes.Azure].SyncStatus);
             Assert.AreEqual(3, file.CopyState[StorageProviderTypes.Azure].LastCompletedFileBlockIndex);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void BackupFileSetFileHashWithAlgorithmThrowsIfHashIsMissing()
+        {
+            var backupFile = new BackupFile();
+            backupFile.SetFileHashWithAlgorithm(null, HashAlgorithmName.SHA1);
+        }
+
+        [TestMethod]
+        public void BackupFileSetFileHashWithAlgorithmCorrectlyAssignsFileHashBytes()
+        {
+            var hasher = new Hasher(new MockLogger());
+            var backupFile = new BackupFile();
+
+            var hash = hasher.HashFileBlockFromByteArray(HashAlgorithmName.SHA256, LargeByteStreamConstants.LargeByteStream);
+
+            backupFile.SetFileHashWithAlgorithm(hash, HashAlgorithmName.SHA256);
+
+            Assert.IsTrue(hasher.CheckTwoByteHashesAreTheSame(hash, backupFile.FileHash));
+        }
+
+        [TestMethod]
+        public void BackupFileSetFileHashWithAlgorithmCorrectlyAssignsFileHashAlgorithmType()
+        {
+            var hasher = new Hasher(new MockLogger());
+            var backupFile = new BackupFile();
+
+            var hash = hasher.HashFileBlockFromByteArray(HashAlgorithmName.SHA256, LargeByteStreamConstants.LargeByteStream);
+
+            backupFile.SetFileHashWithAlgorithm(hash, HashAlgorithmName.SHA256);
+
+            Assert.AreEqual(HashAlgorithmName.SHA256.Name, backupFile.HashAlgorithmType);
+        }
+
+        [TestMethod]
+        public void BackupFileSetFileHashWithAlgorithmCorrectlyAssignsFileHashHexStringSha1()
+        {
+            var hasher = new Hasher(new MockLogger());
+            var backupFile = new BackupFile();
+
+            var hash = hasher.HashFileBlockFromByteArray(HashAlgorithmName.SHA1, LargeByteStreamConstants.LargeByteStream);
+
+            backupFile.SetFileHashWithAlgorithm(hash, HashAlgorithmName.SHA1);
+
+            Assert.AreEqual("BE648B1787644E6B9DEA26DF9D75AD96728580CA", backupFile.FileHashString);
+        }
+
+        [TestMethod]
+        public void BackupFileSetFileHashWithAlgorithmCorrectlyAssignsFileHashHexStringSha256()
+        {
+            var hasher = new Hasher(new MockLogger());
+            var backupFile = new BackupFile();
+
+            var hash = hasher.HashFileBlockFromByteArray(HashAlgorithmName.SHA256, LargeByteStreamConstants.LargeByteStream);
+
+            backupFile.SetFileHashWithAlgorithm(hash, HashAlgorithmName.SHA256);
+
+            Assert.AreEqual("F30ACBEE04ECBC2CC0217958D81C4526940A329495D562AC320BA29C0076F65C", backupFile.FileHashString);
+        }
+
+        [TestMethod]
+        public void BackupFileSetFileHashWithAlgorithmCorrectlyAssignsFileHashHexStringSha512()
+        {
+            var hasher = new Hasher(new MockLogger());
+            var backupFile = new BackupFile();
+
+            var hash = hasher.HashFileBlockFromByteArray(HashAlgorithmName.SHA512, LargeByteStreamConstants.LargeByteStream);
+
+            backupFile.SetFileHashWithAlgorithm(hash, HashAlgorithmName.SHA512);
+
+            Assert.AreEqual("4A1BD3D22C54DA83212632A1120A435D8B5FEE099F9D544E08D605C34B85F0B09148DE3975C7D66509DFB7D3F209ADBB4B1B9B61C48C6C3699B65B88CB235567", backupFile.FileHashString);
         }
     }
 }
