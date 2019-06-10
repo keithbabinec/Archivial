@@ -304,7 +304,9 @@ namespace ArchivialLibrary.Database.SQLServer
                     {
                         if (rdr.HasRows)
                         {
-                            instanceHasFullTextSearch = Convert.ToBoolean(rdr.GetInt32(0));
+                            await rdr.ReadAsync().ConfigureAwait(false);
+
+                            instanceHasFullTextSearch = rdr.IsDBNull(0) ? false : Convert.ToBoolean(rdr.GetInt32(0));
                         }
                     }
                 }
@@ -335,7 +337,9 @@ namespace ArchivialLibrary.Database.SQLServer
                     {
                         if (rdr.HasRows)
                         {
-                            databaseHasFullTextSearchEnabled = Convert.ToBoolean(rdr.GetInt32(0));
+                            await rdr.ReadAsync().ConfigureAwait(false);
+
+                            databaseHasFullTextSearchEnabled = rdr.IsDBNull(0) ? false : Convert.ToBoolean(rdr.GetInt32(0));
                         }
                     }
                 }
