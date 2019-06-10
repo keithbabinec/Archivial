@@ -115,11 +115,13 @@ namespace ArchivialLibrary.Database.SQLServer
         /// <returns></returns>
         public async Task PrepareDatabaseAsync()
         {
-            await CreateDatabaseIfMissingAsync();
+            await CreateDatabaseIfMissingAsync().ConfigureAwait(false);
 
             PublishDatabaseSchemaIfRequired();
 
-            await CreateMandatoryAppSettingsIfMissingAsync();
+            await CreateMandatoryAppSettingsIfMissingAsync().ConfigureAwait(false);
+
+            await EnableFullTextSearchSupportIfRequiredAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -244,6 +246,101 @@ namespace ArchivialLibrary.Database.SQLServer
                 var encryptionIvString = Convert.ToBase64String(encryptionIvBytes);
 
                 await SetApplicationOptionAsync(Constants.RuntimeSettingNames.ProtectionIV, encryptionIvString).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Enables full text search support if the feature is present and the database can enable it.
+        /// </summary>
+        /// <returns></returns>
+        private async Task EnableFullTextSearchSupportIfRequiredAsync()
+        {
+            Logger.WriteTraceMessage("Checking to see if the Full-Text Search feature is installed for this SQL Server Instance.");
+
+            var serverSupportsFullText = await SqlServerInstanceHasFullTextSearchFeatureInstalledAsync().ConfigureAwait(false);
+
+            if (serverSupportsFullText)
+            {
+                Logger.WriteTraceMessage("Full-Text Search feature is installed in the SQL instance.");
+
+                Logger.WriteTraceMessage("Checking to see if the Full-Text Search feature is enabled for this SQL Server Database.");
+
+                var databaseSupportsFullText = await SqlServerdatabaseHasFullTextSearchFeatureEnabledAsync().ConfigureAwait(false);
+
+                if (databaseSupportsFullText)
+                {
+                    Logger.WriteTraceMessage("Full-Text Search feature is enabled in the SQL database.");
+                }
+                else
+                {
+                    Logger.WriteTraceWarning("Full-text search feature is not enabled in your SQL Server Database. For best performance we recommend enabling that feature for your database. We will default to using standard queries for database searches which will be slower on larger databases.");
+                }
+            }
+            else
+            {
+                Logger.WriteTraceWarning("Full-text search feature is not installed in the SQL instance. This means that the SQL Server edition being used doesn't support the Full-text search feature, or that feature was not installed during your SQL Server setup/configuration. This means we will default to using standard queries for database searches which will be slower on larger databases.");
+            }
+        }
+
+        /// <summary>
+        /// Checks to see if the current SQL Server instance has full text search installed.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> SqlServerInstanceHasFullTextSearchFeatureInstalledAsync()
+        {
+            using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultSqlExpressInstanceConnectionString))
+            {
+                await sqlcon.OpenAsync().ConfigureAwait(false);
+
+                bool instanceHasFullTextSearch = false;
+
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = sqlcon;
+                    cmd.CommandText = "SELECT FULLTEXTSERVICEPROPERTY('IsFullTextInstalled')";
+                    cmd.CommandType = System.Data.CommandType.Text;
+
+                    using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                    {
+                        if (rdr.HasRows)
+                        {
+                            instanceHasFullTextSearch = Convert.ToBoolean(rdr.GetInt32(0));
+                        }
+                    }
+                }
+
+                return instanceHasFullTextSearch;
+            }
+        }
+
+        /// <summary>
+        /// Checks to see if the current SQL Server database has full text search enabled.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> SqlServerdatabaseHasFullTextSearchFeatureEnabledAsync()
+        {
+            using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+            {
+                await sqlcon.OpenAsync().ConfigureAwait(false);
+
+                bool databaseHasFullTextSearchEnabled = false;
+
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = sqlcon;
+                    cmd.CommandText = "SELECT DATABASEPROPERTYEX(db_name(), 'IsFulltextEnabled')";
+                    cmd.CommandType = System.Data.CommandType.Text;
+
+                    using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                    {
+                        if (rdr.HasRows)
+                        {
+                            databaseHasFullTextSearchEnabled = Convert.ToBoolean(rdr.GetInt32(0));
+                        }
+                    }
+                }
+
+                return databaseHasFullTextSearchEnabled;
             }
         }
 
