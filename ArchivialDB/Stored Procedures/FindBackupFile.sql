@@ -70,7 +70,8 @@ BEGIN
 					[dbo].[BackupFiles].[HashAlgorithmType],
 					[dbo].[BackupFiles].[LastChecked],
 					[dbo].[BackupFiles].[LastUpdated],
-					[dbo].[BackupFiles].[OverallState]
+					[dbo].[BackupFiles].[OverallState],
+					[dbo].[BackupFiles].[WasDeleted]
 			FROM	[dbo].[BackupFiles]
 			WHERE	[dbo].[BackupFiles].[ID] = @FileID
 
@@ -112,7 +113,8 @@ BEGIN
 					[dbo].[BackupFiles].[HashAlgorithmType],
 					[dbo].[BackupFiles].[LastChecked],
 					[dbo].[BackupFiles].[LastUpdated],
-					[dbo].[BackupFiles].[OverallState]
+					[dbo].[BackupFiles].[OverallState],
+					[dbo].[BackupFiles].[WasDeleted]
 			FROM	[dbo].[BackupFiles]
 			WHERE	[dbo].[BackupFiles].[ID] = @FileID
 

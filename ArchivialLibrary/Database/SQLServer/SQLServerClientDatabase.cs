@@ -968,7 +968,8 @@ namespace ArchivialLibrary.Database.SQLServer
                                             HashAlgorithmType = rdr.IsDBNull(13) ? null : rdr.GetString(13),
                                             LastChecked = rdr.GetDateTime(14),
                                             LastUpdated = rdr.GetDateTime(15),
-                                            OverallState = (FileStatus)rdr.GetInt32(16)
+                                            OverallState = (FileStatus)rdr.GetInt32(16),
+                                            WasDeleted = rdr.IsDBNull(17) ? (DateTime?)null : rdr.GetDateTime(17)
                                         };
                                     }
                                 }

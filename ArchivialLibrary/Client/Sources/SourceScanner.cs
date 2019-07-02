@@ -341,9 +341,9 @@ namespace ArchivialLibrary.Client.Sources
             // do not write trace messages for unchanged files
             // it becomes too noisy in the logs.
 
-            if (fileLookup.File.OverallState == FileStatus.ProviderError)
+            if (fileLookup.File.OverallState == FileStatus.ProviderError || fileLookup.File.WasDeleted.HasValue)
             {
-                // existing file but in a failed state.
+                // existing file but in a failed state or deleted state.
                 // since we have rescanned we should reset the failed state to allow for a retry.
                 await Database.ResetBackupFileStateAsync(fileLookup.File).ConfigureAwait(false);
             }
