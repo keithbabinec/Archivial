@@ -343,6 +343,8 @@ namespace ArchivialLibrary.Client.Sources
 
             if (fileLookup.File.OverallState == FileStatus.ProviderError || fileLookup.File.WasDeleted.HasValue)
             {
+                Logger.WriteTraceMessage(string.Format("Reset File: {0}", fileInfo.FullName));
+
                 // existing file but in a failed state or deleted state.
                 // since we have rescanned we should reset the failed state to allow for a retry.
                 await Database.ResetBackupFileStateAsync(fileLookup.File).ConfigureAwait(false);
