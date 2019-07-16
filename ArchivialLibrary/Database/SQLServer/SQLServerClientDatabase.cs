@@ -121,7 +121,7 @@ namespace ArchivialLibrary.Database.SQLServer
 
             await CreateMandatoryAppSettingsIfMissingAsync().ConfigureAwait(false);
 
-            await EnableFullTextSearchSupportIfRequiredAsync().ConfigureAwait(false);
+            await ConfigureFullTextSearchIfSupportedAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -250,10 +250,10 @@ namespace ArchivialLibrary.Database.SQLServer
         }
 
         /// <summary>
-        /// Enables full text search support if the feature is present and the database can enable it.
+        /// Configures SQL Server Full-Text Search if the feature is present.
         /// </summary>
         /// <returns></returns>
-        private async Task EnableFullTextSearchSupportIfRequiredAsync()
+        private async Task ConfigureFullTextSearchIfSupportedAsync()
         {
             Logger.WriteTraceMessage("Checking to see if the Full-Text Search feature is installed for this SQL Server Instance.");
 
@@ -262,6 +262,14 @@ namespace ArchivialLibrary.Database.SQLServer
             if (serverSupportsFullText)
             {
                 Logger.WriteTraceMessage("Full-Text Search feature is installed in the SQL instance.");
+
+                Logger.WriteTraceMessage("Configuring the Full-Text Search Catalog.");
+                await ConfigureFullTextSearchCatalogIfRequiredAsync().ConfigureAwait(false);
+
+                Logger.WriteTraceMessage("Configuring the Full-Text Search Indexes.");
+                await ConfigureFullTextSearchIndexesIfRequiredAsync().ConfigureAwait(false);
+
+                Logger.WriteTraceMessage("Full-Text Search configuration has completed.");
             }
             else
             {
@@ -300,6 +308,24 @@ namespace ArchivialLibrary.Database.SQLServer
 
                 return instanceHasFullTextSearch;
             }
+        }
+
+        /// <summary>
+        /// Configures the Full-Text Search catalog(s) if they are missing.
+        /// </summary>
+        /// <returns></returns>
+        private async Task ConfigureFullTextSearchCatalogIfRequiredAsync()
+        {
+
+        }
+
+        /// <summary>
+        /// Configures the Full-Text Search indexs if they are missing.
+        /// </summary>
+        /// <returns></returns>
+        private async Task ConfigureFullTextSearchIndexesIfRequiredAsync()
+        {
+
         }
 
         /// <summary>
