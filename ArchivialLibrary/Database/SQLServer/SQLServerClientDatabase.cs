@@ -262,19 +262,6 @@ namespace ArchivialLibrary.Database.SQLServer
             if (serverSupportsFullText)
             {
                 Logger.WriteTraceMessage("Full-Text Search feature is installed in the SQL instance.");
-
-                Logger.WriteTraceMessage("Checking to see if the Full-Text Search feature is enabled for this SQL Server Database.");
-
-                var databaseSupportsFullText = await SqlServerdatabaseHasFullTextSearchFeatureEnabledAsync().ConfigureAwait(false);
-
-                if (databaseSupportsFullText)
-                {
-                    Logger.WriteTraceMessage("Full-Text Search feature is enabled in the SQL database.");
-                }
-                else
-                {
-                    Logger.WriteTraceWarning("Full-text search feature is not enabled in your SQL Server Database. For best performance we recommend enabling that feature for your database. We will default to using standard queries for database searches which will be slower on larger databases.");
-                }
             }
             else
             {
@@ -312,39 +299,6 @@ namespace ArchivialLibrary.Database.SQLServer
                 }
 
                 return instanceHasFullTextSearch;
-            }
-        }
-
-        /// <summary>
-        /// Checks to see if the current SQL Server database has full text search enabled.
-        /// </summary>
-        /// <returns></returns>
-        private async Task<bool> SqlServerdatabaseHasFullTextSearchFeatureEnabledAsync()
-        {
-            using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
-            {
-                await sqlcon.OpenAsync().ConfigureAwait(false);
-
-                bool databaseHasFullTextSearchEnabled = false;
-
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    cmd.Connection = sqlcon;
-                    cmd.CommandText = "SELECT DATABASEPROPERTYEX(db_name(), 'IsFulltextEnabled')";
-                    cmd.CommandType = System.Data.CommandType.Text;
-
-                    using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
-                    {
-                        if (rdr.HasRows)
-                        {
-                            await rdr.ReadAsync().ConfigureAwait(false);
-
-                            databaseHasFullTextSearchEnabled = rdr.IsDBNull(0) ? false : Convert.ToBoolean(rdr.GetInt32(0));
-                        }
-                    }
-                }
-
-                return databaseHasFullTextSearchEnabled;
             }
         }
 
