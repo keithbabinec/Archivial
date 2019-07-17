@@ -116,6 +116,8 @@
     <Build Include="Stored Procedures\FindNextFileToCleanup.sql" />
     <Build Include="Stored Procedures\RemoveFileFromCleanupQueue.sql" />
     <Build Include="Functions\FullTextSearchFeatureIsAvailable.sql" />
+    <Build Include="Stored Procedures\ConfigureFullTextSearchIndexesIfRequired.sql" />
+    <Build Include="Stored Procedures\ConfigureFullTextSearchCatalogIfRequired.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

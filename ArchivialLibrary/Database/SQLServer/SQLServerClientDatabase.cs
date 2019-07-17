@@ -316,7 +316,18 @@ namespace ArchivialLibrary.Database.SQLServer
         /// <returns></returns>
         private async Task ConfigureFullTextSearchCatalogIfRequiredAsync()
         {
+            using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+            {
+                await sqlcon.OpenAsync().ConfigureAwait(false);
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = sqlcon;
+                    cmd.CommandText = "dbo.ConfigureFullTextSearchCatalogIfRequired";
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
+                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                }
+            }
         }
 
         /// <summary>
@@ -325,7 +336,18 @@ namespace ArchivialLibrary.Database.SQLServer
         /// <returns></returns>
         private async Task ConfigureFullTextSearchIndexesIfRequiredAsync()
         {
+            using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+            {
+                await sqlcon.OpenAsync().ConfigureAwait(false);
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = sqlcon;
+                    cmd.CommandText = "dbo.ConfigureFullTextSearchIndexesIfRequired";
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
+                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                }
+            }
         }
 
         /// <summary>
