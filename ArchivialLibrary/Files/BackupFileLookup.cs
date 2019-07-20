@@ -3,8 +3,12 @@
 namespace ArchivialLibrary.Files
 {
     /// <summary>
-    /// Contains the result of a Client file lookup.
+    /// Contains the result of a backup file lookup.
     /// </summary>
+    /// <remarks>
+    /// This result is used internally by the scanning engine to return file lookup results
+    /// that determined if the file exists in the index as unchanged, changed, or new to the index.
+    /// </remarks>
     public class BackupFileLookup
     {
         /// <summary>

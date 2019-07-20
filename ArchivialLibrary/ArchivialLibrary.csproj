@@ -124,6 +124,8 @@
     <Compile Include="Exceptions\SourceLocationInvalidCredentialNameException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidFileBackupPriorityException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidUncFolderPathException.cs" />
+    <Compile Include="Files\BackupFileSearchResult.cs" />
+    <Compile Include="Files\BackupFileSearchResults.cs" />
     <Compile Include="Files\TransferPayload.cs" />
     <Compile Include="Folders\LocalSourceLocation.cs" />
     <Compile Include="Folders\NetworkSourceLocation.cs" />
