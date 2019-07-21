@@ -1,5 +1,7 @@
-﻿using ArchivialLibrary.Folders;
+﻿using ArchivialLibrary.Files;
+using ArchivialLibrary.Folders;
 using ArchivialPowerShell.Utility;
+using System;
 using System.Management.Automation;
 
 namespace ArchivialPowerShell.Functions.Public
@@ -89,9 +91,42 @@ namespace ArchivialPowerShell.Functions.Public
         {
             var db = GetDatabaseConnection();
 
-            WriteVerbose("Quering for files that match the search input.");
+            BackupFileSearchResults results = null;
 
-            
+            if (!string.IsNullOrEmpty(MatchFilter))
+            {
+                WriteVerbose("Quering for files that match the provided file/directory match filter: " + MatchFilter);
+                results = db.FindArchivialFilesToRestoreByFilter(MatchFilter, LimitResults).GetAwaiter().GetResult();
+            }
+            else if (!string.IsNullOrEmpty(FileHash))
+            {
+                WriteVerbose("Quering for files that match the provided file hash: " + FileHash);
+                results = db.FindArchivialFilesToRestoreByHash(FileHash, LimitResults).GetAwaiter().GetResult();
+            }
+            else if (Source != null)
+            {
+                WriteVerbose("Quering for files that match the originating source: " + Source.ID);
+                results = db.FindArchivialFilesToRestoreBySource(Source, LimitResults).GetAwaiter().GetResult();
+            }
+            else if (All == true)
+            {
+                WriteVerbose("Quering for all files.");
+                results = db.FindAllArchivialFilesToRestore().GetAwaiter().GetResult();
+            }
+            else
+            {
+                throw new ArgumentException("Valid search parameters were not provided.");
+            }
+
+            if (results != null)
+            {
+                WriteVerbose(string.Format("Found {0} total eligible files.", results.Count));
+
+                foreach (var item in results)
+                {
+                    WriteObject(results);
+                }
+            }
         }
     }
 }
