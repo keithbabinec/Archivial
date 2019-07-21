@@ -35,7 +35,7 @@ namespace ArchivialPowerShell.Functions.Public
     ///   <para>Searches for any files that match the provided file hash.</para>
     ///   <para></para>
     /// </example>
-    [Cmdlet(VerbsCommon.Find, "ArchivialFilesToRestore")]
+    [Cmdlet(VerbsCommon.Find, "ArchivialFilesToRestore", DefaultParameterSetName = "ByFilter")]
     public class FindArchivialFilesToRestoreCommand : BaseArchivialCmdlet
     {
         /// <summary>
@@ -53,16 +53,25 @@ namespace ArchivialPowerShell.Functions.Public
         public string FileHash { get; set; }
 
         /// <summary>
-        ///   <para type="description">Specify a directory/file path filter to search for files that can be restored.</para>
+        ///   <para type="description">Specify a directory/file path filter to search for files that can be restored. This match behaves similar to a 'Contains' operation and supports the * wildcard.</para>
         /// </summary>
         [Parameter(Mandatory = true, ParameterSetName = "ByFilter")]
         [ValidateNotNullOrEmpty]
         public string MatchFilter { get; set; }
 
         /// <summary>
+        ///   <para type="description">Specify this option to return all files eligible for restore, without any filtering.</para>
+        /// </summary>
+        [Parameter(Mandatory = true, ParameterSetName = "All")]
+        public SwitchParameter All = false;
+
+        /// <summary>
         ///   <para type="description">Optionally specify the maximum number of results to return from a search.</para>
         /// </summary>
-        [Parameter(Mandatory = false)]
+        [Parameter(Mandatory = false, ParameterSetName = "BySource")]
+        [Parameter(Mandatory = false, ParameterSetName = "ByHash")]
+        [Parameter(Mandatory = false, ParameterSetName = "ByFilter")]
+        [ValidateRange(1, int.MaxValue)]
         public int LimitResults { get; set; }
 
         /// <summary>
@@ -82,7 +91,7 @@ namespace ArchivialPowerShell.Functions.Public
 
             WriteVerbose("Quering for files that match the search input.");
 
-            // TODO: implementation
+            
         }
     }
 }

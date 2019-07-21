@@ -2089,5 +2089,47 @@ namespace ArchivialLibrary.Database.SQLServer
                 throw;
             }
         }
+
+        /// <summary>
+        /// Finds all backup files that are available to restore.
+        /// </summary>
+        /// <returns><c>BackupFileSearchResults</c></returns>
+        public async Task<BackupFileSearchResults> FindAllArchivialFilesToRestore()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Finds backup files by source, that are available to restore. 
+        /// </summary>
+        /// <param name="Source">The originating source location.</param>
+        /// <param name="LimitResults">Optionally specify the maximum number of results to return.</param>
+        /// <returns><c>BackupFileSearchResults</c></returns>
+        public async Task<BackupFileSearchResults> FindArchivialFilesToRestoreBySource(SourceLocation Source, int LimitResults)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Finds backup files by file hash, that are available to restore. 
+        /// </summary>
+        /// <param name="FileHash">The file hash to match.</param>
+        /// <param name="LimitResults">Optionally specify the maximum number of results to return.</param>
+        /// <returns><c>BackupFileSearchResults</c></returns>
+        public async Task<BackupFileSearchResults> FindArchivialFilesToRestoreByHash(string FileHash, int LimitResults)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Finds backup files by file match filter, that are available to restore. 
+        /// </summary>
+        /// <param name="MatchFilter">The file/folder pattern to match.</param>
+        /// <param name="LimitResults">Optionally specify the maximum number of results to return.</param>
+        /// <returns><c>BackupFileSearchResults</c></returns>
+        public async Task<BackupFileSearchResults> FindArchivialFilesToRestoreByFilter(string MatchFilter, int LimitResults)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
