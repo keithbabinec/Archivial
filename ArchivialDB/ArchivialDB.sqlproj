@@ -118,6 +118,10 @@
     <Build Include="Functions\FullTextSearchFeatureIsAvailable.sql" />
     <Build Include="Stored Procedures\ConfigureFullTextSearchIndexesIfRequired.sql" />
     <Build Include="Stored Procedures\ConfigureFullTextSearchCatalogIfRequired.sql" />
+    <Build Include="Stored Procedures\FindArchivialFilesToRestoreBySource.sql" />
+    <Build Include="Stored Procedures\FindAllArchivialFilesToRestore.sql" />
+    <Build Include="Stored Procedures\FindArchivialFilesToRestoreByHash.sql" />
+    <Build Include="Stored Procedures\FindArchivialFilesToRestoreByFilter.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
