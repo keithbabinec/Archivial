@@ -25,8 +25,8 @@ This project is still considered alpha phase and under active development. Break
 | Storage Providers | Azure Support | AWS Support |
 | --- | --- | --- |
 | Install / Tools | Complete | N/A |
-| Backup | In-Progress | N/A |
-| Restore | N/A | N/A |
+| Backup | Complete | N/A |
+| Restore | In-Progress | N/A |
 
 | Messaging Providers | SMS (Twilio) | Email (SendGrid) |
 | --- | --- | --- |
