@@ -65,8 +65,8 @@ This project is still considered alpha phase and under active development. Break
 * Windows PowerShell 5.1 or later.
 
 ### Step 1: Install Microsoft SQL Server Express 2017 or later.
-* Microsoft SQL Server is required to maintain the state database. You can use any edition as long as it has full-text search support.
-    * **SQL Server Express with Advanced Services Edition** is includes FTS support and is free under the [Visual Studio Dev Essentials program](https://visualstudio.microsoft.com/dev-essentials/). 
+* Microsoft SQL Server is required to maintain the state database. You can use any edition as long as it has full-text search feature support.
+    * **SQL Server Express with Advanced Services Edition** includes FTS feature support and is free under the [Visual Studio Dev Essentials program](https://visualstudio.microsoft.com/dev-essentials/). 
 * Run the installer with the default options.
 
 ### Step 2: Install ArchivialPowerShell Module (Management Tools)
