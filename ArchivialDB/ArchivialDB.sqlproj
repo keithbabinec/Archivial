@@ -63,6 +63,7 @@
     <Folder Include="Stored Procedures" />
     <Folder Include="Scripts" />
     <Folder Include="Functions" />
+    <Folder Include="FullText" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\ApplicationOptions.sql" />
@@ -115,15 +116,17 @@
     <Build Include="Tables\FileCleanupQueue.sql" />
     <Build Include="Stored Procedures\FindNextFileToCleanup.sql" />
     <Build Include="Stored Procedures\RemoveFileFromCleanupQueue.sql" />
-    <Build Include="Functions\FullTextSearchFeatureIsAvailable.sql" />
-    <Build Include="Stored Procedures\ConfigureFullTextSearchIndexesIfRequired.sql" />
-    <Build Include="Stored Procedures\ConfigureFullTextSearchCatalogIfRequired.sql" />
     <Build Include="Stored Procedures\FindArchivialFilesToRestoreBySource.sql" />
     <Build Include="Stored Procedures\FindAllArchivialFilesToRestore.sql" />
     <Build Include="Stored Procedures\FindArchivialFilesToRestoreByHash.sql" />
     <Build Include="Stored Procedures\FindArchivialFilesToRestoreByFilter.sql" />
+    <Build Include="FullText\ArchivialFtsCatalog.sql" />
+    <Build Include="FullText\ArchivialFtIndexBackupFiles.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="Scripts\Script.PreDeployment.sql" />
   </ItemGroup>
 </Project>

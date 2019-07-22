@@ -120,8 +120,6 @@ namespace ArchivialLibrary.Database.SQLServer
             PublishDatabaseSchemaIfRequired();
 
             await CreateMandatoryAppSettingsIfMissingAsync().ConfigureAwait(false);
-
-            await ConfigureFullTextSearchIfSupportedAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -246,107 +244,6 @@ namespace ArchivialLibrary.Database.SQLServer
                 var encryptionIvString = Convert.ToBase64String(encryptionIvBytes);
 
                 await SetApplicationOptionAsync(Constants.RuntimeSettingNames.ProtectionIV, encryptionIvString).ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Configures SQL Server Full-Text Search if the feature is present.
-        /// </summary>
-        /// <returns></returns>
-        private async Task ConfigureFullTextSearchIfSupportedAsync()
-        {
-            Logger.WriteTraceMessage("Checking to see if the Full-Text Search feature is installed for this SQL Server Instance.");
-
-            var serverSupportsFullText = await SqlServerInstanceHasFullTextSearchFeatureInstalledAsync().ConfigureAwait(false);
-
-            if (serverSupportsFullText)
-            {
-                Logger.WriteTraceMessage("Full-Text Search feature is installed in the SQL instance.");
-
-                Logger.WriteTraceMessage("Configuring the Full-Text Search Catalog.");
-                await ConfigureFullTextSearchCatalogIfRequiredAsync().ConfigureAwait(false);
-
-                Logger.WriteTraceMessage("Configuring the Full-Text Search Indexes.");
-                await ConfigureFullTextSearchIndexesIfRequiredAsync().ConfigureAwait(false);
-
-                Logger.WriteTraceMessage("Full-Text Search configuration has completed.");
-            }
-            else
-            {
-                Logger.WriteTraceWarning("Full-text search feature is not installed in the SQL instance. This means that the SQL Server edition being used doesn't support the Full-text search feature, or that feature was not installed during your SQL Server setup/configuration. This means we will default to using standard queries for database searches which will be slower on larger databases.");
-            }
-        }
-
-        /// <summary>
-        /// Checks to see if the current SQL Server instance has full text search installed.
-        /// </summary>
-        /// <returns></returns>
-        private async Task<bool> SqlServerInstanceHasFullTextSearchFeatureInstalledAsync()
-        {
-            using (SqlConnection sqlcon = new SqlConnection(Constants.Database.DefaultSqlExpressInstanceConnectionString))
-            {
-                await sqlcon.OpenAsync().ConfigureAwait(false);
-
-                bool instanceHasFullTextSearch = false;
-
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    cmd.Connection = sqlcon;
-                    cmd.CommandText = "SELECT FULLTEXTSERVICEPROPERTY('IsFullTextInstalled')";
-                    cmd.CommandType = System.Data.CommandType.Text;
-
-                    using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
-                    {
-                        if (rdr.HasRows)
-                        {
-                            await rdr.ReadAsync().ConfigureAwait(false);
-
-                            instanceHasFullTextSearch = rdr.IsDBNull(0) ? false : Convert.ToBoolean(rdr.GetInt32(0));
-                        }
-                    }
-                }
-
-                return instanceHasFullTextSearch;
-            }
-        }
-
-        /// <summary>
-        /// Configures the Full-Text Search catalog(s) if they are missing.
-        /// </summary>
-        /// <returns></returns>
-        private async Task ConfigureFullTextSearchCatalogIfRequiredAsync()
-        {
-            using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
-            {
-                await sqlcon.OpenAsync().ConfigureAwait(false);
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    cmd.Connection = sqlcon;
-                    cmd.CommandText = "dbo.ConfigureFullTextSearchCatalogIfRequired";
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Configures the Full-Text Search indexs if they are missing.
-        /// </summary>
-        /// <returns></returns>
-        private async Task ConfigureFullTextSearchIndexesIfRequiredAsync()
-        {
-            using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
-            {
-                await sqlcon.OpenAsync().ConfigureAwait(false);
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    cmd.Connection = sqlcon;
-                    cmd.CommandText = "dbo.ConfigureFullTextSearchIndexesIfRequired";
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-                }
             }
         }
 

@@ -65,10 +65,8 @@ This project is still considered alpha phase and under active development. Break
 * Windows PowerShell 5.1 or later.
 
 ### Step 1: Install Microsoft SQL Server Express 2017 or later.
-* Microsoft SQL Server is required to maintain the state database. You can use any edition, but here are links to the two recommended free versions:
-    * **SQL Server Express Edition** is available for free from Microsoft at [this link](https://www.microsoft.com/en-us/sql-server/sql-server-editions-express).
-    * **SQL Server Express with Advanced Services Edition** is also free under the [Visual Studio Dev Essentials program](https://visualstudio.microsoft.com/dev-essentials/). 
-        * This version features full-text search, which Archivial is capable of leveraging for faster search on very large databases.
+* Microsoft SQL Server is required to maintain the state database. You can use any edition as long as it has full-text search support.
+    * **SQL Server Express with Advanced Services Edition** is includes FTS support and is free under the [Visual Studio Dev Essentials program](https://visualstudio.microsoft.com/dev-essentials/). 
 * Run the installer with the default options.
 
 ### Step 2: Install ArchivialPowerShell Module (Management Tools)

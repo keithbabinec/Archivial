@@ -21,81 +21,40 @@ BEGIN
 		;THROW 50000, 'LimitResults must be populated.', 0
 	END
 
-	-- check if full-text search features are available
-
-	DECLARE @UseFullTextSearch INT = [dbo].[FullTextSearchFeatureIsAvailable]()
-
 	-- transaction
 	
 	BEGIN TRY
 		
 		IF @LimitResults > 0
 		BEGIN
-			IF @UseFullTextSearch = 1
-			BEGIN
-				SELECT TOP (@LimitResults)
-						[dbo].[BackupFiles].[ID],
-						[dbo].[BackupFiles].[FileName],
-						[dbo].[BackupFiles].[Directory],
-						[dbo].[BackupFiles].[FullSourcePath],
-						[dbo].[BackupFiles].[FileSizeBytes],
-						[dbo].[BackupFiles].[LastModified],
-						[dbo].[BackupFiles].[FileRevisionNumber],
-						[dbo].[BackupFiles].[FileHashString],
-						[dbo].[BackupFiles].[HashAlgorithmType]
-				FROM	[dbo].[BackupFiles]
-				WHERE	[dbo].[BackupFiles].[OverallState] = 3
-				AND		CONTAINS([dbo].[BackupFiles].[FileHashString], @FileHash)
-			END
-			ELSE
-			BEGIN
-				SELECT TOP (@LimitResults)
-						[dbo].[BackupFiles].[ID],
-						[dbo].[BackupFiles].[FileName],
-						[dbo].[BackupFiles].[Directory],
-						[dbo].[BackupFiles].[FullSourcePath],
-						[dbo].[BackupFiles].[FileSizeBytes],
-						[dbo].[BackupFiles].[LastModified],
-						[dbo].[BackupFiles].[FileRevisionNumber],
-						[dbo].[BackupFiles].[FileHashString],
-						[dbo].[BackupFiles].[HashAlgorithmType]
-				FROM	[dbo].[BackupFiles]
-				WHERE	[dbo].[BackupFiles].[OverallState] = 3
-				AND		[dbo].[BackupFiles].[FileHashString] LIKE '%' + @FileHash + '%'
-			END
+			SELECT TOP (@LimitResults)
+					[dbo].[BackupFiles].[ID],
+					[dbo].[BackupFiles].[FileName],
+					[dbo].[BackupFiles].[Directory],
+					[dbo].[BackupFiles].[FullSourcePath],
+					[dbo].[BackupFiles].[FileSizeBytes],
+					[dbo].[BackupFiles].[LastModified],
+					[dbo].[BackupFiles].[FileRevisionNumber],
+					[dbo].[BackupFiles].[FileHashString],
+					[dbo].[BackupFiles].[HashAlgorithmType]
+			FROM	[dbo].[BackupFiles]
+			WHERE	[dbo].[BackupFiles].[OverallState] = 3
+			AND		CONTAINS([dbo].[BackupFiles].[FileHashString], @FileHash)
 		END
 		ELSE
 		BEGIN
-			IF @UseFullTextSearch = 1
-			BEGIN
-				SELECT	[dbo].[BackupFiles].[ID],
-						[dbo].[BackupFiles].[FileName],
-						[dbo].[BackupFiles].[Directory],
-						[dbo].[BackupFiles].[FullSourcePath],
-						[dbo].[BackupFiles].[FileSizeBytes],
-						[dbo].[BackupFiles].[LastModified],
-						[dbo].[BackupFiles].[FileRevisionNumber],
-						[dbo].[BackupFiles].[FileHashString],
-						[dbo].[BackupFiles].[HashAlgorithmType]
-				FROM	[dbo].[BackupFiles]
-				WHERE	[dbo].[BackupFiles].[OverallState] = 3
-				AND		CONTAINS([dbo].[BackupFiles].[FileHashString], @FileHash)
-			END
-			ELSE
-			BEGIN
-				SELECT	[dbo].[BackupFiles].[ID],
-						[dbo].[BackupFiles].[FileName],
-						[dbo].[BackupFiles].[Directory],
-						[dbo].[BackupFiles].[FullSourcePath],
-						[dbo].[BackupFiles].[FileSizeBytes],
-						[dbo].[BackupFiles].[LastModified],
-						[dbo].[BackupFiles].[FileRevisionNumber],
-						[dbo].[BackupFiles].[FileHashString],
-						[dbo].[BackupFiles].[HashAlgorithmType]
-				FROM	[dbo].[BackupFiles]
-				WHERE	[dbo].[BackupFiles].[OverallState] = 3
-				AND		[dbo].[BackupFiles].[FileHashString] LIKE '%' + @FileHash + '%'
-			END
+			SELECT	[dbo].[BackupFiles].[ID],
+					[dbo].[BackupFiles].[FileName],
+					[dbo].[BackupFiles].[Directory],
+					[dbo].[BackupFiles].[FullSourcePath],
+					[dbo].[BackupFiles].[FileSizeBytes],
+					[dbo].[BackupFiles].[LastModified],
+					[dbo].[BackupFiles].[FileRevisionNumber],
+					[dbo].[BackupFiles].[FileHashString],
+					[dbo].[BackupFiles].[HashAlgorithmType]
+			FROM	[dbo].[BackupFiles]
+			WHERE	[dbo].[BackupFiles].[OverallState] = 3
+			AND		CONTAINS([dbo].[BackupFiles].[FileHashString], @FileHash)
 		END
 
 	END TRY
