@@ -18,7 +18,7 @@ namespace ArchivialPowerShell.Functions.Public
     ///   <para></para>
     /// </example>
     /// <example>
-    ///   <code>C:\> Find-ArchivialFilesToRestore -MatchFilter "D:\music"</code>
+    ///   <code>C:\> Find-ArchivialFilesToRestore -MatchFilter "D:\music\*"</code>
     ///   <para>Searches for any files that contain a match to the specified path. Does not limit the number of results returned.</para>
     ///   <para></para>
     /// </example>
@@ -95,13 +95,19 @@ namespace ArchivialPowerShell.Functions.Public
 
             if (!string.IsNullOrEmpty(MatchFilter))
             {
-                WriteVerbose("Quering for files that match the provided file/directory match filter: " + MatchFilter);
-                results = db.FindArchivialFilesToRestoreByFilter(MatchFilter, LimitResults).GetAwaiter().GetResult();
+                // fts user generated text needs to be wrapped in quotes for the wildcards to work.
+                var wrappedFilter = "\"" + MatchFilter + "\"";
+
+                WriteVerbose("Quering for files that match the provided file/directory match filter: " + wrappedFilter);
+                results = db.FindArchivialFilesToRestoreByFilter(wrappedFilter, LimitResults).GetAwaiter().GetResult();
             }
             else if (!string.IsNullOrEmpty(FileHash))
             {
-                WriteVerbose("Quering for files that match the provided file hash: " + FileHash);
-                results = db.FindArchivialFilesToRestoreByHash(FileHash, LimitResults).GetAwaiter().GetResult();
+                // fts user generated text needs to be wrapped in quotes for the wildcards to work.
+                var wrappedHash = "\"" + FileHash + "\"";
+
+                WriteVerbose("Quering for files that match the provided file hash: " + wrappedHash);
+                results = db.FindArchivialFilesToRestoreByHash(wrappedHash, LimitResults).GetAwaiter().GetResult();
             }
             else if (Source != null)
             {
@@ -121,11 +127,7 @@ namespace ArchivialPowerShell.Functions.Public
             if (results != null)
             {
                 WriteVerbose(string.Format("Found {0} total eligible files.", results.Count));
-
-                foreach (var item in results)
-                {
-                    WriteObject(results);
-                }
+                WriteObject(results);
             }
         }
     }
