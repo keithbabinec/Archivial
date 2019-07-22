@@ -113,7 +113,7 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedDb.Verify(x => x.FindArchivialFilesToRestoreByFilter(It.IsAny<string>(), It.IsAny<int>()), Times.Once);
 
             Assert.AreEqual(10, dbSubmittedLimit);
-            Assert.AreEqual("*.docx", dbSubmittedMatch);
+            Assert.AreEqual("\"*.docx\"", dbSubmittedMatch); // wrapped in quotes is expected for SQL full-text search support
         }
 
         [TestMethod]
@@ -151,7 +151,7 @@ namespace ArchivialPowerShellTests.Functions.Public
             mockedDb.Verify(x => x.FindArchivialFilesToRestoreByHash(It.IsAny<string>(), It.IsAny<int>()), Times.Once);
 
             Assert.AreEqual(10, dbSubmittedLimit);
-            Assert.AreEqual("A37CC82F2876DB6CF59BA29B4EB148C7BF5CC920", dbSubmittedHash);
+            Assert.AreEqual("\"A37CC82F2876DB6CF59BA29B4EB148C7BF5CC920\"", dbSubmittedHash); // wrapped in quotes is expected for SQL full-text search support
         }
 
         [TestMethod]
