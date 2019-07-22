@@ -118,6 +118,7 @@ Uninstall-Module -Name ArchivialPowerShell -AllVersions
 | --- | --- |
 | [Add-ArchivialLocalSource](Doc/Commands/Add-ArchivialLocalSource.md) | Adds a local folder to the Archivial backup folders list. |
 | [Add-ArchivialNetworkSource](Doc/Commands/Add-ArchivialNetworkSource.md) | Adds a network (UNC path) folder to the Archivial backup folders list. |
+| [Find-ArchivialFilesToRestore](Doc/Commands/Find-ArchivialFilesToRestore.md) | Finds backup files that are available to restore. |
 | [Get-ArchivialCloudBackupOptions](Doc/Commands/Get-ArchivialCloudBackupOptions.md) | Gets the application options for Archivial Cloud Backup. |
 | [Get-ArchivialCloudBackupStatus](Doc/Commands/Get-ArchivialCloudBackupStatus.md) | Returns the current status of the cloud backup progress. |
 | [Get-ArchivialLocalSources](Doc/Commands/Get-ArchivialLocalSources.md) | Returns all of the Local Source folders being monitored by Archivial. |
