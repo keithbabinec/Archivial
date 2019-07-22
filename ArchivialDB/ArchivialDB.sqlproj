@@ -23,7 +23,7 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
-    <DacVersion>0.2.8.0</DacVersion>
+    <DacVersion>0.3.0.0</DacVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -63,6 +63,7 @@
     <Folder Include="Stored Procedures" />
     <Folder Include="Scripts" />
     <Folder Include="Functions" />
+    <Folder Include="FullText" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\ApplicationOptions.sql" />
@@ -115,8 +116,17 @@
     <Build Include="Tables\FileCleanupQueue.sql" />
     <Build Include="Stored Procedures\FindNextFileToCleanup.sql" />
     <Build Include="Stored Procedures\RemoveFileFromCleanupQueue.sql" />
+    <Build Include="Stored Procedures\FindArchivialFilesToRestoreBySource.sql" />
+    <Build Include="Stored Procedures\FindAllArchivialFilesToRestore.sql" />
+    <Build Include="Stored Procedures\FindArchivialFilesToRestoreByHash.sql" />
+    <Build Include="Stored Procedures\FindArchivialFilesToRestoreByFilter.sql" />
+    <Build Include="FullText\ArchivialFtsCatalog.sql" />
+    <Build Include="FullText\ArchivialFtIndexBackupFiles.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="Scripts\Script.PreDeployment.sql" />
   </ItemGroup>
 </Project>

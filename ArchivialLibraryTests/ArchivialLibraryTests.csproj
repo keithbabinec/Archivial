@@ -114,11 +114,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Client\BackupEngine.tests.cs" />
-    <Compile Include="Client\ConnectionEngine.tests.cs" />
-    <Compile Include="Client\ScanEngine.tests.cs" />
+    <Compile Include="Engine\BackupEngine.tests.cs" />
+    <Compile Include="Engine\CleanupEngine.tests.cs" />
+    <Compile Include="Engine\ConnectionEngine.tests.cs" />
+    <Compile Include="Engine\CoreServiceEngine.tests.cs" />
+    <Compile Include="Engine\RestoreEngine.tests.cs" />
+    <Compile Include="Engine\ScanEngine.tests.cs" />
     <Compile Include="Client\Sources\Scanner.tests.cs" />
-    <Compile Include="Client\StatusEngine.tests.cs" />
+    <Compile Include="Engine\StatusEngine.tests.cs" />
     <Compile Include="Crypto\Hasher.tests.cs" />
     <Compile Include="Database\DatabaseBackupScheduler.tests.cs" />
     <Compile Include="Files\BackupFile.tests.cs" />

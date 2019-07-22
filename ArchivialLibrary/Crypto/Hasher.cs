@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.IO;
-using System.Text;
 using ArchivialLibrary.Logging;
 using ArchivialLibrary.Files;
 
@@ -182,37 +181,6 @@ namespace ArchivialLibrary.Crypto
                 // return empty byte array
                 return new byte[] { };
             }
-        }
-
-        /// <summary>
-        /// Converts an array of bytes into a string seperated with dashes (-)
-        /// </summary>
-        /// <param name="hash"></param>
-        /// <returns></returns>
-        public string ConvertHashByteArrayToString(byte[] hash)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (var b in hash)
-            {
-                sb.Append(b + "-");
-            }
-            sb.Remove(sb.Length - 1, 1);
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Converts an array of bytes into a base64 encoded string.
-        /// </summary>
-        /// <param name="hash">A populated byte array.</param>
-        /// <returns>Base64 encoded string</returns>
-        public string ConvertHashByteArrayToBase64EncodedString(byte[] hash)
-        {
-            if (hash == null || hash.Length == 0)
-            {
-                throw new ArgumentException(nameof(hash) + " must be provided.");
-            }
-
-            return Convert.ToBase64String(hash);
         }
 
         /// <summary>

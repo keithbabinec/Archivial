@@ -25,6 +25,7 @@ BEGIN
 		SELECT	@TotalFileSizeBytes = ISNULL(SUM([dbo].[BackupFiles].[FileSizeBytes]),0),
 				@TotalFileCount = COUNT(*)
 		FROM	[dbo].[BackupFiles]
+		WHERE	[dbo].[BackupFiles].[WasDeleted] IS NULL
 
 		-- synced files
 
@@ -35,6 +36,7 @@ BEGIN
 				@BackedUpFileCount = COUNT(*)
 		FROM	[dbo].[BackupFiles]
 		WHERE	[dbo].[BackupFiles].[OverallState] = @SyncedConstant
+		AND		[dbo].[BackupFiles].[WasDeleted] IS NULL
 
 		-- in-progress files
 
@@ -50,6 +52,7 @@ BEGIN
 					@OutOfDateConstant,
 					@InProgressConstant
 				)
+		AND		[dbo].[BackupFiles].[WasDeleted] IS NULL
 
 		-- failed files
 
@@ -60,6 +63,7 @@ BEGIN
 				@FailedFileCount = COUNT(*)
 		FROM	[dbo].[BackupFiles]
 		WHERE	[dbo].[BackupFiles].[OverallState] = @ProviderErrorConstant
+		AND		[dbo].[BackupFiles].[WasDeleted] IS NULL
 
 		-- return results
 

@@ -23,7 +23,12 @@ The default installation will be placed in the Program Files directory, but this
 This command requires an elevated (run-as administrator) PowerShell prompt to complete.
 It will also prompt for comfirmation unless the -Force switch is applied.
 
-Note: This command is used for fresh installations.
+IMPORTANT: Microsoft SQL Server is required to maintain the state database.
+You can use any edition as long as it has full-text search feature support.
+
+SQL Server Express with Advanced Services Edition includes FTS feature support and is free under the Visual Studio Dev Essentials program (https://visualstudio.microsoft.com/dev-essentials/).
+
+NOTE: This command is used for fresh installations.
 For upgrades to existing installations use the Update-ArchivialCloudBackup command.
 
 ## EXAMPLES

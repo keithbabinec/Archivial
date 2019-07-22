@@ -1,5 +1,4 @@
 ﻿using ArchivialLibrary.Database;
-using ArchivialLibrary.Engine;
 using ArchivialLibrary.Events;
 using ArchivialLibrary.Logging;
 using ArchivialLibrary.ServiceCore;
@@ -8,7 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ArchivialLibrary.Client
+namespace ArchivialLibrary.Engine
 {
     /// <summary>
     /// Contains functionality for the core windows service, such as core heartbeat and database backups.

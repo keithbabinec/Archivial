@@ -88,11 +88,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client\BackupEngine.cs" />
-    <Compile Include="Client\CleanupEngine.cs" />
-    <Compile Include="Client\ConnectionEngine.cs" />
-    <Compile Include="Client\CoreServiceEngine.cs" />
-    <Compile Include="Client\StatusEngine.cs" />
+    <Compile Include="Engine\BackupEngine.cs" />
+    <Compile Include="Engine\CleanupEngine.cs" />
+    <Compile Include="Engine\ConnectionEngine.cs" />
+    <Compile Include="Engine\CoreServiceEngine.cs" />
+    <Compile Include="Engine\RestoreEngine.cs" />
+    <Compile Include="Engine\StatusEngine.cs" />
     <Compile Include="Client\Transfer\FileSender.cs" />
     <Compile Include="Constants\CommandLine.cs" />
     <Compile Include="Constants\BootstrapSettingNames.cs" />
@@ -108,7 +109,7 @@
     <Compile Include="Engine\BaseEngine.cs" />
     <Compile Include="Events\AsyncResult.cs" />
     <Compile Include="Events\EngineStoppedEventArgs.cs" />
-    <Compile Include="Client\ScanEngine.cs" />
+    <Compile Include="Engine\ScanEngine.cs" />
     <Compile Include="Client\Sources\SourceScanner.cs" />
     <Compile Include="Constants\Database.cs" />
     <Compile Include="Constants\Logging.cs" />
@@ -123,6 +124,8 @@
     <Compile Include="Exceptions\SourceLocationInvalidCredentialNameException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidFileBackupPriorityException.cs" />
     <Compile Include="Exceptions\SourceLocationInvalidUncFolderPathException.cs" />
+    <Compile Include="Files\BackupFileSearchResult.cs" />
+    <Compile Include="Files\BackupFileSearchResults.cs" />
     <Compile Include="Files\TransferPayload.cs" />
     <Compile Include="Folders\LocalSourceLocation.cs" />
     <Compile Include="Folders\NetworkSourceLocation.cs" />

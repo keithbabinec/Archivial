@@ -1,15 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using ArchivialLibrary.Database.SQLServer;
+﻿using ArchivialLibrary.Database.SQLServer;
+using ArchivialLibrary.Engine;
 using ArchivialLibrary.Logging.Mock;
+using ArchivialLibrary.ServiceCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Threading;
-using ArchivialLibrary.ServiceCore;
 
-namespace ArchivialLibraryTests.Client
+namespace ArchivialLibraryTests.Engine
 {
     [TestClass]
-    public class BackupEngineTests
+    public class RestoreEngineTests
     {
         private const string TestConnectionString = "fakedb";
 
@@ -17,55 +18,59 @@ namespace ArchivialLibraryTests.Client
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void BackupEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
+        public void RestoreEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
-            ArchivialLibrary.Client.BackupEngine engine =
-                new ArchivialLibrary.Client.BackupEngine(null, new MockLogger(), 0, SharedMockedCoreSettings);
+            var engine = new RestoreEngine(null, new MockLogger(), 0, SharedMockedCoreSettings);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void BackupEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
+        public void RestoreEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.BackupEngine engine =
-                new ArchivialLibrary.Client.BackupEngine(db, null, 0, SharedMockedCoreSettings);
+            var engine = new RestoreEngine(db, null, 0, SharedMockedCoreSettings);
         }
 
         [TestMethod]
-        public void BackupEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RestoreEngineConstructorThrowsExceptionWhenNoCoreSettingsProvided()
+        {
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
+
+            var engine = new RestoreEngine(db, new MockLogger(), 0, null);
+        }
+
+        [TestMethod]
+        public void RestoreEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.BackupEngine engine =
-                new ArchivialLibrary.Client.BackupEngine(db, logger, 0, SharedMockedCoreSettings);
+            var engine = new RestoreEngine(db, logger, 0, SharedMockedCoreSettings);
 
             Assert.IsNotNull(engine);
         }
 
         [TestMethod]
-        public void BackupEngineCanStartAndStop()
+        public void RestoreEngineCanStartAndStop()
         {
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.BackupEngine engine =
-                new ArchivialLibrary.Client.BackupEngine(db, logger, 0, SharedMockedCoreSettings);
+            var engine = new RestoreEngine(db, logger, 0, SharedMockedCoreSettings);
 
             engine.BeginStart();
             engine.BeginStop();
         }
 
         [TestMethod]
-        public void BackupEngineTriggersStoppedEventWhenEngineHasStopped()
+        public void RestoreEngineTriggersStoppedEventWhenEngineHasStopped()
         {
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.BackupEngine engine =
-                new ArchivialLibrary.Client.BackupEngine(db, logger, 0, SharedMockedCoreSettings);
+            var engine = new RestoreEngine(db, logger, 0, SharedMockedCoreSettings);
 
             var signalStoppedEvent = new AutoResetEvent(false);
 

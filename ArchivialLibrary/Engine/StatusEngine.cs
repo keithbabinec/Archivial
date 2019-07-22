@@ -1,5 +1,4 @@
 ﻿using ArchivialLibrary.Database;
-using ArchivialLibrary.Engine;
 using ArchivialLibrary.Events;
 using ArchivialLibrary.Logging;
 using ArchivialLibrary.MessagingProviders;
@@ -10,7 +9,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ArchivialLibrary.Client
+namespace ArchivialLibrary.Engine
 {
     /// <summary>
     /// Contains core status engine functionality.

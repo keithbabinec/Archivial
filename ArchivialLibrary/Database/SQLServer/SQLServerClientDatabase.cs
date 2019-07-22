@@ -115,11 +115,11 @@ namespace ArchivialLibrary.Database.SQLServer
         /// <returns></returns>
         public async Task PrepareDatabaseAsync()
         {
-            await CreateDatabaseIfMissingAsync();
+            await CreateDatabaseIfMissingAsync().ConfigureAwait(false);
 
             PublishDatabaseSchemaIfRequired();
 
-            await CreateMandatoryAppSettingsIfMissingAsync();
+            await CreateMandatoryAppSettingsIfMissingAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -867,7 +867,8 @@ namespace ArchivialLibrary.Database.SQLServer
                                             HashAlgorithmType = rdr.IsDBNull(13) ? null : rdr.GetString(13),
                                             LastChecked = rdr.GetDateTime(14),
                                             LastUpdated = rdr.GetDateTime(15),
-                                            OverallState = (FileStatus)rdr.GetInt32(16)
+                                            OverallState = (FileStatus)rdr.GetInt32(16),
+                                            WasDeleted = rdr.IsDBNull(17) ? (DateTime?)null : rdr.GetDateTime(17)
                                         };
                                     }
                                 }
@@ -1977,6 +1978,227 @@ namespace ArchivialLibrary.Database.SQLServer
                         cmd.Parameters.AddWithValue("@ID", File.FileID);
 
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Finds all backup files that are available to restore.
+        /// </summary>
+        /// <returns><c>BackupFileSearchResults</c></returns>
+        public async Task<BackupFileSearchResults> FindAllArchivialFilesToRestore()
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.FindAllArchivialFilesToRestore";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                        {
+                            var results = new BackupFileSearchResults();
+
+                            while (await rdr.ReadAsync().ConfigureAwait(false))
+                            {
+                                results.Add(new BackupFileSearchResult()
+                                {
+                                    FileID = rdr.GetGuid(0),
+                                    FileName = rdr.GetString(1),
+                                    Directory = rdr.GetString(2),
+                                    FullPath = rdr.GetString(3),
+                                    FileSizeBytes = rdr.GetInt64(4),
+                                    LastModified = rdr.GetDateTime(5),
+                                    RevisionNumber = rdr.GetInt32(6),
+                                    Hash = rdr.GetString(7),
+                                    HashAlgorithm = rdr.GetString(8)
+                                });
+                            }
+
+                            return results;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Finds backup files by source, that are available to restore. 
+        /// </summary>
+        /// <param name="Source">The originating source location.</param>
+        /// <param name="LimitResults">Optionally specify the maximum number of results to return.</param>
+        /// <returns><c>BackupFileSearchResults</c></returns>
+        public async Task<BackupFileSearchResults> FindArchivialFilesToRestoreBySource(SourceLocation Source, int LimitResults)
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.FindArchivialFilesToRestoreBySource";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@SourceID", Source.ID);
+
+                        if (Source is LocalSourceLocation)
+                        {
+                            cmd.Parameters.AddWithValue("@SourceType", (int)SourceLocationType.Local);
+                        }
+                        else if (Source is NetworkSourceLocation)
+                        {
+                            cmd.Parameters.AddWithValue("@SourceType", (int)SourceLocationType.Network);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException("Unexpected source location type: " + Source.GetType().Name);
+                        }
+
+                        cmd.Parameters.AddWithValue("@LimitResults", LimitResults);
+
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                        {
+                            var results = new BackupFileSearchResults();
+
+                            while (await rdr.ReadAsync().ConfigureAwait(false))
+                            {
+                                results.Add(new BackupFileSearchResult()
+                                {
+                                    FileID = rdr.GetGuid(0),
+                                    FileName = rdr.GetString(1),
+                                    Directory = rdr.GetString(2),
+                                    FullPath = rdr.GetString(3),
+                                    FileSizeBytes = rdr.GetInt64(4),
+                                    LastModified = rdr.GetDateTime(5),
+                                    RevisionNumber = rdr.GetInt32(6),
+                                    Hash = rdr.GetString(7),
+                                    HashAlgorithm = rdr.GetString(8)
+                                });
+                            }
+
+                            return results;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Finds backup files by file hash, that are available to restore. 
+        /// </summary>
+        /// <param name="FileHash">The file hash to match.</param>
+        /// <param name="LimitResults">Optionally specify the maximum number of results to return.</param>
+        /// <returns><c>BackupFileSearchResults</c></returns>
+        public async Task<BackupFileSearchResults> FindArchivialFilesToRestoreByHash(string FileHash, int LimitResults)
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.FindArchivialFilesToRestoreByHash";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@FileHash", FileHash);
+                        cmd.Parameters.AddWithValue("@LimitResults", LimitResults);
+
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                        {
+                            var results = new BackupFileSearchResults();
+
+                            while (await rdr.ReadAsync().ConfigureAwait(false))
+                            {
+                                results.Add(new BackupFileSearchResult()
+                                {
+                                    FileID = rdr.GetGuid(0),
+                                    FileName = rdr.GetString(1),
+                                    Directory = rdr.GetString(2),
+                                    FullPath = rdr.GetString(3),
+                                    FileSizeBytes = rdr.GetInt64(4),
+                                    LastModified = rdr.GetDateTime(5),
+                                    RevisionNumber = rdr.GetInt32(6),
+                                    Hash = rdr.GetString(7),
+                                    HashAlgorithm = rdr.GetString(8)
+                                });
+                            }
+
+                            return results;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Finds backup files by file match filter, that are available to restore. 
+        /// </summary>
+        /// <param name="MatchFilter">The file/folder pattern to match.</param>
+        /// <param name="LimitResults">Optionally specify the maximum number of results to return.</param>
+        /// <returns><c>BackupFileSearchResults</c></returns>
+        public async Task<BackupFileSearchResults> FindArchivialFilesToRestoreByFilter(string MatchFilter, int LimitResults)
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(DatabaseConnectionString))
+                {
+                    await sqlcon.OpenAsync().ConfigureAwait(false);
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = sqlcon;
+                        cmd.CommandText = "dbo.FindArchivialFilesToRestoreByFilter";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@MatchFilter", MatchFilter);
+                        cmd.Parameters.AddWithValue("@LimitResults", LimitResults);
+
+                        using (var rdr = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                        {
+                            var results = new BackupFileSearchResults();
+
+                            while (await rdr.ReadAsync().ConfigureAwait(false))
+                            {
+                                results.Add(new BackupFileSearchResult()
+                                {
+                                    FileID = rdr.GetGuid(0),
+                                    FileName = rdr.GetString(1),
+                                    Directory = rdr.GetString(2),
+                                    FullPath = rdr.GetString(3),
+                                    FileSizeBytes = rdr.GetInt64(4),
+                                    LastModified = rdr.GetDateTime(5),
+                                    RevisionNumber = rdr.GetInt32(6),
+                                    Hash = rdr.GetString(7),
+                                    HashAlgorithm = rdr.GetString(8)
+                                });
+                            }
+
+                            return results;
+                        }
                     }
                 }
             }

@@ -3,7 +3,6 @@ using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using ArchivialLibrary.Constants;
-using ArchivialLibrary.Crypto;
 using ArchivialLibrary.Files;
 using ArchivialLibrary.Folders;
 using ArchivialLibrary.Logging;
@@ -24,11 +23,6 @@ namespace ArchivialLibrary.StorageProviders.Azure
         /// A reference to the logging utility.
         /// </summary>
         private ILogger Logger;
-
-        /// <summary>
-        /// A reference to the hashing helper instance.
-        /// </summary>
-        private Hasher Hasher;
 
         /// <summary>
         /// A reference to the provider utilities helper instance.
@@ -104,7 +98,6 @@ namespace ArchivialLibrary.StorageProviders.Azure
             }
 
             Logger = logger;
-            Hasher = new Hasher(logger);
             ProviderUtilities = new AzureStorageProviderUtilities();
 
             var storageCredentials = new StorageCredentials(storageAccountName, storageAccountSASToken);

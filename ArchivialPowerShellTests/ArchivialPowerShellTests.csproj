@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Functions\Public\AddArchivialLocalSourceCommandTests.cs" />
     <Compile Include="Functions\Public\AddArchivialNetworkSourceCommandTests.cs" />
+    <Compile Include="Functions\Public\FindArchivialFilesToRestoreCommandTests.cs" />
     <Compile Include="Functions\Public\GetArchivialCloudBackupOptionsCommandTests.cs" />
     <Compile Include="Functions\Public\GetArchivialCloudBackupStatusCommandTests.cs" />
     <Compile Include="Functions\Public\GetArchivialLocalSourcesCommandTests.cs" />

@@ -1,5 +1,4 @@
 ﻿using ArchivialLibrary.Crypto;
-using ArchivialLibrary.Exceptions;
 using ArchivialLibrary.Folders;
 using ArchivialLibrary.Providers;
 using ArchivialLibrary.StorageProviders;
@@ -571,24 +570,6 @@ namespace ArchivialLibrary.Files
         }
 
         /// <summary>
-        /// Sets the provider status to completed.
-        /// </summary>
-        /// <param name="Provider"></param>
-        public void SetProviderToCompleted(StorageProviderTypes Provider)
-        {
-            if (!CopyState.ContainsKey(Provider))
-            {
-                CopyState.Add(Provider, new StorageProviderFileStatus(Provider));
-            }
-
-            var state = CopyState[Provider];
-            state.LastCompletedFileBlockIndex = TotalFileBlocks;
-            state.SyncStatus = FileStatus.Synced;
-
-            SetOverallStateFromCopyState();
-        }
-
-        /// <summary>
         /// Sets the provider status to failed.
         /// </summary>
         /// <param name="Provider"></param>
@@ -650,15 +631,6 @@ namespace ArchivialLibrary.Files
         }
 
         /// <summary>
-        /// Gets the last checked timestamp
-        /// </summary>
-        /// <returns>Byte[]</returns>
-        public DateTime? GetLastCheckedTimeStamp()
-        {
-            return LastChecked;
-        }
-
-        /// <summary>
         /// Returns a string representation of this object.
         /// </summary>
         /// <returns></returns>
@@ -703,26 +675,8 @@ namespace ArchivialLibrary.Files
             }
 
             FileHash = filehash;
-            FileHashString = string.Join("-", FileHash);
+            FileHashString = ConvertFileHashBytesToHexString(filehash);
             HashAlgorithmType = algorithm.Name;
-        }
-
-        /// <summary>
-        /// Gets the file hash.
-        /// </summary>
-        /// <returns>Byte[]</returns>
-        public byte[] GetFileHash()
-        {
-            return FileHash;
-        }
-
-        /// <summary>
-        /// Gets the file hash string representation.
-        /// </summary>
-        /// <returns></returns>
-        public string GetFileHashString()
-        {
-            return FileHashString;
         }
 
         /// <summary>
@@ -746,6 +700,16 @@ namespace ArchivialLibrary.Files
             }
 
             return blocks;
+        }
+
+        /// <summary>
+        /// Returns a hex string formatted representation of the file bytes.
+        /// </summary>
+        /// <param name="fileHash"></param>
+        /// <returns></returns>
+        private string ConvertFileHashBytesToHexString(byte[] fileHash)
+        {
+            return BitConverter.ToString(fileHash).Replace("-", "");
         }
     }
 }

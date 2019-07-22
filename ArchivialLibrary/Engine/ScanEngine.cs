@@ -1,6 +1,5 @@
 ﻿using ArchivialLibrary.Client.Sources;
 using ArchivialLibrary.Database;
-using ArchivialLibrary.Engine;
 using ArchivialLibrary.Events;
 using ArchivialLibrary.Logging;
 using ArchivialLibrary.Exceptions;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 using ArchivialLibrary.Providers;
 using ArchivialLibrary.ServiceCore;
 
-namespace ArchivialLibrary.Client
+namespace ArchivialLibrary.Engine
 {
     /// <summary>
     /// Contains core scan engine functionality.

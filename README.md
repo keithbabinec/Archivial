@@ -25,8 +25,8 @@ This project is still considered alpha phase and under active development. Break
 | Storage Providers | Azure Support | AWS Support |
 | --- | --- | --- |
 | Install / Tools | Complete | N/A |
-| Backup | In-Progress | N/A |
-| Restore | N/A | N/A |
+| Backup | Complete | N/A |
+| Restore | In-Progress | N/A |
 
 | Messaging Providers | SMS (Twilio) | Email (SendGrid) |
 | --- | --- | --- |
@@ -64,8 +64,9 @@ This project is still considered alpha phase and under active development. Break
 * A Windows Operating System running .NET 4.6.1 (or later).
 * Windows PowerShell 5.1 or later.
 
-### Step 1: Install SQL Server Express 2017 or later.
-* SQL Server is required to maintain the state database. Express edition is available for free from Microsoft at [this link](https://www.microsoft.com/en-us/sql-server/sql-server-editions-express). 
+### Step 1: Install Microsoft SQL Server Express 2017 or later.
+* Microsoft SQL Server is required to maintain the state database. You can use any edition as long as it has full-text search feature support.
+    * **SQL Server Express with Advanced Services Edition** includes FTS feature support and is free under the [Visual Studio Dev Essentials program](https://visualstudio.microsoft.com/dev-essentials/). 
 * Run the installer with the default options.
 
 ### Step 2: Install ArchivialPowerShell Module (Management Tools)
@@ -117,6 +118,7 @@ Uninstall-Module -Name ArchivialPowerShell -AllVersions
 | --- | --- |
 | [Add-ArchivialLocalSource](Doc/Commands/Add-ArchivialLocalSource.md) | Adds a local folder to the Archivial backup folders list. |
 | [Add-ArchivialNetworkSource](Doc/Commands/Add-ArchivialNetworkSource.md) | Adds a network (UNC path) folder to the Archivial backup folders list. |
+| [Find-ArchivialFilesToRestore](Doc/Commands/Find-ArchivialFilesToRestore.md) | Finds backup files that are available to restore. |
 | [Get-ArchivialCloudBackupOptions](Doc/Commands/Get-ArchivialCloudBackupOptions.md) | Gets the application options for Archivial Cloud Backup. |
 | [Get-ArchivialCloudBackupStatus](Doc/Commands/Get-ArchivialCloudBackupStatus.md) | Returns the current status of the cloud backup progress. |
 | [Get-ArchivialLocalSources](Doc/Commands/Get-ArchivialLocalSources.md) | Returns all of the Local Source folders being monitored by Archivial. |

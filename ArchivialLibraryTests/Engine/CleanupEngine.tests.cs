@@ -1,15 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using ArchivialLibrary.Database.SQLServer;
+﻿using ArchivialLibrary.Database.SQLServer;
+using ArchivialLibrary.Engine;
 using ArchivialLibrary.Logging.Mock;
+using ArchivialLibrary.ServiceCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Threading;
-using ArchivialLibrary.ServiceCore;
 
-namespace ArchivialLibraryTests.Client
+namespace ArchivialLibraryTests.Engine
 {
     [TestClass]
-    public class ConnectionEngineTests
+    public class CleanupEngineTests
     {
         private const string TestConnectionString = "fakedb";
 
@@ -17,55 +18,59 @@ namespace ArchivialLibraryTests.Client
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ConnectionEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
+        public void CleanupEngineConstructorThrowsExceptionWhenNoDatabaseIsProvided()
         {
-            ArchivialLibrary.Client.ConnectionEngine engine =
-                new ArchivialLibrary.Client.ConnectionEngine(null, new MockLogger(), 0, SharedMockedCoreSettings);
+            var engine = new CleanupEngine(null, new MockLogger(), 0, SharedMockedCoreSettings);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ConnectionEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
+        public void CleanupEngineConstructorThrowsExceptionWhenNoLoggerIsProvided()
         {
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.ConnectionEngine engine =
-                new ArchivialLibrary.Client.ConnectionEngine(db, null, 0, SharedMockedCoreSettings);
+            var engine = new CleanupEngine(db, null, 0, SharedMockedCoreSettings);
         }
 
         [TestMethod]
-        public void ConnectionEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void CleanupEngineConstructorThrowsExceptionWhenNoCoreSettingsProvided()
+        {
+            var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
+
+            var engine = new CleanupEngine(db, new MockLogger(), 0, null);
+        }
+
+        [TestMethod]
+        public void CleanupEngineConstructorDoesNotThrowWhenValidArgumentsAreProvided()
         {
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.ConnectionEngine engine =
-                new ArchivialLibrary.Client.ConnectionEngine(db, logger, 0, SharedMockedCoreSettings);
+            var engine = new CleanupEngine(db, logger, 0, SharedMockedCoreSettings);
 
             Assert.IsNotNull(engine);
         }
 
         [TestMethod]
-        public void ConnectionEngineCanStartAndStop()
+        public void CleanupEngineCanStartAndStop()
         {
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.ConnectionEngine engine =
-                new ArchivialLibrary.Client.ConnectionEngine(db, logger, 0, SharedMockedCoreSettings);
+            var engine = new CleanupEngine(db, logger, 0, SharedMockedCoreSettings);
 
             engine.BeginStart();
             engine.BeginStop();
         }
 
         [TestMethod]
-        public void ConnectionEngineTriggersStoppedEventWhenEngineHasStopped()
+        public void CleanupEngineTriggersStoppedEventWhenEngineHasStopped()
         {
             var logger = new MockLogger();
             var db = new SQLServerClientDatabase(TestConnectionString, new MockLogger(), SharedMockedCoreSettings);
 
-            ArchivialLibrary.Client.ConnectionEngine engine =
-                new ArchivialLibrary.Client.ConnectionEngine(db, logger, 0, SharedMockedCoreSettings);
+            var engine = new CleanupEngine(db, logger, 0, SharedMockedCoreSettings);
 
             var signalStoppedEvent = new AutoResetEvent(false);
 
