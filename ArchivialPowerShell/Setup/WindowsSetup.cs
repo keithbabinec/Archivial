@@ -36,7 +36,7 @@ namespace ArchivialPowerShell.Setup
         /// </summary>
         /// <param name="client"></param>
         /// <param name="coreSettings"></param>
-        public WindowsSetup(IClientDatabase client, ICoreSettings coreSettings)
+        public WindowsSetup(ICoreSettings coreSettings, IClientDatabase client)
         {
             if (client == null)
             {
@@ -147,7 +147,7 @@ namespace ArchivialPowerShell.Setup
         {
             var existingServices = ServiceController.GetServices();
 
-            if (existingServices.Any(x => x.ServiceName == Database.DefaultSqlExpressInstanceName) == false)
+            if (existingServices.Any(x => x.ServiceName == Database.DefaultSqlExpressInstanceName) == true)
             {
                 return true;
             }

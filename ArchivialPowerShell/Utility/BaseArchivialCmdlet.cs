@@ -113,7 +113,7 @@ namespace ArchivialPowerShell.Utility
                 }
                 catch (ApplicationCoreSettingMissingException)
                 {
-                    throw new ApplicationException("Cannot run the requested command. Archivial Cloud Backup installation is missing and the product must be installed first.");
+                    throw new ApplicationDatabaseNotPresentException();
                 }
 
                 base.WriteVerbose("Database connection string: " + dbConnectionString);
@@ -169,7 +169,7 @@ namespace ArchivialPowerShell.Utility
             {
                 base.WriteVerbose("Initializing setup helper.");
 
-                SetupHelper = new WindowsSetup(GetDatabaseConnection(), GetCoreSettingsAccessor());
+                SetupHelper = new WindowsSetup(GetCoreSettingsAccessor(), GetDatabaseConnection());
 
                 return SetupHelper;
             }

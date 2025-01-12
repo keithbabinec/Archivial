@@ -44,11 +44,6 @@ namespace ArchivialLibrary.Database
                 return DatabaseBackupType.Differential;
             }
 
-            if (RecentBackups.LastTransactionLogBackup.Value <= now.AddMinutes(-30))
-            {
-                return DatabaseBackupType.TransactionLog;
-            }
-
             return null;
         }
     }

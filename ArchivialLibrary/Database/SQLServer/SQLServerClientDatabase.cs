@@ -175,7 +175,7 @@ namespace ArchivialLibrary.Database.SQLServer
                         Logger.WriteTraceMessage("Database File: " + fileName);
 
                         var createDbCommand = string.Format(
-                            "CREATE DATABASE {0} ON ( NAME='{0}', FILENAME='{1}' )", Constants.Database.DatabaseName, fileName);
+                            "CREATE DATABASE {0} ON ( NAME='{0}', FILENAME='{1}' ); ALTER DATABASE {0} SET RECOVERY SIMPLE;", Constants.Database.DatabaseName, fileName);
 
                         cmd.CommandText = createDbCommand;
                         cmd.CommandType = System.Data.CommandType.Text;
@@ -339,11 +339,6 @@ namespace ArchivialLibrary.Database.SQLServer
                     {
                         commandBuilder.AppendLine(string.Format("BACKUP DATABASE {0} TO DISK='{1}'", Constants.Database.DatabaseName, fileName));
                         commandBuilder.AppendLine(string.Format("WITH FORMAT, DIFFERENTIAL;"));
-                    }
-                    else if (BackupType == DatabaseBackupType.TransactionLog)
-                    {
-                        commandBuilder.AppendLine(string.Format("BACKUP LOG {0} TO DISK='{1}'", Constants.Database.DatabaseName, fileName));
-                        commandBuilder.AppendLine(string.Format("WITH FORMAT;"));
                     }
                     else
                     {

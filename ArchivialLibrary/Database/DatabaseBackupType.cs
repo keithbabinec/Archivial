@@ -13,11 +13,6 @@
         /// <summary>
         /// Take a diffential database backup.
         /// </summary>
-        Differential = 2,
-
-        /// <summary>
-        /// Take a transaction log backup.
-        /// </summary>
-        TransactionLog = 3
+        Differential = 2
     }
 }

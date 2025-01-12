@@ -1,4 +1,7 @@
-﻿using ArchivialPowerShell.Exceptions;
+﻿using ArchivialLibrary.Exceptions;
+using ArchivialLibrary.ServiceCore;
+using ArchivialPowerShell.Exceptions;
+using ArchivialPowerShell.Setup;
 using ArchivialPowerShell.Utility;
 using System;
 using System.IO;
@@ -61,8 +64,10 @@ namespace ArchivialPowerShell.Functions.Public
 
         protected override void ProcessRecord()
         {
-            var setup = GetSetupHelper();
-            var coreSettings = GetCoreSettingsAccessor();
+            WriteVerbose("Starting Archivial Cloud Backup installation.");
+
+            ICoreSettings coreSettings = GetCoreSettingsAccessor();
+            ISetup setup = GetSetupHelper();
 
             if (!setup.IsRunningElevated())
             {
@@ -88,8 +93,6 @@ namespace ArchivialPowerShell.Functions.Public
             {
                 InstallDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Archivial Cloud Backup");
             }
-
-            WriteVerbose("Starting Archivial Cloud Backup installation.");
 
             WriteVerboseAndProgress(10, "Applying core settings.");
             setup.CreateCoreSettings(InstallDirectory);

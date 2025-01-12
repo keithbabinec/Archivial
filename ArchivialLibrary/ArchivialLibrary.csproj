@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ArchivialLibrary</RootNamespace>
     <AssemblyName>ArchivialLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -117,6 +118,7 @@
     <Compile Include="Events\EngineStoppedReason.cs" />
     <Compile Include="Exceptions\ApplicationCoreSettingInvalidValueException.cs" />
     <Compile Include="Exceptions\ApplicationCoreSettingMissingException.cs" />
+    <Compile Include="Exceptions\ApplicationDatabaseNotPresentException.cs" />
     <Compile Include="Exceptions\ApplicationSecretMissingException.cs" />
     <Compile Include="Exceptions\MaximumFileRevisionsExceededException.cs" />
     <Compile Include="Exceptions\ProviderMetadataMalformedException.cs" />

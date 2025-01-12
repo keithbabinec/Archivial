@@ -89,24 +89,6 @@ namespace ArchivialLibraryTests.Database
         }
 
         [TestMethod]
-        public void NextDatabaseBackupCorrectlyReturnsLogBackupIfNoLogBackupsIn30Minutes()
-        {
-            var now = DateTime.Now;
-
-            var recentBackups = new DatabaseBackupStatus()
-            {
-                LastFullBackup = now.AddHours(-20),
-                LastDifferentialBackup = now.AddHours(-3),
-                LastTransactionLogBackup = now.AddMinutes(-30)
-            };
-
-            var result = Scheduler.NextDatabaseBackup(recentBackups);
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(DatabaseBackupType.TransactionLog, result.Value);
-        }
-
-        [TestMethod]
         public void NextDatabaseBackupCorrectlyPrioritizesLastFullOverLastDifferential()
         {
             var now = DateTime.Now;
