@@ -123,6 +123,7 @@
     <Build Include="Stored Procedures\FindArchivialFilesToRestoreByFilter.sql" />
     <Build Include="FullText\ArchivialFtsCatalog.sql" />
     <Build Include="FullText\ArchivialFtIndexBackupFiles.sql" />
+    <Build Include="Stored Procedures\CleanupOldDatabaseBackupFiles.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
